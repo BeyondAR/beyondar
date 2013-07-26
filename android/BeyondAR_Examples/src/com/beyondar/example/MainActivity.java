@@ -136,14 +136,14 @@ public class MainActivity extends Activity implements IOnARTouchListener, IFpsUp
 		go3.setLongitude(1.925873388087619d);
 		go3.setLatitude(41.26550959641445d);
 		go3.setImageUri("/sdcard/TheAvengers_IronMan.jpeg");
-		go3.setName("IronMan sdcard");
+		go3.setName("IronMan from sdcard");
 
 		// And the same goes for the app assets
 		GeoObject go4 = new GeoObject(4l);
-		go4.setLongitude(1.925932313852319d);
-		go4.setLatitude(41.26581776104766d);
-		go4.setImageUri("assets://TheAvengers_IronMan.jpeg");
-		go4.setName("IronMan assets");
+		go4.setLongitude(1.925662767707665d);
+		go4.setLatitude(41.26518862002349d);
+		go4.setImageUri("assets://creature_7.png");
+		go4.setName("Image from assets");
 
 		GeoObject go5 = new GeoObject(5l);
 		go5.setLongitude(1.925777906882577d);
@@ -158,8 +158,8 @@ public class MainActivity extends Activity implements IOnARTouchListener, IFpsUp
 		go6.setName("Creature 6");
 
 		GeoObject go7 = new GeoObject(7l);
-		go7.setLongitude(1.925662767707665d);
-		go7.setLatitude(41.26518862002349d);
+		go7.setLongitude(1.925932313852319d);
+		go7.setLatitude(41.26581776104766d);
 		go7.setImageResource(R.drawable.creature_2);
 		go7.setName("Creature 2");
 

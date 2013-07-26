@@ -198,7 +198,7 @@ public class BeyondarGLSurfaceView extends GLSurfaceView {
 
 	}
 
-	public void setonARTouchListener(IOnARTouchListener listener) {
+	public void setOnARTouchListener(IOnARTouchListener listener) {
 		mTouchListener = listener;
 	}
 

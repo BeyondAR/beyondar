@@ -14,6 +14,12 @@ public class GeoObject extends BeyondarObject {
 
 	protected GeoPoint mGeoPoint;
 
+	/**
+	 * Create an instance of a {@link GeoObject} with an unique ID
+	 * 
+	 * @param id
+	 *            Unique ID
+	 */
 	public GeoObject(long id) {
 		super(id);
 

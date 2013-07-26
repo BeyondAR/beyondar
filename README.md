@@ -3,7 +3,7 @@ beyondar
 
 This framework has been designed to offer some resources to those developers with an interest in working with Augmented Reality based on geolocalization on SmartPhones and tablets.
 
-BeyondAR Game is using this platform to show the creatures arround the user. Here some images:
+[BeyondAR Game](https://play.google.com/store/apps/details?id=com.beyondar#?t=W251bGwsMSwxLDIxMiwiY29tLmJleW9uZGFyIl0.) is using this platform to show the creatures arround the user. Here some images:
 
 ![Screenshot](http://beyondar.com/pictures/screenshots/screen_4.jpg)
 ![Screenshot](http://beyondar.com/pictures/screenshots/screen_1.jpg)

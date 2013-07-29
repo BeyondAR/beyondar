@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2010 BeyondAR
+ * Copyright (C) 2013 BeyondAR
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,10 +15,6 @@
  */
 package com.beyondar.android.world.objects;
 
-/**
- * @author Joan Puig Sanz (joanpuigsanz@gmail.com)
- * 
- */
 public class RelativeObject extends BeyondarObject {
 
 	public RelativeObject(long id) {

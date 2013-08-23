@@ -30,6 +30,7 @@ import com.beyondar.android.opengl.util.BeyondarSensorManager;
 import com.beyondar.android.opengl.util.MatrixTrackingGL;
 import com.beyondar.android.opengl.views.ARRenderer.IFpsUpdatable;
 import com.beyondar.android.opengl.views.ARRenderer.ISnapshotCallback;
+import com.beyondar.android.util.CompatibilityUtil;
 import com.beyondar.android.util.Constants;
 import com.beyondar.android.util.math.geom.Ray;
 import com.beyondar.android.world.World;
@@ -84,7 +85,8 @@ public class BeyondarGLSurfaceView extends GLSurfaceView {
 			}
 		});
 
-		createRenderer();
+		mRenderer = createRenderer();
+		configureRenderer(mRenderer);
 
 		setEGLConfigChooser(8, 8, 8, 8, 16, 0);
 		setRenderer(mRenderer);
@@ -96,11 +98,20 @@ public class BeyondarGLSurfaceView extends GLSurfaceView {
 
 	/**
 	 * Override this method to change the renderer. For instance:<br>
-	 * <code>mRenderer = new CustomARRenderer();</code>
+	 * <code>return new CustomARRenderer();</code><br>
 	 * 
 	 */
-	protected void createRenderer() {
-		mRenderer = new ARRenderer();
+	protected ARRenderer createRenderer() {
+		return new ARRenderer();
+	}
+
+	/**
+	 * Override this method to personalize the configuration of the ARRenderer
+	 * @param renderer
+	 */
+	protected void configureRenderer(ARRenderer renderer) {
+		renderer.rotateView(CompatibilityUtil.isTablet(mContext)
+				&& !CompatibilityUtil.is7InchTablet(getContext()));
 	}
 
 	public void setFpsUpdatable(IFpsUpdatable fpsUpdatable) {

@@ -38,8 +38,8 @@ public class World_google_maps extends World {
 		mMapViewDistance = getViewDistance();
 	}
 
-	public GeoObjectOberlay getOverlay(int iconSize) {
-		return new GeoObjectOberlay(iconSize, this);
+	public GeoObjectOverlay getOverlay(int iconSize) {
+		return new GeoObjectOverlay(iconSize, this);
 	}
 
 	public Overlay getOverlay() {

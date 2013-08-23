@@ -15,6 +15,8 @@
  */
 package com.beyondar.android.util;
 
+import android.content.Context;
+import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.Matrix;
 
@@ -35,7 +37,6 @@ public class Utils {
 	 * @return
 	 */
 	public static boolean isPowerOfTwo(int n) {
-		// return Integer.bitCount(n) == 1;
 		return ((n != 0) && (n & (n - 1)) == 0);
 	}
 
@@ -60,8 +61,6 @@ public class Utils {
 	 * @return
 	 */
 	public static Bitmap resizeImageToPowerOfTwo(Bitmap bitmap) {
-		// load the origial BitMap
-
 		int width = bitmap.getWidth();
 		int height = bitmap.getHeight();
 
@@ -91,10 +90,6 @@ public class Utils {
 		return Bitmap.createBitmap(bitmap, 0, 0, width, height, matrix, true);
 
 	}
-
-	// public static void organizeArray(ArrayList<GeoObject> geoObjects) {
-	//
-	// }
 
 	/**
 	 * Take a snapshot of the BeyondarGLSurface with the camera image as
@@ -163,8 +158,7 @@ public class Utils {
 				float newWidth = factor * btmCamera.getWidth();
 				float newHeight = factor * btmCamera.getHeight();
 
-				Bitmap newBtmCamera = ImageUtils.resizeImage(btmCamera, (int) newWidth,
-						(int) newHeight);
+				Bitmap newBtmCamera = ImageUtils.resizeImage(btmCamera, (int) newWidth, (int) newHeight);
 				if (newBtmCamera != btmCamera) {
 					btmCamera.recycle();
 				}

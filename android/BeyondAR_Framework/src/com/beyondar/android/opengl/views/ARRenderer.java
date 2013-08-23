@@ -116,6 +116,8 @@ public class ARRenderer implements GLSurfaceView.Renderer, SensorEventListener,
 	private ISnapshotCallback mSnapshotCallback;
 	private SensorEventListener mExternalSensorListener;
 
+	private boolean mIsTablet;
+
 	/**
 	 * The OpenGL camera position
 	 */
@@ -139,6 +141,18 @@ public class ARRenderer implements GLSurfaceView.Renderer, SensorEventListener,
 		mPendingTextureObjects = new PendingTextureObjects();
 		sNewBitmapsLoaded = new ArrayList<UriAndBitmap>();
 
+		mIsTablet = false;
+	}
+
+	/**
+	 * Use this method to specify the renderer that is running on a tablet. If
+	 * so the renderer will rotate the view to be able to be displayed on
+	 * tablets
+	 * 
+	 * @param isTablet
+	 */
+	public void rotateView(boolean isTablet) {
+		mIsTablet = isTablet;
 	}
 
 	/**
@@ -150,7 +164,6 @@ public class ARRenderer implements GLSurfaceView.Renderer, SensorEventListener,
 		mWorld = world;
 		mWorld.getBitmapCache().addOnExternalBitmapLoadedCahceListener(this);
 		reloadWorldTextures = true;
-
 	}
 
 	public World getWorld() {
@@ -197,12 +210,17 @@ public class ARRenderer implements GLSurfaceView.Renderer, SensorEventListener,
 		SensorManager.getInclination(i);
 		// Get rotation matrix from the sensor
 		// TODO: Check if getRotationMatrix do the rotation
-		SensorManager.getRotationMatrix(rotationMatrix, i,
-				mAccelerometerValues, mMagneticValues);
+		SensorManager.getRotationMatrix(rotationMatrix, i, mAccelerometerValues, mMagneticValues);
+
+		if (mIsTablet) {
+			android.hardware.SensorManager.remapCoordinateSystem(rotationMatrix,
+					android.hardware.SensorManager.AXIS_MINUS_Y, android.hardware.SensorManager.AXIS_X,
+					rotationMatrix);
+		}
+
 		// // As the documentation says, we are using the device as a compass in
 		// // landscape mode
-		SensorManager.remapCoordinateSystem(rotationMatrix,
-				SensorManager.AXIS_Y, SensorManager.AXIS_MINUS_X,
+		SensorManager.remapCoordinateSystem(rotationMatrix, SensorManager.AXIS_Y, SensorManager.AXIS_MINUS_X,
 				remappedRotationMatrix);
 
 		// Clear color buffer
@@ -226,8 +244,7 @@ public class ARRenderer implements GLSurfaceView.Renderer, SensorEventListener,
 
 		if (sNewBitmapsLoaded.size() > 0) {
 			for (int i = 0; i < sNewBitmapsLoaded.size(); i++) {
-				mPendingTextureObjects.setAllTextures(gl,
-						sNewBitmapsLoaded.get(i).uri,
+				mPendingTextureObjects.setAllTextures(gl, sNewBitmapsLoaded.get(i).uri,
 						sNewBitmapsLoaded.get(i).btm);
 			}
 			sNewBitmapsLoaded.clear();
@@ -259,16 +276,14 @@ public class ARRenderer implements GLSurfaceView.Renderer, SensorEventListener,
 		int b[] = new int[mWidth * mHeight];
 		IntBuffer ib = IntBuffer.wrap(b);
 		ib.position(0);
-		gl.glReadPixels(0, 0, mWidth, mHeight, GL10.GL_RGBA,
-				GL10.GL_UNSIGNED_BYTE, ib);
+		gl.glReadPixels(0, 0, mWidth, mHeight, GL10.GL_RGBA, GL10.GL_UNSIGNED_BYTE, ib);
 
 		// The bytes within the ints are in the wrong order for android, but
 		// convert into a
 		// bitmap anyway. They're also bottom-to-top rather than top-to-bottom.
 		// We'll fix
 		// this up soon using some fast API calls.
-		Bitmap glbitmap = Bitmap.createBitmap(b, mWidth, mHeight,
-				Bitmap.Config.ARGB_4444);
+		Bitmap glbitmap = Bitmap.createBitmap(b, mWidth, mHeight, Bitmap.Config.ARGB_4444);
 		ib = null; // we're done with ib
 		b = null; // we're done with b, so allow the memory to be freed
 
@@ -319,8 +334,8 @@ public class ARRenderer implements GLSurfaceView.Renderer, SensorEventListener,
 										// flip
 
 		// new bitmap, using the flipping matrix
-		Bitmap result = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(),
-				bitmap.getHeight(), matrix, true);
+		Bitmap result = Bitmap
+				.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
 
 		bitmap.recycle();
 		System.gc();
@@ -328,13 +343,13 @@ public class ARRenderer implements GLSurfaceView.Renderer, SensorEventListener,
 	}
 
 	protected void convertGPStoPoint3(GeoObject geoObject, Point3 out) {
-		float x = (float) ((geoObject.getLongitude() - mWorld.getLongitude())
-				* Distance.METERS_TO_GEOPOINT / 2);
-		float z = (float) ((geoObject.getAltitude() - mWorld.getAltitude())
-				* Distance.METERS_TO_GEOPOINT / 2);
-		float y = (float) ((geoObject.getLatitude() - mWorld.getLatitude())
-				* Distance.METERS_TO_GEOPOINT / 2);
+		float x = (float) ((geoObject.getLongitude() - mWorld.getLongitude()) * Distance.METERS_TO_GEOPOINT / 2);
+		float z = (float) ((geoObject.getAltitude() - mWorld.getAltitude()) * Distance.METERS_TO_GEOPOINT / 2);
+		float y = (float) ((geoObject.getLatitude() - mWorld.getLatitude()) * Distance.METERS_TO_GEOPOINT / 2);
 		// out = new Point3(x, y, z);
+
+		Log.d("bar", "geoObject: " + geoObject.getName() + " Longitude=" + geoObject.getLongitude()
+				+ " Latitude=" + geoObject.getLatitude());
 		out.x = x;
 		out.y = y;
 		out.z = z;
@@ -369,8 +384,7 @@ public class ARRenderer implements GLSurfaceView.Renderer, SensorEventListener,
 			long timeInterval = System.currentTimeMillis() - mCurrentTime;
 			if (timeInterval > 1000) {
 				if (DEBUG) {
-					Log.d(Constants.TAG, "Frames/second:  " + mFrames
-							/ (timeInterval / 1000F));
+					Log.d(Constants.TAG, "Frames/second:  " + mFrames / (timeInterval / 1000F));
 				}
 				if (mFpsUpdatable != null) {
 					mFpsUpdatable.onFpsUpdate(mFrames / (timeInterval / 1000F));
@@ -387,23 +401,19 @@ public class ARRenderer implements GLSurfaceView.Renderer, SensorEventListener,
 
 		// Check if the list's default bitmap has been loaded.
 		if (!listTexture.isLoaded()) {
-			Texture defaultTexture = mTextureHolder.get(list
-					.getDefaultBitmapURI());
+			Texture defaultTexture = mTextureHolder.get(list.getDefaultBitmapURI());
 			if (defaultTexture == null || !defaultTexture.isLoaded()) {
 				if (DEBUG) {
-					Log.w(Constants.TAG,
-							"Warning!! The default texture for the list \""
-									+ list.getType()
-									+ "\" has not been loaded. Trying to load it now...");
+					Log.w(Constants.TAG, "Warning!! The default texture for the list \"" + list.getType()
+							+ "\" has not been loaded. Trying to load it now...");
 				}
-				Bitmap defaultBtm = mWorld.getBitmapCache().getBitmap(
-						list.getDefaultBitmapURI());
+				Bitmap defaultBtm = mWorld.getBitmapCache().getBitmap(list.getDefaultBitmapURI());
 				defaultTexture = load2DTexture(gl, defaultBtm);
 			}
-			list.setTexture(defaultTexture == null ? null : defaultTexture
-					.clone());
+			list.setTexture(defaultTexture == null ? null : defaultTexture.clone());
 		}
 
+		Log.d("bar", "world: Longitude=" + mWorld.getLongitude() + " Latitude=" + mWorld.getLatitude());
 		for (int j = 0; j < list.size(); j++) {
 			BeyondarObject beyondarObject = list.get(j);
 			if (beyondarObject == null) {
@@ -420,8 +430,7 @@ public class ARRenderer implements GLSurfaceView.Renderer, SensorEventListener,
 	 * @param beyondarObject
 	 * @param defaultTexture
 	 */
-	protected void renderGeoObject(GL10 gl, BeyondarObject beyondarObject,
-			Texture defaultTexture, long time) {
+	protected void renderGeoObject(GL10 gl, BeyondarObject beyondarObject, Texture defaultTexture, long time) {
 		boolean renderObject = false;
 		IRenderable renderable = beyondarObject.getOpenGLObject();
 
@@ -430,32 +439,28 @@ public class ARRenderer implements GLSurfaceView.Renderer, SensorEventListener,
 		}
 		double dst = 0;
 		if (beyondarObject instanceof GeoObject) {
-			dst = ((GeoObject) beyondarObject).calculateDistanceMeters(
-					mWorld.getLongitude(), mWorld.getLatitude());
-			convertGPStoPoint3((GeoObject) beyondarObject,
-					beyondarObject.getPosition());
-		} else {//TODO: Set the 0,0,0 to the camera position
+			dst = ((GeoObject) beyondarObject).calculateDistanceMeters(mWorld.getLongitude(),
+					mWorld.getLatitude());
+			convertGPStoPoint3((GeoObject) beyondarObject, beyondarObject.getPosition());
+		} else {// TODO: Set the 0,0,0 to the camera position
 			Point3 position = beyondarObject.getPosition();
-			dst = MathUtils.GLUnitsToMeters((float) Distance
-					.calculateDistanceCoordinates(0, 0, 0, position.x,
-							position.y, position.z));
+			dst = MathUtils.GLUnitsToMeters((float) Distance.calculateDistanceCoordinates(0, 0, 0,
+					position.x, position.y, position.z));
 		}
 
 		if (dst < mWorld.getViewDistance()) {
 			renderObject = true;
 		}
 
-		boolean forceDraw = renderable
-				.update(time, (float) dst, beyondarObject);
+		boolean forceDraw = renderable.update(time, (float) dst, beyondarObject);
 
 		if (forceDraw || renderObject) {
 			if (beyondarObject.isFacingToCamera()) {
-				MathUtils.calcAngleFaceToCamera(beyondarObject.getPosition(),
-						mMyPos, beyondarObject.getAngle());
+				MathUtils.calcAngleFaceToCamera(beyondarObject.getPosition(), mMyPos,
+						beyondarObject.getAngle());
 			}
 
-			if (!beyondarObject.getTexture().isLoaded()
-					&& beyondarObject.getBitmapUri() != null) {
+			if (!beyondarObject.getTexture().isLoaded() && beyondarObject.getBitmapUri() != null) {
 				if (beyondarObject.getTexture().getTimeStamp() == 0
 						|| time - beyondarObject.getTexture().getTimeStamp() > TIMEOUT_LOAD_TEXTURE) {
 					// TODO: Implement incremental time for the timeout?
@@ -572,8 +577,7 @@ public class ARRenderer implements GLSurfaceView.Renderer, SensorEventListener,
 				for (int i = 0; i < mWorld.getBeyondarObjectLists().size(); i++) {
 					list = mWorld.getBeyondarObjectLists().get(i);
 					if (null != list) {
-						Bitmap defaultBtm = mWorld.getBitmapCache().getBitmap(
-								list.getDefaultBitmapURI());
+						Bitmap defaultBtm = mWorld.getBitmapCache().getBitmap(list.getDefaultBitmapURI());
 						Texture texture = load2DTexture(gl, defaultBtm);
 						list.setTexture(texture);
 
@@ -605,21 +609,17 @@ public class ARRenderer implements GLSurfaceView.Renderer, SensorEventListener,
 		Texture texture = getTexture(geoObject.getBitmapUri());
 
 		if (texture == null) {
-			Bitmap btm = mWorld.getBitmapCache().getBitmap(
-					geoObject.getBitmapUri());
+			Bitmap btm = mWorld.getBitmapCache().getBitmap(geoObject.getBitmapUri());
 
 			texture = loadBitmapTexture(gl, btm, geoObject.getBitmapUri());
 
 			if (texture == null || !texture.isLoaded()) {
-				mPendingTextureObjects.addObject(geoObject.getBitmapUri(),
-						geoObject);
+				mPendingTextureObjects.addObject(geoObject.getBitmapUri(), geoObject);
 			}
 			if (btm == null) {
 				if (DEBUG) {
-					Log.e(Constants.TAG,
-							"ERROR: the resource " + geoObject.getBitmapUri()
-									+ " has not been loaded. Object Name: "
-									+ geoObject.getName());
+					Log.e(Constants.TAG, "ERROR: the resource " + geoObject.getBitmapUri()
+							+ " has not been loaded. Object Name: " + geoObject.getName());
 				}
 			}
 		}
@@ -712,17 +712,13 @@ public class ARRenderer implements GLSurfaceView.Renderer, SensorEventListener,
 		gl.glBindTexture(GL10.GL_TEXTURE_2D, tmpTexture[0]);
 
 		// create nearest filtered texture
-		gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_MIN_FILTER,
-				GL10.GL_NEAREST);
-		gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_MAG_FILTER,
-				GL10.GL_LINEAR);
+		gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_MIN_FILTER, GL10.GL_NEAREST);
+		gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_MAG_FILTER, GL10.GL_LINEAR);
 
 		// Different possible texture parameters, e.g.
 		// GL10.GL_CLAMP_TO_EDGE
-		gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_WRAP_S,
-				GL10.GL_REPEAT);
-		gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_WRAP_T,
-				GL10.GL_REPEAT);
+		gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_WRAP_S, GL10.GL_REPEAT);
+		gl.glTexParameterf(GL10.GL_TEXTURE_2D, GL10.GL_TEXTURE_WRAP_T, GL10.GL_REPEAT);
 		//
 		// Use Android GLUtils to specify a two-dimensional
 		// texture image from our bitmap
@@ -769,8 +765,7 @@ public class ARRenderer implements GLSurfaceView.Renderer, SensorEventListener,
 
 		// far eye point
 		float[] eye = new float[4];
-		GLU.gluUnProject(x, mHeight - y, 0.9f, mg.mModelView, 0,
-				mg.mProjection, 0, viewport, 0, eye, 0);
+		GLU.gluUnProject(x, mHeight - y, 0.9f, mg.mModelView, 0, mg.mProjection, 0, viewport, 0, eye, 0);
 
 		// fix
 		if (eye[3] != 0) {
@@ -780,8 +775,7 @@ public class ARRenderer implements GLSurfaceView.Renderer, SensorEventListener,
 		}
 
 		// ray vector
-		ray.setVector((eye[0] - mPostionCamera.x), (eye[1] - mPostionCamera.y),
-				(eye[2] - mPostionCamera.z));
+		ray.setVector((eye[0] - mPostionCamera.x), (eye[1] - mPostionCamera.y), (eye[2] - mPostionCamera.z));
 	}
 
 	public void setRendering(boolean render) {

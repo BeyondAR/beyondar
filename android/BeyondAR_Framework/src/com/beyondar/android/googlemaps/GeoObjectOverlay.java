@@ -34,7 +34,7 @@ import com.google.android.maps.Overlay;
  * @author Joan Puig Sanz (joanpuigsanz@gmail.com)
  * 
  */
-public class GeoObjectOberlay extends Overlay {
+public class GeoObjectOverlay extends Overlay {
 
 	private int mIconSize;
 
@@ -47,7 +47,7 @@ public class GeoObjectOberlay extends Overlay {
 
 	private World_google_maps mWorld;
 
-	public GeoObjectOberlay(int iconSize, World_google_maps world) {
+	public GeoObjectOverlay(int iconSize, World_google_maps world) {
 		mIconSize = iconSize;
 		mWorld = world;
 		mCache = createBitmapCache();

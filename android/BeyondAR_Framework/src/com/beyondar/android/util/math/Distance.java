@@ -34,6 +34,26 @@ public class Distance {
 
 	public static final double EARTH_RADIUS_KM = 6384;// km
 
+	
+	/**
+	 * This method do an approximation form meters to geopoints. Do not use it for long distances (> 5 km)
+	 * @param meters
+	 * @return
+	 */
+	public static double fastConversionMetersToGeoPoints(double meters){
+		return meters / METERS_TO_GEOPOINT;
+	}
+	
+	/**
+	 * This method do an approximation form geopoints to meters. Do not use it for long distances (> 5 km)
+	 * @param meters
+	 * @return
+	 */
+	public static double fastConversionGeopointsToMeters(double geoPoints){
+		return geoPoints * METERS_TO_GEOPOINT;
+	}
+	
+	
 	/**
 	 * Calculate the distance using the coordinates. It return a coordinates, no
 	 * meters

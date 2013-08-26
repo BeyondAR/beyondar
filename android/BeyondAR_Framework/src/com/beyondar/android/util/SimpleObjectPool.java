@@ -17,6 +17,8 @@ package com.beyondar.android.util;
 
 import java.util.LinkedList;
 
+import android.os.Build;
+
 public abstract class SimpleObjectPool<T> {
 
 	private LinkedList<T> mFreeObjects;
@@ -48,7 +50,11 @@ public abstract class SimpleObjectPool<T> {
 	public synchronized void returnObject(T object) {
 		synchronized (mLockObject) {
 			// mBorrowedObjects.remove(object);
-			mFreeObjects.push(object);
+			if (Build.VERSION.SDK_INT >= 11){
+				mFreeObjects.push(object);
+			}else{
+				mFreeObjects.add(object);
+			}
 		}
 	}
 

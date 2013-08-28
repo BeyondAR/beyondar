@@ -31,7 +31,7 @@ import com.beyondar.android.opengl.util.FpsUpdatable;
 import com.beyondar.android.opengl.util.MatrixTrackingGL;
 import com.beyondar.android.opengl.views.ARRenderer.SnapshotCallback;
 import com.beyondar.android.util.CompatibilityUtil;
-import com.beyondar.android.util.Constants;
+import com.beyondar.android.util.Logger;
 import com.beyondar.android.util.math.geom.Ray;
 import com.beyondar.android.world.World;
 import com.beyondar.android.world.objects.BeyondarObject;
@@ -68,7 +68,7 @@ public class BeyondarGLSurfaceView extends GLSurfaceView {
 		mContext = context;
 		mSensorDelay = SensorManager.SENSOR_DELAY_UI;
 
-		if (Constants.DEBUG_OPENGL) {
+		if (Logger.DEBUG_OPENGL) {
 			setDebugFlags(DEBUG_CHECK_GL_ERROR | DEBUG_LOG_GL_CALLS);
 		}
 

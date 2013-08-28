@@ -37,14 +37,13 @@ import android.hardware.SensorManager;
 import android.opengl.GLSurfaceView;
 import android.opengl.GLU;
 import android.opengl.GLUtils;
-import android.util.Log;
 
 import com.beyondar.android.opengl.renderable.Renderable;
 import com.beyondar.android.opengl.texture.Texture;
 import com.beyondar.android.opengl.util.FpsUpdatable;
 import com.beyondar.android.opengl.util.LowPassFilter;
 import com.beyondar.android.opengl.util.MatrixGrabber;
-import com.beyondar.android.util.Constants;
+import com.beyondar.android.util.Logger;
 import com.beyondar.android.util.Utils;
 import com.beyondar.android.util.cache.BitmapCache;
 import com.beyondar.android.util.cache.BitmapCache.IOnExternalBitmapLoadedCahceListener;
@@ -54,8 +53,8 @@ import com.beyondar.android.util.math.geom.Point3;
 import com.beyondar.android.util.math.geom.Ray;
 import com.beyondar.android.world.BeyondarObjectList;
 import com.beyondar.android.world.World;
-import com.beyondar.android.world.objects.GeoObject;
 import com.beyondar.android.world.objects.BeyondarObject;
+import com.beyondar.android.world.objects.GeoObject;
 
 // Some references:
 // http://ovcharov.me/2011/01/14/android-opengl-es-ray-picking/
@@ -85,7 +84,7 @@ public class ARRenderer implements GLSurfaceView.Renderer, SensorEventListener,
 	public static float Z_FAR = 100.0f;
 	public static final double TIMEOUT_LOAD_TEXTURE = 1500;
 
-	private static final boolean DEBUG = false;
+	private static final String TAG = "ARRenderer";
 
 	private float mAccelerometerValues[] = new float[3];
 	private float mMagneticValues[] = new float[3];
@@ -365,8 +364,8 @@ public class ARRenderer implements GLSurfaceView.Renderer, SensorEventListener,
 			mFrames++;
 			long timeInterval = System.currentTimeMillis() - mCurrentTime;
 			if (timeInterval > 1000) {
-				if (DEBUG) {
-					Log.d(Constants.TAG, "Frames/second:  " + mFrames / (timeInterval / 1000F));
+				if (Logger.DEBUG_OPENGL) {
+					Logger.d("Frames/second:  " + mFrames / (timeInterval / 1000F));
 				}
 				if (mFpsUpdatable != null) {
 					mFpsUpdatable.onFpsUpdate(mFrames / (timeInterval / 1000F));
@@ -384,17 +383,14 @@ public class ARRenderer implements GLSurfaceView.Renderer, SensorEventListener,
 		if (!listTexture.isLoaded()) {
 			Texture defaultTexture = sTextureHolder.get(list.getDefaultBitmapURI());
 			if (defaultTexture == null || !defaultTexture.isLoaded()) {
-				if (DEBUG) {
-					Log.w(Constants.TAG, "Warning!! The default texture for the list \"" + list.getType()
-							+ "\" has not been loaded. Trying to load it now...");
-				}
+				Logger.w("Warning!! The default texture for the list \"" + list.getType()
+						+ "\" has not been loaded. Trying to load it now...");
 				Bitmap defaultBtm = mWorld.getBitmapCache().getBitmap(list.getDefaultBitmapURI());
 				defaultTexture = load2DTexture(gl, defaultBtm);
 			}
 			list.setTexture(defaultTexture == null ? null : defaultTexture.clone());
 		}
 
-		Log.d("bar", "world: Longitude=" + mWorld.getLongitude() + " Latitude=" + mWorld.getLatitude());
 		for (int j = 0; j < list.size(); j++) {
 			BeyondarObject beyondarObject = list.get(j);
 			if (beyondarObject == null) {
@@ -445,9 +441,7 @@ public class ARRenderer implements GLSurfaceView.Renderer, SensorEventListener,
 				if (beyondarObject.getTexture().getTimeStamp() == 0
 						|| time - beyondarObject.getTexture().getTimeStamp() > TIMEOUT_LOAD_TEXTURE) {
 					// TODO: Implement incremental time for the timeout
-					if (DEBUG) {
-						Log.d(Constants.TAG, "Loading new texture...");
-					}
+					Logger.d("Loading new texture...");
 					loadBeyondarObjectTexture(gl, beyondarObject);
 					if (!beyondarObject.getTexture().isLoaded()) {
 						beyondarObject.getTexture().setTimeStamp(time);
@@ -530,14 +524,10 @@ public class ARRenderer implements GLSurfaceView.Renderer, SensorEventListener,
 		gl.glClearColor(0, 0, 0, 0);
 
 		sTextureHolder.clear();
-		if (DEBUG) {
-			Log.d(Constants.TAG, "Loading textures...");
-		}
+		Logger.d(TAG, "Loading textures...");
 		loadWorldTextures(gl);
 		loadAditionalTextures(gl);
-		if (DEBUG) {
-			Log.d(Constants.TAG, "TEXTURES LOADED");
-		}
+		Logger.d(TAG, "TEXTURES LOADED");
 
 	}
 
@@ -602,8 +592,8 @@ public class ARRenderer implements GLSurfaceView.Renderer, SensorEventListener,
 				sPendingTextureObjects.addObject(geoObject.getBitmapUri(), geoObject);
 			}
 			if (btm == null) {
-				if (DEBUG) {
-					Log.e(Constants.TAG, "ERROR: the resource " + geoObject.getBitmapUri()
+				if (Logger.DEBUG_OPENGL) {
+					Logger.e(TAG, "ERROR: the resource " + geoObject.getBitmapUri()
 							+ " has not been loaded. Object Name: " + geoObject.getName());
 				}
 			}
@@ -720,7 +710,6 @@ public class ARRenderer implements GLSurfaceView.Renderer, SensorEventListener,
 		//
 		// Clean up
 		bitmap.recycle();
-		// Log.d(Constants.TAG, "Texture pointer= " + tmpTexture[0]);
 		return new Texture(tmpTexture[0]);
 
 	}
@@ -775,6 +764,7 @@ public class ARRenderer implements GLSurfaceView.Renderer, SensorEventListener,
 
 	/**
 	 * Specify if the {@link ARRenderer} should render the world.
+	 * 
 	 * @param render
 	 */
 	public void setRendering(boolean render) {
@@ -784,6 +774,7 @@ public class ARRenderer implements GLSurfaceView.Renderer, SensorEventListener,
 
 	/**
 	 * Get known if the {@link ARRenderer} is rendering the world
+	 * 
 	 * @return
 	 */
 	public boolean isRendereing() {

@@ -56,18 +56,6 @@ public class BeyondarLocationListener implements LocationListener {
 		}
 	}
 
-	// public void addLocationListener(LocationListener locationListener) {
-	// synchronized (mLock) {
-	// mArrayLocationListener.add(locationListener);
-	// }
-	// }
-	//
-	// public void removeLocationListener(LocationListener locationListener) {
-	// synchronized (mLock) {
-	// mArrayLocationListener.remove(locationListener);
-	// }
-	// }
-
 	public void addWorldLocationUpdate(World world) {
 		synchronized (mLock) {
 			if (mLastBestLocation != null) {

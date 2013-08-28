@@ -17,15 +17,6 @@ package com.beyondar.android.util;
 
 public class Constants {
 
-	/** All the BeyondAR logs output have this tag */
-	public static final String TAG = "BeyondAR";
-	/**
-	 * Set this flag to enable the OpenGL debug log. If You use this, the touch
-	 * events will not work! use only to debug the openGL Draw stuff
-	 */
-	public static final boolean DEBUG_OPENGL = false;
-	
-	
 	public static final int E6 = 1000000;
 
 }

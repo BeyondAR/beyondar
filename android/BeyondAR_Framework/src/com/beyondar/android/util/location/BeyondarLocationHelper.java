@@ -24,7 +24,7 @@ import android.location.LocationManager;
 
 import android.location.GpsStatus;
 
-public class BeyondarLocationManager {
+public class BeyondarLocationHelper {
 
 	public final static int MAX_TIME_GPS_FIX = 20000;
 

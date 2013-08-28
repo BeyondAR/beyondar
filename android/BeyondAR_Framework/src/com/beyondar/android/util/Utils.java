@@ -15,8 +15,6 @@
  */
 package com.beyondar.android.util;
 
-import android.content.Context;
-import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.Matrix;
 

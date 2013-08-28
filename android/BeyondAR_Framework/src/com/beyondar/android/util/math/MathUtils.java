@@ -19,6 +19,7 @@ import com.beyondar.android.util.math.geom.Point3;
 
 public class MathUtils {
 
+	//TODO: Improve calculate the angle for Y
 	public static void calcAngleFaceToCamera(Point3 p1, Point3 p2, Point3 out) {
 
 		float x = (float) Math.toDegrees(Math.atan2(p1.y - p2.y, p1.z - p2.z));
@@ -31,8 +32,6 @@ public class MathUtils {
 		z = (z + 270) % 360;
 
 		out.z = z;
-		// out.x = 45;
-
 	}
 
 	/**

@@ -22,7 +22,18 @@ public interface OnARTouchListener {
 	/**
 	 * Use
 	 * {@link BeyondarGLSurfaceView#getARObjectOnScreenCoordinates(float, float)}
-	 * to get the object touched
+	 * to get the object touched:<br>
+	 * <pre>
+	 * {@code
+	 * float x = event.getX();
+	 * float y = event.getY();
+	 * ArrayList<BeyondarObject> geoObjects = new ArrayList<BeyondarObject>();
+	 * beyondarView.getARObjectOnScreenCoordinates(x, y, geoObjects);
+	 * ...
+	 * Now we iterate the ArrayList. The first element will be the closest one to the user
+	 * ...
+	 * }
+	 * </pre>
 	 * 
 	 * @param event
 	 * @param BeyondarView

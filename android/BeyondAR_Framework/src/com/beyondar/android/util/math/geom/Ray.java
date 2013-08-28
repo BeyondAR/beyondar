@@ -19,7 +19,6 @@ package com.beyondar.android.util.math.geom;
  * Represents a geometric ray, compound of a {@link Point3} and a
  * {@link Vector3}
  * 
- * 
  */
 public class Ray {
 

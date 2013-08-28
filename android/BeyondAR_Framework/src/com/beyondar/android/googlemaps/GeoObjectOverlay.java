@@ -20,10 +20,9 @@ import java.util.ArrayList;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Point;
-import android.util.Log;
 
-import com.beyondar.android.util.Constants;
 import com.beyondar.android.util.ImageUtils;
+import com.beyondar.android.util.Logger;
 import com.beyondar.android.util.cache.BitmapCache;
 import com.beyondar.android.world.BeyondarObjectList;
 import com.beyondar.android.world.objects.GeoObject;
@@ -32,6 +31,7 @@ import com.google.android.maps.Overlay;
 
 public class GeoObjectOverlay extends Overlay {
 
+	private static final String TAG = "GeoObjectOverlay";
 	private int mIconSize;
 
 	protected ArrayList<BeyondarObjectList> mListsToDisplay;
@@ -117,7 +117,7 @@ public class GeoObjectOverlay extends Overlay {
 
 					if (null != btm) {
 						if (btm.isRecycled()) {
-							Log.e(Constants.TAG,
+							Logger.e(TAG,
 									"Trying to use a recicled bitmap for the default list bitmap on the GeoObjectOverlay: "
 											+ beyondarList.getDefaultBitmapURI());
 						}

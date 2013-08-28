@@ -24,12 +24,11 @@ import android.graphics.BitmapFactory;
 import android.hardware.Camera;
 import android.hardware.Camera.Size;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
-import com.beyondar.android.util.Constants;
 import com.beyondar.android.util.DebugBitmap;
+import com.beyondar.android.util.Logger;
 
 public class CameraView extends SurfaceView implements SurfaceHolder.Callback,
 		Camera.PictureCallback {
@@ -43,6 +42,8 @@ public class CameraView extends SurfaceView implements SurfaceHolder.Callback,
 		void onPictureTaken(Bitmap picture);
 	}
 
+	private static final String TAG = "camera";
+	
 	private SurfaceHolder mHolder;
 	private Camera mCamera;
 	private IPictureCallback mCameraCallback;
@@ -67,6 +68,7 @@ public class CameraView extends SurfaceView implements SurfaceHolder.Callback,
 		init(context);
 	}
 
+	@SuppressWarnings("deprecation")
 	private void init(Context context) {
 		mHolder = getHolder();
 		mHolder.addCallback(this);
@@ -75,7 +77,7 @@ public class CameraView extends SurfaceView implements SurfaceHolder.Callback,
 			mCamera = Camera.open();
 			setCamera(mCamera);
 		} catch (Exception e) {
-			Log.e(Constants.TAG, "ERROR: Unable to open the camera", e);
+			Logger.e(TAG, "ERROR: Unable to open the camera", e);
 		}
 
 		if (android.os.Build.VERSION.SDK_INT <= 10) {// Android 2.3.x or lower
@@ -124,7 +126,7 @@ public class CameraView extends SurfaceView implements SurfaceHolder.Callback,
 				mCamera.release();
 			}
 			mCamera = null;
-			Log.e(Constants.TAG, "CameraView -- ERROR en SurfaceCreated", exception);
+			Logger.e(TAG, "CameraView -- ERROR en SurfaceCreated", exception);
 		}
 	}
 
@@ -205,7 +207,7 @@ public class CameraView extends SurfaceView implements SurfaceHolder.Callback,
 			mCamera.setPreviewDisplay(mHolder);
 			mCamera.startPreview();
 		} catch (Exception e) {
-			Log.d(Constants.TAG, "Cannot start preview.", e);
+			Logger.w(TAG, "Cannot start preview.", e);
 		}
 	}
 

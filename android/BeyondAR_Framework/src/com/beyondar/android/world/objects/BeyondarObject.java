@@ -26,17 +26,17 @@ import com.beyondar.android.util.math.geom.Point3;
 public abstract class BeyondarObject {
 
 	private String mName;
-
+	private long mId;
 	private boolean mVisibility;
 	private String mBitmapUri;
-	protected Renderable mOpenGLObject;
-	protected Point3 mPosition;
-	protected Point3 mAngle;
-	private long mId;
-	protected boolean mFaceToCamera;
 	private int mTypeList;
 	private Float mOrientation;
 	private Texture mTexture;
+
+	protected Renderable openGLObject;
+	protected Point3 position;
+	protected Point3 angle;
+	protected boolean faceToCamera;
 	protected MeshCollider meshCollider;
 
 	/**
@@ -47,9 +47,9 @@ public abstract class BeyondarObject {
 	 */
 	public BeyondarObject(long id) {
 		mId = id;
-		mPosition = new Point3();
-		mAngle = new Point3();
-		mFaceToCamera = true;
+		position = new Point3();
+		angle = new Point3();
+		faceToCamera = true;
 		mTexture = new Texture();
 		mVisibility = true;
 	}
@@ -59,27 +59,27 @@ public abstract class BeyondarObject {
 	}
 
 	public Point3 getAngle() {
-		return mAngle;
+		return angle;
 	}
 
 	public void setAngle(float x, float y, float z) {
-		mAngle.x = x;
-		mAngle.y = y;
-		mAngle.z = z;
+		angle.x = x;
+		angle.y = y;
+		angle.z = z;
 	}
 
 	public Point3 getPosition() {
-		return mPosition;
+		return position;
 	}
 
 	public void setPosition(Point3 newVect) {
-		mPosition = newVect;
+		position = newVect;
 	}
 
 	public void setPosition(float x, float y, float z) {
-		mPosition.x = x;
-		mPosition.y = y;
-		mPosition.z = z;
+		position.x = x;
+		position.y = y;
+		position.z = z;
 	}
 
 	protected Renderable createRenderable() {
@@ -107,14 +107,14 @@ public abstract class BeyondarObject {
 	 * @return
 	 */
 	public Renderable getOpenGLObject() {
-		if (null == mOpenGLObject) {
-			mOpenGLObject = createRenderable();
+		if (null == openGLObject) {
+			openGLObject = createRenderable();
 		}
-		return mOpenGLObject;
+		return openGLObject;
 	}
 
 	public void setOpenGLObject(Renderable openglObject) {
-		mOpenGLObject = openglObject;
+		openGLObject = openglObject;
 	}
 
 	public String getBitmapUri() {
@@ -122,12 +122,11 @@ public abstract class BeyondarObject {
 	}
 
 	public void faceToCamera(boolean faceToCamera) {
-		mFaceToCamera = faceToCamera;
-
+		this.faceToCamera = faceToCamera;
 	}
 
 	public boolean isFacingToCamera() {
-		return mFaceToCamera;
+		return faceToCamera;
 	}
 
 	/**
@@ -201,31 +200,31 @@ public abstract class BeyondarObject {
 
 	// TODO: Improve the mesh collider!!
 	public MeshCollider getMeshCollider() {
-		Point3 topLeft = new Point3(mPosition.x + SquareRenderable.VERTICES[3], mPosition.y
-				+ SquareRenderable.VERTICES[4], mPosition.z + SquareRenderable.VERTICES[5]);
-		Point3 bottomLeft = new Point3(mPosition.x + SquareRenderable.VERTICES[0], mPosition.y
-				+ SquareRenderable.VERTICES[1], mPosition.z + SquareRenderable.VERTICES[2]);
-		Point3 bottomRight = new Point3(mPosition.x + SquareRenderable.VERTICES[6], mPosition.y
-				+ SquareRenderable.VERTICES[7], mPosition.z + SquareRenderable.VERTICES[8]);
-		Point3 topRight = new Point3(mPosition.x + SquareRenderable.VERTICES[9], mPosition.y
-				+ SquareRenderable.VERTICES[10], mPosition.z + SquareRenderable.VERTICES[11]);
+		Point3 topLeft = new Point3(position.x + SquareRenderable.VERTICES[3], position.y
+				+ SquareRenderable.VERTICES[4], position.z + SquareRenderable.VERTICES[5]);
+		Point3 bottomLeft = new Point3(position.x + SquareRenderable.VERTICES[0], position.y
+				+ SquareRenderable.VERTICES[1], position.z + SquareRenderable.VERTICES[2]);
+		Point3 bottomRight = new Point3(position.x + SquareRenderable.VERTICES[6], position.y
+				+ SquareRenderable.VERTICES[7], position.z + SquareRenderable.VERTICES[8]);
+		Point3 topRight = new Point3(position.x + SquareRenderable.VERTICES[9], position.y
+				+ SquareRenderable.VERTICES[10], position.z + SquareRenderable.VERTICES[11]);
 
 		// Rotate points
-		topLeft.rotatePointDegrees_x(mAngle.x, mPosition);
-		topLeft.rotatePointDegrees_y(mAngle.y, mPosition);
-		topLeft.rotatePointDegrees_z(mAngle.z, mPosition);
+		topLeft.rotatePointDegrees_x(angle.x, position);
+		topLeft.rotatePointDegrees_y(angle.y, position);
+		topLeft.rotatePointDegrees_z(angle.z, position);
 
-		bottomLeft.rotatePointDegrees_x(mAngle.x, mPosition);
-		bottomLeft.rotatePointDegrees_y(mAngle.y, mPosition);
-		bottomLeft.rotatePointDegrees_z(mAngle.z, mPosition);
+		bottomLeft.rotatePointDegrees_x(angle.x, position);
+		bottomLeft.rotatePointDegrees_y(angle.y, position);
+		bottomLeft.rotatePointDegrees_z(angle.z, position);
 
-		bottomRight.rotatePointDegrees_x(mAngle.x, mPosition);
-		bottomRight.rotatePointDegrees_y(mAngle.y, mPosition);
-		bottomRight.rotatePointDegrees_z(mAngle.z, mPosition);
+		bottomRight.rotatePointDegrees_x(angle.x, position);
+		bottomRight.rotatePointDegrees_y(angle.y, position);
+		bottomRight.rotatePointDegrees_z(angle.z, position);
 
-		topRight.rotatePointDegrees_x(mAngle.x, mPosition);
-		topRight.rotatePointDegrees_y(mAngle.y, mPosition);
-		topRight.rotatePointDegrees_z(mAngle.z, mPosition);
+		topRight.rotatePointDegrees_x(angle.x, position);
+		topRight.rotatePointDegrees_y(angle.y, position);
+		topRight.rotatePointDegrees_z(angle.z, position);
 
 		// Generate the collision detector
 		meshCollider = new SquareMeshCollider(topLeft, bottomLeft, bottomRight, topRight);

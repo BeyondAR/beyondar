@@ -26,10 +26,9 @@ import java.util.ConcurrentModificationException;
 import android.content.Context;
 import android.location.Location;
 import android.os.Environment;
-import android.util.Log;
 
 import com.beyondar.android.opengl.colision.MeshCollider;
-import com.beyondar.android.util.Constants;
+import com.beyondar.android.util.Logger;
 import com.beyondar.android.util.cache.BitmapCache;
 import com.beyondar.android.util.math.Distance;
 import com.beyondar.android.util.math.geom.Plane;
@@ -41,6 +40,7 @@ import com.beyondar.android.world.objects.GeoObject;
 
 public class World {
 
+	private static final String TAG = "world";
 	/**
 	 * The maximum distance that the object will be displayed (meters)
 	 */
@@ -140,7 +140,7 @@ public class World {
 	}
 
 	public synchronized void forceProcessRemoveQueue() {
-		if (mBeyondarObjectLists.size() > 0){
+		if (mBeyondarObjectLists.size() > 0) {
 			synchronized (mLock) {
 				for (int i = 0; i < mBeyondarObjectLists.size(); i++) {
 					mBeyondarObjectLists.get(i).forceRemoveObjectsInQueue();
@@ -291,8 +291,8 @@ public class World {
 		return mDefaultBitmap;
 	}
 
-	public int checkIntersectionPlane(Plane plane, Point3 position, Vector3 direction,
-			double[] lamda, Vector3 pNormal) {
+	public int checkIntersectionPlane(Plane plane, Point3 position, Vector3 direction, double[] lamda,
+			Vector3 pNormal) {
 
 		double DotProduct = direction.dotProduct(plane.getNormal());
 		double l2;
@@ -350,8 +350,7 @@ public class World {
 	 *            The {@link ArrayList} that will store the objects sorted by
 	 *            proximity. This list will be cleaned before.
 	 */
-	public void getBeyondarObjectsCollideRay(Ray ray,
-			ArrayList<BeyondarObject> beyondarObjectsOutput) {
+	public void getBeyondarObjectsCollideRay(Ray ray, ArrayList<BeyondarObject> beyondarObjectsOutput) {
 
 		beyondarObjectsOutput.clear();
 
@@ -457,8 +456,7 @@ public class World {
 							String aBuffer = "";
 							try {
 								FileInputStream fIn = new FileInputStream(myFile);
-								BufferedReader myReader = new BufferedReader(new InputStreamReader(
-										fIn));
+								BufferedReader myReader = new BufferedReader(new InputStreamReader(fIn));
 
 								while ((aDataRow = myReader.readLine()) != null) {
 									aBuffer += aDataRow + "\n";
@@ -470,12 +468,11 @@ public class World {
 									longitude = Double.parseDouble(coords[0]);
 									latitude = Double.parseDouble(coords[1]);
 								} catch (Exception e) {
-									Log.e(Constants.TAG, "error parsing the fake data.");
+									Logger.e(TAG, "error parsing the fake data.");
 									continue;
 								}
 
-								Log.e(Constants.TAG, "fake longitude = " + longitude
-										+ "  latitude = " + latitude);
+								Logger.e(TAG, "fake longitude = " + longitude + "  latitude = " + latitude);
 								location.setLongitude(longitude);
 								location.setLatitude(latitude);
 
@@ -491,8 +488,7 @@ public class World {
 						} catch (InterruptedException e) {
 							e.printStackTrace();
 							exit = true;
-							Log.e(Constants.TAG,
-									"error sleeping the thread which perfom the fake locations");
+							Logger.e(TAG, "error sleeping the thread which perfom the fake locations");
 						}
 					}
 

@@ -27,7 +27,6 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.BitmapFactory.Options;
 import android.graphics.Rect;
-import android.util.Log;
 
 public class DebugBitmap {
 
@@ -112,30 +111,30 @@ public class DebugBitmap {
 	}
 
 	public synchronized static void printReport() {
-		Log.d("DebugBitmap", "++++++++++++++++++++++++++++++++++++++++++++");
-		Log.d("DebugBitmap", "++++++++++++++++++++++++++++++++++++++++++++");
-		Log.d("DebugBitmap", "++++++++++++++++++++++++++++++++++++++++++++");
+		Logger.d("DebugBitmap", "++++++++++++++++++++++++++++++++++++++++++++");
+		Logger.d("DebugBitmap", "++++++++++++++++++++++++++++++++++++++++++++");
+		Logger.d("DebugBitmap", "++++++++++++++++++++++++++++++++++++++++++++");
 
 		Integer count = 0;
 		Integer recicled = 0;
 		Iterator<String> keySet = sBitmapsTracker.keySet().iterator();
 		while (keySet.hasNext()) {
 			String string = (String) keySet.next();
-			Log.d("DebugBitmap", "URI:  " + string);
+			Logger.d("DebugBitmap", "URI:  " + string);
 			ArrayList<Bitmap> arrayList = sBitmapsTracker.get(string);
 			printArrayList(arrayList, count, recicled);
 		}
-		Log.d("DebugBitmap", "\n\nTotal=  " + recicled + "/" + count
+		Logger.d("DebugBitmap", "\n\nTotal=  " + recicled + "/" + count
 				+ "   recicled");
-		Log.d("DebugBitmap", "---------------------------------------------");
-		Log.d("DebugBitmap", "---------------------------------------------");
-		Log.d("DebugBitmap", "---------------------------------------------");
+		Logger.d("DebugBitmap", "---------------------------------------------");
+		Logger.d("DebugBitmap", "---------------------------------------------");
+		Logger.d("DebugBitmap", "---------------------------------------------");
 	}
 
 	private static void printArrayList(ArrayList<Bitmap> arrayList,
 			Integer counter, Integer recicled) {
 		if (arrayList == null || arrayList.size() == 0) {
-			Log.d("DebugBitmap", "   No bitmaps");
+			Logger.d("DebugBitmap", "   No bitmaps");
 		}
 		int reciledCount = 0;
 		int total = 0;
@@ -147,13 +146,13 @@ public class DebugBitmap {
 			if (bitmap.isRecycled()) {
 				reciledCount++;
 			} else {
-				Log.d("DebugBitmap", "      Not recicled=" + bitmap.getWidth()
+				Logger.d("DebugBitmap", "      Not recicled=" + bitmap.getWidth()
 						+ "x" + bitmap.getHeight());
 
 			}
 		}
 		counter = counter + total;
 		recicled = recicled + reciledCount;
-		Log.d("DebugBitmap", "   " + reciledCount + "/" + total + " Recicled");
+		Logger.d("DebugBitmap", "   " + reciledCount + "/" + total + " Recicled");
 	}
 }

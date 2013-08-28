@@ -16,8 +16,6 @@
 
 package com.beyondar.android.opengl.util;
 
-import android.util.Log;
-
 import java.nio.Buffer;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
@@ -30,6 +28,8 @@ import javax.microedition.khronos.opengles.GL10;
 import javax.microedition.khronos.opengles.GL10Ext;
 import javax.microedition.khronos.opengles.GL11;
 import javax.microedition.khronos.opengles.GL11Ext;
+
+import com.beyondar.android.util.Logger;
 
 /**
  * Allows retrieving the current matrix even if the current OpenGL ES driver
@@ -1096,7 +1096,7 @@ public class MatrixTrackingGL implements GL, GL10, GL10Ext, GL11, GL11Ext {
 		boolean fail = false;
 		for (int i = 0; i < 16; i++) {
 			if (mCheckA[i] != mCheckB[i]) {
-				Log.d("GLMatWrap", "i:" + i + " a:" + mCheckA[i] + " a:"
+				Logger.d("GLMatWrap", "i:" + i + " a:" + mCheckA[i] + " a:"
 						+ mCheckB[i]);
 				fail = true;
 			}

@@ -20,5 +20,4 @@ public class RelativeObject extends BeyondarObject {
 	public RelativeObject(long id) {
 		super(id);
 	}
-
 }

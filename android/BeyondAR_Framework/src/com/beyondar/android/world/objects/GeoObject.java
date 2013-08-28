@@ -23,9 +23,9 @@ import com.google.android.maps.GeoPoint;
 
 public class GeoObject extends BeyondarObject {
 
-	protected double mLongitude;
-	protected double mLatitude;
-	protected double mAltitude;
+	private double mLongitude;
+	private double mLatitude;
+	private double mAltitude;
 
 	protected GeoPoint mGeoPoint;
 
@@ -37,9 +37,7 @@ public class GeoObject extends BeyondarObject {
 	 */
 	public GeoObject(long id) {
 		super(id);
-
 		setVisibile(true);
-
 	}
 
 	public double getLongitude() {
@@ -90,8 +88,7 @@ public class GeoObject extends BeyondarObject {
 	}
 
 	public double calculateDistanceMeters(double longitude, double latitude) {
-		return Distance.calculateDistanceMeters(getLongitude(), getLatitude(),
-				longitude, latitude);
+		return Distance.calculateDistanceMeters(getLongitude(), getLatitude(), longitude, latitude);
 	}
 
 	public GeoPoint getGeoPoint() {
@@ -100,8 +97,7 @@ public class GeoObject extends BeyondarObject {
 			return mGeoPoint;
 		}
 
-		if (getLatitudeE6() == mGeoPoint.getLatitudeE6()
-				&& getLongitudeE6() == mGeoPoint.getLongitudeE6()) {
+		if (getLatitudeE6() == mGeoPoint.getLatitudeE6() && getLongitudeE6() == mGeoPoint.getLongitudeE6()) {
 			return mGeoPoint;
 		}
 		mGeoPoint = new GeoPoint(getLatitudeE6(), getLongitudeE6());

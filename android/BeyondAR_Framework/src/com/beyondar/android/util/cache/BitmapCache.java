@@ -29,9 +29,9 @@ import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.BitmapFactory.Options;
-import android.util.Log;
 
 import com.beyondar.android.util.DebugBitmap;
+import com.beyondar.android.util.Logger;
 import com.beyondar.android.util.tasks.Task;
 import com.beyondar.android.util.tasks.TaskExecutor;
 import com.beyondar.android.util.tasks.TaskResult;
@@ -60,7 +60,7 @@ public class BitmapCache {
 	public static final String HEADER_RESOURCE = "res://";
 	public static final String HEADER_ASSETS = "assets://";
 
-	private static final boolean DEBUG = false;
+	private static final boolean DEBUG_CACHE = false;
 
 	private String mIdCache;
 
@@ -100,7 +100,7 @@ public class BitmapCache {
 
 		@Override
 		protected void entryEvicted(String key, Bitmap value) {
-			if (DEBUG) {
+			if (DEBUG_CACHE) {
 				cacheLogD(mIdCache + " ____ Removing bitmap form cahce (out of cache memory): "
 						+ key);
 			}
@@ -113,7 +113,7 @@ public class BitmapCache {
 
 		@Override
 		protected void entryRemoved(String key, Bitmap value) {
-			if (DEBUG) {
+			if (DEBUG_CACHE) {
 				cacheLogD(mIdCache + " ____ Removing bitmap form cahce (method remove() called): "
 						+ key);
 			}
@@ -150,7 +150,7 @@ public class BitmapCache {
 
 			keysToClean.clear();
 
-			if (DEBUG) {
+			if (DEBUG_CACHE) {
 				cacheLogD(mIdCache + "  --- Recycled bitmaps cleaned: " + counter + "/"
 						+ (map.size() + counter));
 			}
@@ -229,7 +229,7 @@ public class BitmapCache {
 	 * Clean all the Bitmaps stored.
 	 */
 	public void clean() {
-		if (DEBUG) {
+		if (DEBUG_CACHE) {
 			cacheLogD(mIdCache + "  --- Cleaning the images");
 		}
 		TaskExecutor.getInstance().cleanAllHistory();
@@ -252,7 +252,7 @@ public class BitmapCache {
 	 * This method will clean the cache and will recycle all the bitmaps
 	 */
 	public void purge() {
-		if (DEBUG) {
+		if (DEBUG_CACHE) {
 			cacheLogD(mIdCache + "  --- Purguing all the images");
 		}
 		TaskExecutor.getInstance().cleanAllHistory();
@@ -301,8 +301,8 @@ public class BitmapCache {
 	public Bitmap storeBitmap(String uri, Bitmap btm) {
 		if (null != btm && null != uri) {
 			if (mBitmapContainer.get(uri) != null) {
-				if (DEBUG) {
-					Log.w(TAG, mIdCache + "  = The image with the URI=" + uri
+				if (DEBUG_CACHE) {
+					Logger.w(TAG, mIdCache + "  = The image with the URI=" + uri
 							+ " already exist. Overwritting...");
 				}
 				// return btm;
@@ -310,11 +310,11 @@ public class BitmapCache {
 
 			mLoadingResources.put(uri, IMAGE_LOADED);
 			mBitmapContainer.put(uri, btm);
-			if (DEBUG) {
+			if (DEBUG_CACHE) {
 				cacheLogD(mIdCache + "  + Saving Bitmap: loadBitmap(ExBitmap btm): " + uri);
 			}
 		} else {
-			if (DEBUG) {
+			if (DEBUG_CACHE) {
 				cacheLogE(mIdCache + "  = Trying to store a null bitmap for uri=" + uri);
 			}
 		}
@@ -338,7 +338,7 @@ public class BitmapCache {
 			return null;
 		}
 
-		if (DEBUG) {
+		if (DEBUG_CACHE) {
 			cacheLogD(mIdCache + "  +++ loading new bitmap: " + uri);
 		}
 
@@ -525,15 +525,15 @@ public class BitmapCache {
 	}
 
 	private void cacheLogD(String msg) {
-		if (!DEBUG)
+		if (!DEBUG_CACHE)
 			return;
-		Log.d(TAG, msg);
+		Logger.d(TAG, msg);
 	}
 
 	private void cacheLogE(String msg) {
-		if (!DEBUG)
+		if (!DEBUG_CACHE)
 			return;
-		Log.e(TAG, msg);
+		Logger.e(TAG, msg);
 	}
 
 	private class TaskLoadHttpBitmap extends Task {
@@ -557,7 +557,7 @@ public class BitmapCache {
 			long time = System.currentTimeMillis();
 			Bitmap btm = null;
 
-			if (DEBUG) {
+			if (DEBUG_CACHE) {
 				cacheLogD(mIdCache + " ||||||||||   Obtaining the image from internet: " + mUri);
 			}
 			URL url;

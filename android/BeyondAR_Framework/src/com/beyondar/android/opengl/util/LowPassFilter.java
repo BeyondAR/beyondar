@@ -18,7 +18,7 @@ package com.beyondar.android.opengl.util;
 public class LowPassFilter {
 
 	/*
-	 * Time smoothing constant for low-pass filter 0 ≤ α ≤ 1 ; a smaller value
+	 * Time smoothing constant for low-pass filter 0 - 1 ; a smaller value
 	 * basically means more smoothing See:
 	 * http://en.wikipedia.org/wiki/Low-pass_filter#Discrete-time_realization
 	 */
@@ -48,7 +48,7 @@ public class LowPassFilter {
 	 * @param prev
 	 *            float array representing the previous values.
 	 * @param alpha
-	 *            Time smoothing constant for low-pass filter 0 ≤ α ≤ 1 ; a
+	 *            Time smoothing constant for low-pass filter 0 - 1 ; a
 	 *            smaller value basically means more smoothing
 	 * @return float array smoothed with a low-pass filter.
 	 */

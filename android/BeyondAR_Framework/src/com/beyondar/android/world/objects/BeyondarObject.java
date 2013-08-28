@@ -15,9 +15,9 @@
  */
 package com.beyondar.android.world.objects;
 
-import com.beyondar.android.opengl.colision.IMeshCollider;
-import com.beyondar.android.opengl.colision.SquareCollisionDetector;
-import com.beyondar.android.opengl.renderable.IRenderable;
+import com.beyondar.android.opengl.colision.MeshCollider;
+import com.beyondar.android.opengl.colision.SquareMeshCollider;
+import com.beyondar.android.opengl.renderable.Renderable;
 import com.beyondar.android.opengl.renderable.SquareRenderable;
 import com.beyondar.android.opengl.texture.Texture;
 import com.beyondar.android.util.cache.BitmapCache;
@@ -29,7 +29,7 @@ public abstract class BeyondarObject {
 
 	private boolean mVisibility;
 	private String mBitmapUri;
-	protected IRenderable mOpenGLObject;
+	protected Renderable mOpenGLObject;
 	protected Point3 mPosition;
 	protected Point3 mAngle;
 	private long mId;
@@ -37,7 +37,7 @@ public abstract class BeyondarObject {
 	private int mTypeList;
 	private Float mOrientation;
 	private Texture mTexture;
-	protected IMeshCollider meshCollider;
+	protected MeshCollider meshCollider;
 
 	/**
 	 * Create an instance of a {@link BeyondarObject} with an unique ID
@@ -82,7 +82,7 @@ public abstract class BeyondarObject {
 		mPosition.z = z;
 	}
 
-	protected IRenderable createRenderable() {
+	protected Renderable createRenderable() {
 		return SquareRenderable.getInstance();
 	}
 
@@ -106,14 +106,14 @@ public abstract class BeyondarObject {
 	 * 
 	 * @return
 	 */
-	public IRenderable getOpenGLObject() {
+	public Renderable getOpenGLObject() {
 		if (null == mOpenGLObject) {
 			mOpenGLObject = createRenderable();
 		}
 		return mOpenGLObject;
 	}
 
-	public void setOpenGLObject(IRenderable openglObject) {
+	public void setOpenGLObject(Renderable openglObject) {
 		mOpenGLObject = openglObject;
 	}
 
@@ -200,7 +200,7 @@ public abstract class BeyondarObject {
 	}
 
 	// TODO: Improve the mesh collider!!
-	public IMeshCollider getMeshCollider() {
+	public MeshCollider getMeshCollider() {
 		Point3 topLeft = new Point3(mPosition.x + SquareRenderable.VERTICES[3], mPosition.y
 				+ SquareRenderable.VERTICES[4], mPosition.z + SquareRenderable.VERTICES[5]);
 		Point3 bottomLeft = new Point3(mPosition.x + SquareRenderable.VERTICES[0], mPosition.y
@@ -228,7 +228,7 @@ public abstract class BeyondarObject {
 		topRight.rotatePointDegrees_z(mAngle.z, mPosition);
 
 		// Generate the collision detector
-		meshCollider = new SquareCollisionDetector(topLeft, bottomLeft, bottomRight, topRight);
+		meshCollider = new SquareMeshCollider(topLeft, bottomLeft, bottomRight, topRight);
 		return meshCollider;
 	}
 }

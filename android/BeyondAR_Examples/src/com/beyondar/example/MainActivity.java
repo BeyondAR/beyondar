@@ -9,14 +9,14 @@ import android.view.MotionEvent;
 import android.view.Window;
 import android.widget.TextView;
 
-import com.beyondar.android.opengl.views.ARRenderer.IFpsUpdatable;
+import com.beyondar.android.opengl.util.FpsUpdatable;
 import com.beyondar.android.opengl.views.BeyondarGLSurfaceView;
-import com.beyondar.android.opengl.views.IOnARTouchListener;
+import com.beyondar.android.opengl.views.OnARTouchListener;
 import com.beyondar.android.world.World;
 import com.beyondar.android.world.objects.BeyondarObject;
 import com.beyondar.android.world.objects.GeoObject;
 
-public class MainActivity extends Activity implements IOnARTouchListener, IFpsUpdatable {
+public class MainActivity extends Activity implements OnARTouchListener, FpsUpdatable {
 
 	private BeyondarGLSurfaceView mBeyondarGLSurfaceView;
 

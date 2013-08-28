@@ -23,11 +23,7 @@ import com.beyondar.android.util.math.geom.Plane;
 import com.beyondar.android.util.math.geom.Point3;
 import com.beyondar.android.world.objects.BeyondarObject;
 
-/**
- * @author Joan Puig Sanz
- * 
- */
-public interface IRenderable {
+public interface Renderable {
 
 	/** The draw method to be used by OpenGL */
 	public void draw(GL10 gl, Texture defaultTexture);

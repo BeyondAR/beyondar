@@ -18,38 +18,44 @@ package com.beyondar.android.opengl.colision;
 import com.beyondar.android.util.math.geom.Plane;
 import com.beyondar.android.util.math.geom.Point3;
 import com.beyondar.android.util.math.geom.Ray;
-import com.beyondar.android.util.math.geom.Triangle;
+import com.beyondar.android.util.math.geom.Vector3;
 
+/**
+ * A Spherical Armature. It's created from a point (sphere's center) and a
+ * radius (sphere's radius)
+ * 
+ * 
+ */
+public class SphericalMeshCollider implements MeshCollider {
 
-public class SquareCollisionDetector implements IMeshCollider {
-
-	private Triangle t1, t2;
-
-	private Plane p;
+	private Point3 center;
+	private float radius;
 
 	/**
-	 * Constructs a square armature from 4 points. This 4 points must be
-	 * contained for the same plane. If not, weird behavior will happen
+	 * Constructs a spherical collision detector from its center and its radius
 	 * 
-	 * @param topLeft
-	 * @param bottomLeft
-	 * @param bottomRight
-	 * @param topRight
+	 * @param center
+	 *            Center point
+	 * @param radius
+	 *            Sphere radius
 	 */
-	public SquareCollisionDetector(Point3 topLeft, Point3 bottomLeft, Point3 bottomRight, Point3 topRight) {
-		t1 = new Triangle(topLeft, bottomLeft, bottomRight);
-		t2 = new Triangle(topLeft, topRight, bottomRight);
-		p = t1.getPlane();
-	} 
+	public SphericalMeshCollider(Point3 center, float radius) {
+		this.center = center;
+		this.radius = radius;
+	}
 
 	@Override
 	public boolean contains(Point3 p) {
-		return t1.contains(p) || t2.contains(p);
+		if (p != null) {
+			float distance = Vector3.getVolatileVector(p, center).module();
+			return distance <= radius;
+		}
+		return false;
 	}
 
 	@Override
 	public Point3 getIntersectionPoint(Ray r) {
-		float t = p.intersects(r);
+		float t = Plane.getVolatilePlane(center, r.getVector()).intersects(r);
 		if (t >= 0) {
 			Point3 p = r.getPoint(t);
 			if (this.contains(p)) {
@@ -62,7 +68,13 @@ public class SquareCollisionDetector implements IMeshCollider {
 
 	@Override
 	public boolean intersects(Ray r) {
-		return getIntersectionPoint(r) != null;
+		Point3 p = this.getIntersectionPoint(r);
+		return this.contains(p);
+
+	}
+
+	public float getRadius() {
+		return radius;
 	}
 
 }

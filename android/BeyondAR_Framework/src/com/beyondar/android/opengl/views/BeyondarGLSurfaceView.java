@@ -27,9 +27,9 @@ import android.util.AttributeSet;
 import android.view.MotionEvent;
 
 import com.beyondar.android.opengl.util.BeyondarSensorManager;
+import com.beyondar.android.opengl.util.FpsUpdatable;
 import com.beyondar.android.opengl.util.MatrixTrackingGL;
-import com.beyondar.android.opengl.views.ARRenderer.IFpsUpdatable;
-import com.beyondar.android.opengl.views.ARRenderer.ISnapshotCallback;
+import com.beyondar.android.opengl.views.ARRenderer.SnapshotCallback;
 import com.beyondar.android.util.CompatibilityUtil;
 import com.beyondar.android.util.Constants;
 import com.beyondar.android.util.math.geom.Ray;
@@ -42,15 +42,13 @@ public class BeyondarGLSurfaceView extends GLSurfaceView {
 	private SensorManager mSensorManager;
 	private Context mContext;
 
-	// Listeners
-	private IOnARTouchListener mTouchListener;
-	// End listeners
+	private OnARTouchListener mTouchListener;
 
 	private World mWorld;
 
 	private int mSensorDelay;
 
-	public void tackePicture(ISnapshotCallback callBack) {
+	public void tackePicture(SnapshotCallback callBack) {
 		mRenderer.tackePicture(callBack);
 	}
 
@@ -107,6 +105,7 @@ public class BeyondarGLSurfaceView extends GLSurfaceView {
 
 	/**
 	 * Override this method to personalize the configuration of the ARRenderer
+	 * 
 	 * @param renderer
 	 */
 	protected void configureRenderer(ARRenderer renderer) {
@@ -114,7 +113,7 @@ public class BeyondarGLSurfaceView extends GLSurfaceView {
 				&& !CompatibilityUtil.is7InchTablet(getContext()));
 	}
 
-	public void setFpsUpdatable(IFpsUpdatable fpsUpdatable) {
+	public void setFpsUpdatable(FpsUpdatable fpsUpdatable) {
 		mRenderer.setFpsUpdatable(fpsUpdatable);
 	}
 
@@ -224,7 +223,7 @@ public class BeyondarGLSurfaceView extends GLSurfaceView {
 
 	}
 
-	public void setOnARTouchListener(IOnARTouchListener listener) {
+	public void setOnARTouchListener(OnARTouchListener listener) {
 		mTouchListener = listener;
 	}
 

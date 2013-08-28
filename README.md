@@ -111,7 +111,7 @@ world.addBeyondarObject(go4);
 //Finally we add the Wold data in to the View
 mBeyondarGLSurfaceView.setWorld(world);
 ```
-Now we have the app ready to show the GeoObjects. But we also want to campture events, for instance, when the user click on a GeoObject
+Now we have the app ready to show the GeoObjects. But we also want to capture events, for instance, when the user click on a GeoObject. For that we need to implement OnARTouchListener
 ```java
 ...
 mBeyondarGLSurfaceView.setonARTouchListener(this);

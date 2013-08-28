@@ -28,7 +28,7 @@ import android.location.Location;
 import android.os.Environment;
 import android.util.Log;
 
-import com.beyondar.android.opengl.colision.IMeshCollider;
+import com.beyondar.android.opengl.colision.MeshCollider;
 import com.beyondar.android.util.Constants;
 import com.beyondar.android.util.cache.BitmapCache;
 import com.beyondar.android.util.math.Distance;
@@ -140,9 +140,11 @@ public class World {
 	}
 
 	public synchronized void forceProcessRemoveQueue() {
-		synchronized (mLock) {
-			for (int i = 0; i < mBeyondarObjectLists.size(); i++) {
-				mBeyondarObjectLists.get(i).forceRemoveObjectsInQueue();
+		if (mBeyondarObjectLists.size() > 0){
+			synchronized (mLock) {
+				for (int i = 0; i < mBeyondarObjectLists.size(); i++) {
+					mBeyondarObjectLists.get(i).forceRemoveObjectsInQueue();
+				}
 			}
 		}
 
@@ -378,7 +380,7 @@ public class World {
 							}
 						}
 
-						IMeshCollider colisionDetector = beyondarObject.getMeshCollider();
+						MeshCollider colisionDetector = beyondarObject.getMeshCollider();
 
 						Point3 point = colisionDetector.getIntersectionPoint(ray);
 

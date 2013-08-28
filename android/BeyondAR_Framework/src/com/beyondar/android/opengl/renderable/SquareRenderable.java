@@ -27,7 +27,7 @@ import com.beyondar.android.util.math.geom.Point3;
 import com.beyondar.android.util.math.geom.Vector3;
 import com.beyondar.android.world.objects.BeyondarObject;
 
-public class SquareRenderable implements IRenderable {
+public class SquareRenderable implements Renderable {
 
 	private static SquareRenderable mThis;
 
@@ -84,7 +84,7 @@ public class SquareRenderable implements IRenderable {
 		mTexture = new Texture();;
 	}
 
-	public static IRenderable getInstance() {
+	public static Renderable getInstance() {
 		if (mThis == null) {
 			mThis = new SquareRenderable();
 		}

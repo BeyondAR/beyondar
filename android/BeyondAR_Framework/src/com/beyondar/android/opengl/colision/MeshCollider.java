@@ -24,7 +24,7 @@ import com.beyondar.android.util.math.geom.Ray;
  * are usually cubes or spheres, to simplify calculations.
  * 
  */
-public interface IMeshCollider {
+public interface MeshCollider {
 
 	/**
 	 * Returns <b>true</b> if the given point is contained by the armature.

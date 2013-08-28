@@ -30,10 +30,6 @@ import com.beyondar.android.world.objects.GeoObject;
 import com.google.android.maps.MapView;
 import com.google.android.maps.Overlay;
 
-/**
- * @author Joan Puig Sanz (joanpuigsanz@gmail.com)
- * 
- */
 public class GeoObjectOverlay extends Overlay {
 
 	private int mIconSize;

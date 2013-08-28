@@ -20,10 +20,6 @@ import android.content.Context;
 import com.beyondar.android.world.World;
 import com.google.android.maps.Overlay;
 
-/**
- * @author Joan Puig Sanz (joanpuigsanz@gmail.com)
- * 
- */
 public class World_google_maps extends World {
 
 	private double mMapViewDistance;

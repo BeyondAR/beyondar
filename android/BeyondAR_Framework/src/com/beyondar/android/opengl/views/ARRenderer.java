@@ -39,8 +39,9 @@ import android.opengl.GLU;
 import android.opengl.GLUtils;
 import android.util.Log;
 
-import com.beyondar.android.opengl.renderable.IRenderable;
+import com.beyondar.android.opengl.renderable.Renderable;
 import com.beyondar.android.opengl.texture.Texture;
+import com.beyondar.android.opengl.util.FpsUpdatable;
 import com.beyondar.android.opengl.util.LowPassFilter;
 import com.beyondar.android.opengl.util.MatrixGrabber;
 import com.beyondar.android.util.Constants;
@@ -62,12 +63,7 @@ import com.beyondar.android.world.objects.BeyondarObject;
 public class ARRenderer implements GLSurfaceView.Renderer, SensorEventListener,
 		IOnExternalBitmapLoadedCahceListener {
 
-	/**
-	 * 
-	 * @author Joan Puig Sanz (joanpuigsanz@gmail.com)
-	 * 
-	 */
-	public static interface ISnapshotCallback {
+	public static interface SnapshotCallback {
 		/**
 		 * This method is called when the snapshot of the GL Surface is ready.
 		 * If there is an error, the image will be null
@@ -93,53 +89,41 @@ public class ARRenderer implements GLSurfaceView.Renderer, SensorEventListener,
 
 	private float mAccelerometerValues[] = new float[3];
 	private float mMagneticValues[] = new float[3];
-	// private float mOrientationValues[] = new float[3];
 
-	private float rotationMatrix[] = new float[16];
-	private float remappedRotationMatrix[] = new float[16];
+	private float mRotationMatrix[] = new float[16];
+	private float mRemappedRotationMatrix[] = new float[16];
 
-	private MatrixGrabber mg = new MatrixGrabber();
-
-	public Point3 mPostionCamera;
-
+	private MatrixGrabber mMatrixGrabber = new MatrixGrabber();
 	private int mWidth, mHeight;
 
-	private static HashMap<String, Texture> mTextureHolder;
-	private static PendingTextureObjects mPendingTextureObjects;
-
-	private static ArrayList<UriAndBitmap> sNewBitmapsLoaded;
+	private static HashMap<String, Texture> sTextureHolder = new HashMap<String, Texture>();;
+	private static PendingTextureObjects sPendingTextureObjects = new PendingTextureObjects();
+	private static ArrayList<UriAndBitmap> sNewBitmapsLoaded = new ArrayList<UriAndBitmap>();
+	private static final float[] sInclination = new float[16];
 
 	private World mWorld;
-	protected boolean reloadWorldTextures;
 
 	private boolean mScreenshot;
-	private ISnapshotCallback mSnapshotCallback;
+	private SnapshotCallback mSnapshotCallback;
 	private SensorEventListener mExternalSensorListener;
 
 	private boolean mIsTablet;
 
-	/**
-	 * The OpenGL camera position
-	 */
-	private Point3 mMyPos;
+	protected Point3 cameraPosition;
+	protected boolean reloadWorldTextures;
 
 	private boolean mRender;
 
-	// TESTING
-	// private Square squareTest = new Square();
-	float mAngle = 0;
-
 	private boolean mGetFps = false;
+
+	private long mCurrentTime = System.currentTimeMillis();
+	private float mFrames = 0;
+	private FpsUpdatable mFpsUpdatable;
 
 	public ARRenderer() {
 		reloadWorldTextures = false;
 		setRendering(true);
-		mPostionCamera = new Point3(0, 0, 0);
-
-		mMyPos = new Point3(0, 0, 0);
-		mTextureHolder = new HashMap<String, Texture>();
-		mPendingTextureObjects = new PendingTextureObjects();
-		sNewBitmapsLoaded = new ArrayList<UriAndBitmap>();
+		cameraPosition = new Point3(0, 0, 0);
 
 		mIsTablet = false;
 	}
@@ -177,16 +161,16 @@ public class ARRenderer implements GLSurfaceView.Renderer, SensorEventListener,
 	 *            The new camera position
 	 */
 	public void setCameraPosition(Point3 newCameraPos) {
-		mMyPos = newCameraPos;
+		cameraPosition = newCameraPos;
 	}
 
 	/**
 	 * Restore the camera position
 	 */
 	public void restoreCameraPosition() {
-		mMyPos.x = 0;
-		mMyPos.y = 0;
-		mMyPos.z = 0;
+		cameraPosition.x = 0;
+		cameraPosition.y = 0;
+		cameraPosition.z = 0;
 	}
 
 	/**
@@ -195,10 +179,8 @@ public class ARRenderer implements GLSurfaceView.Renderer, SensorEventListener,
 	 * @return
 	 */
 	public Point3 getCameraPosition() {
-		return mMyPos;
+		return cameraPosition;
 	}
-
-	private static final float[] i = new float[16];
 
 	public void onDrawFrame(GL10 gl) {
 		if (!mRender) {
@@ -207,21 +189,19 @@ public class ARRenderer implements GLSurfaceView.Renderer, SensorEventListener,
 
 		long time = System.currentTimeMillis();
 
-		SensorManager.getInclination(i);
-		// Get rotation matrix from the sensor
-		// TODO: Check if getRotationMatrix do the rotation
-		SensorManager.getRotationMatrix(rotationMatrix, i, mAccelerometerValues, mMagneticValues);
-
+		SensorManager.getInclination(sInclination);
+		SensorManager.getRotationMatrix(mRotationMatrix, sInclination, mAccelerometerValues, mMagneticValues);
 		if (mIsTablet) {
-			android.hardware.SensorManager.remapCoordinateSystem(rotationMatrix,
+			android.hardware.SensorManager.remapCoordinateSystem(mRotationMatrix,
 					android.hardware.SensorManager.AXIS_MINUS_Y, android.hardware.SensorManager.AXIS_X,
-					rotationMatrix);
+					mRotationMatrix);
 		}
 
-		// // As the documentation says, we are using the device as a compass in
-		// // landscape mode
-		SensorManager.remapCoordinateSystem(rotationMatrix, SensorManager.AXIS_Y, SensorManager.AXIS_MINUS_X,
-				remappedRotationMatrix);
+		// TODO: CHange this to be able to support non landscape mode
+		// As the documentation says, we are using the device as a compass in
+		// landscape mode
+		SensorManager.remapCoordinateSystem(mRotationMatrix, SensorManager.AXIS_Y,
+				SensorManager.AXIS_MINUS_X, mRemappedRotationMatrix);
 
 		// Clear color buffer
 		gl.glClear(GL10.GL_COLOR_BUFFER_BIT | GL10.GL_DEPTH_BUFFER_BIT);
@@ -229,7 +209,7 @@ public class ARRenderer implements GLSurfaceView.Renderer, SensorEventListener,
 		// Load remapped matrix
 		gl.glMatrixMode(GL10.GL_MODELVIEW);
 		gl.glLoadIdentity();
-		gl.glLoadMatrixf(remappedRotationMatrix, 0);
+		gl.glLoadMatrixf(mRemappedRotationMatrix, 0);
 
 		gl.glEnableClientState(GL10.GL_VERTEX_ARRAY);
 		// gl.glEnableClientState(GL10.GL_COLOR_ARRAY);
@@ -244,14 +224,15 @@ public class ARRenderer implements GLSurfaceView.Renderer, SensorEventListener,
 
 		if (sNewBitmapsLoaded.size() > 0) {
 			for (int i = 0; i < sNewBitmapsLoaded.size(); i++) {
-				mPendingTextureObjects.setAllTextures(gl, sNewBitmapsLoaded.get(i).uri,
-						sNewBitmapsLoaded.get(i).btm);
+				sPendingTextureObjects.setAllTextures(gl, sNewBitmapsLoaded.get(i).uri,
+						sNewBitmapsLoaded.get(i).btm, this);
 			}
 			sNewBitmapsLoaded.clear();
 		}
 
-		// Store projection and modelview matrices
-		mg.getCurrentState(gl);
+		// Store projection and modelview matrices. This is used for the
+		// collision detections
+		mMatrixGrabber.getCurrentState(gl);
 
 		if (mWorld != null) {
 			if (reloadWorldTextures) {
@@ -346,20 +327,21 @@ public class ARRenderer implements GLSurfaceView.Renderer, SensorEventListener,
 		float x = (float) ((geoObject.getLongitude() - mWorld.getLongitude()) * Distance.METERS_TO_GEOPOINT / 2);
 		float z = (float) ((geoObject.getAltitude() - mWorld.getAltitude()) * Distance.METERS_TO_GEOPOINT / 2);
 		float y = (float) ((geoObject.getLatitude() - mWorld.getLatitude()) * Distance.METERS_TO_GEOPOINT / 2);
-		// out = new Point3(x, y, z);
 
-		Log.d("bar", "geoObject: " + geoObject.getName() + " Longitude=" + geoObject.getLongitude()
-				+ " Latitude=" + geoObject.getLatitude());
 		out.x = x;
 		out.y = y;
 		out.z = z;
 	}
 
-	private long mCurrentTime = System.currentTimeMillis();
-	private float mFrames = 0;
-	private IFpsUpdatable mFpsUpdatable;
-
-	public void setFpsUpdatable(IFpsUpdatable fpsUpdatable) {
+	/**
+	 * Set the {@link FpsUpdatable} to get notified about the frames per
+	 * seconds.
+	 * 
+	 * @param fpsUpdatable
+	 *            The event listener. Use null to remove the
+	 *            {@link FpsUpdatable}
+	 */
+	public void setFpsUpdatable(FpsUpdatable fpsUpdatable) {
 		mCurrentTime = System.currentTimeMillis();
 		mFpsUpdatable = fpsUpdatable;
 		mGetFps = mFpsUpdatable != null;
@@ -399,9 +381,8 @@ public class ARRenderer implements GLSurfaceView.Renderer, SensorEventListener,
 
 		Texture listTexture = list.getTexture();
 
-		// Check if the list's default bitmap has been loaded.
 		if (!listTexture.isLoaded()) {
-			Texture defaultTexture = mTextureHolder.get(list.getDefaultBitmapURI());
+			Texture defaultTexture = sTextureHolder.get(list.getDefaultBitmapURI());
 			if (defaultTexture == null || !defaultTexture.isLoaded()) {
 				if (DEBUG) {
 					Log.w(Constants.TAG, "Warning!! The default texture for the list \"" + list.getType()
@@ -432,7 +413,7 @@ public class ARRenderer implements GLSurfaceView.Renderer, SensorEventListener,
 	 */
 	protected void renderGeoObject(GL10 gl, BeyondarObject beyondarObject, Texture defaultTexture, long time) {
 		boolean renderObject = false;
-		IRenderable renderable = beyondarObject.getOpenGLObject();
+		Renderable renderable = beyondarObject.getOpenGLObject();
 
 		if (renderable == null || !beyondarObject.isVisible()) {
 			return;
@@ -442,7 +423,7 @@ public class ARRenderer implements GLSurfaceView.Renderer, SensorEventListener,
 			dst = ((GeoObject) beyondarObject).calculateDistanceMeters(mWorld.getLongitude(),
 					mWorld.getLatitude());
 			convertGPStoPoint3((GeoObject) beyondarObject, beyondarObject.getPosition());
-		} else {// TODO: Set the 0,0,0 to the camera position
+		} else {
 			Point3 position = beyondarObject.getPosition();
 			dst = MathUtils.GLUnitsToMeters((float) Distance.calculateDistanceCoordinates(0, 0, 0,
 					position.x, position.y, position.z));
@@ -456,14 +437,14 @@ public class ARRenderer implements GLSurfaceView.Renderer, SensorEventListener,
 
 		if (forceDraw || renderObject) {
 			if (beyondarObject.isFacingToCamera()) {
-				MathUtils.calcAngleFaceToCamera(beyondarObject.getPosition(), mMyPos,
+				MathUtils.calcAngleFaceToCamera(beyondarObject.getPosition(), cameraPosition,
 						beyondarObject.getAngle());
 			}
 
 			if (!beyondarObject.getTexture().isLoaded() && beyondarObject.getBitmapUri() != null) {
 				if (beyondarObject.getTexture().getTimeStamp() == 0
 						|| time - beyondarObject.getTexture().getTimeStamp() > TIMEOUT_LOAD_TEXTURE) {
-					// TODO: Implement incremental time for the timeout?
+					// TODO: Implement incremental time for the timeout
 					if (DEBUG) {
 						Log.d(Constants.TAG, "Loading new texture...");
 					}
@@ -480,7 +461,12 @@ public class ARRenderer implements GLSurfaceView.Renderer, SensorEventListener,
 		}
 	}
 
-	public void tackePicture(ISnapshotCallback callBack) {
+	/**
+	 * Take an snapshot of the view.
+	 * 
+	 * @param callBack
+	 */
+	public void tackePicture(SnapshotCallback callBack) {
 		mSnapshotCallback = callBack;
 		mScreenshot = true;
 	}
@@ -543,7 +529,7 @@ public class ARRenderer implements GLSurfaceView.Renderer, SensorEventListener,
 
 		gl.glClearColor(0, 0, 0, 0);
 
-		mTextureHolder.clear();
+		sTextureHolder.clear();
 		if (DEBUG) {
 			Log.d(Constants.TAG, "Loading textures...");
 		}
@@ -558,7 +544,8 @@ public class ARRenderer implements GLSurfaceView.Renderer, SensorEventListener,
 	/**
 	 * Override this method to load additional textures. Use the following code
 	 * to help you:<br>
-	 * <code>loadTexture(gl, yourBitmap)</code>
+	 * <code>loadTexture(gl, yourBitmap)</code><br>
+	 * This method is called when the surface is created.
 	 * 
 	 * @param gl
 	 */
@@ -592,8 +579,6 @@ public class ARRenderer implements GLSurfaceView.Renderer, SensorEventListener,
 				loadWorldTextures(gl);
 			}
 		}
-		// Optimize this part. The bitmaps should be cleaned only for the images
-		// loaded
 		mWorld.getBitmapCache().cleanRecylcedBitmaps();
 	}
 
@@ -602,7 +587,7 @@ public class ARRenderer implements GLSurfaceView.Renderer, SensorEventListener,
 	 * 
 	 * @param gl
 	 * @param geoObject
-	 *            The object to get the textures
+	 *            The object to load the textures
 	 */
 	protected void loadBeyondarObjectTexture(GL10 gl, BeyondarObject geoObject) {
 
@@ -614,7 +599,7 @@ public class ARRenderer implements GLSurfaceView.Renderer, SensorEventListener,
 			texture = loadBitmapTexture(gl, btm, geoObject.getBitmapUri());
 
 			if (texture == null || !texture.isLoaded()) {
-				mPendingTextureObjects.addObject(geoObject.getBitmapUri(), geoObject);
+				sPendingTextureObjects.addObject(geoObject.getBitmapUri(), geoObject);
 			}
 			if (btm == null) {
 				if (DEBUG) {
@@ -627,6 +612,16 @@ public class ARRenderer implements GLSurfaceView.Renderer, SensorEventListener,
 		geoObject.setTexture(texture);
 	}
 
+	/**
+	 * Load the {@link Texture} from a {@link Bitmap}
+	 * 
+	 * @param gl
+	 * @param btm
+	 *            The {@link Bitmap} to load
+	 * @param uri
+	 *            The unique id of the bitmap
+	 * @return The {@link Texture} object
+	 */
 	protected Texture loadBitmapTexture(GL10 gl, Bitmap btm, String uri) {
 
 		if (null == btm) {
@@ -634,37 +629,36 @@ public class ARRenderer implements GLSurfaceView.Renderer, SensorEventListener,
 		}
 		Texture texture = null;
 		// Check if the texture already exist
-		texture = mTextureHolder.get(uri);
+		texture = sTextureHolder.get(uri);
 		if (texture == null) {
 			texture = load2DTexture(gl, btm);
 
-			mTextureHolder.put(uri, texture);
+			sTextureHolder.put(uri, texture);
 		}
 		return texture.clone();
 	}
 
 	/**
-	 * Check if the ExBitmap texture object is loaded. To check if the
+	 * Check if the bitmap texture object is loaded. To check if the
 	 * {@link Texture} has been loaded with a pointer, use
 	 * {@link Texture#isLoaded()}
 	 * 
-	 * @param exBitmap
+	 * @param bitmap
 	 * @return true if it is already loaded, false otherwise.
 	 */
-	protected boolean isTextureLoaded(Bitmap exBitmap) {
-		return mTextureHolder.containsValue(exBitmap);
+	protected boolean isTextureLoaded(Bitmap bitmap) {
+		return sTextureHolder.containsValue(bitmap);
 	}
 
 	/**
 	 * Check if the image URI has been loaded as a texture. To check if the
-	 * {@link Texture} has been loaded with a pointer, use
-	 * {@link Texture#isLoaded()}
+	 * {@link Texture} has any GL texture pointer use {@link Texture#isLoaded()}
 	 * 
-	 * @param exBitmap
+	 * @param uri
 	 * @return true if it is already loaded, false otherwise.
 	 */
 	protected boolean isTextureObjectLoaded(String uri) {
-		return mTextureHolder.get(uri) != null;
+		return sTextureHolder.get(uri) != null;
 	}
 
 	/**
@@ -677,7 +671,7 @@ public class ARRenderer implements GLSurfaceView.Renderer, SensorEventListener,
 		if (uri == null) {
 			return null;
 		}
-		Texture texture = mTextureHolder.get(uri);
+		Texture texture = sTextureHolder.get(uri);
 		if (texture != null) {
 			texture = texture.clone();
 		}
@@ -685,8 +679,8 @@ public class ARRenderer implements GLSurfaceView.Renderer, SensorEventListener,
 	}
 
 	/**
-	 * Create the texture for the specified {@link Bitmap}. The method will
-	 * recycle the bitmap after being used
+	 * Create the texture for the specified {@link Bitmap}.<br>
+	 * <b>NOTE:</b> The method will recycle the bitmap after being used
 	 * 
 	 * @param gl
 	 * @param bitmap
@@ -765,7 +759,8 @@ public class ARRenderer implements GLSurfaceView.Renderer, SensorEventListener,
 
 		// far eye point
 		float[] eye = new float[4];
-		GLU.gluUnProject(x, mHeight - y, 0.9f, mg.mModelView, 0, mg.mProjection, 0, viewport, 0, eye, 0);
+		GLU.gluUnProject(x, mHeight - y, 0.9f, mMatrixGrabber.mModelView, 0, mMatrixGrabber.mProjection, 0,
+				viewport, 0, eye, 0);
 
 		// fix
 		if (eye[3] != 0) {
@@ -775,14 +770,22 @@ public class ARRenderer implements GLSurfaceView.Renderer, SensorEventListener,
 		}
 
 		// ray vector
-		ray.setVector((eye[0] - mPostionCamera.x), (eye[1] - mPostionCamera.y), (eye[2] - mPostionCamera.z));
+		ray.setVector((eye[0] - cameraPosition.x), (eye[1] - cameraPosition.y), (eye[2] - cameraPosition.z));
 	}
 
+	/**
+	 * Specify if the {@link ARRenderer} should render the world.
+	 * @param render
+	 */
 	public void setRendering(boolean render) {
 		mRender = render;
 
 	}
 
+	/**
+	 * Get known if the {@link ARRenderer} is rendering the world
+	 * @return
+	 */
 	public boolean isRendereing() {
 		return mRender;
 	}
@@ -795,7 +798,7 @@ public class ARRenderer implements GLSurfaceView.Renderer, SensorEventListener,
 		sNewBitmapsLoaded.add(uriAndBitmap);
 	}
 
-	private class PendingTextureObjects {
+	private static class PendingTextureObjects {
 
 		private HashMap<String, ArrayList<BeyondarObject>> mHolder;
 
@@ -816,7 +819,7 @@ public class ARRenderer implements GLSurfaceView.Renderer, SensorEventListener,
 			list.add(object);
 		}
 
-		public synchronized void setAllTextures(GL10 gl, String uri, Bitmap btm) {
+		public synchronized void setAllTextures(GL10 gl, String uri, Bitmap btm, ARRenderer arrender) {
 			if (uri == null) {
 				return;
 			}
@@ -825,7 +828,7 @@ public class ARRenderer implements GLSurfaceView.Renderer, SensorEventListener,
 				return;
 			}
 
-			Texture texture = loadBitmapTexture(gl, btm, uri);
+			Texture texture = arrender.loadBitmapTexture(gl, btm, uri);
 
 			for (int i = 0; i < list.size() && texture.isLoaded(); i++) {
 				BeyondarObject object = list.get(i);
@@ -836,17 +839,4 @@ public class ARRenderer implements GLSurfaceView.Renderer, SensorEventListener,
 			}
 		}
 	}
-
-	public static interface IFpsUpdatable {
-
-		/**
-		 * This method will get the frames per second rendered by the
-		 * {@link ARRenderer}
-		 * 
-		 * @param fps
-		 *            The Frames per second rendered
-		 */
-		public void onFpsUpdate(float fps);
-	}
-
 }

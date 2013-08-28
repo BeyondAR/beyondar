@@ -276,14 +276,6 @@ public class TaskExecutor {
 	public boolean cleanHistory(TaskResult result) {
 		return taskHistory.removeElement(result);
 	}
-
-	/**
-	 * 
-	 * @author Joan Puig Sanz (jpuigsanz@service2media.com)
-	 * 
-	 *         This thread manage all the needed stuff for the clas
-	 *         {@link TaskExecutor}
-	 */
 	private class CoreThread extends Thread implements IOnFinishTaskListener {
 
 		private boolean stop = false;

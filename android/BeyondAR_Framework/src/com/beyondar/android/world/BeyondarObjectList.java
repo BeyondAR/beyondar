@@ -16,6 +16,7 @@
 package com.beyondar.android.world;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 
 import com.beyondar.android.opengl.texture.Texture;
 import com.beyondar.android.util.cache.BitmapCache;
@@ -26,11 +27,8 @@ import com.beyondar.android.world.objects.BeyondarObject;
  * search is required
  * 
  */
-public class BeyondarObjectList {
+public class BeyondarObjectList implements Iterable<BeyondarObject> {
 
-	/**
-	 * 
-	 */
 	private int mType;
 
 	private Texture mTexture;
@@ -70,29 +68,45 @@ public class BeyondarObjectList {
 	}
 
 	/**
-	 * Add a geoObject to the list
+	 * Add a geoObject to the list if it does not exist
 	 * 
 	 * @param object
+	 *            the object ot add
+	 * @return True if the object has been added (it does not exist), false
+	 *         otherwise
 	 */
-	public void add(BeyondarObject object) {
+	public boolean add(BeyondarObject object) {
 		if (!mContainer.contains(object)) {
 			mContainer.add(object);
+			return true;
+		} else {
+			return false;
 		}
 	}
 
+	/**
+	 * Get the element ate the specific position
+	 * 
+	 * @param index
+	 * @return
+	 */
 	public BeyondarObject get(int index) {
 		return mContainer.get(index);
 	}
 
+	/**
+	 * Return the amount of elements in the list
+	 * 
+	 * @return
+	 */
 	public int size() {
 		return mContainer.size();
 	}
 
 	/**
-	 * This method will place the object in a queue to be removed. To force the
-	 * queue to be processed, call
-	 * {@link BeyondarObjectList#forceRemoveObjectsInQueue()}. Once the object
-	 * is queued, the object's visibility is changed to false
+	 * This method will place the object in a queue to be removed and hide it.
+	 * To force the queue to process all the object in the removal queue call
+	 * {@link BeyondarObjectList#forceRemoveObjectsInQueue()}.
 	 * 
 	 * @param object
 	 */
@@ -103,6 +117,13 @@ public class BeyondarObjectList {
 		}
 	}
 
+	/**
+	 * This method will place the object in a queue to be removed and hide it.
+	 * To force the queue to process all the object in the removal queue call
+	 * {@link BeyondarObjectList#forceRemoveObjectsInQueue()}.
+	 * 
+	 * @param index
+	 */
 	public synchronized void remove(int index) {
 		remove(mContainer.get(index));
 	}
@@ -142,6 +163,10 @@ public class BeyondarObjectList {
 		mTexture = texture;
 	}
 
+	/**
+	 * Get the texture object for this list
+	 * @return
+	 */
 	public Texture getTexture() {
 		return mTexture;
 	}
@@ -157,6 +182,11 @@ public class BeyondarObjectList {
 			}
 			mToRemoveQueue.clear();
 		}
+	}
+
+	@Override
+	public Iterator<BeyondarObject> iterator() {
+		return mContainer.iterator();
 	}
 
 }

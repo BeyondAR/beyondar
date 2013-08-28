@@ -33,12 +33,6 @@ import com.beyondar.android.util.DebugBitmap;
 
 public class CameraView extends SurfaceView implements SurfaceHolder.Callback,
 		Camera.PictureCallback {
-
-	/**
-	 * 
-	 * @author Joan Puig Sanz (joanpuigsanz@gmail.com)
-	 * 
-	 */
 	public static interface IPictureCallback {
 		/**
 		 * This method is called when the snapshot of the camera is ready. If

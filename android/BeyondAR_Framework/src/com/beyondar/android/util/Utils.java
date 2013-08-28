@@ -20,7 +20,7 @@ import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.Matrix;
 
-import com.beyondar.android.opengl.views.ARRenderer.ISnapshotCallback;
+import com.beyondar.android.opengl.views.ARRenderer.SnapshotCallback;
 import com.beyondar.android.opengl.views.BeyondarGLSurfaceView;
 import com.beyondar.android.views.CameraView;
 import com.beyondar.android.views.CameraView.IPictureCallback;
@@ -116,7 +116,7 @@ public class Utils {
 		void onFinishSnapShotProcess(Bitmap image);
 	}
 
-	private static class ScreenShootCallback implements IPictureCallback, ISnapshotCallback {
+	private static class ScreenShootCallback implements IPictureCallback, SnapshotCallback {
 
 		Bitmap btmCamera;
 		Bitmap btmGl;

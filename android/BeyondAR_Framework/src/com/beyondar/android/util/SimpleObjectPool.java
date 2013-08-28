@@ -47,12 +47,18 @@ public abstract class SimpleObjectPool<T> {
 		}
 	}
 
-	public synchronized void returnObject(T object) {
+	/**
+	 * When an object is ready to be use this method will put it back to the
+	 * pool
+	 * 
+	 * @param object
+	 */
+	public synchronized void recycleObject(T object) {
 		synchronized (mLockObject) {
 			// mBorrowedObjects.remove(object);
-			if (Build.VERSION.SDK_INT >= 11){
+			if (Build.VERSION.SDK_INT >= 11) {
 				mFreeObjects.push(object);
-			}else{
+			} else {
 				mFreeObjects.add(object);
 			}
 		}

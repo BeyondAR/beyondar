@@ -17,7 +17,7 @@ package com.beyondar.android.opengl.views;
 
 import android.view.MotionEvent;
 
-public interface IOnARTouchListener {
+public interface OnARTouchListener {
 
 	/**
 	 * Use

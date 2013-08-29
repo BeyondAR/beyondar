@@ -31,3 +31,6 @@ proguard/
 *.ipr
 *.iws
 .idea/
+
+#Ignore linked source folder used for testing/development
+src-framework/

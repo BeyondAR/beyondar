@@ -4,9 +4,14 @@ import java.util.ArrayList;
 import java.util.Iterator;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.MotionEvent;
+import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.Window;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import com.beyondar.android.opengl.util.FpsUpdatable;
@@ -16,12 +21,15 @@ import com.beyondar.android.world.World;
 import com.beyondar.android.world.objects.BeyondarObject;
 import com.beyondar.android.world.objects.GeoObject;
 
-public class MainActivity extends Activity implements OnARTouchListener, FpsUpdatable {
+public class MainActivity extends Activity implements OnARTouchListener, FpsUpdatable, OnClickListener {
 
 	private BeyondarGLSurfaceView mBeyondarGLSurfaceView;
+	private World mWorld;
 
 	private TextView mLabelText;
 	private String mFPS, mAction;
+
+	private Button mShowMap;
 
 	/** Called when the activity is first created. */
 	@Override
@@ -34,12 +42,16 @@ public class MainActivity extends Activity implements OnARTouchListener, FpsUpda
 		loadViewFromXML();
 
 		// We create the world and set it in to the view
-		World world = createWorld();
-		mBeyondarGLSurfaceView.setWorld(world);
+		mWorld = createWorld();
+
+		mBeyondarGLSurfaceView.setWorld(mWorld);
 		mBeyondarGLSurfaceView.setFpsUpdatable(this);
 
 		// set listener for the geoObjects
 		mBeyondarGLSurfaceView.setOnARTouchListener(this);
+
+		// We can use this method to store an unique world instance
+		World.setWorld(mWorld);
 
 	}
 
@@ -105,7 +117,11 @@ public class MainActivity extends Activity implements OnARTouchListener, FpsUpda
 		setContentView(R.layout.main);
 		mBeyondarGLSurfaceView = (BeyondarGLSurfaceView) findViewById(R.id.customGLSurface);
 		mLabelText = (TextView) findViewById(R.id.labelText);
-		//mCameraView = (CameraView) findViewById(R.id.camera);
+		// mCameraView = (CameraView) findViewById(R.id.camera);
+
+		mShowMap = (Button) findViewById(R.id.showMapButton);
+
+		mShowMap.setOnClickListener(this);
 	}
 
 	private World createWorld() {
@@ -195,6 +211,14 @@ public class MainActivity extends Activity implements OnARTouchListener, FpsUpda
 	protected void onPause() {
 		super.onPause();
 		mBeyondarGLSurfaceView.onPause();
+	}
+
+	@Override
+	public void onClick(View v) {
+		if (v == mShowMap) {
+			Intent intent = new Intent(this, MapActivityBeyondar.class);
+			startActivity(intent);
+		}
 	}
 
 }

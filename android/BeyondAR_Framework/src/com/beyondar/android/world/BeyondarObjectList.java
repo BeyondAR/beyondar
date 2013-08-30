@@ -19,7 +19,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 
 import com.beyondar.android.opengl.texture.Texture;
-import com.beyondar.android.util.cache.BitmapCache;
 import com.beyondar.android.world.objects.BeyondarObject;
 
 /**
@@ -44,7 +43,7 @@ public class BeyondarObjectList implements Iterable<BeyondarObject> {
 
 	private Object mLock;
 
-	public BeyondarObjectList(int type, BitmapCache bitmapHolder, World world) {
+	public BeyondarObjectList(int type, World world) {
 		mType = type;
 		mVisibility = true;
 		mContainer = new ArrayList<BeyondarObject>();

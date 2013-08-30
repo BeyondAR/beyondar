@@ -107,11 +107,10 @@ public class GeoObjectOverlay extends Overlay {
 					continue;
 				}
 
-				GeoObject go = (GeoObject) beyondarList.get(i);
+				GeoObject geoObject = (GeoObject) beyondarList.get(i);
 
-				double dst = go.calculateDistanceMeters(mLongitude, mLatitude);
+				double dst = geoObject.calculateDistanceMeters(mLongitude, mLatitude);
 				if (radius <= 0 || dst < radius) {
-					GeoObject geoObject = go;
 
 					Bitmap btm = getBitmap(geoObject, beyondarList.getDefaultBitmapURI());
 

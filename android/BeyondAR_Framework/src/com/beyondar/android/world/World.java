@@ -41,6 +41,27 @@ import com.beyondar.android.world.objects.GeoObject;
 public class World {
 
 	private static final String TAG = "world";
+
+	private static World sWorld;
+
+	/**
+	 * This method helps you to create an unique world class
+	 * 
+	 * @param world
+	 */
+	public static void setWorld(World world) {
+		sWorld = world;
+	}
+
+	/**
+	 * Get the world
+	 * 
+	 * @return
+	 */
+	public static World getWorld() {
+		return sWorld;
+	}
+
 	/**
 	 * The maximum distance that the object will be displayed (meters)
 	 */
@@ -62,15 +83,12 @@ public class World {
 
 	public static final String URI_PREFIX_DEFAUL_BITMAP = "beyondar_default_Bitmap_BeyondarList_type_";
 
-	// private Square[] mSquares;
-
 	private float ZERO = 1e-8f;
 	private Object mLock = new Object();
 	protected ArrayList<BeyondarObjectList> mBeyondarObjectLists;
 	protected double mLongitude, mLatitude, mAltitude;
 	private Context mContext;
 	private double mViewDistance;
-	private Thread mFakeLocationsLoader;
 	private BitmapCache mBitmapHolder;
 	private String mDefaultBitmap;
 
@@ -87,7 +105,7 @@ public class World {
 
 	private void createBeyondarObjectListArray() {
 		mBeyondarObjectLists = new ArrayList<BeyondarObjectList>();
-		mBeyondarObjectLists.add(new BeyondarObjectList(LIST_TYPE_DEFAULT, mBitmapHolder, this));
+		mBeyondarObjectLists.add(new BeyondarObjectList(LIST_TYPE_DEFAULT, this));
 
 	}
 
@@ -112,7 +130,7 @@ public class World {
 		synchronized (mLock) {
 			BeyondarObjectList listTmp = getBeyondarObjectList(worldListType);
 			if (listTmp == null) {
-				listTmp = new BeyondarObjectList(worldListType, mBitmapHolder, this);
+				listTmp = new BeyondarObjectList(worldListType, this);
 				mBeyondarObjectLists.add(listTmp);
 			}
 			beyondarObject.setWorldListType(worldListType);
@@ -421,6 +439,7 @@ public class World {
 		return mViewDistance;
 	}
 
+	//TODO: Fix this method. It is not sorting from the user distance
 	public void sortGeoObjectByDistanceFromCenter(ArrayList<BeyondarObject> vec) {
 		boolean sorted = false;
 		while (!sorted) {
@@ -439,64 +458,4 @@ public class World {
 			}
 		}
 	}
-
-	public void enableFakeLocation(final String fakeFile) {
-		if (mFakeLocationsLoader == null || !mFakeLocationsLoader.isAlive()) {
-			mFakeLocationsLoader = new Thread(new Runnable() {
-				@Override
-				public void run() {
-					String fakePath = Environment.getExternalStorageDirectory() + "/" + fakeFile;
-					boolean exit = false;
-
-					Location location = new Location("gps");
-					while (!exit) {
-						File myFile = new File(fakePath);
-						if (myFile.exists()) {
-							String aDataRow = "";
-							String aBuffer = "";
-							try {
-								FileInputStream fIn = new FileInputStream(myFile);
-								BufferedReader myReader = new BufferedReader(new InputStreamReader(fIn));
-
-								while ((aDataRow = myReader.readLine()) != null) {
-									aBuffer += aDataRow + "\n";
-								}
-
-								String[] coords = aBuffer.split(" ");
-								double longitude = 0, latitude = 0;
-								try {
-									longitude = Double.parseDouble(coords[0]);
-									latitude = Double.parseDouble(coords[1]);
-								} catch (Exception e) {
-									Logger.e(TAG, "error parsing the fake data.");
-									continue;
-								}
-
-								Logger.e(TAG, "fake longitude = " + longitude + "  latitude = " + latitude);
-								location.setLongitude(longitude);
-								location.setLatitude(latitude);
-
-								setLocation(location);
-
-								myReader.close();
-							} catch (IOException e1) {
-								e1.printStackTrace();
-							}
-						}
-						try {
-							Thread.sleep(1000);
-						} catch (InterruptedException e) {
-							e.printStackTrace();
-							exit = true;
-							Logger.e(TAG, "error sleeping the thread which perfom the fake locations");
-						}
-					}
-
-				}
-			});
-
-			mFakeLocationsLoader.start();
-		}
-	}
-
 }

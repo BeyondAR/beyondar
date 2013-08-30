@@ -15,8 +15,12 @@
  */
 package com.beyondar.android.opengl.texture;
 
-public class Texture {
+import java.io.Serializable;
 
+public class Texture implements Serializable{
+
+	private static final long serialVersionUID = -3680867097568273278L;
+	
 	private int mTexture;
 	private boolean mIsLoaded;
 	private double mTimeStamp;

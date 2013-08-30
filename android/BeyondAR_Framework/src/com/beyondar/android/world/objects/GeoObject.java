@@ -19,6 +19,9 @@ import android.location.Location;
 
 import com.beyondar.android.util.Constants;
 import com.beyondar.android.util.math.Distance;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.maps.GeoPoint;
 
 public class GeoObject extends BeyondarObject {
@@ -27,7 +30,11 @@ public class GeoObject extends BeyondarObject {
 	private double mLatitude;
 	private double mAltitude;
 
+	@Deprecated
 	protected GeoPoint mGeoPoint;
+	
+	protected MarkerOptions mMarker;
+	protected LatLng mLatLng; 
 
 	/**
 	 * Create an instance of a {@link GeoObject} with an unique ID
@@ -103,5 +110,24 @@ public class GeoObject extends BeyondarObject {
 		mGeoPoint = new GeoPoint(getLatitudeE6(), getLongitudeE6());
 		return mGeoPoint;
 	}
-
+	
+	public LatLng getLatLng(){
+		if (mLatLng == null){
+			mLatLng = new LatLng(mLatitude, mLongitude);
+		}else{
+			
+			
+		}
+		return mLatLng;
+	}
+	
+	public MarkerOptions getMarker(){
+		if (mMarker == null){
+			mMarker = new MarkerOptions();
+			mMarker.title(getName());
+			mMarker.position(getLatLng());
+		}
+		return mMarker;
+		
+	}
 }

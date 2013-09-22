@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.beyondar.android.world.objects;
+package com.beyondar.android.world;
 
 public class RelativeObject extends BeyondarObject {
 

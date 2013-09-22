@@ -15,8 +15,8 @@
  */
 package com.beyondar.android.util.location;
 
+import com.beyondar.android.world.GeoObject;
 import com.beyondar.android.world.World;
-import com.beyondar.android.world.objects.GeoObject;
 
 import android.location.Location;
 import android.location.LocationListener;

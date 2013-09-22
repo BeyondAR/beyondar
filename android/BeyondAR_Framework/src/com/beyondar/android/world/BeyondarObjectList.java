@@ -19,7 +19,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 
 import com.beyondar.android.opengl.texture.Texture;
-import com.beyondar.android.world.objects.BeyondarObject;
 
 /**
  * This class allow the user to store according to type, so it is useful when a
@@ -67,14 +66,14 @@ public class BeyondarObjectList implements Iterable<BeyondarObject> {
 	}
 
 	/**
-	 * Add a geoObject to the list if it does not exist
+	 * Add a geoObject to the list if it does not exist. To add an object use the {@link World} instance
 	 * 
 	 * @param object
 	 *            the object ot add
 	 * @return True if the object has been added (it does not exist), false
 	 *         otherwise
 	 */
-	public boolean add(BeyondarObject object) {
+	boolean add(BeyondarObject object) {
 		if (!mContainer.contains(object)) {
 			mContainer.add(object);
 			return true;
@@ -164,6 +163,7 @@ public class BeyondarObjectList implements Iterable<BeyondarObject> {
 
 	/**
 	 * Get the texture object for this list
+	 * 
 	 * @return
 	 */
 	public Texture getTexture() {

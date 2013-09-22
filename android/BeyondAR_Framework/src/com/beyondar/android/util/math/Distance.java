@@ -15,7 +15,7 @@
  */
 package com.beyondar.android.util.math;
 
-import com.beyondar.android.world.objects.GeoObject;
+import com.beyondar.android.world.GeoObject;
 
 //http://www.movable-type.co.uk/scripts/latlong.html
 /**

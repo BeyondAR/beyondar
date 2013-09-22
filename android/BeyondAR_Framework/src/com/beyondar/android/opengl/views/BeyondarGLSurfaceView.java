@@ -33,8 +33,8 @@ import com.beyondar.android.opengl.views.ARRenderer.SnapshotCallback;
 import com.beyondar.android.util.CompatibilityUtil;
 import com.beyondar.android.util.Logger;
 import com.beyondar.android.util.math.geom.Ray;
+import com.beyondar.android.world.BeyondarObject;
 import com.beyondar.android.world.World;
-import com.beyondar.android.world.objects.BeyondarObject;
 
 public class BeyondarGLSurfaceView extends GLSurfaceView {
 

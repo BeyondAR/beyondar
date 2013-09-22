@@ -25,7 +25,7 @@ import com.beyondar.android.opengl.texture.Texture;
 import com.beyondar.android.util.math.geom.Plane;
 import com.beyondar.android.util.math.geom.Point3;
 import com.beyondar.android.util.math.geom.Vector3;
-import com.beyondar.android.world.objects.BeyondarObject;
+import com.beyondar.android.world.BeyondarObject;
 
 public class SquareRenderable implements Renderable {
 

@@ -51,10 +51,10 @@ import com.beyondar.android.util.math.Distance;
 import com.beyondar.android.util.math.MathUtils;
 import com.beyondar.android.util.math.geom.Point3;
 import com.beyondar.android.util.math.geom.Ray;
+import com.beyondar.android.world.BeyondarObject;
 import com.beyondar.android.world.BeyondarObjectList;
+import com.beyondar.android.world.GeoObject;
 import com.beyondar.android.world.World;
-import com.beyondar.android.world.objects.BeyondarObject;
-import com.beyondar.android.world.objects.GeoObject;
 
 // Some references:
 // http://ovcharov.me/2011/01/14/android-opengl-es-ray-picking/

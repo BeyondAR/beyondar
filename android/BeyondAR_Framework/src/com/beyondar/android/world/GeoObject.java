@@ -13,15 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.beyondar.android.world.objects;
+package com.beyondar.android.world;
 
 import android.location.Location;
 
 import com.beyondar.android.util.Constants;
 import com.beyondar.android.util.math.Distance;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.Marker;
-import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.maps.GeoPoint;
 
 public class GeoObject extends BeyondarObject {
@@ -32,9 +29,6 @@ public class GeoObject extends BeyondarObject {
 
 	@Deprecated
 	protected GeoPoint mGeoPoint;
-	
-	protected MarkerOptions mMarker;
-	protected LatLng mLatLng; 
 
 	/**
 	 * Create an instance of a {@link GeoObject} with an unique ID
@@ -47,39 +41,55 @@ public class GeoObject extends BeyondarObject {
 		setVisibile(true);
 	}
 
-	public double getLongitude() {
-		return mLongitude;
-	}
-
+	@Deprecated
 	public void setLongitude(double longitude) {
 		mLongitude = longitude;
+	}
+
+	@Deprecated
+	public void setLatitude(double latitude) {
+		mLatitude = latitude;
+	}
+
+	@Deprecated
+	public void setAltitude(double altitude) {
+		mAltitude = altitude;
+	}
+
+	public void setGeoPosition(double latitude, double longitude) {
+		mLatitude = latitude;
+		mLongitude = longitude;
+	}
+
+	public void setGeoPosition(double latitude, double longitude, double altitude) {
+		mLatitude = latitude;
+		mLongitude = longitude;
+		mAltitude = altitude;
+	}
+
+	public double getLongitude() {
+		return mLongitude;
 	}
 
 	public double getAltitude() {
 		return mAltitude;
 	}
 
-	public void setAltitude(double altitude) {
-		mAltitude = altitude;
-	}
-
 	public double getLatitude() {
 		return mLatitude;
 	}
 
-	public void setLatitude(double latitude) {
-		mLatitude = latitude;
-
-	}
-
+	@Deprecated
 	public int getLatitudeE6() {
 		return (int) (mLatitude * Constants.E6);
 	}
 
+	@Deprecated
 	public int getLongitudeE6() {
 		return (int) (mLongitude * Constants.E6);
 	}
 
+	@Deprecated
 	public void setLocation(Location location) {
 
 		if (location == null) {
@@ -98,6 +108,7 @@ public class GeoObject extends BeyondarObject {
 		return Distance.calculateDistanceMeters(getLongitude(), getLatitude(), longitude, latitude);
 	}
 
+	@Deprecated
 	public GeoPoint getGeoPoint() {
 		if (mGeoPoint == null) {
 			mGeoPoint = new GeoPoint(getLatitudeE6(), getLongitudeE6());
@@ -109,25 +120,5 @@ public class GeoObject extends BeyondarObject {
 		}
 		mGeoPoint = new GeoPoint(getLatitudeE6(), getLongitudeE6());
 		return mGeoPoint;
-	}
-	
-	public LatLng getLatLng(){
-		if (mLatLng == null){
-			mLatLng = new LatLng(mLatitude, mLongitude);
-		}else{
-			
-			
-		}
-		return mLatLng;
-	}
-	
-	public MarkerOptions getMarker(){
-		if (mMarker == null){
-			mMarker = new MarkerOptions();
-			mMarker.title(getName());
-			mMarker.position(getLatLng());
-		}
-		return mMarker;
-		
 	}
 }

@@ -25,7 +25,7 @@ import com.beyondar.android.util.ImageUtils;
 import com.beyondar.android.util.Logger;
 import com.beyondar.android.util.cache.BitmapCache;
 import com.beyondar.android.world.BeyondarObjectList;
-import com.beyondar.android.world.objects.GeoObject;
+import com.beyondar.android.world.GeoObject;
 import com.google.android.maps.MapView;
 import com.google.android.maps.Overlay;
 

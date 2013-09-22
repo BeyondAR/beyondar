@@ -15,32 +15,23 @@
  */
 package com.beyondar.android.world;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.ConcurrentModificationException;
 
 import android.content.Context;
 import android.location.Location;
-import android.os.Environment;
 
 import com.beyondar.android.opengl.colision.MeshCollider;
-import com.beyondar.android.util.Logger;
 import com.beyondar.android.util.cache.BitmapCache;
 import com.beyondar.android.util.math.Distance;
 import com.beyondar.android.util.math.geom.Plane;
 import com.beyondar.android.util.math.geom.Point3;
 import com.beyondar.android.util.math.geom.Ray;
 import com.beyondar.android.util.math.geom.Vector3;
-import com.beyondar.android.world.objects.BeyondarObject;
-import com.beyondar.android.world.objects.GeoObject;
 
 public class World {
 
-	private static final String TAG = "world";
+	protected static final String TAG = "world";
 
 	private static World sWorld;
 
@@ -207,6 +198,7 @@ public class World {
 	 * 
 	 * @param longitude
 	 */
+	@Deprecated
 	public void setLongitude(double longitude) {
 		this.mLongitude = longitude;
 	}
@@ -221,14 +213,27 @@ public class World {
 	}
 
 	/**
-	 * Set the user's latitude
+	 * Set the user's latitude.
 	 * 
 	 * @param latitude
 	 */
+	@Deprecated
 	public void setLatitude(double latitude) {
 		this.mLatitude = latitude;
 	}
+	
+	public void setPosition(double latitude, double longitude, double altitude){
+		mLatitude = latitude;
+		mLongitude = longitude;
+		mAltitude = altitude;
+	}
+	
+	public void setPosition(double latitude, double longitude){
+		mLatitude = latitude;
+		mLongitude = longitude;
+	}
 
+	@Deprecated
 	public void setLocation(Location location) {
 
 		if (location == null) {
@@ -349,8 +354,7 @@ public class World {
 	}
 
 	/**
-	 * Get the list that contains the list with the other
-	 * {@link BeyondarObjectList}
+	 * Get the container that holds all the {@link BeyondarObjectList} in the {@link World}
 	 * 
 	 * @return The list of the lists
 	 */
@@ -439,7 +443,7 @@ public class World {
 		return mViewDistance;
 	}
 
-	//TODO: Fix this method. It is not sorting from the user distance
+	// TODO: Fix this method. It is not sorting from the user distance
 	public void sortGeoObjectByDistanceFromCenter(ArrayList<BeyondarObject> vec) {
 		boolean sorted = false;
 		while (!sorted) {

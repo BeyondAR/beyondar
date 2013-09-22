@@ -17,6 +17,7 @@ package com.beyondar.android.util;
 
 public class Constants {
 
+	@Deprecated
 	public static final int E6 = 1000000;
 
 }

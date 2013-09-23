@@ -46,7 +46,7 @@ public class GeoObjectGoogleMaps extends GeoObject {
 		return mLatLng;
 	}
 
-	void setMarker(Marker marker) {
+	public void setMarker(Marker marker) {
 		mMarker = marker;
 	}
 

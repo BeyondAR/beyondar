@@ -28,8 +28,6 @@ public class GeoObjectGoogleMaps extends GeoObject {
 	}
 
 	protected void updateMarker() {
-		// implementar listener per a que notifiki el marker del google maps
-		// http://www.vogella.com/articles/AndroidGoogleMaps/article.html
 	}
 
 	public LatLng getLatLng() {

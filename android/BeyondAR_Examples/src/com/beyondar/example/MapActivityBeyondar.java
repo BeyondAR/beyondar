@@ -31,7 +31,7 @@ public class MapActivityBeyondar extends FragmentActivity {
 	    map.moveCamera(CameraUpdateFactory.newLatLngZoom(mWorld.getLatLng(), 15));
 
 	    // Zoom in, animating the camera.
-	    map.animateCamera(CameraUpdateFactory.zoomTo(20), 2000, null);
+	    map.animateCamera(CameraUpdateFactory.zoomTo(19), 2000, null);
 
 	}
 }

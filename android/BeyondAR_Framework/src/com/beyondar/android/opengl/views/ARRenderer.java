@@ -44,9 +44,10 @@ import com.beyondar.android.opengl.util.FpsUpdatable;
 import com.beyondar.android.opengl.util.LowPassFilter;
 import com.beyondar.android.opengl.util.MatrixGrabber;
 import com.beyondar.android.util.Logger;
+import com.beyondar.android.util.PendingBitmapsToBeLoaded;
 import com.beyondar.android.util.Utils;
 import com.beyondar.android.util.cache.BitmapCache;
-import com.beyondar.android.util.cache.BitmapCache.IOnExternalBitmapLoadedCahceListener;
+import com.beyondar.android.util.cache.BitmapCache.OnExternalBitmapLoadedCahceListener;
 import com.beyondar.android.util.math.Distance;
 import com.beyondar.android.util.math.MathUtils;
 import com.beyondar.android.util.math.geom.Point3;
@@ -60,7 +61,7 @@ import com.beyondar.android.world.World;
 // http://ovcharov.me/2011/01/14/android-opengl-es-ray-picking/
 // http://magicscrollsofcode.blogspot.com/2010/10/3d-picking-in-android.html
 public class ARRenderer implements GLSurfaceView.Renderer, SensorEventListener,
-		IOnExternalBitmapLoadedCahceListener {
+		OnExternalBitmapLoadedCahceListener {
 
 	public static interface SnapshotCallback {
 		/**
@@ -96,7 +97,7 @@ public class ARRenderer implements GLSurfaceView.Renderer, SensorEventListener,
 	private int mWidth, mHeight;
 
 	private static HashMap<String, Texture> sTextureHolder = new HashMap<String, Texture>();;
-	private static PendingTextureObjects sPendingTextureObjects = new PendingTextureObjects();
+	private static PendingBitmapsToBeLoaded<BeyondarObject> sPendingTextureObjects = new PendingBitmapsToBeLoaded<BeyondarObject>();
 	private static ArrayList<UriAndBitmap> sNewBitmapsLoaded = new ArrayList<UriAndBitmap>();
 	private static final float[] sInclination = new float[16];
 
@@ -223,8 +224,8 @@ public class ARRenderer implements GLSurfaceView.Renderer, SensorEventListener,
 
 		if (sNewBitmapsLoaded.size() > 0) {
 			for (int i = 0; i < sNewBitmapsLoaded.size(); i++) {
-				sPendingTextureObjects.setAllTextures(gl, sNewBitmapsLoaded.get(i).uri,
-						sNewBitmapsLoaded.get(i).btm, this);
+				setAllTextures(gl, sNewBitmapsLoaded.get(i).uri, sNewBitmapsLoaded.get(i).btm,
+						sPendingTextureObjects);
 			}
 			sNewBitmapsLoaded.clear();
 		}
@@ -789,45 +790,22 @@ public class ARRenderer implements GLSurfaceView.Renderer, SensorEventListener,
 		sNewBitmapsLoaded.add(uriAndBitmap);
 	}
 
-	private static class PendingTextureObjects {
-
-		private HashMap<String, ArrayList<BeyondarObject>> mHolder;
-
-		public PendingTextureObjects() {
-			mHolder = new HashMap<String, ArrayList<BeyondarObject>>();
+	public synchronized void setAllTextures(GL10 gl, String uri, Bitmap btm,
+			PendingBitmapsToBeLoaded<BeyondarObject> pendingList) {
+		if (uri == null) {
+			return;
+		}
+		ArrayList<BeyondarObject> list = pendingList.getPendingList(uri);
+		if (list == null) {
+			return;
 		}
 
-		public synchronized void addObject(String url, BeyondarObject object) {
-			if (url == null || object == null) {
-				return;
-			}
+		Texture texture = loadBitmapTexture(gl, btm, uri);
 
-			ArrayList<BeyondarObject> list = mHolder.get(url);
-			if (list == null) {
-				list = new ArrayList<BeyondarObject>();
-				mHolder.put(url, list);
-			}
-			list.add(object);
+		for (int i = 0; i < list.size() && texture.isLoaded(); i++) {
+			BeyondarObject object = list.get(i);
+			object.setTexture(texture);
 		}
-
-		public synchronized void setAllTextures(GL10 gl, String uri, Bitmap btm, ARRenderer arrender) {
-			if (uri == null) {
-				return;
-			}
-			ArrayList<BeyondarObject> list = mHolder.get(uri);
-			if (list == null) {
-				return;
-			}
-
-			Texture texture = arrender.loadBitmapTexture(gl, btm, uri);
-
-			for (int i = 0; i < list.size() && texture.isLoaded(); i++) {
-				BeyondarObject object = list.get(i);
-
-				object.setTexture(texture);
-				list.remove(i);
-				i--;
-			}
-		}
+		pendingList.removePendingList(uri);
 	}
 }

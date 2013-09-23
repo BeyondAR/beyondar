@@ -90,6 +90,10 @@ public class World {
 		mViewDistance = MAX_VIEW_DISTANCE;
 	}
 
+	protected Context getContext(){
+		return mContext;
+	}
+	
 	public BitmapCache getBitmapCache() {
 		return mBitmapHolder;
 	}

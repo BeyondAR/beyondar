@@ -73,7 +73,7 @@ public class BitmapCache {
 
 	private BitmapCacheContainer mBitmapContainer;
 
-	private ArrayList<IOnExternalBitmapLoadedCahceListener> mOnLoadBitmapListener;
+	private ArrayList<OnExternalBitmapLoadedCahceListener> mOnLoadBitmapListener;
 
 	private class BitmapCacheContainer extends LruCache<String, Bitmap> {
 
@@ -482,9 +482,9 @@ public class BitmapCache {
 	 * 
 	 * @param listener
 	 */
-	public void addOnExternalBitmapLoadedCahceListener(IOnExternalBitmapLoadedCahceListener listener) {
+	public void addOnExternalBitmapLoadedCahceListener(OnExternalBitmapLoadedCahceListener listener) {
 		if (mOnLoadBitmapListener == null) {
-			mOnLoadBitmapListener = new ArrayList<BitmapCache.IOnExternalBitmapLoadedCahceListener>();
+			mOnLoadBitmapListener = new ArrayList<BitmapCache.OnExternalBitmapLoadedCahceListener>();
 		}
 		if (!mOnLoadBitmapListener.contains(listener)) {
 			mOnLoadBitmapListener.add(listener);
@@ -498,7 +498,7 @@ public class BitmapCache {
 	 * @return
 	 */
 	public boolean removeOnExternalBitmapLoadedCahceListener(
-			IOnExternalBitmapLoadedCahceListener listener) {
+			OnExternalBitmapLoadedCahceListener listener) {
 		if (mOnLoadBitmapListener == null) {
 			return true;
 		}
@@ -624,7 +624,7 @@ public class BitmapCache {
 
 	}
 
-	public static interface IOnExternalBitmapLoadedCahceListener {
+	public static interface OnExternalBitmapLoadedCahceListener {
 
 		/**
 		 * This method is called when an external image (such as a network

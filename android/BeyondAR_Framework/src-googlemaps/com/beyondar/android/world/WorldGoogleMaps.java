@@ -1,18 +1,24 @@
 package com.beyondar.android.world;
 
+import java.util.ArrayList;
+
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.TypedValue;
 
 import com.beyondar.android.util.ImageUtils;
+import com.beyondar.android.util.PendingBitmapsToBeLoaded;
 import com.beyondar.android.util.cache.BitmapCache;
+import com.beyondar.android.util.cache.BitmapCache.OnExternalBitmapLoadedCahceListener;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
-public class WorldGoogleMaps extends World {
+public class WorldGoogleMaps extends World implements OnExternalBitmapLoadedCahceListener {
 
 	/** Default icon size for the markers in dips */
 	public static final int DEFAULT_ICON_SIZE_MARKER = 40;
@@ -20,10 +26,13 @@ public class WorldGoogleMaps extends World {
 
 	private BitmapCache mCache;
 	private int mIconSize;
+	private PendingBitmapsToBeLoaded<GeoObjectGoogleMaps> mPendingBitmaps;
 
 	private static World sWorld;
 
 	private LatLng mLatLng;
+
+	private static Handler sHandler = new Handler(Looper.getMainLooper());
 
 	/**
 	 * Get the world
@@ -45,7 +54,10 @@ public class WorldGoogleMaps extends World {
 
 	public WorldGoogleMaps(Context context) {
 		super(context);
+		mPendingBitmaps = new PendingBitmapsToBeLoaded<GeoObjectGoogleMaps>();
 		mCache = createBitmapCache();
+		mCache.addOnExternalBitmapLoadedCahceListener(this);
+
 		mIconSize = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, DEFAULT_ICON_SIZE_MARKER,
 				context.getResources().getDisplayMetrics());
 	}
@@ -71,11 +83,20 @@ public class WorldGoogleMaps extends World {
 	@Override
 	public synchronized void addBeyondarObject(BeyondarObject beyondarObject) {
 		super.addBeyondarObject(beyondarObject);
+		addMarkerToBeyondarObject(beyondarObject);
 	}
 
 	@Override
 	public synchronized void addBeyondarObject(BeyondarObject beyondarObject, int worldListType) {
 		super.addBeyondarObject(beyondarObject, worldListType);
+		addMarkerToBeyondarObject(beyondarObject);
+	}
+
+	private void addMarkerToBeyondarObject(BeyondarObject beyondarObject) {
+		if (beyondarObject instanceof GeoObjectGoogleMaps) {
+			createMarker((GeoObjectGoogleMaps) beyondarObject);
+		}
+
 	}
 
 	public LatLng getLatLng() {
@@ -115,6 +136,9 @@ public class WorldGoogleMaps extends World {
 			marker.remove();
 		}
 
+		if (mMap == null) {
+			return;
+		}
 		marker = mMap.addMarker(generateMarkerOptions(geoObjectGoogleMaps));
 		geoObjectGoogleMaps.setMarker(marker);
 	}
@@ -125,9 +149,11 @@ public class WorldGoogleMaps extends World {
 		markerOptions.position(geoObject.getLatLng());
 
 		Bitmap btm = getBitmap(geoObject.getBitmapUri());
-		
+
 		if (btm != null) {
 			markerOptions.icon(BitmapDescriptorFactory.fromBitmap(btm));
+		} else {
+			mPendingBitmaps.addObject(geoObject.getBitmapUri(), geoObject);
 		}
 		return markerOptions;
 	}
@@ -149,5 +175,19 @@ public class WorldGoogleMaps extends World {
 		}
 
 		return btm;
+	}
+
+	@Override
+	public void onExternalBitmapLoaded(BitmapCache cache, String url, Bitmap btm) {
+		ArrayList<GeoObjectGoogleMaps> list = mPendingBitmaps.getPendingList(url);
+		for (int i = 0; i < list.size(); i++) {
+			final GeoObjectGoogleMaps gogm = list.get(i);
+			sHandler.post(new Runnable() {
+				@Override
+				public void run() {
+					createMarker(gogm);
+				}
+			});
+		}
 	}
 }

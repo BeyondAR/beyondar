@@ -8,7 +8,7 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
 
-public class MapActivityBeyondar extends FragmentActivity {
+public class GoogleMapActivity extends FragmentActivity {
 
 	private GoogleMap map;
 	private WorldGoogleMaps mWorld;
@@ -23,8 +23,8 @@ public class MapActivityBeyondar extends FragmentActivity {
 		// We create the world...
 		mWorld = new WorldGoogleMaps(this);
 		// ...And fill it
-		WorldFactory.generateObjects(mWorld);
-		// We also need to set the GoogleMap to create the markers
+		WorldHelper.generateObjects(mWorld);
+		// We also need to set the GoogleMap to create the markers (And that's it)
 		mWorld.setGoogleMap(map);
 		
 		// Move the camera instantly to hamburg with a zoom of 15.

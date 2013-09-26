@@ -1,10 +1,9 @@
 package com.beyondar.example;
 
-import com.beyondar.android.world.GeoObject;
 import com.beyondar.android.world.GeoObjectGoogleMaps;
 import com.beyondar.android.world.World;
 
-public class WorldFactory {
+public class WorldHelper {
 
 	public static void generateObjects(World world) {
 		// User position (you can change it using the GPS listeners form Android

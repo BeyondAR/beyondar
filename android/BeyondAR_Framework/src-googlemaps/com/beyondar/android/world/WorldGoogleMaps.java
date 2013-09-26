@@ -157,7 +157,7 @@ public class WorldGoogleMaps extends World implements OnExternalBitmapLoadedCahc
 		}
 		return markerOptions;
 	}
-
+	
 	protected Bitmap getBitmap(String uri) {
 		Bitmap btm = mCache.getBitmap(uri);
 
@@ -185,7 +185,10 @@ public class WorldGoogleMaps extends World implements OnExternalBitmapLoadedCahc
 			sHandler.post(new Runnable() {
 				@Override
 				public void run() {
-					createMarker(gogm);
+					Bitmap btm = getBitmap(gogm.getBitmapUri());
+					if (btm != null) {
+						gogm.getMarker().setIcon(BitmapDescriptorFactory.fromBitmap(btm));
+					}
 				}
 			});
 		}

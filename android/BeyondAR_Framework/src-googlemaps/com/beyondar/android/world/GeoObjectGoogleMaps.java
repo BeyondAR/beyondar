@@ -23,11 +23,15 @@ public class GeoObjectGoogleMaps extends GeoObject {
 
 	@Override
 	public void setGeoPosition(double latitude, double longitude, double altitude) {
-		// TODO Auto-generated method stub
 		super.setGeoPosition(latitude, longitude, altitude);
+		updateMarker();
 	}
 
 	protected void updateMarker() {
+		if (mMarker == null){
+			return;
+		}
+		mMarker.setPosition(getLatLng());
 	}
 
 	public LatLng getLatLng() {

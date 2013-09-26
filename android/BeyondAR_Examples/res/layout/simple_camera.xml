@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+
+    <com.beyondar.android.opengl.views.BeyondarGLSurfaceView
+        android:id="@+id/customGLSurface"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <com.beyondar.android.views.CameraView
+        android:id="@+id/camera"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <TextView
+        android:id="@+id/labelText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="#000000"
+        android:text="Touch an AR Object"
+        android:textColor="#FFFFFF" />
+
+    <Button
+        android:id="@+id/showMapButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" 
+        android:text="Show map"
+        android:layout_gravity="bottom|right"/>
+
+</FrameLayout>

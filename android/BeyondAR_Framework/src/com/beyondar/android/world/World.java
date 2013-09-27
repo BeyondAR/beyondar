@@ -54,23 +54,11 @@ public class World {
 	}
 
 	/**
-	 * The maximum distance that the object will be displayed (meters)
+	 * The maximum distance that the object will be displayed (meters) in the AR view
 	 */
-	public static final int MAX_VIEW_DISTANCE = 1000;
+	public static final int MAX_AR_VIEW_DISTANCE = 1000;
 
-	public static final int LIST_TYPE_0 = 0;
-	public static final int LIST_TYPE_1 = 1;
-	public static final int LIST_TYPE_2 = 2;
-	public static final int LIST_TYPE_3 = 3;
-	public static final int LIST_TYPE_4 = 4;
-	public static final int LIST_TYPE_5 = 5;
-	public static final int LIST_TYPE_6 = 6;
-	public static final int LIST_TYPE_7 = 7;
-	public static final int LIST_TYPE_8 = 8;
-	public static final int LIST_TYPE_9 = 9;
-	public static final int LIST_TYPE_10 = 10;
-	public static final int LIST_TYPE_11 = 11;
-	public static final int LIST_TYPE_DEFAULT = LIST_TYPE_0;
+	public static final int LIST_TYPE_DEFAULT = 0;
 
 	public static final String URI_PREFIX_DEFAUL_BITMAP = "beyondar_default_Bitmap_BeyondarList_type_";
 
@@ -79,7 +67,7 @@ public class World {
 	protected ArrayList<BeyondarObjectList> mBeyondarObjectLists;
 	protected double mLongitude, mLatitude, mAltitude;
 	private Context mContext;
-	private double mViewDistance;
+	private double mArViewDistance;
 	private BitmapCache mBitmapHolder;
 	private String mDefaultBitmap;
 
@@ -87,7 +75,7 @@ public class World {
 		mContext = context;
 		mBitmapHolder = BitmapCache.initialize(mContext.getResources(), getClass().getName(), true);
 		createBeyondarObjectListArray();
-		mViewDistance = MAX_VIEW_DISTANCE;
+		mArViewDistance = MAX_AR_VIEW_DISTANCE;
 	}
 
 	protected Context getContext(){
@@ -163,7 +151,10 @@ public class World {
 
 	}
 
-	protected synchronized void clearWorld() {
+	/**
+	 * Clean all the data stored in the world object
+	 */
+	public synchronized void clearWorld() {
 		synchronized (mLock) {
 			mBeyondarObjectLists.clear();
 			mBitmapHolder.clean();
@@ -193,6 +184,7 @@ public class World {
 	 * 
 	 * @param altitude
 	 */
+	@Deprecated
 	public void setAltitude(double altitude) {
 		mAltitude = altitude;
 	}
@@ -400,7 +392,7 @@ public class World {
 							GeoObject go = (GeoObject) beyondarObject;
 							double dst = Distance.calculateDistanceMeters(go.getLongitude(),
 									go.getLatitude(), getLongitude(), getLatitude());
-							if (dst > getViewDistance()) {
+							if (dst > getArViewDistance()) {
 								continue;
 							}
 						}
@@ -434,17 +426,17 @@ public class World {
 	 * 
 	 * @param meters
 	 */
-	public void setViewDistance(double meters) {
-		mViewDistance = meters;
+	public void setArViewDistance(double meters) {
+		mArViewDistance = meters;
 	}
 
 	/**
-	 * Get the distance (in meters) which the app will draw the objects.
+	 * Get the distance (in meters) which the AR view will draw the objects.
 	 * 
 	 * @return meters
 	 */
-	public double getViewDistance() {
-		return mViewDistance;
+	public double getArViewDistance() {
+		return mArViewDistance;
 	}
 
 	// TODO: Fix this method. It is not sorting from the user distance

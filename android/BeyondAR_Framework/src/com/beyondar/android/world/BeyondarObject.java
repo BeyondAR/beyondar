@@ -27,7 +27,7 @@ public abstract class BeyondarObject {
 
 	private String mName;
 	private long mId;
-	private boolean mVisibility;
+	private boolean mVisibile;
 	private String mBitmapUri;
 	private int mTypeList;
 	private Float mOrientation;
@@ -49,9 +49,9 @@ public abstract class BeyondarObject {
 		mId = id;
 		position = new Point3();
 		angle = new Point3();
-		faceToCamera = true;
 		mTexture = new Texture();
-		mVisibility = true;
+		faceToCamera(true);
+		setVisibile(true);
 	}
 
 	public long getId() {
@@ -135,12 +135,12 @@ public abstract class BeyondarObject {
 	 * 
 	 * @param visibility
 	 */
-	public void setVisibile(boolean visibility) {
-		mVisibility = visibility;
+	public void setVisibile(boolean visible) {
+		mVisibile = visible;
 	}
 
 	public boolean isVisible() {
-		return mVisibility;
+		return mVisibile;
 	}
 
 	public void setName(String name) {

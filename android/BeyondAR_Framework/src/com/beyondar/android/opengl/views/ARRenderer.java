@@ -426,7 +426,7 @@ public class ARRenderer implements GLSurfaceView.Renderer, SensorEventListener,
 					position.x, position.y, position.z));
 		}
 
-		if (dst < mWorld.getViewDistance()) {
+		if (dst < mWorld.getArViewDistance()) {
 			renderObject = true;
 		}
 

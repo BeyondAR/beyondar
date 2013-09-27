@@ -2,11 +2,10 @@ package com.beyondar.android.world;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
-import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.MarkerOptionsCreator;
 
 public class GeoObjectGoogleMaps extends GeoObject {
 
-	private MarkerOptions mMarkerOptions;
 	private Marker mMarker;
 	private LatLng mLatLng;
 
@@ -26,6 +25,15 @@ public class GeoObjectGoogleMaps extends GeoObject {
 		super.setGeoPosition(latitude, longitude, altitude);
 		updateMarker();
 	}
+	
+//	@Override
+//	public void setVisibile(boolean visible) {
+//		super.setVisibile(visible);
+//		if (mMarker == null){
+//			return;
+//		}
+//		mMarker.setVisible(visible);
+//	}
 
 	protected void updateMarker() {
 		if (mMarker == null){
@@ -61,5 +69,4 @@ public class GeoObjectGoogleMaps extends GeoObject {
 	public Marker getMarker() {
 		return mMarker;
 	}
-
 }

@@ -103,12 +103,14 @@ public class BeyondarView extends FrameLayout implements FpsUpdatable {
 				mFpsTextView.setBackgroundResource(android.R.color.black);
 				mFpsTextView.setTextColor(getResources().getColor(android.R.color.white));
 				android.view.ViewGroup.LayoutParams params = new LayoutParams(
-						ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+						ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
 				addView(mFpsTextView, params);
 			}
 			mFpsTextView.setVisibility(View.VISIBLE);
-		}else if (mFpsTextView != null){
+			setFpsUpdatable(this);
+		} else if (mFpsTextView != null) {
 			mFpsTextView.setVisibility(View.GONE);
+			setFpsUpdatable(null);
 		}
 	}
 
@@ -117,8 +119,15 @@ public class BeyondarView extends FrameLayout implements FpsUpdatable {
 	}
 
 	@Override
-	public void onFpsUpdate(float fps) {
-		// TODO Auto-generated method stub
+	public void onFpsUpdate(final float fps) {
+		if (mFpsTextView != null) {
+			mFpsTextView.post(new Runnable() {
+				@Override
+				public void run() {
+					mFpsTextView.setText("fps: " + fps);
+				}
+			});
+		}
 
 	}
 }

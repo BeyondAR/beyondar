@@ -28,6 +28,8 @@ public class SimpleCameraActivity extends Activity {
 		WorldHelper.generateObjects(mWorld);
 		// .. and send it to the view
 		mBeyondarView.setWorld(mWorld);
+		
+		mBeyondarView.showFPS(true);
 
 	}
 

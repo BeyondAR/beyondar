@@ -3,13 +3,13 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent" >
 
-    <com.beyondar.android.view.BeyondarGLSurfaceView
-        android:id="@+id/customGLSurface"
+    <com.beyondar.android.view.CameraView
+        android:id="@+id/camera"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
-    <com.beyondar.android.view.CameraView
-        android:id="@+id/camera"
+    <com.beyondar.android.view.BeyondarGLSurfaceView
+        android:id="@+id/customGLSurface"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
@@ -24,8 +24,8 @@
     <Button
         android:id="@+id/showMapButton"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" 
-        android:text="Show map"
-        android:layout_gravity="bottom|right"/>
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|right"
+        android:text="Show map" />
 
 </FrameLayout>

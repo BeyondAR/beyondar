@@ -36,11 +36,39 @@ public class BeyondarView extends FrameLayout implements FpsUpdatable {
 		android.view.ViewGroup.LayoutParams params = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
 				ViewGroup.LayoutParams.MATCH_PARENT);
 
-		mBeyondarGLSurface = new BeyondarGLSurfaceView(getContext());
-		mBeyondarCameraView = new CameraView(getContext());
+		mBeyondarGLSurface = getBeyondarGLSurfaceView();
+		mBeyondarCameraView = getCameraView();
 
 		addView(mBeyondarCameraView, params);
 		addView(mBeyondarGLSurface, params);
+	}
+
+	/**
+	 * Override this method to personalize the {@link BeyondarGLSurfaceView}
+	 * that will be instantiated
+	 * 
+	 * @return
+	 */
+	protected BeyondarGLSurfaceView getBeyondarGLSurfaceView() {
+		return new BeyondarGLSurfaceView(getContext());
+	}
+
+	/**
+	 * Override this method to personalize the {@link CameraView}
+	 * that will be instantiated
+	 * 
+	 * @return
+	 */
+	protected CameraView getCameraView() {
+		return new CameraView(getContext());
+	}
+	
+	public void stopRenderingAR(){
+		mBeyondarGLSurface.setVisibility(View.INVISIBLE);
+	}
+	
+	public void startRenderingAR(){
+		mBeyondarGLSurface.setVisibility(View.VISIBLE);
 	}
 
 	public void pause() {

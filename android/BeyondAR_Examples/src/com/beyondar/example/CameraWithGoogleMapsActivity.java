@@ -114,7 +114,7 @@ public class CameraWithGoogleMapsActivity extends Activity implements OnARTouchL
 	}
 
 	private void loadViewFromXML() {
-		setContentView(R.layout.simple_camera);
+		setContentView(R.layout.camera_with_google_maps);
 		mBeyondarGLSurfaceView = (BeyondarGLSurfaceView) findViewById(R.id.customGLSurface);
 		mLabelText = (TextView) findViewById(R.id.labelText);
 		// mCameraView = (CameraView) findViewById(R.id.camera);

@@ -15,6 +15,7 @@
  */
 package com.beyondar.android.util;
 
+@Deprecated
 public class Constants {
 
 	@Deprecated

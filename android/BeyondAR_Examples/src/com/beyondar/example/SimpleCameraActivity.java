@@ -2,12 +2,15 @@ package com.beyondar.example;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.view.MotionEvent;
 import android.view.Window;
 
+import com.beyondar.android.view.BeyondarGLSurfaceView;
+import com.beyondar.android.view.BeyondarGLSurfaceView.OnARTouchListener;
 import com.beyondar.android.view.BeyondarView;
 import com.beyondar.android.world.World;
 
-public class SimpleCameraActivity extends Activity {
+public class SimpleCameraActivity extends Activity implements OnARTouchListener {
 
 	private BeyondarView mBeyondarView;
 	private World mWorld;
@@ -29,6 +32,10 @@ public class SimpleCameraActivity extends Activity {
 		// .. and send it to the view
 		mBeyondarView.setWorld(mWorld);
 		
+		
+		mBeyondarView.setOnARTouchListener(this);
+		
+		// We can see the Frames per seconds
 		mBeyondarView.showFPS(true);
 
 	}
@@ -45,6 +52,11 @@ public class SimpleCameraActivity extends Activity {
 		super.onPause();
 		// Every time that the activity is paused we need to notify the BeyondarView
 		mBeyondarView.pause();
+	}
+
+	@Override
+	public void onTouchARView(MotionEvent event, BeyondarGLSurfaceView beyondarView) {
+		
 	}
 
 }

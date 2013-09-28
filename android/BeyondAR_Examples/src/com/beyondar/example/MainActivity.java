@@ -12,7 +12,8 @@ import android.widget.ListView;
 public class MainActivity extends Activity implements OnItemClickListener {
 
 	private ListView mLisViewt;
-	private String[] values = new String[] { "Simple AR camera", "BeyondAR World + Google maps" };
+	private String[] values = new String[] { "Simple AR camera", "BeyondAR World in Google maps",
+			"AR camera with Gooogle maps" };
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -38,6 +39,9 @@ public class MainActivity extends Activity implements OnItemClickListener {
 			break;
 		case 1:
 			openActivity(GoogleMapActivity.class);
+			break;
+		case 2:
+			openActivity(CameraWithGoogleMapsActivity.class);
 			break;
 		default:
 			break;

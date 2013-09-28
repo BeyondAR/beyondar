@@ -18,10 +18,10 @@ package com.beyondar.android.util;
 import android.graphics.Bitmap;
 import android.graphics.Matrix;
 
-import com.beyondar.android.opengl.views.ARRenderer.SnapshotCallback;
-import com.beyondar.android.opengl.views.BeyondarGLSurfaceView;
-import com.beyondar.android.views.CameraView;
-import com.beyondar.android.views.CameraView.IPictureCallback;
+import com.beyondar.android.opengl.renderer.ARRenderer.SnapshotCallback;
+import com.beyondar.android.view.BeyondarGLSurfaceView;
+import com.beyondar.android.view.CameraView;
+import com.beyondar.android.view.CameraView.IPictureCallback;
 
 public class Utils {
 

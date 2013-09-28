@@ -17,8 +17,8 @@ package com.beyondar.android.opengl.renderable;
 
 import javax.microedition.khronos.opengles.GL10;
 
+import com.beyondar.android.opengl.renderer.ARRenderer;
 import com.beyondar.android.opengl.texture.Texture;
-import com.beyondar.android.opengl.views.ARRenderer;
 import com.beyondar.android.util.math.geom.Plane;
 import com.beyondar.android.util.math.geom.Point3;
 import com.beyondar.android.world.BeyondarObject;

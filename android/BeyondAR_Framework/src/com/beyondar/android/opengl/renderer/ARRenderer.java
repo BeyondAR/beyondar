@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.beyondar.android.opengl.views;
+package com.beyondar.android.opengl.renderer;
 
 import java.nio.IntBuffer;
 import java.util.ArrayList;
@@ -442,7 +442,7 @@ public class ARRenderer implements GLSurfaceView.Renderer, SensorEventListener,
 				if (beyondarObject.getTexture().getTimeStamp() == 0
 						|| time - beyondarObject.getTexture().getTimeStamp() > TIMEOUT_LOAD_TEXTURE) {
 					// TODO: Implement incremental time for the timeout
-					Logger.d("Loading new texture...");
+					Logger.d("Loading new textures...");
 					loadBeyondarObjectTexture(gl, beyondarObject);
 					if (!beyondarObject.getTexture().isLoaded()) {
 						beyondarObject.getTexture().setTimeStamp(time);

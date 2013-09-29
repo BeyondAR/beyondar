@@ -15,8 +15,6 @@
  */
 package com.beyondar.android.util.math.geom;
 
-import android.util.FloatMath;
-
 /**
  * Represents a 3 dimensions vector
  * 
@@ -241,9 +239,9 @@ public class Vector3 extends Point3 {
 	 *            rotation in radians
 	 */
 	public void rotateX(float rotX) {
-		float rX[] = new float[] { 1, 0, 0, 0, FloatMath.cos(rotX),
-				-FloatMath.sin(rotX), 0, FloatMath.sin(rotX),
-				FloatMath.cos(rotX) };
+		float rX[] = new float[] { 1, 0, 0, 0, (float) Math.cos(rotX),
+				-(float) Math.sin(rotX), 0, (float) Math.sin(rotX),
+				(float) Math.cos(rotX) };
 		preMultiply(rX);
 	}
 
@@ -254,8 +252,8 @@ public class Vector3 extends Point3 {
 	 *            rotation in radians
 	 */
 	public void rotateY(float angle) {
-		float ry[] = { FloatMath.cos(angle), 0, FloatMath.sin(angle), 0, 1, 0,
-				-FloatMath.sin(angle), 0, FloatMath.cos(angle) };
+		float ry[] = { (float) Math.cos(angle), 0, (float) Math.sin(angle), 0, 1, 0,
+				-(float) Math.sin(angle), 0, (float) Math.cos(angle) };
 		preMultiply(ry);
 
 	}
@@ -267,8 +265,8 @@ public class Vector3 extends Point3 {
 	 *            rotation in radians
 	 */
 	public void rotateZ(float rotZ) {
-		float rZ[] = new float[] { FloatMath.cos(rotZ), -FloatMath.sin(rotZ),
-				0, FloatMath.sin(rotZ), FloatMath.cos(rotZ), 0, 0, 0, 1 };
+		float rZ[] = new float[] { (float) Math.cos(rotZ), -(float) Math.sin(rotZ),
+				0, (float) Math.sin(rotZ), (float) Math.cos(rotZ), 0, 0, 0, 1 };
 		preMultiply(rZ);
 	}
 
@@ -300,7 +298,7 @@ public class Vector3 extends Point3 {
 		xModule = x;
 		yModule = y;
 		zModule = z;
-		module = FloatMath.sqrt(x * x + y * y + z * z);
+		module = (float) Math.sqrt(x * x + y * y + z * z);
 	}
 
 	/**

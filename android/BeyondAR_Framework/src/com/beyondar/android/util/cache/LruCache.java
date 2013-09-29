@@ -16,7 +16,9 @@
 
 package com.beyondar.android.util.cache;
 
+import android.annotation.SuppressLint;
 import java.util.LinkedHashMap;
+import java.util.Locale;
 import java.util.Map;
 
 /**
@@ -306,6 +308,7 @@ public class LruCache<K, V> {
 		return new LinkedHashMap<K, V>(map);
 	}
 
+	@SuppressLint("DefaultLocale")
 	@Override
 	public synchronized final String toString() {
 		int accesses = hitCount + missCount;

@@ -17,6 +17,7 @@ package com.beyondar.android.world;
 
 import java.util.ArrayList;
 import java.util.ConcurrentModificationException;
+import java.util.List;
 
 import android.content.Context;
 import android.location.Location;
@@ -28,6 +29,7 @@ import com.beyondar.android.util.math.geom.Plane;
 import com.beyondar.android.util.math.geom.Point3;
 import com.beyondar.android.util.math.geom.Ray;
 import com.beyondar.android.util.math.geom.Vector3;
+import com.beyondar.android.world.module.WorldModule;
 
 public class World {
 
@@ -54,7 +56,8 @@ public class World {
 	}
 
 	/**
-	 * The maximum distance that the object will be displayed (meters) in the AR view
+	 * The maximum distance that the object will be displayed (meters) in the AR
+	 * view
 	 */
 	public static final int MAX_AR_VIEW_DISTANCE = 1000;
 
@@ -71,17 +74,20 @@ public class World {
 	private BitmapCache mBitmapHolder;
 	private String mDefaultBitmap;
 
+	private List<WorldModule> mModuleList;
+
 	public World(Context context) {
 		mContext = context;
 		mBitmapHolder = BitmapCache.initialize(mContext.getResources(), getClass().getName(), true);
 		createBeyondarObjectListArray();
 		mArViewDistance = MAX_AR_VIEW_DISTANCE;
+		mModuleList = new ArrayList<WorldModule>(5);
 	}
 
-	protected Context getContext(){
+	protected Context getContext() {
 		return mContext;
 	}
-	
+
 	public BitmapCache getBitmapCache() {
 		return mBitmapHolder;
 	}
@@ -93,11 +99,43 @@ public class World {
 	}
 
 	/**
+	 * Add a module to be executed by the world instance
+	 * 
+	 * @param module
+	 *            Module to be added
+	 */
+	public void addModule(WorldModule module) {
+		mModuleList.add(module);
+		module.setup(this, mContext);
+	}
+
+	/**
+	 * Remove existing module
+	 * 
+	 * @param module
+	 *            module to be removed
+	 */
+	public void removeModule(WorldModule module) {
+		if (mModuleList.remove(module)) {
+			module.onDetached(this, mContext);
+		}
+	}
+
+	/**
+	 * Clean all the modules attached to the world
+	 */
+	public void cleanModules() {
+		for (WorldModule module : mModuleList) {
+			removeModule(module);
+		}
+	}
+
+	/**
 	 * Add a {@link BeyondarObject} to the default list in the world.
 	 * 
 	 * @param beyondarObject
 	 */
-	public synchronized void addBeyondarObject(BeyondarObject beyondarObject) {
+	public final synchronized void addBeyondarObject(BeyondarObject beyondarObject) {
 		addBeyondarObject(beyondarObject, LIST_TYPE_DEFAULT);
 	}
 
@@ -115,9 +153,15 @@ public class World {
 			if (listTmp == null) {
 				listTmp = new BeyondarObjectList(worldListType, this);
 				mBeyondarObjectLists.add(listTmp);
+				for (WorldModule module : mModuleList) {
+					module.onBeyondarObjectListCreated(listTmp);
+				}
 			}
 			beyondarObject.setWorldListType(worldListType);
 			listTmp.add(beyondarObject);
+			for (WorldModule module : mModuleList) {
+				module.onBeyondarObjectAdded(beyondarObject, listTmp);
+			}
 		}
 	}
 
@@ -131,9 +175,11 @@ public class World {
 	public synchronized boolean remove(BeyondarObject beyondarObject) {
 		synchronized (mLock) {
 			BeyondarObjectList listTmp = getBeyondarObjectList(beyondarObject.getWorldListType());
-
 			if (listTmp != null) {
 				listTmp.remove(beyondarObject);
+				for (WorldModule module : mModuleList) {
+					module.onBeyondarObjectRemoved(beyondarObject, listTmp);
+				}
 				return true;
 			}
 			return false;
@@ -148,7 +194,6 @@ public class World {
 				}
 			}
 		}
-
 	}
 
 	/**
@@ -217,16 +262,18 @@ public class World {
 	public void setLatitude(double latitude) {
 		this.mLatitude = latitude;
 	}
-	
-	public void setPosition(double latitude, double longitude, double altitude){
+
+	public void setPosition(double latitude, double longitude, double altitude) {
 		mLatitude = latitude;
 		mLongitude = longitude;
 		mAltitude = altitude;
+		for (WorldModule module : mModuleList) {
+			module.onPositionChanged(latitude, longitude, altitude);
+		}
 	}
-	
-	public void setPosition(double latitude, double longitude){
-		mLatitude = latitude;
-		mLongitude = longitude;
+
+	public final void setPosition(double latitude, double longitude) {
+		setPosition(latitude, longitude, mAltitude);
 	}
 
 	@Deprecated
@@ -350,7 +397,8 @@ public class World {
 	}
 
 	/**
-	 * Get the container that holds all the {@link BeyondarObjectList} in the {@link World}
+	 * Get the container that holds all the {@link BeyondarObjectList} in the
+	 * {@link World}
 	 * 
 	 * @return The list of the lists
 	 */

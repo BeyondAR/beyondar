@@ -27,12 +27,13 @@ import android.util.AttributeSet;
 import android.view.MotionEvent;
 
 import com.beyondar.android.opengl.renderer.ARRenderer;
+import com.beyondar.android.opengl.renderer.ARRenderer.FpsUpdatable;
 import com.beyondar.android.opengl.renderer.ARRenderer.SnapshotCallback;
 import com.beyondar.android.opengl.util.BeyondarSensorManager;
-import com.beyondar.android.opengl.util.FpsUpdatable;
 import com.beyondar.android.opengl.util.MatrixTrackingGL;
 import com.beyondar.android.util.CompatibilityUtil;
 import com.beyondar.android.util.Logger;
+import com.beyondar.android.util.annotation.AnnotationsUtils;
 import com.beyondar.android.util.math.geom.Ray;
 import com.beyondar.android.world.BeyondarObject;
 import com.beyondar.android.world.World;
@@ -150,8 +151,6 @@ public class BeyondarGLSurfaceView extends GLSurfaceView {
 		unregisterSensorListener();
 		registerSensorListener(mSensorDelay);
 	}
-	
-	
 
 	/**
 	 * Get the current sensor delay. See {@link android.hardware.SensorManager}
@@ -203,42 +202,28 @@ public class BeyondarGLSurfaceView extends GLSurfaceView {
 	}
 
 	@Override
-	public boolean onTouchEvent(MotionEvent event) {
-
+	public boolean onTouchEvent(final MotionEvent event) {
 		if (mWorld == null || mTouchListener == null || event == null) {
 			return false;
 		}
 
-		switch (event.getAction()) {
-		case MotionEvent.ACTION_UP:
-			processScreenActionUp(event);
-			return true;
-		case MotionEvent.ACTION_DOWN:
-			processScreenAtionDown(event);
-			return true;
-		case MotionEvent.ACTION_MOVE:
-			processScreenActionMove(event);
-			return true;
+		if (AnnotationsUtils.hasUiAnnotation(mTouchListener, OnARTouchListener.__ON_AR_TOUCH_METHOD_NAME__)){
+			mTouchListener.onTouchARView(event, this);
+		}else{
+			new Thread(new Runnable() {
+				@Override
+				public void run() {
+					mTouchListener.onTouchARView(event, BeyondarGLSurfaceView.this);
+				}
+			}).start();
 		}
 
-		return false;
+		return true;
 
 	}
 
 	public void setOnARTouchListener(OnARTouchListener listener) {
 		mTouchListener = listener;
-	}
-
-	public synchronized void processScreenAtionDown(MotionEvent event) {
-		mTouchListener.onTouchARView(event, this);
-	}
-
-	public synchronized void processScreenActionMove(MotionEvent event) {
-		mTouchListener.onTouchARView(event, this);
-	}
-
-	public synchronized void processScreenActionUp(MotionEvent event) {
-		mTouchListener.onTouchARView(event, this);
 	}
 
 	private static final Ray sRay = new Ray(0, 0, 0);
@@ -275,13 +260,17 @@ public class BeyondarGLSurfaceView extends GLSurfaceView {
 		mWorld.getBeyondarObjectsCollideRay(ray, beyondarObjects);
 
 	}
-	
-	public static  interface OnARTouchListener {
+
+	public static interface OnARTouchListener {
+		
+		static final String __ON_AR_TOUCH_METHOD_NAME__ = "onTouchARView";
 
 		/**
 		 * Use
 		 * {@link BeyondarGLSurfaceView#getARObjectOnScreenCoordinates(float, float)}
 		 * to get the object touched:<br>
+		 * This method will not run in the UI thread. To do so use the annotation @OnUiThread
+		 * 
 		 * <pre>
 		 * {@code
 		 * float x = event.getX();

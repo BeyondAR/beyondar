@@ -37,15 +37,17 @@ import android.hardware.SensorManager;
 import android.opengl.GLSurfaceView;
 import android.opengl.GLU;
 import android.opengl.GLUtils;
+import android.os.Handler;
+import android.os.Looper;
 
 import com.beyondar.android.opengl.renderable.Renderable;
 import com.beyondar.android.opengl.texture.Texture;
-import com.beyondar.android.opengl.util.FpsUpdatable;
 import com.beyondar.android.opengl.util.LowPassFilter;
 import com.beyondar.android.opengl.util.MatrixGrabber;
 import com.beyondar.android.util.Logger;
 import com.beyondar.android.util.PendingBitmapsToBeLoaded;
 import com.beyondar.android.util.Utils;
+import com.beyondar.android.util.annotation.AnnotationsUtils;
 import com.beyondar.android.util.cache.BitmapCache;
 import com.beyondar.android.util.cache.BitmapCache.OnExternalBitmapLoadedCahceListener;
 import com.beyondar.android.util.math.Distance;
@@ -62,6 +64,8 @@ import com.beyondar.android.world.World;
 // http://magicscrollsofcode.blogspot.com/2010/10/3d-picking-in-android.html
 public class ARRenderer implements GLSurfaceView.Renderer, SensorEventListener,
 		OnExternalBitmapLoadedCahceListener {
+
+	private final Handler mUiHandler = new Handler(Looper.getMainLooper());
 
 	public static interface SnapshotCallback {
 		/**
@@ -119,6 +123,7 @@ public class ARRenderer implements GLSurfaceView.Renderer, SensorEventListener,
 	private long mCurrentTime = System.currentTimeMillis();
 	private float mFrames = 0;
 	private FpsUpdatable mFpsUpdatable;
+	private boolean mFpsUpdatableOnUiThread;
 
 	public ARRenderer() {
 		reloadWorldTextures = false;
@@ -186,7 +191,6 @@ public class ARRenderer implements GLSurfaceView.Renderer, SensorEventListener,
 		if (!mRender) {
 			return;
 		}
-
 		long time = System.currentTimeMillis();
 
 		SensorManager.getInclination(sInclination);
@@ -197,7 +201,7 @@ public class ARRenderer implements GLSurfaceView.Renderer, SensorEventListener,
 					mRotationMatrix);
 		}
 
-		// TODO: CHange this to be able to support non landscape mode
+		// TODO: Change this to be able to support non landscape mode
 		// As the documentation says, we are using the device as a compass in
 		// landscape mode
 		SensorManager.remapCoordinateSystem(mRotationMatrix, SensorManager.AXIS_Y,
@@ -342,6 +346,8 @@ public class ARRenderer implements GLSurfaceView.Renderer, SensorEventListener,
 	 *            {@link FpsUpdatable}
 	 */
 	public void setFpsUpdatable(FpsUpdatable fpsUpdatable) {
+		mFpsUpdatableOnUiThread = AnnotationsUtils.hasUiAnnotation(fpsUpdatable,
+				FpsUpdatable.__ON_FPS_UPDATE_METHOD_NAME__);
 		mCurrentTime = System.currentTimeMillis();
 		mFpsUpdatable = fpsUpdatable;
 		mGetFps = mFpsUpdatable != null;
@@ -355,7 +361,6 @@ public class ARRenderer implements GLSurfaceView.Renderer, SensorEventListener,
 				if (list != null) {
 					drawList(gl, list, time);
 				}
-
 			}
 		} catch (ConcurrentModificationException e) {
 		}
@@ -363,12 +368,20 @@ public class ARRenderer implements GLSurfaceView.Renderer, SensorEventListener,
 
 		if (mGetFps) {
 			mFrames++;
-			long timeInterval = System.currentTimeMillis() - mCurrentTime;
+			final long timeInterval = System.currentTimeMillis() - mCurrentTime;
 			if (timeInterval > 1000) {
 				if (Logger.DEBUG_OPENGL) {
 					Logger.d("Frames/second:  " + mFrames / (timeInterval / 1000F));
 				}
 				if (mFpsUpdatable != null) {
+					if (mFpsUpdatableOnUiThread) {
+						mUiHandler.post(new Runnable() {
+							@Override
+							public void run() {
+								mFpsUpdatable.onFpsUpdate(mFrames / (timeInterval / 1000F));
+							}
+						});
+					}
 					mFpsUpdatable.onFpsUpdate(mFrames / (timeInterval / 1000F));
 				}
 				mFrames = 0;
@@ -807,5 +820,19 @@ public class ARRenderer implements GLSurfaceView.Renderer, SensorEventListener,
 			object.setTexture(texture);
 		}
 		pendingList.removePendingList(uri);
+	}
+
+	public static interface FpsUpdatable {
+
+		static final String __ON_FPS_UPDATE_METHOD_NAME__ = "onFpsUpdate";
+
+		/**
+		 * This method will get the frames per second rendered by the
+		 * {@link ARRenderer}
+		 * 
+		 * @param fps
+		 *            The Frames per second rendered
+		 */
+		public void onFpsUpdate(float fps);
 	}
 }

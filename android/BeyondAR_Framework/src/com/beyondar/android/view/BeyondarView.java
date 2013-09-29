@@ -1,15 +1,16 @@
 package com.beyondar.android.view;
 
-import com.beyondar.android.opengl.util.FpsUpdatable;
-import com.beyondar.android.view.BeyondarGLSurfaceView.OnARTouchListener;
-import com.beyondar.android.world.World;
-
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.TextView;
+
+import com.beyondar.android.opengl.renderer.ARRenderer.FpsUpdatable;
+import com.beyondar.android.util.annotation.OnUiThread;
+import com.beyondar.android.view.BeyondarGLSurfaceView.OnARTouchListener;
+import com.beyondar.android.world.World;
 
 public class BeyondarView extends FrameLayout implements FpsUpdatable {
 
@@ -54,20 +55,20 @@ public class BeyondarView extends FrameLayout implements FpsUpdatable {
 	}
 
 	/**
-	 * Override this method to personalize the {@link CameraView}
-	 * that will be instantiated
+	 * Override this method to personalize the {@link CameraView} that will be
+	 * instantiated
 	 * 
 	 * @return
 	 */
 	protected CameraView getCameraView() {
 		return new CameraView(getContext());
 	}
-	
-	public void stopRenderingAR(){
+
+	public void stopRenderingAR() {
 		mBeyondarGLSurface.setVisibility(View.INVISIBLE);
 	}
-	
-	public void startRenderingAR(){
+
+	public void startRenderingAR() {
 		mBeyondarGLSurface.setVisibility(View.VISIBLE);
 	}
 

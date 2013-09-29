@@ -42,7 +42,7 @@ public class BeyondarObjectList implements Iterable<BeyondarObject> {
 
 	private Object mLock;
 
-	public BeyondarObjectList(int type, World world) {
+	BeyondarObjectList(int type, World world) {
 		mType = type;
 		mVisibility = true;
 		mContainer = new ArrayList<BeyondarObject>();
@@ -108,7 +108,7 @@ public class BeyondarObjectList implements Iterable<BeyondarObject> {
 	 * 
 	 * @param object
 	 */
-	public synchronized void remove(BeyondarObject object) {
+	synchronized void remove(BeyondarObject object) {
 		synchronized (mLock) {
 			mToRemoveQueue.add(object);
 			object.setVisibile(false);
@@ -122,7 +122,7 @@ public class BeyondarObjectList implements Iterable<BeyondarObject> {
 	 * 
 	 * @param index
 	 */
-	public synchronized void remove(int index) {
+	synchronized void remove(int index) {
 		remove(mContainer.get(index));
 	}
 

@@ -13,7 +13,8 @@ import android.view.Window;
 import android.widget.Button;
 import android.widget.TextView;
 
-import com.beyondar.android.opengl.util.FpsUpdatable;
+import com.beyondar.android.opengl.renderer.ARRenderer.FpsUpdatable;
+import com.beyondar.android.util.annotation.OnUiThread;
 import com.beyondar.android.view.BeyondarGLSurfaceView;
 import com.beyondar.android.view.BeyondarGLSurfaceView.OnARTouchListener;
 import com.beyondar.android.world.BeyondarObject;
@@ -56,6 +57,7 @@ public class CameraWithGoogleMapsActivity extends Activity implements OnARTouchL
 	}
 
 	@Override
+	@OnUiThread
 	public void onTouchARView(MotionEvent event, BeyondarGLSurfaceView beyondarView) {
 
 		float x = event.getX();
@@ -88,7 +90,8 @@ public class CameraWithGoogleMapsActivity extends Activity implements OnARTouchL
 
 		}
 		mAction = textEvent;
-		updateLabelText();
+		mLabelText.setText("sasasd");
+		//updateLabelText();
 	}
 
 	@Override
@@ -108,7 +111,7 @@ public class CameraWithGoogleMapsActivity extends Activity implements OnARTouchL
 				if (mAction != null) {
 					text = text + " | " + "Action: " + mAction;
 				}
-				mLabelText.setText(text);
+				//mLabelText.setText(text);
 			}
 		});
 	}

@@ -1,3 +1,18 @@
+/*
+ * Copyright (C) 2013 BeyondAR
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package com.beyondar.android.world;
 
 import java.util.ArrayList;
@@ -12,58 +27,40 @@ import com.beyondar.android.util.ImageUtils;
 import com.beyondar.android.util.PendingBitmapsToBeLoaded;
 import com.beyondar.android.util.cache.BitmapCache;
 import com.beyondar.android.util.cache.BitmapCache.OnExternalBitmapLoadedCahceListener;
+import com.beyondar.android.world.module.WorldModule;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
-public class WorldGoogleMaps extends World implements OnExternalBitmapLoadedCahceListener {
+public class GoogleMapModule implements WorldModule, OnExternalBitmapLoadedCahceListener {
 
 	/** Default icon size for the markers in dips */
 	public static final int DEFAULT_ICON_SIZE_MARKER = 40;
+
+	private World mWorld;
 	private GoogleMap mMap;
 
 	private BitmapCache mCache;
 	private int mIconSize;
 	private PendingBitmapsToBeLoaded<GeoObjectGoogleMaps> mPendingBitmaps;
 
-	private static World sWorld;
-
 	private LatLng mLatLng;
 
 	private static Handler sHandler = new Handler(Looper.getMainLooper());
 
-	/**
-	 * Get the world
-	 * 
-	 * @return
-	 */
-	public static World getWorld() {
-		return sWorld;
-	}
-
-	/**
-	 * This method helps you to create an unique world class
-	 * 
-	 * @param world
-	 */
-	public static void setWorld(World world) {
-		sWorld = world;
-	}
-
-	public WorldGoogleMaps(Context context) {
-		super(context);
+	public GoogleMapModule() {
 		mPendingBitmaps = new PendingBitmapsToBeLoaded<GeoObjectGoogleMaps>();
-		mCache = createBitmapCache();
-		mCache.addOnExternalBitmapLoadedCahceListener(this);
-
-		mIconSize = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, DEFAULT_ICON_SIZE_MARKER,
-				context.getResources().getDisplayMetrics());
 	}
 
-	public WorldGoogleMaps(Context context, int iconSize) {
-		this(context);
+	public GoogleMapModule(GoogleMap map) {
+		this();
+		mMap = map;
+	}
+
+	public GoogleMapModule(int iconSize) {
+		this();
 		mIconSize = iconSize;
 	}
 
@@ -71,56 +68,55 @@ public class WorldGoogleMaps extends World implements OnExternalBitmapLoadedCahc
 	 * Set the size of the marker icons in pixels
 	 * 
 	 * @param iconSize
+	 * @return The instance itself
 	 */
-	public void seetMarkerIconSize(int iconSize) {
+	public GoogleMapModule setMarkerIconSize(int iconSize) {
 		mIconSize = iconSize;
+		return this;
 	}
 
 	protected BitmapCache createBitmapCache() {
-		return getBitmapCache().newCache(getClass().getName(), true);
+		return mWorld.getBitmapCache().newCache(getClass().getName(), true);
 	}
 
-	@Override
-	public synchronized void addBeyondarObject(BeyondarObject beyondarObject) {
-		super.addBeyondarObject(beyondarObject);
-		addMarkerToBeyondarObject(beyondarObject);
-	}
-
-	@Override
-	public synchronized void addBeyondarObject(BeyondarObject beyondarObject, int worldListType) {
-		super.addBeyondarObject(beyondarObject, worldListType);
-		addMarkerToBeyondarObject(beyondarObject);
-	}
-
-	private void addMarkerToBeyondarObject(BeyondarObject beyondarObject) {
+	protected void addMarkerToBeyondarObject(BeyondarObject beyondarObject) {
 		if (beyondarObject instanceof GeoObjectGoogleMaps) {
 			createMarker((GeoObjectGoogleMaps) beyondarObject);
 		}
-
 	}
 
 	public LatLng getLatLng() {
 		if (mLatLng == null) {
-			mLatLng = new LatLng(getLatitude(), getLongitude());
+			mLatLng = new LatLng(mWorld.getLatitude(), mWorld.getLongitude());
 			return mLatLng;
 		}
 
-		if (mLatLng.latitude == getLatitude() && mLatLng.longitude == getLongitude()) {
+		if (mLatLng.latitude == mWorld.getLatitude() && mLatLng.longitude == mWorld.getLongitude()) {
 			return mLatLng;
 		}
 
-		mLatLng = new LatLng(getLatitude(), getLongitude());
+		mLatLng = new LatLng(mWorld.getLatitude(), mWorld.getLongitude());
 		return mLatLng;
 	}
 
-	public void setGoogleMap(GoogleMap map) {
+	/**
+	 * Set the {@link GoogleMap} to be able to create the markers for the world
+	 * 
+	 * @param map
+	 * @return The instance of itself
+	 */
+	public GoogleMapModule setGoogleMap(GoogleMap map) {
 		mMap = map;
 		createMarkers();
+		return this;
 	}
 
 	public void createMarkers() {
-		for (int i = 0; i < getBeyondarObjectLists().size(); i++) {
-			BeyondarObjectList list = getBeyondarObjectList(i);
+		if (mWorld == null || mMap == null) {
+			return;
+		}
+		for (int i = 0; i < mWorld.getBeyondarObjectLists().size(); i++) {
+			BeyondarObjectList list = mWorld.getBeyondarObjectList(i);
 			for (int j = 0; j < list.size(); j++) {
 				BeyondarObject beyondarObject = list.get(j);
 				if (beyondarObject instanceof GeoObjectGoogleMaps) {
@@ -157,7 +153,7 @@ public class WorldGoogleMaps extends World implements OnExternalBitmapLoadedCahc
 		}
 		return markerOptions;
 	}
-	
+
 	protected Bitmap getBitmap(String uri) {
 		Bitmap btm = mCache.getBitmap(uri);
 
@@ -192,5 +188,44 @@ public class WorldGoogleMaps extends World implements OnExternalBitmapLoadedCahc
 				}
 			});
 		}
+	}
+
+	@Override
+	public void setup(World world, Context context) {
+		mWorld = world;
+		if (mIconSize == 0) {
+			mIconSize = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,
+					DEFAULT_ICON_SIZE_MARKER, context.getResources().getDisplayMetrics());
+		}
+
+		mCache = createBitmapCache();
+		mCache.addOnExternalBitmapLoadedCahceListener(this);
+		createMarkers();
+	}
+
+	@Override
+	public void onDetached(World world, Context context) {
+		mCache.clean();
+	}
+
+	@Override
+	public void onBeyondarObjectAdded(BeyondarObject beyondarObject, BeyondarObjectList beyondarObjectList) {
+		addMarkerToBeyondarObject(beyondarObject);
+	}
+
+	@Override
+	public void onBeyondarObjectListCreated(BeyondarObjectList beyondarObjectList) {
+	}
+
+	@Override
+	public void onBeyondarObjectRemoved(BeyondarObject beyondarObject, BeyondarObjectList beyondarObjectList) {
+	}
+
+	@Override
+	public void onWorldCleaned() {
+	}
+
+	@Override
+	public void onPositionChanged(double latitude, double longitude, double altitude) {
 	}
 }

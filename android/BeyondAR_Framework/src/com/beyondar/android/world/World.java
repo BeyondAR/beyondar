@@ -74,14 +74,15 @@ public class World {
 	private BitmapCache mBitmapHolder;
 	private String mDefaultBitmap;
 
-	private List<WorldModule> mModuleList;
+	private List<WorldModule> mModules;
+	private Object mLockModules = new Object();
 
 	public World(Context context) {
 		mContext = context;
 		mBitmapHolder = BitmapCache.initialize(mContext.getResources(), getClass().getName(), true);
 		createBeyondarObjectListArray();
 		mArViewDistance = MAX_AR_VIEW_DISTANCE;
-		mModuleList = new ArrayList<WorldModule>(5);
+		mModules = new ArrayList<WorldModule>(5);
 	}
 
 	protected Context getContext() {
@@ -105,7 +106,9 @@ public class World {
 	 *            Module to be added
 	 */
 	public void addModule(WorldModule module) {
-		mModuleList.add(module);
+		synchronized (mLockModules) {
+			mModules.add(module);
+		}
 		module.setup(this, mContext);
 	}
 
@@ -116,7 +119,11 @@ public class World {
 	 *            module to be removed
 	 */
 	public void removeModule(WorldModule module) {
-		if (mModuleList.remove(module)) {
+		boolean removed = false;
+		synchronized (mLockModules) {
+			removed = mModules.remove(module);
+		}
+		if (removed) {
 			module.onDetached(this, mContext);
 		}
 	}
@@ -125,8 +132,10 @@ public class World {
 	 * Clean all the modules attached to the world
 	 */
 	public void cleanModules() {
-		for (WorldModule module : mModuleList) {
-			removeModule(module);
+		synchronized (mLockModules) {
+			for (WorldModule module : mModules) {
+				removeModule(module);
+			}
 		}
 	}
 
@@ -153,14 +162,18 @@ public class World {
 			if (listTmp == null) {
 				listTmp = new BeyondarObjectList(worldListType, this);
 				mBeyondarObjectLists.add(listTmp);
-				for (WorldModule module : mModuleList) {
-					module.onBeyondarObjectListCreated(listTmp);
+				synchronized (mLockModules) {
+					for (WorldModule module : mModules) {
+						module.onBeyondarObjectListCreated(listTmp);
+					}
 				}
 			}
 			beyondarObject.setWorldListType(worldListType);
 			listTmp.add(beyondarObject);
-			for (WorldModule module : mModuleList) {
-				module.onBeyondarObjectAdded(beyondarObject, listTmp);
+			synchronized (mLockModules) {
+				for (WorldModule module : mModules) {
+					module.onBeyondarObjectAdded(beyondarObject, listTmp);
+				}
 			}
 		}
 	}
@@ -177,8 +190,10 @@ public class World {
 			BeyondarObjectList listTmp = getBeyondarObjectList(beyondarObject.getWorldListType());
 			if (listTmp != null) {
 				listTmp.remove(beyondarObject);
-				for (WorldModule module : mModuleList) {
-					module.onBeyondarObjectRemoved(beyondarObject, listTmp);
+				synchronized (mLockModules) {
+					for (WorldModule module : mModules) {
+						module.onBeyondarObjectRemoved(beyondarObject, listTmp);
+					}
 				}
 				return true;
 			}
@@ -267,8 +282,10 @@ public class World {
 		mLatitude = latitude;
 		mLongitude = longitude;
 		mAltitude = altitude;
-		for (WorldModule module : mModuleList) {
-			module.onPositionChanged(latitude, longitude, altitude);
+		synchronized (mLockModules) {
+			for (WorldModule module : mModules) {
+				module.onPositionChanged(latitude, longitude, altitude);
+			}
 		}
 	}
 

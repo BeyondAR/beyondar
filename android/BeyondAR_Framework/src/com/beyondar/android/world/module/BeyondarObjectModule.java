@@ -13,11 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.beyondar.android.world;
+package com.beyondar.android.world.module;
 
-public class RelativeObject extends BeyondarObject {
+public interface BeyondarObjectModule {
+	
 
-	public RelativeObject(long id) {
-		super(id);
-	}
 }

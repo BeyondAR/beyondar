@@ -15,6 +15,9 @@
  */
 package com.beyondar.android.world;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.beyondar.android.opengl.colision.MeshCollider;
 import com.beyondar.android.opengl.colision.SquareMeshCollider;
 import com.beyondar.android.opengl.renderable.Renderable;
@@ -22,8 +25,9 @@ import com.beyondar.android.opengl.renderable.SquareRenderable;
 import com.beyondar.android.opengl.texture.Texture;
 import com.beyondar.android.util.cache.BitmapCache;
 import com.beyondar.android.util.math.geom.Point3;
+import com.beyondar.android.world.module.BeyondarObjectModule;
 
-public abstract class BeyondarObject {
+public class BeyondarObject {
 
 	private String mName;
 	private long mId;
@@ -38,6 +42,9 @@ public abstract class BeyondarObject {
 	protected Point3 angle;
 	protected boolean faceToCamera;
 	protected MeshCollider meshCollider;
+	
+	private List<BeyondarObjectModule> mModules;
+	private Object mLockModules = new Object();
 
 	/**
 	 * Create an instance of a {@link BeyondarObject} with an unique ID
@@ -52,10 +59,18 @@ public abstract class BeyondarObject {
 		mTexture = new Texture();
 		faceToCamera(true);
 		setVisibile(true);
+		mModules = new ArrayList<BeyondarObjectModule>(3);
 	}
 
 	public long getId() {
 		return mId;
+	}
+	
+	public void addModule(BeyondarObjectModule module){
+		synchronized (mLockModules) {
+			mModules.add(module);
+		}
+		//module.setup
 	}
 
 	public Point3 getAngle() {

@@ -39,10 +39,7 @@ public class GoogleMapActivity extends FragmentActivity implements OnMarkerClick
 		
 		map.setOnMarkerClickListener(this);
 
-		// Move the camera instantly to hamburg with a zoom of 15.
 		map.moveCamera(CameraUpdateFactory.newLatLngZoom(mGoogleMapModule.getLatLng(), 15));
-
-		// Zoom in, animating the camera.
 		map.animateCamera(CameraUpdateFactory.zoomTo(19), 2000, null);
 	}
 

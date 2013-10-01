@@ -15,23 +15,6 @@
  */
 package com.beyondar.android.world.module;
 
-import com.beyondar.android.world.BeyondarObject;
-
-public interface GeoObjectModule extends BeyondarModule, BeyondarObjectModule {
-	
-	/**
-	 * Setup the module according to the BeyondarObject
-	 * 
-	 * @param BeyondarObject
-	 */
-	public void setup(BeyondarObject BeyondarObject );
-
-	/**
-	 * This method is invoked when the module is removed from the {@link BeyondarObject}
-	 * instance.
-	 * 
-	 * @param beyondarObject
-	 */
-	public void onDetached(BeyondarObject beyondarObject);
+public interface BeyondarModule {
 
 }

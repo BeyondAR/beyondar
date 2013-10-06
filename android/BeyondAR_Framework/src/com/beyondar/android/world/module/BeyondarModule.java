@@ -17,4 +17,16 @@ package com.beyondar.android.world.module;
 
 public interface BeyondarModule {
 
+	/**
+	 * This method is invoked when the module is removed
+	 */
+	public void onDetached();
+
+	/**
+	 * Check if the module is attached
+	 * 
+	 * @return
+	 */
+	public boolean isAttached();
+
 }

@@ -19,6 +19,8 @@ import android.location.Location;
 
 import com.beyondar.android.util.Constants;
 import com.beyondar.android.util.math.Distance;
+import com.beyondar.android.world.module.BeyondarObjectModule;
+import com.beyondar.android.world.module.GeoObjectModule;
 import com.google.android.maps.GeoPoint;
 
 public class GeoObject extends BeyondarObject {
@@ -57,14 +59,20 @@ public class GeoObject extends BeyondarObject {
 	}
 
 	public void setGeoPosition(double latitude, double longitude) {
-		mLatitude = latitude;
-		mLongitude = longitude;
+		setGeoPosition(latitude, longitude, mAltitude);
 	}
 
 	public void setGeoPosition(double latitude, double longitude, double altitude) {
 		mLatitude = latitude;
 		mLongitude = longitude;
 		mAltitude = altitude;
+		synchronized (lockModules) {
+			for(BeyondarObjectModule module : modules){
+				if (module instanceof GeoObjectModule){
+					((GeoObjectModule) module).onGeoPositionChanged(latitude, longitude, altitude);
+				}
+			}
+		}
 	}
 
 	public double getLongitude() {

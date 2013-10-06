@@ -47,14 +47,6 @@ public interface WorldModule extends BeyondarModule {
 	public void setup(World world, Context context);
 
 	/**
-	 * This method is invoked when the module is removed from the {@link World}
-	 * instance.
-	 * 
-	 * @param world
-	 */
-	public void onDetached(World world, Context context);
-	
-	/**
 	 * This method is invoked when a new {@link BeyondarObject} is added to the
 	 * world
 	 * 
@@ -90,5 +82,5 @@ public interface WorldModule extends BeyondarModule {
 	 * @param longitude
 	 * @param altitude
 	 */
-	public void onPositionChanged(double latitude, double longitude, double altitude);
+	public void onGeoPositionChanged(double latitude, double longitude, double altitude);
 }

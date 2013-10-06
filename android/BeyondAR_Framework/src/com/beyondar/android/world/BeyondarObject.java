@@ -26,25 +26,27 @@ import com.beyondar.android.opengl.texture.Texture;
 import com.beyondar.android.util.cache.BitmapCache;
 import com.beyondar.android.util.math.geom.Point3;
 import com.beyondar.android.world.module.BeyondarObjectModule;
+import com.beyondar.android.world.module.Modulable;
 
-public class BeyondarObject {
+public class BeyondarObject implements Modulable<BeyondarObjectModule>{
 
-	private String mName;
 	private long mId;
-	private boolean mVisibile;
-	private String mBitmapUri;
 	private int mTypeList;
-	private Float mOrientation;
-	private Texture mTexture;
 
-	protected Renderable openGLObject;
+	protected Texture texture;
+	protected String bitmapUri;
+	protected String name;
+	protected boolean visibile;
+	protected Renderable renderable;
 	protected Point3 position;
 	protected Point3 angle;
 	protected boolean faceToCamera;
 	protected MeshCollider meshCollider;
-	
-	private List<BeyondarObjectModule> mModules;
-	private Object mLockModules = new Object();
+
+	/** This fields contains all the loaded modules */
+	protected List<BeyondarObjectModule> modules;
+	/** Use this lock to access the modules field */
+	protected Object lockModules = new Object();
 
 	/**
 	 * Create an instance of a {@link BeyondarObject} with an unique ID
@@ -54,23 +56,109 @@ public class BeyondarObject {
 	 */
 	public BeyondarObject(long id) {
 		mId = id;
+		modules = new ArrayList<BeyondarObjectModule>(3);
 		position = new Point3();
 		angle = new Point3();
-		mTexture = new Texture();
+		texture = new Texture();
 		faceToCamera(true);
 		setVisibile(true);
-		mModules = new ArrayList<BeyondarObjectModule>(3);
 	}
 
 	public long getId() {
 		return mId;
 	}
-	
-	public void addModule(BeyondarObjectModule module){
-		synchronized (mLockModules) {
-			mModules.add(module);
+
+	public void addModule(BeyondarObjectModule module) {
+		synchronized (lockModules) {
+			if (modules.contains(module)) {
+				return;
+			}
+			modules.add(module);
 		}
-		//module.setup
+		module.setup(this);
+	}
+	
+	@Override
+	public boolean removeModule(BeyondarObjectModule module) {
+		boolean removed = false;
+		synchronized (lockModules) {
+			removed = modules.remove(module);
+		}
+		if (removed) {
+			module.onDetached();
+		}
+		return removed;
+	}
+	
+	@Override
+	public void cleanModules() {
+		synchronized (lockModules) {
+			modules.clear();
+		}
+	}
+
+	@Override
+	public BeyondarObjectModule getFirstModule(Class<? extends BeyondarObjectModule> moduleClass) {
+		synchronized (lockModules) {
+			for (BeyondarObjectModule module : modules) {
+				if (moduleClass.isInstance(module)) {
+					return module;
+				}
+			}
+		}
+		return null;
+	}
+	
+	@Override
+	public boolean containsAnyModule(Class<? extends BeyondarObjectModule> moduleClass) {
+		return getFirstModule(moduleClass) != null;
+	}
+	
+	@Override
+	public boolean containsModule(BeyondarObjectModule module) {
+		synchronized (lockModules) {
+			return modules.contains(module);
+		}
+	}
+
+	@Override
+	public List<BeyondarObjectModule> getAllModules(Class<? extends BeyondarObjectModule> moduleClass) {
+		ArrayList<BeyondarObjectModule> result = new ArrayList<BeyondarObjectModule>(5);
+		return getAllModules(moduleClass, result);
+	}
+
+	@Override
+	public List<BeyondarObjectModule> getAllModules(Class<? extends BeyondarObjectModule> moduleClass,
+			List<BeyondarObjectModule> result) {
+		synchronized (lockModules) {
+			for (BeyondarObjectModule module : modules) {
+				if (moduleClass.isInstance(module)) {
+					result.add(module);
+				}
+			}
+		}
+		return result;
+	}
+
+	/**
+	 * Get a {@link List} copy of the added modules. Adding/removing modules to
+	 * this list will not affect the added modules
+	 * 
+	 * @return
+	 */
+	@Override
+	public List<BeyondarObjectModule> getAllModules() {
+		synchronized (lockModules) {
+			return new ArrayList<BeyondarObjectModule>(modules);
+		}
+	}
+
+	void onRemoved() {
+		synchronized (lockModules) {
+			for (BeyondarObjectModule module : modules) {
+				module.onDetached();
+			}
+		}
 	}
 
 	public Point3 getAngle() {
@@ -81,6 +169,11 @@ public class BeyondarObject {
 		angle.x = x;
 		angle.y = y;
 		angle.z = z;
+		synchronized (lockModules) {
+			for (BeyondarObjectModule module : modules) {
+				module.onAngleChanged(angle);
+			}
+		}
 	}
 
 	public Point3 getPosition() {
@@ -89,12 +182,22 @@ public class BeyondarObject {
 
 	public void setPosition(Point3 newVect) {
 		position = newVect;
+		synchronized (lockModules) {
+			for (BeyondarObjectModule module : modules) {
+				module.onPositionChanged(position);
+			}
+		}
 	}
 
 	public void setPosition(float x, float y, float z) {
 		position.x = x;
 		position.y = y;
 		position.z = z;
+		synchronized (lockModules) {
+			for (BeyondarObjectModule module : modules) {
+				module.onPositionChanged(position);
+			}
+		}
 	}
 
 	protected Renderable createRenderable() {
@@ -102,18 +205,28 @@ public class BeyondarObject {
 	}
 
 	public Texture getTexture() {
-		return mTexture;
+		return texture;
 	}
 
 	public void setTexturePointer(int texturePointer) {
-		mTexture.setTexturePointer(texturePointer);
+		texture.setTexturePointer(texturePointer);
+		synchronized (lockModules) {
+			for (BeyondarObjectModule module : modules) {
+				module.onTextureChanged(texture);
+			}
+		}
 	}
 
 	public void setTexture(Texture texture) {
 		if (texture == null) {
 			texture = new Texture();
 		}
-		mTexture = texture;
+		this.texture = texture;
+		synchronized (lockModules) {
+			for (BeyondarObjectModule module : modules) {
+				module.onTextureChanged(this.texture);
+			}
+		}
 	}
 
 	/**
@@ -122,22 +235,32 @@ public class BeyondarObject {
 	 * @return
 	 */
 	public Renderable getOpenGLObject() {
-		if (null == openGLObject) {
-			openGLObject = createRenderable();
+		if (null == renderable) {
+			renderable = createRenderable();
 		}
-		return openGLObject;
+		return renderable;
 	}
 
-	public void setOpenGLObject(Renderable openglObject) {
-		openGLObject = openglObject;
+	public void setRenderable(Renderable renderable) {
+		this.renderable = renderable;
+		synchronized (lockModules) {
+			for (BeyondarObjectModule module : modules) {
+				module.onRenderableChanged(this.renderable);
+			}
+		}
 	}
 
 	public String getBitmapUri() {
-		return mBitmapUri;
+		return bitmapUri;
 	}
 
 	public void faceToCamera(boolean faceToCamera) {
 		this.faceToCamera = faceToCamera;
+		synchronized (lockModules) {
+			for (BeyondarObjectModule module : modules) {
+				module.onFaceToCameraChanged(this.faceToCamera);
+			}
+		}
 	}
 
 	public boolean isFacingToCamera() {
@@ -151,19 +274,29 @@ public class BeyondarObject {
 	 * @param visibility
 	 */
 	public void setVisibile(boolean visible) {
-		mVisibile = visible;
+		visibile = visible;
+		synchronized (lockModules) {
+			for (BeyondarObjectModule module : modules) {
+				module.onVisibilityChanged(visibile);
+			}
+		}
 	}
 
 	public boolean isVisible() {
-		return mVisibile;
+		return visibile;
 	}
 
 	public void setName(String name) {
-		mName = name;
+		this.name = name;
+		synchronized (lockModules) {
+			for (BeyondarObjectModule module : modules) {
+				module.onNameChanged(this.name);
+			}
+		}
 	}
 
 	public String getName() {
-		return mName;
+		return name;
 	}
 
 	/**
@@ -172,12 +305,16 @@ public class BeyondarObject {
 	 * @param url
 	 */
 	public void setImageUri(String uri) {
-		mBitmapUri = uri;
+		bitmapUri = uri;
+		synchronized (lockModules) {
+			for (BeyondarObjectModule module : modules) {
+				module.onImageUriChanged(bitmapUri);
+			}
+		}
 	}
 
 	public void setImageResource(int resID) {
-		// mResID = resID;
-		mBitmapUri = BitmapCache.generateUri(resID);
+		setImageUri(BitmapCache.generateUri(resID));
 	}
 
 	/**
@@ -186,7 +323,7 @@ public class BeyondarObject {
 	 * 
 	 * @param worldListType
 	 */
-	public void setWorldListType(int worldListType) {
+	void setWorldListType(int worldListType) {
 		mTypeList = worldListType;
 	}
 
@@ -194,24 +331,24 @@ public class BeyondarObject {
 		return mTypeList;
 	}
 
-	/**
-	 * Get the orientation (degrees). Get null if the orientation has not set
-	 * 
-	 * @return
-	 */
-	public Float getOrientation() {
-		return mOrientation;
-	}
-
-	/**
-	 * Set the orientation do draw this object. Set null if you want no
-	 * orientation (always face to the camera)
-	 * 
-	 * @param degrees
-	 */
-	public void setOrientation(Float degrees) {
-		this.mOrientation = degrees;
-	}
+	// /**
+	// * Get the orientation (degrees). Get null if the orientation has not set
+	// *
+	// * @return
+	// */
+	// public Float getOrientation() {
+	// return mOrientation;
+	// }
+	//
+	// /**
+	// * Set the orientation do draw this object. Set null if you want no
+	// * orientation (always face to the camera)
+	// *
+	// * @param degrees
+	// */
+	// public void setOrientation(Float degrees) {
+	// this.mOrientation = degrees;
+	// }
 
 	// TODO: Improve the mesh collider!!
 	public MeshCollider getMeshCollider() {

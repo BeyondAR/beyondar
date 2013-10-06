@@ -29,9 +29,11 @@ import com.beyondar.android.util.math.geom.Plane;
 import com.beyondar.android.util.math.geom.Point3;
 import com.beyondar.android.util.math.geom.Ray;
 import com.beyondar.android.util.math.geom.Vector3;
+import com.beyondar.android.world.module.BeyondarObjectModule;
+import com.beyondar.android.world.module.Modulable;
 import com.beyondar.android.world.module.WorldModule;
 
-public class World {
+public class World implements Modulable<WorldModule>{
 
 	protected static final String TAG = "world";
 
@@ -99,12 +101,6 @@ public class World {
 
 	}
 
-	/**
-	 * Add a module to be executed by the world instance
-	 * 
-	 * @param module
-	 *            Module to be added
-	 */
 	public void addModule(WorldModule module) {
 		synchronized (mLockModules) {
 			mModules.add(module);
@@ -118,24 +114,74 @@ public class World {
 	 * @param module
 	 *            module to be removed
 	 */
-	public void removeModule(WorldModule module) {
+	@Override
+	public boolean removeModule(WorldModule module) {
 		boolean removed = false;
 		synchronized (mLockModules) {
 			removed = mModules.remove(module);
 		}
 		if (removed) {
-			module.onDetached(this, mContext);
+			module.onDetached();
 		}
+		return removed;
 	}
 
-	/**
-	 * Clean all the modules attached to the world
-	 */
+	@Override
 	public void cleanModules() {
 		synchronized (mLockModules) {
 			for (WorldModule module : mModules) {
 				removeModule(module);
 			}
+		}
+	}
+	
+	@Override
+	public WorldModule getFirstModule(Class<? extends WorldModule> moduleClass) {
+		synchronized (mLockModules) {
+			for (WorldModule module : mModules) {
+				if (moduleClass.isInstance(module)) {
+					return module;
+				}
+			}
+		}
+		return null;
+	}
+	
+	@Override
+	public boolean containsAnyModule(Class<? extends WorldModule> moduleClass) {
+		return getFirstModule(moduleClass) != null;
+	}
+	
+	@Override
+	public boolean containsModule(WorldModule module) {
+		synchronized (mLockModules) {
+			return mModules.contains(module);
+		}
+	}
+
+	@Override
+	public List<WorldModule> getAllModules(Class<? extends WorldModule> moduleClass) {
+		ArrayList<WorldModule> result = new ArrayList<WorldModule>(5);
+		return getAllModules(moduleClass, result);
+	}
+
+	@Override
+	public List<WorldModule> getAllModules(Class<? extends WorldModule> moduleClass,
+			List<WorldModule> result) {
+		synchronized (mLockModules) {
+			for (WorldModule module : mModules) {
+				if (moduleClass.isInstance(module)) {
+					result.add(module);
+				}
+			}
+		}
+		return result;
+	}
+
+	@Override
+	public List<WorldModule> getAllModules() {
+		synchronized (mLockModules) {
+			return new ArrayList<WorldModule>(mModules);
 		}
 	}
 
@@ -278,19 +324,19 @@ public class World {
 		this.mLatitude = latitude;
 	}
 
-	public void setPosition(double latitude, double longitude, double altitude) {
+	public void setGeoPosition(double latitude, double longitude, double altitude) {
 		mLatitude = latitude;
 		mLongitude = longitude;
 		mAltitude = altitude;
 		synchronized (mLockModules) {
 			for (WorldModule module : mModules) {
-				module.onPositionChanged(latitude, longitude, altitude);
+				module.onGeoPositionChanged(latitude, longitude, altitude);
 			}
 		}
 	}
 
-	public final void setPosition(double latitude, double longitude) {
-		setPosition(latitude, longitude, mAltitude);
+	public final void setGeoPosition(double latitude, double longitude) {
+		setGeoPosition(latitude, longitude, mAltitude);
 	}
 
 	@Deprecated

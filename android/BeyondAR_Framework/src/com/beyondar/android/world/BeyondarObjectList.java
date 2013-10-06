@@ -69,7 +69,7 @@ public class BeyondarObjectList implements Iterable<BeyondarObject> {
 	 * Add a geoObject to the list if it does not exist. To add an object use the {@link World} instance
 	 * 
 	 * @param object
-	 *            the object ot add
+	 *            the object to add
 	 * @return True if the object has been added (it does not exist), false
 	 *         otherwise
 	 */

@@ -86,7 +86,7 @@ public class WorldGoogleMapModule implements WorldModule, OnExternalBitmapLoaded
 	protected void addGooGleMapModule(BeyondarObject beyondarObject) {
 		if (beyondarObject instanceof GeoObject) {
 			if (!beyondarObject.containsAnyModule(GeoObjectGoogleMapModuleImpl.class)) {
-				GeoObjectGoogleMapModule module = new GeoObjectGoogleMapModuleImpl();
+				GeoObjectGoogleMapModule module = new GeoObjectGoogleMapModuleImpl(this);
 				beyondarObject.addModule(module);
 				createMarker((GeoObject) beyondarObject, module);
 			}
@@ -162,10 +162,10 @@ public class WorldGoogleMapModule implements WorldModule, OnExternalBitmapLoaded
 		if (geoObject == null || module == null) {
 			return null;
 		}
-		Bitmap btm = getBitmap(geoObject.getBitmapUri());
+		Bitmap btm = getBitmap(geoObject);
 
 		if (btm == null) {
-			mPendingBitmaps.addObject(geoObject.getBitmapUri(), geoObject);
+			// TODO: add somehow the default bitmap from the list
 		}
 		return module.createMarkerOptions(btm);
 
@@ -181,14 +181,33 @@ public class WorldGoogleMapModule implements WorldModule, OnExternalBitmapLoaded
 		return createMarkerOptions(geoObject, module);
 	}
 
-	protected Bitmap getBitmap(String uri) {
-		Bitmap btm = mCache.getBitmap(uri);
+	private Bitmap getBitmap(GeoObject geoObject) {
+		boolean canRemove = !mPendingBitmaps.existPendingList(geoObject.getBitmapUri());
+		if (!mCache.isImageLoaded(geoObject.getBitmapUri())) {
+			mPendingBitmaps.addObject(geoObject.getBitmapUri(), geoObject);
+		}
+		Bitmap btm = mCache.getBitmap(geoObject.getBitmapUri());
 
-		if (btm == null || btm.isRecycled()) {
+		if (btm == null) {
 			return null;
+		} else if (canRemove) {
+			mPendingBitmaps.removePendingList(geoObject.getBitmapUri());
 		}
 
-		return resizeBitmap(uri, btm);
+		return resizeBitmap(geoObject.getBitmapUri(), btm);
+	}
+
+	public void setMarkerImage(Marker marker, GeoObject geoObject) {
+		if (marker == null || geoObject == null) {
+			return;
+		}
+		Bitmap btm = getBitmap(geoObject);
+		if (btm == null) {
+			// TODO: add somehow the default bitmap from the list
+		}
+		if (btm != null) {
+			marker.setIcon(BitmapDescriptorFactory.fromBitmap(btm));
+		}
 	}
 
 	protected Bitmap resizeBitmap(String uri, Bitmap btm) {

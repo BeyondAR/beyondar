@@ -21,7 +21,6 @@ import com.beyondar.android.opengl.renderable.Renderable;
 import com.beyondar.android.opengl.texture.Texture;
 import com.beyondar.android.util.math.geom.Point3;
 import com.beyondar.android.world.module.GeoObjectGoogleMapModule;
-import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
@@ -33,13 +32,18 @@ public class GeoObjectGoogleMapModuleImpl implements GeoObjectGoogleMapModule {
 	private LatLng mLatLng;
 	private GeoObject mGeoObject;
 	private boolean mAttached;
+	private WorldGoogleMapModule mWorldGoogleMapModule;
 
-	public GeoObjectGoogleMapModuleImpl() {
+	public GeoObjectGoogleMapModuleImpl(WorldGoogleMapModule worldGoogleMapModule) {
 		mAttached = false;
+		mWorldGoogleMapModule = worldGoogleMapModule;
 	}
 
 	@Override
 	public void setup(BeyondarObject beyondarObject) {
+		if (beyondarObject == null){
+			throw new NullPointerException("The BeyondarObject must not be null");
+		}
 		if (beyondarObject instanceof GeoObject) {
 			mGeoObject = (GeoObject) beyondarObject;
 		}
@@ -48,16 +52,13 @@ public class GeoObjectGoogleMapModuleImpl implements GeoObjectGoogleMapModule {
 
 	@Override
 	public void onGeoPositionChanged(double latitude, double longitude, double altitude) {
-		if (mMarker == null || mGeoObject == null) {
+		if (mMarker == null) {
 			return;
 		}
 		mMarker.setPosition(getLatLng());
 	}
 
 	public LatLng getLatLng() {
-		if (mGeoObject == null){
-			return null;
-		}
 		if (mLatLng == null) {
 			mLatLng = new LatLng(mGeoObject.getLatitude(), mGeoObject.getLongitude());
 			return mLatLng;
@@ -81,9 +82,6 @@ public class GeoObjectGoogleMapModuleImpl implements GeoObjectGoogleMapModule {
 	
 	@Override
 	public MarkerOptions createMarkerOptions(Bitmap bitmap) {
-		if (mGeoObject == null){
-			return null;
-		}
 		MarkerOptions markerOptions = new MarkerOptions();
 		markerOptions.title(mGeoObject.getName());
 		markerOptions.position(getLatLng());
@@ -120,7 +118,7 @@ public class GeoObjectGoogleMapModuleImpl implements GeoObjectGoogleMapModule {
 
 	@Override
 	public void onNameChanged(String name) {
-		if (mMarker == null || mGeoObject == null) {
+		if (mMarker == null) {
 			return;
 		}
 		mMarker.setTitle(name);
@@ -128,17 +126,18 @@ public class GeoObjectGoogleMapModuleImpl implements GeoObjectGoogleMapModule {
 
 	@Override
 	public void onImageUriChanged(String uri) {
-		// TODO Auto-generated method stub
+		mWorldGoogleMapModule.setMarkerImage(mMarker, mGeoObject);
 	}
 
 	@Override
 	public void onDetached() {
 		mAttached = false;
-		if (mMarker == null || mGeoObject == null) {
+		if (mMarker == null) {
 			return;
 		}
 		mMarker.remove();
 	}
+	
 	@Override
 	public boolean isAttached() {
 		return mAttached;

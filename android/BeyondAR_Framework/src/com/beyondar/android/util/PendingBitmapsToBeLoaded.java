@@ -46,4 +46,8 @@ public class PendingBitmapsToBeLoaded<E> {
 	public ArrayList<E> getPendingList(String uri) {
 		return mHolder.get(uri);
 	}
+
+	public boolean existPendingList(String uri) {
+		return getPendingList(uri) != null;
+	}
 }

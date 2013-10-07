@@ -29,7 +29,6 @@ import com.beyondar.android.util.math.geom.Plane;
 import com.beyondar.android.util.math.geom.Point3;
 import com.beyondar.android.util.math.geom.Ray;
 import com.beyondar.android.util.math.geom.Vector3;
-import com.beyondar.android.world.module.BeyondarObjectModule;
 import com.beyondar.android.world.module.Modulable;
 import com.beyondar.android.world.module.WorldModule;
 
@@ -368,7 +367,7 @@ public class World implements Modulable<WorldModule>{
 	 *            The default Bitmap
 	 * @param type
 	 *            The type of the list to set the bitmap
-	 * @return The URI of the bitmap loaded or null if the bit ma has not been
+	 * @return The URI of the bitmap loaded or null if the bitmap has not been
 	 *         loaded
 	 */
 	public synchronized boolean setDefaultBitmap(String uri, int type) {

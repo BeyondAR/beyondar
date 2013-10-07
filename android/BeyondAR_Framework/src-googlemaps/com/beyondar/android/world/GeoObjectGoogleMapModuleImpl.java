@@ -37,15 +37,20 @@ public class GeoObjectGoogleMapModuleImpl implements GeoObjectGoogleMapModule {
 	public GeoObjectGoogleMapModuleImpl(WorldGoogleMapModule worldGoogleMapModule) {
 		mAttached = false;
 		mWorldGoogleMapModule = worldGoogleMapModule;
+		if (mWorldGoogleMapModule == null){
+			throw new NullPointerException("The WorldGoogleMapModule must not be null");
+		}
 	}
 
 	@Override
 	public void setup(BeyondarObject beyondarObject) {
-		if (beyondarObject == null){
-			throw new NullPointerException("The BeyondarObject must not be null");
-		}
 		if (beyondarObject instanceof GeoObject) {
 			mGeoObject = (GeoObject) beyondarObject;
+		}else{
+			throw new IllegalArgumentException("BeyondarObject must be a GeoObject");
+		}
+		if (mGeoObject == null){
+			throw new NullPointerException("The BeyondarObject must not be null");
 		}
 		mAttached = true;
 	}
@@ -58,6 +63,7 @@ public class GeoObjectGoogleMapModuleImpl implements GeoObjectGoogleMapModule {
 		mMarker.setPosition(getLatLng());
 	}
 
+	@Override
 	public LatLng getLatLng() {
 		if (mLatLng == null) {
 			mLatLng = new LatLng(mGeoObject.getLatitude(), mGeoObject.getLongitude());
@@ -72,12 +78,20 @@ public class GeoObjectGoogleMapModuleImpl implements GeoObjectGoogleMapModule {
 		return mLatLng;
 	}
 
+	@Override
 	public void setMarker(Marker marker) {
 		mMarker = marker;
+		mWorldGoogleMapModule.registerMarker(mMarker, this);
 	}
 
+	@Override
 	public Marker getMarker() {
 		return mMarker;
+	}
+	
+	@Override
+	public GeoObject getGeoObject() {
+		return mGeoObject;
 	}
 	
 	@Override

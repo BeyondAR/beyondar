@@ -16,6 +16,7 @@
 package com.beyondar.android.world;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -28,6 +29,7 @@ import com.beyondar.android.util.PendingBitmapsToBeLoaded;
 import com.beyondar.android.util.cache.BitmapCache;
 import com.beyondar.android.util.cache.BitmapCache.OnExternalBitmapLoadedCahceListener;
 import com.beyondar.android.world.module.GeoObjectGoogleMapModule;
+import com.beyondar.android.world.module.GeoObjectModule;
 import com.beyondar.android.world.module.WorldModule;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
@@ -47,6 +49,8 @@ public class WorldGoogleMapModule implements WorldModule, OnExternalBitmapLoaded
 	private int mIconSize;
 	private PendingBitmapsToBeLoaded<GeoObject> mPendingBitmaps;
 
+	private HashMap<Marker, GeoObjectGoogleMapModule> mMarkerHashMap;
+
 	private LatLng mLatLng;
 
 	private boolean mAttached;
@@ -54,6 +58,7 @@ public class WorldGoogleMapModule implements WorldModule, OnExternalBitmapLoaded
 	private static Handler sHandler = new Handler(Looper.getMainLooper());
 
 	public WorldGoogleMapModule() {
+		mMarkerHashMap = new HashMap<Marker, GeoObjectGoogleMapModule>();
 		mPendingBitmaps = new PendingBitmapsToBeLoaded<GeoObject>();
 		mAttached = false;
 	}
@@ -156,6 +161,10 @@ public class WorldGoogleMapModule implements WorldModule, OnExternalBitmapLoaded
 			marker = mMap.addMarker(markerOptions);
 			module.setMarker(marker);
 		}
+	}
+
+	public void registerMarker(Marker marker, GeoObjectGoogleMapModule module) {
+		mMarkerHashMap.put(marker, module);
 	}
 
 	protected MarkerOptions createMarkerOptions(GeoObject geoObject, GeoObjectGoogleMapModule module) {
@@ -293,6 +302,31 @@ public class WorldGoogleMapModule implements WorldModule, OnExternalBitmapLoaded
 
 	@Override
 	public void onBeyondarObjectRemoved(BeyondarObject beyondarObject, BeyondarObjectList beyondarObjectList) {
+		if (beyondarObject instanceof GeoObject) {
+			GeoObject geoObject = (GeoObject) beyondarObject;
+			GeoObjectGoogleMapModule gogmMod = (GeoObjectGoogleMapModule) geoObject
+					.getFirstModule(GeoObjectGoogleMapModule.class);
+			if (gogmMod != null) {
+				if (gogmMod.getMarker() != null) {
+					mMarkerHashMap.remove(gogmMod.getMarker());
+				}
+			}
+		}
+	}
+
+	/**
+	 * Retrieve the {@link GeoObject} that owns an specific {@link Marker}
+	 * 
+	 * @param marker
+	 *            The Marker that whant's to be checked
+	 * @return The {@link GeoObject} owner or null if there is no owner
+	 */
+	public GeoObject getGeoObjectOwner(Marker marker) {
+		GeoObjectModule geoObjectModule = mMarkerHashMap.get(marker);
+		if (geoObjectModule != null) {
+			return geoObjectModule.getGeoObject();
+		}
+		return null;
 	}
 
 	@Override

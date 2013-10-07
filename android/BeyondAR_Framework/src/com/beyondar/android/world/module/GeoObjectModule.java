@@ -15,9 +15,13 @@
  */
 package com.beyondar.android.world.module;
 
+import com.beyondar.android.world.GeoObject;
+
 
 public interface GeoObjectModule extends BeyondarObjectModule {
 
 	public void onGeoPositionChanged(double latitude, double longitude, double altitude);
+	
+	public GeoObject getGeoObject();
 
 }

@@ -17,7 +17,9 @@ package com.beyondar.example;
 
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
+import android.widget.Toast;
 
+import com.beyondar.android.world.GeoObject;
 import com.beyondar.android.world.WorldGoogleMapModule;
 import com.beyondar.android.world.World;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -61,7 +63,14 @@ public class GoogleMapActivity extends FragmentActivity implements OnMarkerClick
 
 	@Override
 	public boolean onMarkerClick(Marker marker) {
-		// TODO Auto-generated method stub
+		// To get the GeoObject that owns the marker we use the following
+		// method:
+		GeoObject geoObject = mGoogleMapModule.getGeoObjectOwner(marker);
+		if (geoObject != null) {
+			Toast.makeText(this,
+					"Click on a marker owned by a GeoOject with the name: " + geoObject.getName(),
+					Toast.LENGTH_SHORT).show();
+		}
 		return false;
 	}
 }

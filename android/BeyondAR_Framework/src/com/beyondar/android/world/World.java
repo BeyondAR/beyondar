@@ -32,7 +32,7 @@ import com.beyondar.android.util.math.geom.Vector3;
 import com.beyondar.android.world.module.Modulable;
 import com.beyondar.android.world.module.WorldModule;
 
-public class World implements Modulable<WorldModule>{
+public class World implements Modulable<WorldModule> {
 
 	protected static final String TAG = "world";
 
@@ -133,7 +133,7 @@ public class World implements Modulable<WorldModule>{
 			}
 		}
 	}
-	
+
 	@Override
 	public WorldModule getFirstModule(Class<? extends WorldModule> moduleClass) {
 		synchronized (mLockModules) {
@@ -145,12 +145,12 @@ public class World implements Modulable<WorldModule>{
 		}
 		return null;
 	}
-	
+
 	@Override
 	public boolean containsAnyModule(Class<? extends WorldModule> moduleClass) {
 		return getFirstModule(moduleClass) != null;
 	}
-	
+
 	@Override
 	public boolean containsModule(WorldModule module) {
 		synchronized (mLockModules) {
@@ -165,8 +165,7 @@ public class World implements Modulable<WorldModule>{
 	}
 
 	@Override
-	public List<WorldModule> getAllModules(Class<? extends WorldModule> moduleClass,
-			List<WorldModule> result) {
+	public List<WorldModule> getAllModules(Class<? extends WorldModule> moduleClass, List<WorldModule> result) {
 		synchronized (mLockModules) {
 			for (WorldModule module : mModules) {
 				if (moduleClass.isInstance(module)) {
@@ -228,7 +227,7 @@ public class World implements Modulable<WorldModule>{
 	 * <code>getWorldListType</code> is used.
 	 * 
 	 * @param beyondarObject
-	 * @return
+	 * @return True if the object has been removed, false otherwise
 	 */
 	public synchronized boolean remove(BeyondarObject beyondarObject) {
 		synchronized (mLock) {
@@ -240,6 +239,7 @@ public class World implements Modulable<WorldModule>{
 						module.onBeyondarObjectRemoved(beyondarObject, listTmp);
 					}
 				}
+				beyondarObject.onRemoved();
 				return true;
 			}
 			return false;

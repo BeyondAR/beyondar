@@ -336,4 +336,9 @@ public class WorldGoogleMapModule implements WorldModule, OnExternalBitmapLoaded
 	@Override
 	public void onGeoPositionChanged(double latitude, double longitude, double altitude) {
 	}
+
+	@Override
+	public void onDefaultImageChanged(String uri) {
+		//TODO: Change the markers with a default image??
+	}
 }

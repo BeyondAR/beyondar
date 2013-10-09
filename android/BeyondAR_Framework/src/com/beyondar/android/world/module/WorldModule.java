@@ -83,4 +83,11 @@ public interface WorldModule extends BeyondarModule {
 	 * @param altitude
 	 */
 	public void onGeoPositionChanged(double latitude, double longitude, double altitude);
+
+	/**
+	 * This method is invoked when the default image for all the {@link BeyondarObject} is set
+	 * @param uri
+	 */
+	public void onDefaultImageChanged(String uri);
+
 }

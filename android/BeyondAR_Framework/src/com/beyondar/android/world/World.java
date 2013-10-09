@@ -357,6 +357,11 @@ public class World implements Modulable<WorldModule> {
 
 	public synchronized void setDefaultBitmap(String uri) {
 		mDefaultBitmap = uri;
+		synchronized (mLockModules) {
+			for (WorldModule module: mModules){
+				module.onDefaultImageChanged(uri);
+			}
+		}
 	}
 
 	/**

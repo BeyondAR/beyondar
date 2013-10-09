@@ -141,7 +141,9 @@ public class BeyondarObjectList implements Iterable<BeyondarObject> {
 	}
 
 	/**
-	 * Get the default bitmap
+	 * Get the default bitmap. <br>
+	 * DO not use this method directly form the {@link BeyondarObjectList} instance, the best way to get the default image is using the {@link World} instance:<br>
+	 * {@link World#getDefaultBitmap(int)}
 	 * 
 	 * @return
 	 */

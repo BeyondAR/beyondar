@@ -402,7 +402,7 @@ public class World implements Modulable<WorldModule> {
 	 */
 	public synchronized String getDefaultBitmap(int type) {
 		BeyondarObjectList list = getBeyondarObjectList(type);
-		if (list != null) {
+		if (list != null && list.getDefaultBitmapURI() != null) {
 			return list.getDefaultBitmapURI();
 		}
 		return mDefaultBitmap;

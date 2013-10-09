@@ -50,4 +50,8 @@ public class PendingBitmapsToBeLoaded<E> {
 	public boolean existPendingList(String uri) {
 		return getPendingList(uri) != null;
 	}
+
+	public void clear() {
+		mHolder.clear();
+	}
 }

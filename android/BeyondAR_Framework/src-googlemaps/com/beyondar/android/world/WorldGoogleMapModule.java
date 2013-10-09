@@ -171,11 +171,8 @@ public class WorldGoogleMapModule implements WorldModule, OnExternalBitmapLoaded
 		if (geoObject == null || module == null) {
 			return null;
 		}
-		Bitmap btm = getBitmap(geoObject);
+		Bitmap btm = getBitmapFromGeoObject(geoObject);
 
-		if (btm == null) {
-			// TODO: add somehow the default bitmap from the list
-		}
 		return module.createMarkerOptions(btm);
 
 	}
@@ -190,7 +187,7 @@ public class WorldGoogleMapModule implements WorldModule, OnExternalBitmapLoaded
 		return createMarkerOptions(geoObject, module);
 	}
 
-	private Bitmap getBitmap(GeoObject geoObject) {
+	private Bitmap getBitmapFromGeoObject(GeoObject geoObject) {
 		boolean canRemove = !mPendingBitmaps.existPendingList(geoObject.getBitmapUri());
 		if (!mCache.isImageLoaded(geoObject.getBitmapUri())) {
 			mPendingBitmaps.addObject(geoObject.getBitmapUri(), geoObject);
@@ -198,7 +195,8 @@ public class WorldGoogleMapModule implements WorldModule, OnExternalBitmapLoaded
 		Bitmap btm = mCache.getBitmap(geoObject.getBitmapUri());
 
 		if (btm == null) {
-			return null;
+			String uri = mWorld.getDefaultBitmap(geoObject.getWorldListType());
+			btm = mCache.getBitmap(uri);
 		} else if (canRemove) {
 			mPendingBitmaps.removePendingList(geoObject.getBitmapUri());
 		}
@@ -210,16 +208,16 @@ public class WorldGoogleMapModule implements WorldModule, OnExternalBitmapLoaded
 		if (marker == null || geoObject == null) {
 			return;
 		}
-		Bitmap btm = getBitmap(geoObject);
-		if (btm == null) {
-			// TODO: add somehow the default bitmap from the list
-		}
+		Bitmap btm = getBitmapFromGeoObject(geoObject);
 		if (btm != null) {
 			marker.setIcon(BitmapDescriptorFactory.fromBitmap(btm));
 		}
 	}
 
 	protected Bitmap resizeBitmap(String uri, Bitmap btm) {
+		if (btm == null || uri == null) {
+			return null;
+		}
 		if (btm.getHeight() != mIconSize && btm.getWidth() != mIconSize) {
 			Bitmap tmp = ImageUtils.resizeImage(btm, mIconSize, mIconSize);
 			mCache.storeBitmap(uri, tmp);
@@ -331,6 +329,8 @@ public class WorldGoogleMapModule implements WorldModule, OnExternalBitmapLoaded
 
 	@Override
 	public void onWorldCleaned() {
+		mMarkerHashMap.clear();
+		mPendingBitmaps.clear();
 	}
 
 	@Override

@@ -16,12 +16,16 @@
 package com.beyondar.example;
 
 import com.beyondar.android.world.GeoObject;
-import com.beyondar.android.world.GeoObject;
 import com.beyondar.android.world.World;
 
 public class WorldHelper {
 
 	public static void generateObjects(World world) {
+
+		// The user can set the default bitmap. This is useful if you are
+		// loading images form Internet and the connection get lost
+		world.setDefaultBitmap(R.drawable.beyondar_default_unknow_icon);
+
 		// User position (you can change it using the GPS listeners form Android
 		// API)
 		world.setGeoPosition(41.26533734214473d, 1.925848038959814d);
@@ -78,10 +82,6 @@ public class WorldHelper {
 		world.addBeyondarObject(go6);
 		world.addBeyondarObject(go7);
 		world.addBeyondarObject(go8);
-
-		// The user can set the default bitmap. This is useful if you are
-		// loading images form Internet and the connection is lots
-		world.setDefaultBitmap(R.drawable.beyondar_default_unknow_icon);
 
 	}
 

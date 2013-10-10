@@ -18,9 +18,9 @@ package com.beyondar.example;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.FragmentActivity;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -28,6 +28,7 @@ import android.view.Window;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.beyondar.android.fragment.BeyondarFragmentSupport;
 import com.beyondar.android.opengl.renderer.ARRenderer.FpsUpdatable;
 import com.beyondar.android.util.annotation.OnUiThread;
 import com.beyondar.android.view.BeyondarGLSurfaceView;
@@ -35,9 +36,10 @@ import com.beyondar.android.view.BeyondarGLSurfaceView.OnARTouchListener;
 import com.beyondar.android.world.BeyondarObject;
 import com.beyondar.android.world.World;
 
-public class CameraWithGoogleMapsActivity extends Activity implements OnARTouchListener, FpsUpdatable, OnClickListener {
+public class CameraWithGoogleMapsActivity extends FragmentActivity implements OnARTouchListener,
+		FpsUpdatable, OnClickListener {
 
-	private BeyondarGLSurfaceView mBeyondarGLSurfaceView;
+	private BeyondarFragmentSupport mBeyondarView;
 	private World mWorld;
 
 	private TextView mLabelText;
@@ -60,11 +62,11 @@ public class CameraWithGoogleMapsActivity extends Activity implements OnARTouchL
 		// ...And fill it
 		WorldHelper.generateObjects(mWorld);
 
-		mBeyondarGLSurfaceView.setWorld(mWorld);
-		mBeyondarGLSurfaceView.setFpsUpdatable(this);
+		mBeyondarView.setWorld(mWorld);
+		mBeyondarView.setFpsUpdatable(this);
 
 		// set listener for the geoObjects
-		mBeyondarGLSurfaceView.setOnARTouchListener(this);
+		mBeyondarView.setOnARTouchListener(this);
 
 		// We can use this method to store an unique world instance
 		World.setWorld(mWorld);
@@ -105,8 +107,7 @@ public class CameraWithGoogleMapsActivity extends Activity implements OnARTouchL
 
 		}
 		mAction = textEvent;
-		mLabelText.setText("sasasd");
-		//updateLabelText();
+		updateLabelText();
 	}
 
 	@Override
@@ -126,32 +127,21 @@ public class CameraWithGoogleMapsActivity extends Activity implements OnARTouchL
 				if (mAction != null) {
 					text = text + " | " + "Action: " + mAction;
 				}
-				//mLabelText.setText(text);
+				mLabelText.setText(text);
 			}
 		});
 	}
 
 	private void loadViewFromXML() {
 		setContentView(R.layout.camera_with_google_maps);
-		mBeyondarGLSurfaceView = (BeyondarGLSurfaceView) findViewById(R.id.customGLSurface);
+		mBeyondarView = (BeyondarFragmentSupport) getSupportFragmentManager().findFragmentById(
+				R.id.beyondarFragment);
+
 		mLabelText = (TextView) findViewById(R.id.labelText);
-		// mCameraView = (CameraView) findViewById(R.id.camera);
 
 		mShowMap = (Button) findViewById(R.id.showMapButton);
 
 		mShowMap.setOnClickListener(this);
-	}
-
-	@Override
-	protected void onResume() {
-		super.onResume();
-		mBeyondarGLSurfaceView.onResume();
-	}
-
-	@Override
-	protected void onPause() {
-		super.onPause();
-		mBeyondarGLSurfaceView.onPause();
 	}
 
 	@Override

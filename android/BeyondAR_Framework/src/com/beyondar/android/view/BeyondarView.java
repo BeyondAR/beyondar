@@ -11,7 +11,6 @@ import com.beyondar.android.opengl.renderer.ARRenderer.FpsUpdatable;
 import com.beyondar.android.view.BeyondarGLSurfaceView.OnARTouchListener;
 import com.beyondar.android.world.World;
 
-//TODO: Create a fragment instead
 public class BeyondarView extends FrameLayout implements FpsUpdatable {
 
 	private CameraView mBeyondarCameraView;

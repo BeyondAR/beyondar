@@ -3,8 +3,10 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent" >
 
-    <com.beyondar.android.view.BeyondarView
-        android:id="@+id/beyondarView"
+    <fragment
+        android:id="@+id/beyondarFragment"
+        android:name="com.beyondar.android.fragment.BeyondarFragmentSupport"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
+
 </FrameLayout>

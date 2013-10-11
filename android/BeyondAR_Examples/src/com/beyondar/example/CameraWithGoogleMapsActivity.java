@@ -39,7 +39,7 @@ import com.beyondar.android.world.World;
 public class CameraWithGoogleMapsActivity extends FragmentActivity implements OnARTouchListener,
 		FpsUpdatable, OnClickListener {
 
-	private BeyondarFragmentSupport mBeyondarView;
+	private BeyondarFragmentSupport mBeyondarFragment;
 	private World mWorld;
 
 	private TextView mLabelText;
@@ -62,11 +62,11 @@ public class CameraWithGoogleMapsActivity extends FragmentActivity implements On
 		// ...And fill it
 		WorldHelper.generateObjects(mWorld);
 
-		mBeyondarView.setWorld(mWorld);
-		mBeyondarView.setFpsUpdatable(this);
+		mBeyondarFragment.setWorld(mWorld);
+		mBeyondarFragment.setFpsUpdatable(this);
 
 		// set listener for the geoObjects
-		mBeyondarView.setOnARTouchListener(this);
+		mBeyondarFragment.setOnARTouchListener(this);
 
 		// We can use this method to store an unique world instance
 		World.setWorld(mWorld);
@@ -134,7 +134,7 @@ public class CameraWithGoogleMapsActivity extends FragmentActivity implements On
 
 	private void loadViewFromXML() {
 		setContentView(R.layout.camera_with_google_maps);
-		mBeyondarView = (BeyondarFragmentSupport) getSupportFragmentManager().findFragmentById(
+		mBeyondarFragment = (BeyondarFragmentSupport) getSupportFragmentManager().findFragmentById(
 				R.id.beyondarFragment);
 
 		mLabelText = (TextView) findViewById(R.id.labelText);

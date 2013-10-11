@@ -36,7 +36,7 @@ public class WorldHelper {
 		go1.setImageResource(R.drawable.creature_1);
 		go1.setName("Creature 1");
 
-		// Is it also possible to load the image dynamically form internet
+		// Is it also possible to load the image asynchronously form internet
 		GeoObject go2 = new GeoObject(2l);
 		go2.setGeoPosition(41.26518966360719d, 1.92582424468222d);
 		go2.setImageUri("http://beyondar.com/sites/default/files/logo_reduced.png");

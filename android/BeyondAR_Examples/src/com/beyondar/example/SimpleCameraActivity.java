@@ -24,7 +24,7 @@ import com.beyondar.android.world.World;
 
 public class SimpleCameraActivity extends FragmentActivity {
 
-	private BeyondarFragmentSupport mBeyondarView;
+	private BeyondarFragmentSupport mBeyondarFragment;
 	private World mWorld;
 
 	/** Called when the activity is first created. */
@@ -34,19 +34,21 @@ public class SimpleCameraActivity extends FragmentActivity {
 
 		// Hide the window title.
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
+		
 		setContentView(R.layout.simple_camera);
-		mBeyondarView = (BeyondarFragmentSupport) getSupportFragmentManager().findFragmentById(
+		
+		mBeyondarFragment = (BeyondarFragmentSupport) getSupportFragmentManager().findFragmentById(
 				R.id.beyondarFragment);
 
 		// We create the world...
 		mWorld = new World(this);
 		// ... fill it ...
 		WorldHelper.generateObjects(mWorld);
-		// .. and send it to the view
-		mBeyondarView.setWorld(mWorld);
+		// .. and send it to the fragment
+		mBeyondarFragment.setWorld(mWorld);
 
 		// We can see the Frames per seconds
-		mBeyondarView.showFPS(true);
+		mBeyondarFragment.showFPS(true);
 
 	}
 

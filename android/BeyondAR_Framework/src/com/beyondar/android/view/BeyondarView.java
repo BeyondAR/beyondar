@@ -37,7 +37,7 @@ public class BeyondarView extends FrameLayout implements FpsUpdatable {
 				ViewGroup.LayoutParams.MATCH_PARENT);
 
 		mBeyondarGLSurface = getBeyondarGLSurfaceView();
-		mBeyondarCameraView = getCameraView();
+		mBeyondarCameraView = createCameraView();
 
 		addView(mBeyondarCameraView, params);
 		addView(mBeyondarGLSurface, params);
@@ -59,7 +59,7 @@ public class BeyondarView extends FrameLayout implements FpsUpdatable {
 	 * 
 	 * @return
 	 */
-	protected CameraView getCameraView() {
+	protected CameraView createCameraView() {
 		return new CameraView(getContext());
 	}
 
@@ -72,10 +72,12 @@ public class BeyondarView extends FrameLayout implements FpsUpdatable {
 	}
 
 	public void pause() {
+		mBeyondarCameraView.stopPreviewCamera();
 		mBeyondarGLSurface.onPause();
 	}
 
 	public void resume() {
+		mBeyondarCameraView.startPreviewCamera();
 		mBeyondarGLSurface.onResume();
 	}
 

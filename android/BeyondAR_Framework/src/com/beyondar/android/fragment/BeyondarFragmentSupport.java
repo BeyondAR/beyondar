@@ -5,6 +5,7 @@ import com.beyondar.android.view.BeyondarView;
 import com.beyondar.android.view.BeyondarGLSurfaceView.OnARTouchListener;
 import com.beyondar.android.world.World;
 
+import android.app.Activity;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -33,6 +34,7 @@ public class BeyondarFragmentSupport extends Fragment {
 		// Every time that the activity is resumed we need to notify the
 		// BeyondarView
 		mBeyondarView.resume();
+		mBeyondarView.startRenderingAR();
 	}
 
 	@Override
@@ -41,6 +43,7 @@ public class BeyondarFragmentSupport extends Fragment {
 		// Every time that the activity is paused we need to notify the
 		// BeyondarView
 		mBeyondarView.pause();
+		mBeyondarView.stopRenderingAR();
 	}
 
 	public void setOnARTouchListener(OnARTouchListener listener) {

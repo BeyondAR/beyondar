@@ -24,7 +24,9 @@ import android.graphics.PixelFormat;
 import android.hardware.SensorManager;
 import android.opengl.GLSurfaceView;
 import android.util.AttributeSet;
+import android.view.Display;
 import android.view.MotionEvent;
+import android.view.WindowManager;
 
 import com.beyondar.android.opengl.renderer.ARRenderer;
 import com.beyondar.android.opengl.renderer.ARRenderer.FpsUpdatable;
@@ -111,7 +113,7 @@ public class BeyondarGLSurfaceView extends GLSurfaceView {
 	 * @param renderer
 	 */
 	protected void configureRenderer(ARRenderer renderer) {
-		renderer.rotateView(CompatibilityUtil.isTablet(mContext)
+		renderer.rotateViewForTablet(CompatibilityUtil.isTablet(mContext)
 				&& !CompatibilityUtil.is7InchTablet(getContext()));
 	}
 
@@ -199,6 +201,12 @@ public class BeyondarGLSurfaceView extends GLSurfaceView {
 	@Override
 	public void onResume() {
 		super.onResume();
+
+		if (mRenderer != null) {
+			Display display = ((WindowManager) getContext().getSystemService(Context.WINDOW_SERVICE))
+					.getDefaultDisplay();
+			mRenderer.rotateView(display.getRotation());
+		}
 	}
 
 	@Override
@@ -207,9 +215,9 @@ public class BeyondarGLSurfaceView extends GLSurfaceView {
 			return false;
 		}
 
-		if (AnnotationsUtils.hasUiAnnotation(mTouchListener, OnARTouchListener.__ON_AR_TOUCH_METHOD_NAME__)){
+		if (AnnotationsUtils.hasUiAnnotation(mTouchListener, OnARTouchListener.__ON_AR_TOUCH_METHOD_NAME__)) {
 			mTouchListener.onTouchARView(event, this);
-		}else{
+		} else {
 			new Thread(new Runnable() {
 				@Override
 				public void run() {
@@ -262,14 +270,15 @@ public class BeyondarGLSurfaceView extends GLSurfaceView {
 	}
 
 	public static interface OnARTouchListener {
-		
+
 		static final String __ON_AR_TOUCH_METHOD_NAME__ = "onTouchARView";
 
 		/**
 		 * Use
 		 * {@link BeyondarGLSurfaceView#getARObjectOnScreenCoordinates(float, float)}
 		 * to get the object touched:<br>
-		 * This method will not run in the UI thread. To do so use the annotation @OnUiThread
+		 * This method will not run in the UI thread. To do so use the
+		 * annotation @OnUiThread
 		 * 
 		 * <pre>
 		 * {@code

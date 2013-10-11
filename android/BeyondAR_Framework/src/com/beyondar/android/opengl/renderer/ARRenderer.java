@@ -39,6 +39,7 @@ import android.opengl.GLU;
 import android.opengl.GLUtils;
 import android.os.Handler;
 import android.os.Looper;
+import android.view.Surface;
 
 import com.beyondar.android.opengl.renderable.Renderable;
 import com.beyondar.android.opengl.texture.Texture;
@@ -112,6 +113,7 @@ public class ARRenderer implements GLSurfaceView.Renderer, SensorEventListener,
 	private SensorEventListener mExternalSensorListener;
 
 	private boolean mIsTablet;
+	private int mSurfaceRotation;
 
 	protected Point3 cameraPosition;
 	protected boolean reloadWorldTextures;
@@ -140,8 +142,21 @@ public class ARRenderer implements GLSurfaceView.Renderer, SensorEventListener,
 	 * 
 	 * @param isTablet
 	 */
-	public void rotateView(boolean isTablet) {
+	public void rotateViewForTablet(boolean isTablet) {
 		mIsTablet = isTablet;
+	}
+
+	/**
+	 * Set the rotation of the device:<br>
+	 * Surface.ROTATION_0<br>
+	 * Surface.ROTATION_90<br>
+	 * Surface.ROTATION_180<br>
+	 * Surface.ROTATION_270<br>
+	 * 
+	 * @param surfaceRotation
+	 */
+	public void rotateView(int surfaceRotation) {
+		mSurfaceRotation = surfaceRotation;
 	}
 
 	/**
@@ -196,14 +211,24 @@ public class ARRenderer implements GLSurfaceView.Renderer, SensorEventListener,
 		SensorManager.getInclination(sInclination);
 		SensorManager.getRotationMatrix(mRotationMatrix, sInclination, mAccelerometerValues, mMagneticValues);
 		if (mIsTablet) {
-			android.hardware.SensorManager.remapCoordinateSystem(mRotationMatrix,
-					android.hardware.SensorManager.AXIS_MINUS_Y, android.hardware.SensorManager.AXIS_X,
-					mRotationMatrix);
+			SensorManager.remapCoordinateSystem(mRotationMatrix, SensorManager.AXIS_MINUS_Y,
+					SensorManager.AXIS_X, mRotationMatrix);
 		}
 
-		// TODO: Change this to be able to support non landscape mode
-		// As the documentation says, we are using the device as a compass in
-		// landscape mode
+		//TODO: Optimize this code
+		//TODO: Fix rotation for 270
+		switch (mSurfaceRotation) {
+		case Surface.ROTATION_0:
+		case Surface.ROTATION_180:
+			SensorManager.remapCoordinateSystem(mRotationMatrix, SensorManager.AXIS_MINUS_Y,
+					SensorManager.AXIS_X, mRotationMatrix);
+			break;
+		case Surface.ROTATION_90:
+			break;
+		case Surface.ROTATION_270:
+			break;
+		}
+		
 		SensorManager.remapCoordinateSystem(mRotationMatrix, SensorManager.AXIS_Y,
 				SensorManager.AXIS_MINUS_X, mRemappedRotationMatrix);
 

@@ -137,5 +137,5 @@ If we want to run the `onTouchARView` method in the UI thread we can use the ann
 @Override
 @OnUiThread
 public void onTouchARView(MotionEvent event, BeyondarGLSurfaceView beyondarView) {
-…
+...
 ```

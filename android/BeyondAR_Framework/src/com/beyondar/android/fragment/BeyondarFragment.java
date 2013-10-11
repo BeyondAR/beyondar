@@ -1,17 +1,16 @@
 package com.beyondar.android.fragment;
 
-import com.beyondar.android.opengl.renderer.ARRenderer.FpsUpdatable;
-import com.beyondar.android.view.BeyondarView;
-import com.beyondar.android.view.BeyondarGLSurfaceView.OnARTouchListener;
-import com.beyondar.android.world.World;
-
 import android.annotation.SuppressLint;
 import android.app.Fragment;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.FrameLayout.LayoutParams;
+
+import com.beyondar.android.opengl.renderer.ARRenderer.FpsUpdatable;
+import com.beyondar.android.view.BeyondarGLSurfaceView.OnARTouchListener;
+import com.beyondar.android.view.BeyondarView;
+import com.beyondar.android.world.World;
 
 @SuppressLint("NewApi")
 public class BeyondarFragment extends Fragment {

@@ -17,20 +17,15 @@ package com.beyondar.android.world;
 
 import android.location.Location;
 
-import com.beyondar.android.util.Constants;
 import com.beyondar.android.util.math.Distance;
 import com.beyondar.android.world.module.BeyondarObjectModule;
 import com.beyondar.android.world.module.GeoObjectModule;
-import com.google.android.maps.GeoPoint;
 
 public class GeoObject extends BeyondarObject {
 
 	private double mLongitude;
 	private double mLatitude;
 	private double mAltitude;
-
-	@Deprecated
-	protected GeoPoint mGeoPoint;
 
 	/**
 	 * Create an instance of a {@link GeoObject} with an unique ID
@@ -43,21 +38,6 @@ public class GeoObject extends BeyondarObject {
 		setVisibile(true);
 	}
 
-	@Deprecated
-	public void setLongitude(double longitude) {
-		mLongitude = longitude;
-	}
-
-	@Deprecated
-	public void setLatitude(double latitude) {
-		mLatitude = latitude;
-	}
-
-	@Deprecated
-	public void setAltitude(double altitude) {
-		mAltitude = altitude;
-	}
-
 	public void setGeoPosition(double latitude, double longitude) {
 		setGeoPosition(latitude, longitude, mAltitude);
 	}
@@ -67,8 +47,8 @@ public class GeoObject extends BeyondarObject {
 		mLongitude = longitude;
 		mAltitude = altitude;
 		synchronized (lockModules) {
-			for(BeyondarObjectModule module : modules){
-				if (module instanceof GeoObjectModule){
+			for (BeyondarObjectModule module : modules) {
+				if (module instanceof GeoObjectModule) {
 					((GeoObjectModule) module).onGeoPositionChanged(latitude, longitude, altitude);
 				}
 			}
@@ -87,25 +67,12 @@ public class GeoObject extends BeyondarObject {
 		return mLatitude;
 	}
 
-	@Deprecated
-	public int getLatitudeE6() {
-		return (int) (mLatitude * Constants.E6);
-	}
-
-	@Deprecated
-	public int getLongitudeE6() {
-		return (int) (mLongitude * Constants.E6);
-	}
-
-	@Deprecated
 	public void setLocation(Location location) {
 
 		if (location == null) {
 			return;
 		}
-		setLatitude(location.getLatitude());
-		setLongitude(location.getLongitude());
-		setAltitude(location.getAltitude());
+		setGeoPosition(location.getLatitude(), location.getLongitude());
 	}
 
 	public double calculateDistanceMeters(GeoObject geo) {
@@ -116,17 +83,4 @@ public class GeoObject extends BeyondarObject {
 		return Distance.calculateDistanceMeters(getLongitude(), getLatitude(), longitude, latitude);
 	}
 
-	@Deprecated
-	public GeoPoint getGeoPoint() {
-		if (mGeoPoint == null) {
-			mGeoPoint = new GeoPoint(getLatitudeE6(), getLongitudeE6());
-			return mGeoPoint;
-		}
-
-		if (getLatitudeE6() == mGeoPoint.getLatitudeE6() && getLongitudeE6() == mGeoPoint.getLongitudeE6()) {
-			return mGeoPoint;
-		}
-		mGeoPoint = new GeoPoint(getLatitudeE6(), getLongitudeE6());
-		return mGeoPoint;
-	}
 }

@@ -264,25 +264,6 @@ public class World implements Modulable<WorldModule> {
 		return mAltitude;
 	}
 
-	/**
-	 * Set the user's altitude
-	 * 
-	 * @param altitude
-	 */
-	@Deprecated
-	public void setAltitude(double altitude) {
-		mAltitude = altitude;
-	}
-
-	/**
-	 * Set the user's Longitude
-	 * 
-	 * @param longitude
-	 */
-	@Deprecated
-	public void setLongitude(double longitude) {
-		this.mLongitude = longitude;
-	}
 
 	/**
 	 * Get the user's latitude
@@ -291,16 +272,6 @@ public class World implements Modulable<WorldModule> {
 	 */
 	public double getLatitude() {
 		return mLatitude;
-	}
-
-	/**
-	 * Set the user's latitude.
-	 * 
-	 * @param latitude
-	 */
-	@Deprecated
-	public void setLatitude(double latitude) {
-		this.mLatitude = latitude;
 	}
 
 	public void setGeoPosition(double latitude, double longitude, double altitude) {
@@ -318,17 +289,15 @@ public class World implements Modulable<WorldModule> {
 		setGeoPosition(latitude, longitude, mAltitude);
 	}
 
-	@Deprecated
 	public void setLocation(Location location) {
 
 		if (location == null) {
 			return;
 		}
-		setLatitude(location.getLatitude());
-		setLongitude(location.getLongitude());
 		// We do not set the altitude because it is a big source of issues, the
 		// accuracy is too bad
-		// setAltitude(location.getAltitude());
+		setGeoPosition(location.getLatitude(), location.getLongitude());
+
 	}
 
 	public synchronized void setDefaultBitmap(int defaultBitmap) {
@@ -338,7 +307,7 @@ public class World implements Modulable<WorldModule> {
 	public synchronized void setDefaultBitmap(String uri) {
 		mDefaultBitmap = uri;
 		synchronized (mLockModules) {
-			for (WorldModule module: mModules){
+			for (WorldModule module : mModules) {
 				module.onDefaultImageChanged(uri);
 			}
 		}

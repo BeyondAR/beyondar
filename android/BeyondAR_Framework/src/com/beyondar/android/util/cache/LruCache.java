@@ -16,10 +16,10 @@
 
 package com.beyondar.android.util.cache;
 
-import android.annotation.SuppressLint;
 import java.util.LinkedHashMap;
-import java.util.Locale;
 import java.util.Map;
+
+import android.annotation.SuppressLint;
 
 /**
  * A cache that holds strong references to a limited number of values. Each time

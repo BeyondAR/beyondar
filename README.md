@@ -128,5 +128,6 @@ public void onTouchARView(MotionEvent event, BeyondarGLSurfaceView beyondarView)
      }
      doSomethingInTheUIThread(textEvent);
 }
-
 ```
+
+If we want to run the `onTouchARView` method in the UI thread, we can use the annotation `@OnUiThread` for that purpose.

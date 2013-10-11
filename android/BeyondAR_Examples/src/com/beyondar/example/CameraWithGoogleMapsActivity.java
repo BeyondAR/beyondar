@@ -68,9 +68,6 @@ public class CameraWithGoogleMapsActivity extends FragmentActivity implements On
 		// set listener for the geoObjects
 		mBeyondarFragment.setOnARTouchListener(this);
 
-		// We can use this method to store an unique world instance
-		World.setWorld(mWorld);
-
 	}
 
 	@Override

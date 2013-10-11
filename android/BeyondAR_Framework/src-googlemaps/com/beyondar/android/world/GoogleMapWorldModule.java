@@ -28,7 +28,7 @@ import com.beyondar.android.util.ImageUtils;
 import com.beyondar.android.util.PendingBitmapsToBeLoaded;
 import com.beyondar.android.util.cache.BitmapCache;
 import com.beyondar.android.util.cache.BitmapCache.OnExternalBitmapLoadedCahceListener;
-import com.beyondar.android.world.module.GeoObjectGoogleMapModule;
+import com.beyondar.android.world.module.GoogleMapGeoObjectModule;
 import com.beyondar.android.world.module.GeoObjectModule;
 import com.beyondar.android.world.module.WorldModule;
 import com.google.android.gms.maps.GoogleMap;
@@ -37,7 +37,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
-public class WorldGoogleMapModule implements WorldModule, OnExternalBitmapLoadedCahceListener {
+public class GoogleMapWorldModule implements WorldModule, OnExternalBitmapLoadedCahceListener {
 
 	/** Default icon size for the markers in dips */
 	public static final int DEFAULT_ICON_SIZE_MARKER = 40;
@@ -49,7 +49,7 @@ public class WorldGoogleMapModule implements WorldModule, OnExternalBitmapLoaded
 	private int mIconSize;
 	private PendingBitmapsToBeLoaded<GeoObject> mPendingBitmaps;
 
-	private HashMap<Marker, GeoObjectGoogleMapModule> mMarkerHashMap;
+	private HashMap<Marker, GoogleMapGeoObjectModule> mMarkerHashMap;
 
 	private LatLng mLatLng;
 
@@ -57,18 +57,18 @@ public class WorldGoogleMapModule implements WorldModule, OnExternalBitmapLoaded
 
 	private static Handler sHandler = new Handler(Looper.getMainLooper());
 
-	public WorldGoogleMapModule() {
-		mMarkerHashMap = new HashMap<Marker, GeoObjectGoogleMapModule>();
+	public GoogleMapWorldModule() {
+		mMarkerHashMap = new HashMap<Marker, GoogleMapGeoObjectModule>();
 		mPendingBitmaps = new PendingBitmapsToBeLoaded<GeoObject>();
 		mAttached = false;
 	}
 
-	public WorldGoogleMapModule(GoogleMap map) {
+	public GoogleMapWorldModule(GoogleMap map) {
 		this();
 		mMap = map;
 	}
 
-	public WorldGoogleMapModule(int iconSize) {
+	public GoogleMapWorldModule(int iconSize) {
 		this();
 		mIconSize = iconSize;
 	}
@@ -79,7 +79,7 @@ public class WorldGoogleMapModule implements WorldModule, OnExternalBitmapLoaded
 	 * @param iconSize
 	 * @return The instance itself
 	 */
-	public WorldGoogleMapModule setMarkerIconSize(int iconSize) {
+	public GoogleMapWorldModule setMarkerIconSize(int iconSize) {
 		mIconSize = iconSize;
 		return this;
 	}
@@ -88,10 +88,16 @@ public class WorldGoogleMapModule implements WorldModule, OnExternalBitmapLoaded
 		return mWorld.getBitmapCache().newCache(getClass().getName(), true);
 	}
 
+	/**
+	 * This method adds the {@link GoogleMapGeoObjectModule} to the
+	 * {@link GeoObject}
+	 * 
+	 * @param beyondarObject
+	 */
 	protected void addGooGleMapModule(BeyondarObject beyondarObject) {
 		if (beyondarObject instanceof GeoObject) {
-			if (!beyondarObject.containsAnyModule(GeoObjectGoogleMapModuleImpl.class)) {
-				GeoObjectGoogleMapModule module = new GeoObjectGoogleMapModuleImpl(this);
+			if (!beyondarObject.containsAnyModule(GoogleMapGeoObjectModuleImpl.class)) {
+				GoogleMapGeoObjectModule module = new GoogleMapGeoObjectModuleImpl(this);
 				beyondarObject.addModule(module);
 				createMarker((GeoObject) beyondarObject, module);
 			}
@@ -118,7 +124,7 @@ public class WorldGoogleMapModule implements WorldModule, OnExternalBitmapLoaded
 	 * @param map
 	 * @return The instance of itself
 	 */
-	public WorldGoogleMapModule setGoogleMap(GoogleMap map) {
+	public GoogleMapWorldModule setGoogleMap(GoogleMap map) {
 		mMap = map;
 		createMarkers();
 		return this;
@@ -141,10 +147,10 @@ public class WorldGoogleMapModule implements WorldModule, OnExternalBitmapLoaded
 
 	protected void createMarker(GeoObject geoObject) {
 		createMarker(geoObject,
-				(GeoObjectGoogleMapModule) geoObject.getFirstModule(GeoObjectGoogleMapModule.class));
+				(GoogleMapGeoObjectModule) geoObject.getFirstModule(GoogleMapGeoObjectModule.class));
 	}
 
-	protected void createMarker(GeoObject geoObject, GeoObjectGoogleMapModule module) {
+	protected void createMarker(GeoObject geoObject, GoogleMapGeoObjectModule module) {
 		if (geoObject == null || module == null) {
 			return;
 		}
@@ -163,11 +169,11 @@ public class WorldGoogleMapModule implements WorldModule, OnExternalBitmapLoaded
 		}
 	}
 
-	public void registerMarker(Marker marker, GeoObjectGoogleMapModule module) {
+	public void registerMarker(Marker marker, GoogleMapGeoObjectModule module) {
 		mMarkerHashMap.put(marker, module);
 	}
 
-	protected MarkerOptions createMarkerOptions(GeoObject geoObject, GeoObjectGoogleMapModule module) {
+	protected MarkerOptions createMarkerOptions(GeoObject geoObject, GoogleMapGeoObjectModule module) {
 		if (geoObject == null || module == null) {
 			return null;
 		}
@@ -181,8 +187,8 @@ public class WorldGoogleMapModule implements WorldModule, OnExternalBitmapLoaded
 		if (geoObject == null) {
 			return null;
 		}
-		GeoObjectGoogleMapModule module = (GeoObjectGoogleMapModule) geoObject
-				.getFirstModule(GeoObjectGoogleMapModule.class);
+		GoogleMapGeoObjectModule module = (GoogleMapGeoObjectModule) geoObject
+				.getFirstModule(GoogleMapGeoObjectModule.class);
 
 		return createMarkerOptions(geoObject, module);
 	}
@@ -236,8 +242,8 @@ public class WorldGoogleMapModule implements WorldModule, OnExternalBitmapLoaded
 		for (int i = 0; i < list.size(); i++) {
 			GeoObject gogm = list.get(i);
 
-			final GeoObjectGoogleMapModule module = (GeoObjectGoogleMapModule) gogm
-					.getFirstModule(GeoObjectGoogleMapModule.class);
+			final GoogleMapGeoObjectModule module = (GoogleMapGeoObjectModule) gogm
+					.getFirstModule(GoogleMapGeoObjectModule.class);
 			if (module != null) {
 				sHandler.post(new Runnable() {
 					@Override
@@ -302,8 +308,8 @@ public class WorldGoogleMapModule implements WorldModule, OnExternalBitmapLoaded
 	public void onBeyondarObjectRemoved(BeyondarObject beyondarObject, BeyondarObjectList beyondarObjectList) {
 		if (beyondarObject instanceof GeoObject) {
 			GeoObject geoObject = (GeoObject) beyondarObject;
-			GeoObjectGoogleMapModule gogmMod = (GeoObjectGoogleMapModule) geoObject
-					.getFirstModule(GeoObjectGoogleMapModule.class);
+			GoogleMapGeoObjectModule gogmMod = (GoogleMapGeoObjectModule) geoObject
+					.getFirstModule(GoogleMapGeoObjectModule.class);
 			if (gogmMod != null) {
 				if (gogmMod.getMarker() != null) {
 					mMarkerHashMap.remove(gogmMod.getMarker());
@@ -339,6 +345,6 @@ public class WorldGoogleMapModule implements WorldModule, OnExternalBitmapLoaded
 
 	@Override
 	public void onDefaultImageChanged(String uri) {
-		//TODO: Change the markers with a default image??
+		// TODO: Change all the markers with a default image??
 	}
 }

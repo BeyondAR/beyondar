@@ -20,7 +20,7 @@ import android.support.v4.app.FragmentActivity;
 import android.widget.Toast;
 
 import com.beyondar.android.world.GeoObject;
-import com.beyondar.android.world.WorldGoogleMapModule;
+import com.beyondar.android.world.GoogleMapWorldModule;
 import com.beyondar.android.world.World;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -30,8 +30,8 @@ import com.google.android.gms.maps.model.Marker;
 
 public class GoogleMapActivity extends FragmentActivity implements OnMarkerClickListener {
 
-	private GoogleMap map;
-	private WorldGoogleMapModule mGoogleMapModule;
+	private GoogleMap mMap;
+	private GoogleMapWorldModule mGoogleMapModule;
 	private World mWorld;
 
 	@Override
@@ -39,26 +39,26 @@ public class GoogleMapActivity extends FragmentActivity implements OnMarkerClick
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.map_google);
 
-		map = ((SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map)).getMap();
+		mMap = ((SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map)).getMap();
 
 		// We create the world...
 		mWorld = new World(this);
 
 		// As we want to use GoogleMaps, we are going to create the module and
 		// attach it to the World
-		mGoogleMapModule = new WorldGoogleMapModule();
+		mGoogleMapModule = new GoogleMapWorldModule();
 		// Then we need to set the map in to the GoogleMapModule
-		mGoogleMapModule.setGoogleMap(map);
+		mGoogleMapModule.setGoogleMap(mMap);
 		// Now that we have the module created let's add it in to our world
 		mWorld.addModule(mGoogleMapModule);
 
 		// Now we fill the world
 		WorldHelper.generateObjects(mWorld);
 
-		map.setOnMarkerClickListener(this);
+		mMap.setOnMarkerClickListener(this);
 
-		map.moveCamera(CameraUpdateFactory.newLatLngZoom(mGoogleMapModule.getLatLng(), 15));
-		map.animateCamera(CameraUpdateFactory.zoomTo(19), 2000, null);
+		mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(mGoogleMapModule.getLatLng(), 15));
+		mMap.animateCamera(CameraUpdateFactory.zoomTo(19), 2000, null);
 	}
 
 	@Override

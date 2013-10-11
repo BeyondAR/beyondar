@@ -139,3 +139,57 @@ If we want to run the `onTouchARView` method in the UI thread we can use the ann
 public void onTouchARView(MotionEvent event, BeyondarGLSurfaceView beyondarView) {
 ...
 ```
+
+##Adding GoogleMaps support
+BeyondAR Framework uses modules to be able to add multiple features to the world engine. Google Maps is one example.
+
+To draw the all the `World` elements in the Google Map framework we just need a few lines of code:
+
+```java
+...
+private GoogleMap mMap;
+private GoogleMapWorldModule mGoogleMapModule;
+...
+
+@Override
+protected void onCreate(Bundle savedInstanceState) {
+     ...
+     mMap = ((SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map)).getMap();
+
+     // We create the world...
+     mWorld = new World(this);
+     // As we want to use GoogleMaps, we are going to create the module and
+     // attach it to the World
+     mGoogleMapModule = new GoogleMapWorldModule();
+     // Then we need to set the map in to the GoogleMapModule
+     mGoogleMapModule.setGoogleMap(mMap);
+     // Now that we have the module created let's add it in to our world
+     mWorld.addModule(mGoogleMapModule);
+     
+     // Now we fill the world
+     ...
+}
+```
+The `GoogleMapWorldModule` will take care of drawing all the `GeoObjects` in the `GoogleMap` object. So we also can add the a listener to the map to get notify when a `Marker` is click and then we can check which `GeoObject` is the owner of that `Marker`:
+
+```java
+@Override
+protected void onCreate(Bundle savedInstanceState) {
+     ...
+     mMap.setOnMarkerClickListener(this);
+     ...
+}
+
+@Override
+public boolean onMarkerClick(Marker marker) {
+     // To get the GeoObject that owns the marker we use the following
+     // method:
+     GeoObject geoObject = mGoogleMapModule.getGeoObjectOwner(marker);
+     if (geoObject != null) {
+          Toast.makeText(this, "Click on a marker owned by a GeoOject with the name: " + geoObject.getName(), Toast.LENGTH_SHORT).show();
+     }
+     return false;
+}
+```	
+
+

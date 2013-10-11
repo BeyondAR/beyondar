@@ -20,21 +20,21 @@ import android.graphics.Bitmap;
 import com.beyondar.android.opengl.renderable.Renderable;
 import com.beyondar.android.opengl.texture.Texture;
 import com.beyondar.android.util.math.geom.Point3;
-import com.beyondar.android.world.module.GeoObjectGoogleMapModule;
+import com.beyondar.android.world.module.GoogleMapGeoObjectModule;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
-public class GeoObjectGoogleMapModuleImpl implements GeoObjectGoogleMapModule {
+class GoogleMapGeoObjectModuleImpl implements GoogleMapGeoObjectModule {
 
 	private Marker mMarker;
 	private LatLng mLatLng;
 	private GeoObject mGeoObject;
 	private boolean mAttached;
-	private WorldGoogleMapModule mWorldGoogleMapModule;
+	private GoogleMapWorldModule mWorldGoogleMapModule;
 
-	public GeoObjectGoogleMapModuleImpl(WorldGoogleMapModule worldGoogleMapModule) {
+	public GoogleMapGeoObjectModuleImpl(GoogleMapWorldModule worldGoogleMapModule) {
 		mAttached = false;
 		mWorldGoogleMapModule = worldGoogleMapModule;
 		if (mWorldGoogleMapModule == null){
@@ -47,7 +47,7 @@ public class GeoObjectGoogleMapModuleImpl implements GeoObjectGoogleMapModule {
 		if (beyondarObject instanceof GeoObject) {
 			mGeoObject = (GeoObject) beyondarObject;
 		}else{
-			throw new IllegalArgumentException("BeyondarObject must be a GeoObject");
+			throw new IllegalArgumentException("beyondarObject must be a GeoObject");
 		}
 		if (mGeoObject == null){
 			throw new NullPointerException("The BeyondarObject must not be null");

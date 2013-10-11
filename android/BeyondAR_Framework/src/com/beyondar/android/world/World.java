@@ -36,26 +36,6 @@ public class World implements Modulable<WorldModule> {
 
 	protected static final String TAG = "world";
 
-	private static World sWorld;
-
-	/**
-	 * This method helps you to create an unique world class
-	 * 
-	 * @param world
-	 */
-	public static void setWorld(World world) {
-		sWorld = world;
-	}
-
-	/**
-	 * Get the world
-	 * 
-	 * @return
-	 */
-	public static World getWorld() {
-		return sWorld;
-	}
-
 	/**
 	 * The maximum distance that the object will be displayed (meters) in the AR
 	 * view

@@ -8,6 +8,10 @@ This framework has been designed to offer some resources to those developers wit
 ![Screenshot](http://beyondar.com/pictures/screenshots/screen_4.jpg)
 ![Screenshot](http://beyondar.com/pictures/screenshots/screen_1.jpg)
 
+##Adding BeyondAR in to your project
+
+First download the latest version of the framework [here](https://github.com/BeyondAR/beyondar/tree/master/android/libs) and finally copy them in to you libs folder.
+
 ##How to build your first app
 
 To create the UI it we can choose using an Android Layout XML or using java code. For both of them we can use the `BeyondarFragmentSupport` or the `BeyondarFragment` fragments.

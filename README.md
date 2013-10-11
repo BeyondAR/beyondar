@@ -10,7 +10,10 @@ This framework has been designed to offer some resources to those developers wit
 
 ##Adding BeyondAR in to your project
 
-First download the latest version of the framework [here](https://github.com/BeyondAR/beyondar/tree/master/android/libs) and finally copy them in to you libs folder.
+Just download the latest version of the framework [here](https://github.com/BeyondAR/beyondar/tree/master/android/libs) and add the needed jar files in to you libs folder.
+
+* beyondar-v#.jar: The basic lib to be able to run the framework
+* beyondar-googlemap-module-v#.jar: Module to use GoogleMaps with your `World`
 
 ##How to build your first app
 

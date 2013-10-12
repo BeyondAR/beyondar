@@ -503,7 +503,6 @@ public class World implements Modulable<WorldModule> {
 		return mArViewDistance;
 	}
 
-	// TODO: Fix this method. It is not sorting from the user distance
 	public void sortGeoObjectByDistanceFromCenter(ArrayList<BeyondarObject> vec) {
 		boolean sorted = false;
 		while (!sorted) {

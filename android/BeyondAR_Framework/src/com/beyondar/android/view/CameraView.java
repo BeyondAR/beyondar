@@ -75,21 +75,14 @@ public class CameraView extends SurfaceView implements SurfaceHolder.Callback, C
 	private void init(Context context) {
 		mHolder = getHolder();
 		mHolder.addCallback(this);
-
-		mIsPreviewRunning = false;
-		try {
-			mCamera = Camera.open();
-			setCamera(mCamera);
-		} catch (Exception e) {
-			Logger.e(TAG, "ERROR: Unable to open the camera", e);
-		}
-
-		if (android.os.Build.VERSION.SDK_INT <= 10) {// Android 2.3.x or lower
+		// Android 2.3.x or lower
+		if (android.os.Build.VERSION.SDK_INT <= 10) {
 			mHolder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
 		}
+		mIsPreviewRunning = false;
 	}
 
-	public void setCamera(Camera camera) {
+	private void configureCamera(Camera camera) {
 		mCamera = camera;
 		if (mCamera != null) {
 			// mSupportedPreviewSizes =
@@ -114,18 +107,16 @@ public class CameraView extends SurfaceView implements SurfaceHolder.Callback, C
 	// }
 
 	public void surfaceCreated(SurfaceHolder holder) {
-		// The Surface has been created, acquire the camera and tell it where
-		// to draw.
 		try {
-
 			if (mCamera == null) {
-				init(getContext());
-				if (mCamera == null) {
-					return;
+				try {
+					mCamera = Camera.open();
+					configureCamera(mCamera);
+				} catch (Exception e) {
+					Logger.e(TAG, "ERROR: Unable to open the camera", e);
 				}
+				mCamera.setPreviewDisplay(holder);
 			}
-
-			mCamera.setPreviewDisplay(holder);
 		} catch (IOException exception) {
 			if (mCamera != null) {
 				mCamera.release();
@@ -139,12 +130,7 @@ public class CameraView extends SurfaceView implements SurfaceHolder.Callback, C
 		// Surface will be destroyed when we return, so stop the preview.
 		// Because the CameraDevice object is not a shared resource, it's very
 		// important to release it when the activity is paused.
-		if (mCamera == null) {
-			return;
-		}
-		mCamera.stopPreview();
-		mCamera.release();
-		mCamera = null;
+		releaseCamera();
 	}
 
 	@Override
@@ -189,10 +175,6 @@ public class CameraView extends SurfaceView implements SurfaceHolder.Callback, C
 			return;
 		}
 
-		if (mIsPreviewRunning) {
-			mCamera.stopPreview();
-		}
-
 		Camera.Parameters parameters = mCamera.getParameters();
 
 		Display display = ((WindowManager) getContext().getSystemService(Context.WINDOW_SERVICE))
@@ -201,22 +183,23 @@ public class CameraView extends SurfaceView implements SurfaceHolder.Callback, C
 		// Size previewSize = getPreviewSize();
 		// parameters.setPreviewSize(previewSize.width, previewSize.height);
 
-		if (display.getRotation() == Surface.ROTATION_0) {
-			parameters.setPreviewSize(height, width);
-			mCamera.setDisplayOrientation(90);
-		}
+		try {
+			if (display.getRotation() == Surface.ROTATION_0) {
+				parameters.setPreviewSize(height, width);
+				mCamera.setDisplayOrientation(90);
+			}
+			if (display.getRotation() == Surface.ROTATION_90) {
+				parameters.setPreviewSize(width, height);
+			}
+			if (display.getRotation() == Surface.ROTATION_180) {
+				parameters.setPreviewSize(height, width);
+			}
+			if (display.getRotation() == Surface.ROTATION_270) {
+				parameters.setPreviewSize(width, height);
+				// mCamera.setDisplayOrientation(180);
+			}
+		} catch (RuntimeException e) {
 
-		if (display.getRotation() == Surface.ROTATION_90) {
-			parameters.setPreviewSize(width, height);
-		}
-
-		if (display.getRotation() == Surface.ROTATION_180) {
-			parameters.setPreviewSize(height, width);
-		}
-
-		if (display.getRotation() == Surface.ROTATION_270) {
-			parameters.setPreviewSize(width, height);
-			//mCamera.setDisplayOrientation(180);
 		}
 
 		mCamera.setParameters(parameters);
@@ -241,15 +224,25 @@ public class CameraView extends SurfaceView implements SurfaceHolder.Callback, C
 	}
 
 	public void startPreviewCamera() {
+		if (mIsPreviewRunning){
+			return;
+		}
 		if (mCamera == null) {
 			return;
 		}
 		mIsPreviewRunning = true;
 		try {
-			mCamera.setPreviewDisplay(mHolder);
 			mCamera.startPreview();
 		} catch (Exception e) {
 			Logger.w(TAG, "Cannot start preview.", e);
+		}
+	}
+	
+	public void releaseCamera() {
+		stopPreviewCamera();
+		if (mCamera != null) {
+			mCamera.release();
+			mCamera = null;
 		}
 	}
 

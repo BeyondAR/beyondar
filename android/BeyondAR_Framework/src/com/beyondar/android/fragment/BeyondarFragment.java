@@ -6,16 +6,23 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
+import android.widget.RelativeLayout.LayoutParams;
 
 import com.beyondar.android.opengl.renderer.ARRenderer.FpsUpdatable;
+import com.beyondar.android.view.BeyondarGLSurfaceView;
+import com.beyondar.android.view.CameraView;
 import com.beyondar.android.view.BeyondarGLSurfaceView.OnARTouchListener;
-import com.beyondar.android.view.BeyondarView;
 import com.beyondar.android.world.World;
 
 @SuppressLint("NewApi")
-public class BeyondarFragment extends Fragment {
+public class BeyondarFragment extends Fragment implements FpsUpdatable{
 
-	private BeyondarView mBeyondarView;
+	private CameraView mBeyondarCameraView;
+	private BeyondarGLSurfaceView mBeyondarGLSurface;
+	private TextView mFpsTextView;
+	private RelativeLayout mParentLayout;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -24,17 +31,29 @@ public class BeyondarFragment extends Fragment {
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-		mBeyondarView = new BeyondarView(getActivity());
-		mBeyondarView.startRenderingAR();
-		return mBeyondarView;
+		if (mParentLayout == null) {
+			android.view.ViewGroup.LayoutParams params = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+					ViewGroup.LayoutParams.MATCH_PARENT);
+			
+			mParentLayout = new RelativeLayout(getActivity());
+			mBeyondarCameraView = createCameraView();
+			mBeyondarGLSurface = getBeyondarGLSurfaceView();
+			
+			mParentLayout.addView(mBeyondarCameraView, params);
+			mParentLayout.addView(mBeyondarGLSurface, params);
+
+		}
+		return mParentLayout;
 	}
+	
 
 	@Override
 	public void onResume() {
 		super.onResume();
 		// Every time that the activity is resumed we need to notify the
 		// BeyondarView
-		mBeyondarView.resume();
+		mBeyondarCameraView.startPreviewCamera();
+		mBeyondarGLSurface.onResume();
 	}
 
 	@Override
@@ -42,15 +61,17 @@ public class BeyondarFragment extends Fragment {
 		super.onPause();
 		// Every time that the activity is paused we need to notify the
 		// BeyondarView
-		mBeyondarView.pause();
+		mBeyondarCameraView.stopPreviewCamera();
+		mBeyondarGLSurface.onPause();
+		//stopRenderingAR();
 	}
 
 	public void setOnARTouchListener(OnARTouchListener listener) {
-		mBeyondarView.setOnARTouchListener(listener);
+		mBeyondarGLSurface.setOnARTouchListener(listener);
 	}
 
 	public void setWorld(World world) {
-		mBeyondarView.setWorld(world);
+		mBeyondarGLSurface.setWorld(world);
 	}
 
 	/**
@@ -71,7 +92,7 @@ public class BeyondarFragment extends Fragment {
 	 * @param delay
 	 */
 	public void setSensorDelay(int delay) {
-		mBeyondarView.setSensorDelay(delay);
+		mBeyondarGLSurface.setSensorDelay(delay);
 	}
 
 	/**
@@ -81,22 +102,69 @@ public class BeyondarFragment extends Fragment {
 	 * @return sensor delay
 	 */
 	public int getSensorDelay() {
-		return mBeyondarView.getSensorDelay();
+		return mBeyondarGLSurface.getSensorDelay();
 	}
 
 	public void showFPS(boolean show) {
-		mBeyondarView.showFPS(show);
+		if (show) {
+			if (mFpsTextView == null) {
+				mFpsTextView = new TextView(getActivity());
+				mFpsTextView.setBackgroundResource(android.R.color.black);
+				mFpsTextView.setTextColor(getResources().getColor(android.R.color.white));
+				android.view.ViewGroup.LayoutParams params = new LayoutParams(
+						ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+				mParentLayout.addView(mFpsTextView, params);
+			}
+			mFpsTextView.setVisibility(View.VISIBLE);
+			setFpsUpdatable(this);
+		} else if (mFpsTextView != null) {
+			mFpsTextView.setVisibility(View.GONE);
+			setFpsUpdatable(null);
+		}
 	}
 
 	public void setFpsUpdatable(FpsUpdatable fpsUpdatable) {
-		mBeyondarView.setFpsUpdatable(fpsUpdatable);
+		mBeyondarGLSurface.setFpsUpdatable(fpsUpdatable);
+	}
+	
+	@Override
+	public void onFpsUpdate(final float fps) {
+		if (mFpsTextView != null) {
+			mFpsTextView.post(new Runnable() {
+				@Override
+				public void run() {
+					mFpsTextView.setText("fps: " + fps);
+				}
+			});
+		}
+
 	}
 
 	public void stopRenderingAR() {
-		mBeyondarView.setVisibility(View.INVISIBLE);
+		mBeyondarGLSurface.setVisibility(View.INVISIBLE);
 	}
 
 	public void startRenderingAR() {
-		mBeyondarView.setVisibility(View.VISIBLE);
+		mBeyondarGLSurface.setVisibility(View.VISIBLE);
+	}
+	
+	/**
+	 * Override this method to personalize the {@link BeyondarGLSurfaceView}
+	 * that will be instantiated
+	 * 
+	 * @return
+	 */
+	protected BeyondarGLSurfaceView getBeyondarGLSurfaceView() {
+		return new BeyondarGLSurfaceView(getActivity());
+	}
+	
+	/**
+	 * Override this method to personalize the {@link CameraView} that will be
+	 * instantiated
+	 * 
+	 * @return
+	 */
+	protected CameraView createCameraView() {
+		return new CameraView(getActivity());
 	}
 }

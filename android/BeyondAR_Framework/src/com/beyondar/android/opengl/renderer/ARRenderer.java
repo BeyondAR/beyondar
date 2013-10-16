@@ -215,8 +215,8 @@ public class ARRenderer implements GLSurfaceView.Renderer, SensorEventListener,
 					SensorManager.AXIS_X, mRotationMatrix);
 		}
 
-		//TODO: Optimize this code
-		//TODO: Fix rotation for 270
+		// TODO: Optimize this code
+		// TODO: Fix rotation for 270
 		switch (mSurfaceRotation) {
 		case Surface.ROTATION_0:
 		case Surface.ROTATION_180:
@@ -228,7 +228,7 @@ public class ARRenderer implements GLSurfaceView.Renderer, SensorEventListener,
 		case Surface.ROTATION_270:
 			break;
 		}
-		
+
 		SensorManager.remapCoordinateSystem(mRotationMatrix, SensorManager.AXIS_Y,
 				SensorManager.AXIS_MINUS_X, mRemappedRotationMatrix);
 
@@ -552,6 +552,7 @@ public class ARRenderer implements GLSurfaceView.Renderer, SensorEventListener,
 		 * on features of this particular context
 		 */
 		gl.glHint(GL10.GL_PERSPECTIVE_CORRECTION_HINT, GL10.GL_FASTEST);
+		gl.glEnable(GL10.GL_CULL_FACE);
 
 		// TODO What is the best choice?
 		// Really Nice Perspective Calculations

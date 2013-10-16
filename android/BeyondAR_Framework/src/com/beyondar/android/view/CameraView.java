@@ -244,6 +244,7 @@ public class CameraView extends SurfaceView implements SurfaceHolder.Callback, C
 			mCamera.release();
 			mCamera = null;
 		}
+		System.gc();
 	}
 
 	private Bitmap StoreByteImage(byte[] imageData) {

@@ -54,8 +54,7 @@
         <activity android:name="com.beyondar.example.GoogleMapActivity"/>
         
         <activity
-            android:name="com.beyondar.example.CameraWithGoogleMapsActivity"
-            android:screenOrientation="landscape" >
+            android:name="com.beyondar.example.CameraWithGoogleMapsActivity" >
         </activity>
 
         <meta-data

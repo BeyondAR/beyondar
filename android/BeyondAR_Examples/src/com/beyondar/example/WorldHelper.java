@@ -43,10 +43,10 @@ public class WorldHelper {
 		go2.setName("Online image");
 
 		// Also possible to get images from the SDcard
-		GeoObject go3 = new GeoObject(3l);
-		go3.setGeoPosition(41.26550959641445d, 1.925873388087619d);
-		go3.setImageUri("/sdcard/TheAvengers_IronMan.jpeg");
-		go3.setName("IronMan from sdcard");
+//		GeoObject go3 = new GeoObject(3l);
+//		go3.setGeoPosition(41.26550959641445d, 1.925873388087619d);
+//		go3.setImageUri("/sdcard/TheAvengers_IronMan.jpeg");
+//		go3.setName("IronMan from sdcard");
 
 		// And the same goes for the app assets
 		GeoObject go4 = new GeoObject(4l);
@@ -76,7 +76,7 @@ public class WorldHelper {
 
 		world.addBeyondarObject(go1);
 		world.addBeyondarObject(go2);
-		world.addBeyondarObject(go3);
+//		world.addBeyondarObject(go3);
 		world.addBeyondarObject(go4);
 		world.addBeyondarObject(go5);
 		world.addBeyondarObject(go6);

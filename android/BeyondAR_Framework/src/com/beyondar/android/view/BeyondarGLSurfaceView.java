@@ -91,8 +91,8 @@ public class BeyondarGLSurfaceView extends GLSurfaceView {
 		configureRenderer(mRenderer);
 
 		setEGLConfigChooser(8, 8, 8, 8, 16, 0);
-		setRenderer(mRenderer);
 		getHolder().setFormat(PixelFormat.TRANSLUCENT);
+		setRenderer(mRenderer);
 
 		this.requestFocus();
 		this.setFocusableInTouchMode(true);

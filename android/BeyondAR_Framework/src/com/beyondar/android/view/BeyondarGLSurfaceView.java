@@ -94,8 +94,11 @@ public class BeyondarGLSurfaceView extends GLSurfaceView {
 		getHolder().setFormat(PixelFormat.TRANSLUCENT);
 		setRenderer(mRenderer);
 
-		this.requestFocus();
-		this.setFocusableInTouchMode(true);
+		requestFocus();
+		// This call will allow the GLSurface to be on the top of all the Surfaces. 
+		// It is needed because when the camera is rotated the camera tend to overlap the GLSurface.
+		setFocusableInTouchMode(true);
+		setZOrderOnTop(true);
 	}
 
 	/**

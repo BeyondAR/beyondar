@@ -18,5 +18,8 @@ package com.beyondar.android.util;
 public class Constants {
 
 	public static final int E6 = 1000000;
+	
+	public static final int VERSION_NUMBER = 000200;
+	public static final String VERSION_NAME= "0.2.0";
 
 }

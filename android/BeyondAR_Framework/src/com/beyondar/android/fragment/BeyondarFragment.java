@@ -1,57 +1,78 @@
 package com.beyondar.android.fragment;
 
-import android.annotation.SuppressLint;
-import android.app.Fragment;
-import android.os.Bundle;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
-import android.widget.RelativeLayout.LayoutParams;
-
 import com.beyondar.android.opengl.renderer.ARRenderer.FpsUpdatable;
 import com.beyondar.android.view.BeyondarGLSurfaceView;
 import com.beyondar.android.view.CameraView;
 import com.beyondar.android.view.BeyondarGLSurfaceView.OnARTouchListener;
 import com.beyondar.android.world.World;
 
+import android.os.Bundle;
+import android.annotation.SuppressLint;
+import android.app.Fragment;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.FrameLayout;
+import android.widget.TextView;
+import android.widget.FrameLayout.LayoutParams;
+
 @SuppressLint("NewApi")
-public class BeyondarFragment extends Fragment implements FpsUpdatable{
+public class BeyondarFragment extends Fragment implements FpsUpdatable {
 
 	private CameraView mBeyondarCameraView;
 	private BeyondarGLSurfaceView mBeyondarGLSurface;
 	private TextView mFpsTextView;
-	private RelativeLayout mParentLayout;
+	private FrameLayout mMailLayout;
+
+	private World mWorld;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 	}
 
+	private void init() {
+		android.view.ViewGroup.LayoutParams params = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+				ViewGroup.LayoutParams.MATCH_PARENT);
+
+		mMailLayout = new FrameLayout(getActivity());
+		mBeyondarGLSurface = getBeyondarGLSurfaceView();
+		mBeyondarCameraView = createCameraView();
+		
+		mMailLayout.addView(mBeyondarCameraView, params);
+		mMailLayout.addView(mBeyondarGLSurface, params);
+	}
+
+	/**
+	 * Override this method to personalize the {@link BeyondarGLSurfaceView}
+	 * that will be instantiated
+	 * 
+	 * @return
+	 */
+	protected BeyondarGLSurfaceView getBeyondarGLSurfaceView() {
+		return new BeyondarGLSurfaceView(getActivity());
+	}
+
+	/**
+	 * Override this method to personalize the {@link CameraView} that will be
+	 * instantiated
+	 * 
+	 * @return
+	 */
+	protected CameraView createCameraView() {
+		return new CameraView(getActivity());
+	}
+
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-		if (mParentLayout == null) {
-			android.view.ViewGroup.LayoutParams params = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
-					ViewGroup.LayoutParams.MATCH_PARENT);
-			
-			mParentLayout = new RelativeLayout(getActivity());
-			mBeyondarCameraView = createCameraView();
-			mBeyondarGLSurface = getBeyondarGLSurfaceView();
-			
-			mParentLayout.addView(mBeyondarCameraView, params);
-			mParentLayout.addView(mBeyondarGLSurface, params);
-
-		}
-		return mParentLayout;
+		init();
+		startRenderingAR();
+		return mMailLayout;
 	}
-	
 
 	@Override
 	public void onResume() {
 		super.onResume();
-		// Every time that the activity is resumed we need to notify the
-		// BeyondarView
 		mBeyondarCameraView.startPreviewCamera();
 		mBeyondarGLSurface.onResume();
 	}
@@ -59,17 +80,33 @@ public class BeyondarFragment extends Fragment implements FpsUpdatable{
 	@Override
 	public void onPause() {
 		super.onPause();
-		// Every time that the activity is paused we need to notify the
-		// BeyondarView
 		mBeyondarCameraView.stopPreviewCamera();
 		mBeyondarGLSurface.onPause();
-		//stopRenderingAR();
 	}
 
+	/**
+	 * Set the listener to get notified when the user touch the AR view
+	 * 
+	 * @param listener
+	 */
 	public void setOnARTouchListener(OnARTouchListener listener) {
 		mBeyondarGLSurface.setOnARTouchListener(listener);
 	}
 
+	/**
+	 * Get the world in use by the fragment
+	 * 
+	 * @return
+	 */
+	public World getWorld() {
+		return mWorld;
+	}
+
+	/**
+	 * Set the world to be shown
+	 * 
+	 * @param world
+	 */
 	public void setWorld(World world) {
 		mBeyondarGLSurface.setWorld(world);
 	}
@@ -105,6 +142,30 @@ public class BeyondarFragment extends Fragment implements FpsUpdatable{
 		return mBeyondarGLSurface.getSensorDelay();
 	}
 
+	public void setFpsUpdatable(FpsUpdatable fpsUpdatable) {
+		mBeyondarGLSurface.setFpsUpdatable(fpsUpdatable);
+	}
+
+	/**
+	 * Force the GLSurface to stop rendering the AR world
+	 */
+	public void stopRenderingAR() {
+		mBeyondarGLSurface.setVisibility(View.INVISIBLE);
+	}
+
+	/**
+	 * Force the GLSurface to start rendering the AR world
+	 */
+	public void startRenderingAR() {
+		mBeyondarGLSurface.setVisibility(View.VISIBLE);
+	}
+
+	/**
+	 * Show the number of frames per second. False by default
+	 * 
+	 * @param show
+	 *            True to show the FPS, false otherwise
+	 */
 	public void showFPS(boolean show) {
 		if (show) {
 			if (mFpsTextView == null) {
@@ -113,7 +174,7 @@ public class BeyondarFragment extends Fragment implements FpsUpdatable{
 				mFpsTextView.setTextColor(getResources().getColor(android.R.color.white));
 				android.view.ViewGroup.LayoutParams params = new LayoutParams(
 						ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-				mParentLayout.addView(mFpsTextView, params);
+				mMailLayout.addView(mFpsTextView, params);
 			}
 			mFpsTextView.setVisibility(View.VISIBLE);
 			setFpsUpdatable(this);
@@ -123,10 +184,6 @@ public class BeyondarFragment extends Fragment implements FpsUpdatable{
 		}
 	}
 
-	public void setFpsUpdatable(FpsUpdatable fpsUpdatable) {
-		mBeyondarGLSurface.setFpsUpdatable(fpsUpdatable);
-	}
-	
 	@Override
 	public void onFpsUpdate(final float fps) {
 		if (mFpsTextView != null) {
@@ -138,33 +195,5 @@ public class BeyondarFragment extends Fragment implements FpsUpdatable{
 			});
 		}
 
-	}
-
-	public void stopRenderingAR() {
-		mBeyondarGLSurface.setVisibility(View.INVISIBLE);
-	}
-
-	public void startRenderingAR() {
-		mBeyondarGLSurface.setVisibility(View.VISIBLE);
-	}
-	
-	/**
-	 * Override this method to personalize the {@link BeyondarGLSurfaceView}
-	 * that will be instantiated
-	 * 
-	 * @return
-	 */
-	protected BeyondarGLSurfaceView getBeyondarGLSurfaceView() {
-		return new BeyondarGLSurfaceView(getActivity());
-	}
-	
-	/**
-	 * Override this method to personalize the {@link CameraView} that will be
-	 * instantiated
-	 * 
-	 * @return
-	 */
-	protected CameraView createCameraView() {
-		return new CameraView(getActivity());
 	}
 }

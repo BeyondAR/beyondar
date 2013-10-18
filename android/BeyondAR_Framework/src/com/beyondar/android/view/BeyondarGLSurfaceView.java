@@ -98,7 +98,7 @@ public class BeyondarGLSurfaceView extends GLSurfaceView {
 		// This call will allow the GLSurface to be on the top of all the Surfaces. 
 		// It is needed because when the camera is rotated the camera tend to overlap the GLSurface.
 		setFocusableInTouchMode(true);
-		setZOrderOnTop(true);
+		setZOrderMediaOverlay(true);
 	}
 
 	/**

@@ -276,7 +276,7 @@ public class TaskExecutor {
 	public boolean cleanHistory(TaskResult result) {
 		return taskHistory.removeElement(result);
 	}
-	private class CoreThread extends Thread implements IOnFinishTaskListener {
+	private class CoreThread extends Thread implements OnFinishTaskListener {
 
 		private boolean stop = false;
 

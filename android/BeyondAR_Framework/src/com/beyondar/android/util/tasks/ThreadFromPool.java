@@ -25,8 +25,8 @@ public class ThreadFromPool extends Thread {
 
 	private boolean stop;
 	private Vector<Task> taskList;
-	private IOnThreadFromPoolStop onThreadFromPoolStop;
-	private IOnFinishTaskListener taskListener;
+	private OnThreadFromPoolStop onThreadFromPoolStop;
+	private OnFinishTaskListener taskListener;
 
 	//private String tag = "ThreadFromPool";
 
@@ -47,8 +47,8 @@ public class ThreadFromPool extends Thread {
 	 *            is assigned, this thread will be removed. If this value is 0,
 	 *            this thread allays will be alive until stop it.
 	 */
-	public ThreadFromPool(int id, IOnFinishTaskListener onFinishTaskListener,
-			IOnThreadFromPoolStop onThreadFromPoolStop, long maxInactiveTime) {
+	public ThreadFromPool(int id, OnFinishTaskListener onFinishTaskListener,
+			OnThreadFromPoolStop onThreadFromPoolStop, long maxInactiveTime) {
 		this.taskListener = onFinishTaskListener;
 		this.id = id;
 		this.onThreadFromPoolStop = onThreadFromPoolStop;
@@ -143,7 +143,7 @@ public class ThreadFromPool extends Thread {
 
 	/**
 	 * Finalize the task and do the last job (notify the
-	 * {@link IOnFinishTaskListener})
+	 * {@link OnFinishTaskListener})
 	 * 
 	 * @param task
 	 *            The finalized task

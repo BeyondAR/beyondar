@@ -15,7 +15,7 @@
  */
 package com.beyondar.android.util.tasks;
 
-public interface IOnFinishTaskListener {
+public interface OnFinishTaskListener {
 
 	/**
 	 * Use this method to define what to do when a task finish the work

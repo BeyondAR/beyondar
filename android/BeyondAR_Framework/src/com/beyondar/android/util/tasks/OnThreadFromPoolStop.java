@@ -19,7 +19,7 @@ package com.beyondar.android.util.tasks;
  * 
  *         This interface allows the developer know when a thread stop
  */
-public interface IOnThreadFromPoolStop {
+public interface OnThreadFromPoolStop {
 
 	/**
 	 * Use this method to know when a thread stops

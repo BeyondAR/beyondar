@@ -23,7 +23,7 @@ import java.util.ArrayList;
  *         This class is used by the {@link TaskExecutor}
  * 
  */
-public class PoolThreads implements IOnFinishTaskListener, IOnThreadFromPoolStop {
+public class PoolThreads implements OnFinishTaskListener, OnThreadFromPoolStop {
 
 	/** Max number of threads in the pool by default */
 	public static final int DEFAULT_MAX_THREADS = 4;
@@ -52,7 +52,7 @@ public class PoolThreads implements IOnFinishTaskListener, IOnThreadFromPoolStop
 
 	private boolean killThreads;
 
-	private IOnFinishTaskListener onFinishTaskListener;
+	private OnFinishTaskListener onFinishTaskListener;
 
 	// private String tag = "PoolThreads";
 
@@ -223,7 +223,7 @@ public class PoolThreads implements IOnFinishTaskListener, IOnThreadFromPoolStop
 	 * @param onFinishTaskListener
 	 */
 	public void setOnFinishTaskListener(
-			IOnFinishTaskListener onFinishTaskListener) {
+			OnFinishTaskListener onFinishTaskListener) {
 		this.onFinishTaskListener = onFinishTaskListener;
 	}
 

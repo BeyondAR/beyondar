@@ -17,6 +17,18 @@ Just download the latest version of the framework [here](https://github.com/Beyo
 
 ##How to build your first app
 
+To be able to run BeyondAR we need to add the following lines on the AndroidManifest.xml
+```xml
+<!-- Minimum permissions for Beyondar -->
+<uses-permission android:name="android.permission.CAMERA" />
+    
+<!-- For beyondar this is not mandatory unless you want to load something from internet (for instance images) -->
+<uses-permission android:name="android.permission.INTERNET" />
+
+<uses-feature android:name="android.hardware.camera" />
+<uses-feature android:name="android.hardware.camera.autofocus" />
+```
+
 To create the UI it we can choose using an Android Layout XML or using java code. For both of them we can use the `BeyondarFragmentSupport` or the `BeyondarFragment` fragments.
 
 ```xml

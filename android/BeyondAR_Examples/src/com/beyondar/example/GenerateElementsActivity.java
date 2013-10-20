@@ -36,14 +36,16 @@ import com.beyondar.android.view.BeyondarGLSurfaceView.OnARTouchListener;
 import com.beyondar.android.world.BeyondarObject;
 import com.beyondar.android.world.World;
 
-public class CameraWithTouchEventsActivity extends FragmentActivity implements OnARTouchListener,
-		FpsUpdatable {
+public class GenerateElementsActivity extends FragmentActivity implements OnARTouchListener,
+		FpsUpdatable, OnClickListener {
 
 	private BeyondarFragmentSupport mBeyondarFragment;
 	private World mWorld;
 
 	private TextView mLabelText;
 	private String mFPS, mAction;
+
+	private Button mShowMap;
 
 	/** Called when the activity is first created. */
 	@Override
@@ -132,5 +134,17 @@ public class CameraWithTouchEventsActivity extends FragmentActivity implements O
 
 		mLabelText = (TextView) findViewById(R.id.labelText);
 
+		mShowMap = (Button) findViewById(R.id.showMapButton);
+
+		mShowMap.setOnClickListener(this);
 	}
+
+	@Override
+	public void onClick(View v) {
+		if (v == mShowMap) {
+			Intent intent = new Intent(this, GoogleMapActivity.class);
+			startActivity(intent);
+		}
+	}
+
 }

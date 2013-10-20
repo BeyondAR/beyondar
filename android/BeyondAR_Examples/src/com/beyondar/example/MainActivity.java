@@ -78,7 +78,7 @@ public class MainActivity extends Activity implements OnItemClickListener {
 	@Override
 	protected void onResume() {
 		super.onResume();
-		//WorldHelper.sharedWorld = null;
+		CustomWorldHelper.sharedWorld = null;
 	}
 
 }

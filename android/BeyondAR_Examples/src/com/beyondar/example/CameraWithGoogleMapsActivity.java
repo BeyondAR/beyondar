@@ -50,7 +50,7 @@ public class CameraWithGoogleMapsActivity extends FragmentActivity implements On
 	}
 
 	private void loadViewFromXML() {
-		setContentView(R.layout.camera_with_google_maps);
+		setContentView(R.layout.simple_camera);
 		
 		mBeyondarFragment = (BeyondarFragmentSupport) getSupportFragmentManager().findFragmentById(
 				R.id.beyondarFragment);

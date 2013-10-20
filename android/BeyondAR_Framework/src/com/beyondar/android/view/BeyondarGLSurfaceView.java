@@ -46,7 +46,7 @@ public class BeyondarGLSurfaceView extends GLSurfaceView {
 	private SensorManager mSensorManager;
 	private Context mContext;
 
-	private OnARTouchListener mTouchListener;
+	private OnTouchBeyondarViewListener mTouchListener;
 
 	private World mWorld;
 
@@ -214,26 +214,26 @@ public class BeyondarGLSurfaceView extends GLSurfaceView {
 
 	@Override
 	public boolean onTouchEvent(final MotionEvent event) {
+		//TODO: Remove this code
 		if (mWorld == null || mTouchListener == null || event == null) {
 			return false;
 		}
 
-		if (AnnotationsUtils.hasUiAnnotation(mTouchListener, OnARTouchListener.__ON_AR_TOUCH_METHOD_NAME__)) {
-			mTouchListener.onTouchARView(event, this);
+		if (AnnotationsUtils.hasUiAnnotation(mTouchListener, OnTouchBeyondarViewListener.__ON_AR_TOUCH_METHOD_NAME__)) {
+			mTouchListener.onTouchBeyondarView(event, this);
 		} else {
 			new Thread(new Runnable() {
 				@Override
 				public void run() {
-					mTouchListener.onTouchARView(event, BeyondarGLSurfaceView.this);
+					mTouchListener.onTouchBeyondarView(event, BeyondarGLSurfaceView.this);
 				}
 			}).start();
 		}
-
 		return true;
-
 	}
-
-	public void setOnARTouchListener(OnARTouchListener listener) {
+	
+	@Deprecated
+	public void setOnTouchBeyondarViewListener(OnTouchBeyondarViewListener listener) {
 		mTouchListener = listener;
 	}
 
@@ -269,37 +269,6 @@ public class BeyondarGLSurfaceView extends GLSurfaceView {
 			ArrayList<BeyondarObject> beyondarObjects, Ray ray) {
 		mRenderer.getViewRay(x, y, ray);
 		mWorld.getBeyondarObjectsCollideRay(ray, beyondarObjects);
-
-	}
-
-	public static interface OnARTouchListener {
-
-		static final String __ON_AR_TOUCH_METHOD_NAME__ = "onTouchARView";
-
-		/**
-		 * Use
-		 * {@link BeyondarGLSurfaceView#getARObjectOnScreenCoordinates(float, float)}
-		 * to get the object touched:<br>
-		 * This method will not run in the UI thread. To do so use the
-		 * annotation @OnUiThread
-		 * 
-		 * <pre>
-		 * {@code
-		 * float x = event.getX();
-		 * float y = event.getY();
-		 * ArrayList<BeyondarObject> geoObjects = new ArrayList<BeyondarObject>();
-		 * beyondarView.getARObjectOnScreenCoordinates(x, y, geoObjects);
-		 * ...
-		 * Now we iterate the ArrayList. The first element will be the closest one to the user
-		 * ...
-		 * }
-		 * </pre>
-		 * 
-		 * @param event
-		 * @param BeyondarView
-		 */
-		public void onTouchARView(MotionEvent event, BeyondarGLSurfaceView beyondarView);
-
 	}
 
 }

@@ -18,32 +18,27 @@ package com.beyondar.example;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.view.MotionEvent;
-import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.Window;
-import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.beyondar.android.fragment.BeyondarFragmentSupport;
-import com.beyondar.android.opengl.renderer.ARRenderer.FpsUpdatable;
-import com.beyondar.android.util.annotation.OnUiThread;
 import com.beyondar.android.view.BeyondarGLSurfaceView;
-import com.beyondar.android.view.BeyondarGLSurfaceView.OnARTouchListener;
+import com.beyondar.android.view.OnClikBeyondarObjectListener;
+import com.beyondar.android.view.OnTouchBeyondarViewListener;
 import com.beyondar.android.world.BeyondarObject;
 import com.beyondar.android.world.World;
 
-public class CameraWithTouchEventsActivity extends FragmentActivity implements OnARTouchListener,
-		FpsUpdatable {
+public class CameraWithTouchEventsActivity extends FragmentActivity implements OnTouchBeyondarViewListener,
+		OnClikBeyondarObjectListener {
 
 	private BeyondarFragmentSupport mBeyondarFragment;
 	private World mWorld;
 
 	private TextView mLabelText;
-	private String mFPS, mAction;
 
 	/** Called when the activity is first created. */
 	@Override
@@ -59,16 +54,16 @@ public class CameraWithTouchEventsActivity extends FragmentActivity implements O
 		mWorld = CustomWorldHelper.generateObjects(this);
 
 		mBeyondarFragment.setWorld(mWorld);
-		mBeyondarFragment.setFpsUpdatable(this);
+		mBeyondarFragment.showFPS(true);
 
 		// set listener for the geoObjects
-		mBeyondarFragment.setOnARTouchListener(this);
+		mBeyondarFragment.setOnTouchBeyondarViewListener(this);
+		mBeyondarFragment.setOnClickBeyondarObjectListener(this);
 
 	}
 
 	@Override
-	@OnUiThread
-	public void onTouchARView(MotionEvent event, BeyondarGLSurfaceView beyondarView) {
+	public void onTouchBeyondarView(MotionEvent event, BeyondarGLSurfaceView beyondarView) {
 
 		float x = event.getX();
 		float y = event.getY();
@@ -99,38 +94,22 @@ public class CameraWithTouchEventsActivity extends FragmentActivity implements O
 			textEvent = textEvent + " " + geoObject.getName();
 
 		}
-		mAction = textEvent;
-		updateLabelText();
-	}
+		mLabelText.setText("Event: " + textEvent);
 
-	@Override
-	public void onFpsUpdate(float fps) {
-		mFPS = "" + fps;
-		updateLabelText();
-	}
-
-	private void updateLabelText() {
-		runOnUiThread(new Runnable() {
-			@Override
-			public void run() {
-				String text = "";
-				if (mFPS != null) {
-					text = text + "FPS: " + mFPS;
-				}
-				if (mAction != null) {
-					text = text + " | " + "Action: " + mAction;
-				}
-				mLabelText.setText(text);
-			}
-		});
 	}
 
 	private void loadViewFromXML() {
-		setContentView(R.layout.camera_with_google_maps);
+		setContentView(R.layout.camera_with_text);
 		mBeyondarFragment = (BeyondarFragmentSupport) getSupportFragmentManager().findFragmentById(
 				R.id.beyondarFragment);
 
 		mLabelText = (TextView) findViewById(R.id.labelText);
 
 	}
+
+	@Override
+	public void onClikBeyondarObject(ArrayList<BeyondarObject> beyondarObjects) {
+		Toast.makeText(this, "Clicked on: " + beyondarObjects.get(0).getName(), Toast.LENGTH_LONG).show();
+	}
+
 }

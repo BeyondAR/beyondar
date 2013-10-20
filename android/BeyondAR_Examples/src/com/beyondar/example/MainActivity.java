@@ -41,6 +41,7 @@ public class MainActivity extends Activity implements OnItemClickListener {
 		//openActivity(SimpleCameraActivity.class);
 		//openActivity(GoogleMapActivity.class);
 		//openActivity(CameraWithGoogleMapsActivity.class);
+		//openActivity(CameraWithTouchEventsActivity.class);
 	}
 
 	private void fillList() {

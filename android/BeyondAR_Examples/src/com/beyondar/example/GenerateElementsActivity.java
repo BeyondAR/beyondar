@@ -30,13 +30,12 @@ import android.widget.TextView;
 
 import com.beyondar.android.fragment.BeyondarFragmentSupport;
 import com.beyondar.android.opengl.renderer.ARRenderer.FpsUpdatable;
-import com.beyondar.android.util.annotation.OnUiThread;
 import com.beyondar.android.view.BeyondarGLSurfaceView;
-import com.beyondar.android.view.BeyondarGLSurfaceView.OnARTouchListener;
+import com.beyondar.android.view.OnTouchBeyondarViewListener;
 import com.beyondar.android.world.BeyondarObject;
 import com.beyondar.android.world.World;
 
-public class GenerateElementsActivity extends FragmentActivity implements OnARTouchListener,
+public class GenerateElementsActivity extends FragmentActivity implements OnTouchBeyondarViewListener,
 		FpsUpdatable, OnClickListener {
 
 	private BeyondarFragmentSupport mBeyondarFragment;
@@ -64,13 +63,12 @@ public class GenerateElementsActivity extends FragmentActivity implements OnARTo
 		mBeyondarFragment.setFpsUpdatable(this);
 
 		// set listener for the geoObjects
-		mBeyondarFragment.setOnARTouchListener(this);
+		mBeyondarFragment.setOnTouchBeyondarViewListener(this);
 
 	}
 
 	@Override
-	@OnUiThread
-	public void onTouchARView(MotionEvent event, BeyondarGLSurfaceView beyondarView) {
+	public void onTouchBeyondarView(MotionEvent event, BeyondarGLSurfaceView beyondarView) {
 
 		float x = event.getX();
 		float y = event.getY();

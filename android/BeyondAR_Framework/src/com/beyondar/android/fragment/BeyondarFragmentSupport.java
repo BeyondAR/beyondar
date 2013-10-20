@@ -1,21 +1,29 @@
 package com.beyondar.android.fragment;
 
-import com.beyondar.android.opengl.renderer.ARRenderer.FpsUpdatable;
-import com.beyondar.android.view.BeyondarGLSurfaceView;
-import com.beyondar.android.view.CameraView;
-import com.beyondar.android.view.BeyondarGLSurfaceView.OnARTouchListener;
-import com.beyondar.android.world.World;
+import java.util.ArrayList;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.View.OnClickListener;
+import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
-import android.widget.TextView;
 import android.widget.FrameLayout.LayoutParams;
+import android.widget.TextView;
 
-public class BeyondarFragmentSupport extends Fragment implements FpsUpdatable {
+import com.beyondar.android.opengl.renderer.ARRenderer.FpsUpdatable;
+import com.beyondar.android.view.BeyondarGLSurfaceView;
+import com.beyondar.android.view.CameraView;
+import com.beyondar.android.view.OnClikBeyondarObjectListener;
+import com.beyondar.android.view.OnTouchBeyondarViewListener;
+import com.beyondar.android.world.BeyondarObject;
+import com.beyondar.android.world.World;
+
+public class BeyondarFragmentSupport extends Fragment implements FpsUpdatable, OnClickListener,
+		OnTouchListener {
 
 	private CameraView mBeyondarCameraView;
 	private BeyondarGLSurfaceView mBeyondarGLSurface;
@@ -23,6 +31,11 @@ public class BeyondarFragmentSupport extends Fragment implements FpsUpdatable {
 	private FrameLayout mMailLayout;
 
 	private World mWorld;
+
+	private OnTouchBeyondarViewListener mTouchListener;
+	private OnClikBeyondarObjectListener mClickListener;
+
+	private float mLastScreenTouchX, mLastScreenTouchY;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -35,8 +48,10 @@ public class BeyondarFragmentSupport extends Fragment implements FpsUpdatable {
 
 		mMailLayout = new FrameLayout(getActivity());
 		mBeyondarGLSurface = getBeyondarGLSurfaceView();
+		mBeyondarGLSurface.setOnTouchListener(this);
+
 		mBeyondarCameraView = createCameraView();
-		
+
 		mMailLayout.addView(mBeyondarCameraView, params);
 		mMailLayout.addView(mBeyondarGLSurface, params);
 	}
@@ -87,8 +102,57 @@ public class BeyondarFragmentSupport extends Fragment implements FpsUpdatable {
 	 * 
 	 * @param listener
 	 */
-	public void setOnARTouchListener(OnARTouchListener listener) {
-		mBeyondarGLSurface.setOnARTouchListener(listener);
+	public void setOnTouchBeyondarViewListener(OnTouchBeyondarViewListener listener) {
+		mTouchListener = listener;
+	}
+
+	public void setOnClickBeyondarObjectListener(OnClikBeyondarObjectListener listener) {
+		mClickListener = listener;
+		mMailLayout.setClickable(true);
+		mMailLayout.setOnClickListener(this);
+	}
+
+	@Override
+	public boolean onTouch(View v, final MotionEvent event) {
+		mLastScreenTouchX = event.getX();
+		mLastScreenTouchY = event.getY();
+
+		if (mWorld == null || mTouchListener == null || event == null) {
+			return false;
+		}
+		mTouchListener.onTouchBeyondarView(event, mBeyondarGLSurface);
+		return false;
+	}
+
+	@Override
+	public void onClick(View v) {
+		if (v == mMailLayout) {
+			if (mClickListener == null) {
+				return;
+			}
+			final float lastX = mLastScreenTouchX;
+			final float lastY = mLastScreenTouchY;
+
+			new Thread(new Runnable() {
+				@Override
+				public void run() {
+					final ArrayList<BeyondarObject> beyondarObjects = new ArrayList<BeyondarObject>();
+					mBeyondarGLSurface.getARObjectOnScreenCoordinates(lastX, lastY, beyondarObjects);
+					if (beyondarObjects.size() == 0) {
+						return;
+					}
+					mBeyondarGLSurface.post(new Runnable() {
+						@Override
+						public void run() {
+							OnClikBeyondarObjectListener listener = mClickListener;
+							if (listener != null) {
+								listener.onClikBeyondarObject(beyondarObjects);
+							}
+						}
+					});
+				}
+			}).start();
+		}
 	}
 
 	/**
@@ -106,6 +170,7 @@ public class BeyondarFragmentSupport extends Fragment implements FpsUpdatable {
 	 * @param world
 	 */
 	public void setWorld(World world) {
+		mWorld = world;
 		mBeyondarGLSurface.setWorld(world);
 	}
 

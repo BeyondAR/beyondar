@@ -7,7 +7,7 @@ public class Logger {
 	/** All the BeyondAR logs output have this tag */
 	public static final String TAG = "BeyondAR";
 
-	public static boolean DEBUG = true;
+	public volatile static boolean DEBUG = true;
 
 	/**
 	 * Set this flag to enable the OpenGL debug log. If You use this, the touch

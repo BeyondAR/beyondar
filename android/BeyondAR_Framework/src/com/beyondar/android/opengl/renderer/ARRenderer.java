@@ -477,13 +477,15 @@ public class ARRenderer implements GLSurfaceView.Renderer, SensorEventListener,
 			}
 
 			if (!beyondarObject.getTexture().isLoaded() && beyondarObject.getBitmapUri() != null) {
+				int counter = beyondarObject.getTexture().getLoadTryCounter();
+				double timeOut= TIMEOUT_LOAD_TEXTURE * (counter + 1);
 				if (beyondarObject.getTexture().getTimeStamp() == 0
-						|| time - beyondarObject.getTexture().getTimeStamp() > TIMEOUT_LOAD_TEXTURE) {
-					// TODO: Implement incremental time for the timeout
+						|| time - beyondarObject.getTexture().getTimeStamp() > timeOut) {
 					Logger.d("Loading new textures...");
 					loadBeyondarObjectTexture(gl, beyondarObject);
 					if (!beyondarObject.getTexture().isLoaded()) {
 						beyondarObject.getTexture().setTimeStamp(time);
+						beyondarObject.getTexture().setLoadTryCounter(counter + 1);
 					}
 				}
 

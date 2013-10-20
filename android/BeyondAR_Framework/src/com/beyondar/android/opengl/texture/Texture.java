@@ -24,10 +24,12 @@ public class Texture implements Serializable{
 	private int mTexture;
 	private boolean mIsLoaded;
 	private double mTimeStamp;
+	private int mCounterLoaded;
 
 	public Texture(int textureReference) {
 		mTexture = textureReference;
 		mIsLoaded = true;
+		mCounterLoaded = 0;
 	}
 
 	public Texture() {
@@ -41,6 +43,7 @@ public class Texture implements Serializable{
 	public void setTexturePointer(int texture) {
 		mTexture = texture;
 		mIsLoaded = true;
+		mCounterLoaded = 0;
 	}
 
 	public void setLoaded(boolean isLoaded) {
@@ -58,12 +61,22 @@ public class Texture implements Serializable{
 	public double getTimeStamp() {
 		return mTimeStamp;
 	}
+	
+	public void setLoadTryCounter(int counter){
+		mCounterLoaded = counter;
+	}
+	
+	public int getLoadTryCounter(){
+		return mCounterLoaded;
+	}
+	
 
 	public Texture clone() {
 		Texture clone = new Texture();
 		clone.setLoaded(isLoaded());
 		clone.setTexturePointer(getTexturePointer());
 		clone.setTimeStamp(getTimeStamp());
+		clone.setLoadTryCounter(getLoadTryCounter());
 		return clone;
 	}
 

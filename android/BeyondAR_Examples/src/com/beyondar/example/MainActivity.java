@@ -28,7 +28,7 @@ public class MainActivity extends Activity implements OnItemClickListener {
 
 	private ListView mLisViewt;
 	private String[] values = new String[] { "Simple AR camera", "BeyondAR World in Google maps",
-			"AR camera with Gooogle maps" };
+			"AR camera with Gooogle maps", "Camera with touch events" };
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -62,15 +62,23 @@ public class MainActivity extends Activity implements OnItemClickListener {
 		case 2:
 			openActivity(CameraWithGoogleMapsActivity.class);
 			break;
+		case 3:
+			openActivity(CameraWithTouchEventsActivity.class);
+			break;
 		default:
 			break;
 		}
-
 	}
 
 	private void openActivity(Class<? extends Activity> ActivityClass) {
 		Intent intent = new Intent(this, ActivityClass);
 		startActivity(intent);
+	}
+	
+	@Override
+	protected void onResume() {
+		super.onResume();
+		//WorldHelper.sharedWorld = null;
 	}
 
 }

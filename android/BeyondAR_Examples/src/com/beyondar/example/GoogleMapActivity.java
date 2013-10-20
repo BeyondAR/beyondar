@@ -41,8 +41,8 @@ public class GoogleMapActivity extends FragmentActivity implements OnMarkerClick
 
 		mMap = ((SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map)).getMap();
 
-		// We create the world...
-		mWorld = new World(this);
+		// We create the world and fill the world
+		mWorld = CustomWorldHelper.generateObjects(this);
 
 		// As we want to use GoogleMaps, we are going to create the module and
 		// attach it to the World
@@ -50,10 +50,10 @@ public class GoogleMapActivity extends FragmentActivity implements OnMarkerClick
 		// Then we need to set the map in to the GoogleMapModule
 		mGoogleMapModule.setGoogleMap(mMap);
 		// Now that we have the module created let's add it in to our world
+		// NOTE: It is better to load the modules before start adding object in to the world
 		mWorld.addModule(mGoogleMapModule);
 
-		// Now we fill the world
-		WorldHelper.generateObjects(mWorld);
+		
 
 		mMap.setOnMarkerClickListener(this);
 

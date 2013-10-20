@@ -15,20 +15,28 @@
  */
 package com.beyondar.example;
 
+import android.content.Context;
+
 import com.beyondar.android.world.GeoObject;
 import com.beyondar.android.world.World;
 
-public class WorldHelper {
+public class CustomWorldHelper {
+	
+	public static World sharedWorld;
 
-	public static void generateObjects(World world) {
+	public static World generateObjects(Context context) {
+		if (sharedWorld != null){
+			return sharedWorld;
+		}
+		sharedWorld = new World(context);
 
 		// The user can set the default bitmap. This is useful if you are
 		// loading images form Internet and the connection get lost
-		world.setDefaultBitmap(R.drawable.beyondar_default_unknow_icon);
+		sharedWorld.setDefaultBitmap(R.drawable.beyondar_default_unknow_icon);
 
 		// User position (you can change it using the GPS listeners form Android
 		// API)
-		world.setGeoPosition(41.26533734214473d, 1.925848038959814d);
+		sharedWorld.setGeoPosition(41.26533734214473d, 1.925848038959814d);
 
 		// Create an object with an image in the app resources.
 		GeoObject go1 = new GeoObject(1l);
@@ -74,15 +82,16 @@ public class WorldHelper {
 		go8.setImageResource(R.drawable.image_test_pow2_small);
 		go8.setName("Object 8");
 
-		world.addBeyondarObject(go1);
-		world.addBeyondarObject(go2);
-		world.addBeyondarObject(go3);
-		world.addBeyondarObject(go4);
-		world.addBeyondarObject(go5);
-		world.addBeyondarObject(go6);
-		world.addBeyondarObject(go7);
-		world.addBeyondarObject(go8);
+		sharedWorld.addBeyondarObject(go1);
+		sharedWorld.addBeyondarObject(go2);
+		sharedWorld.addBeyondarObject(go3);
+		sharedWorld.addBeyondarObject(go4);
+		sharedWorld.addBeyondarObject(go5);
+		sharedWorld.addBeyondarObject(go6);
+		sharedWorld.addBeyondarObject(go7);
+		sharedWorld.addBeyondarObject(go8);
 
+		return sharedWorld;
 	}
 
 }

@@ -8,7 +8,7 @@
         android:minSdkVersion="8"
         android:targetSdkVersion="17" />
 
-     <!--  Google maps stuff -->
+    <!-- Google maps stuff -->
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="com.google.android.providers.gsf.permission.READ_GSERVICES" />
@@ -16,16 +16,21 @@
      The following two permissions are not required to use
      Google Maps Android API v2, but are recommended.
     -->
-    <!-- <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" /> -->
-    
+    <!--
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    -->
+
+
     <!-- Minimum permissions for Beyondar -->
     <uses-permission android:name="android.permission.CAMERA" />
-    
-    <!-- For beyondar this is not mandatory unless you want to load something from internet -->
-	<uses-permission android:name="android.permission.INTERNET" />
 
-	<uses-feature  android:glEsVersion="0x00020000" android:required="true"/>
+    <!-- For beyondar this is not mandatory unless you want to load something from internet -->
+    <uses-permission android:name="android.permission.INTERNET" />
+
+    <uses-feature
+        android:glEsVersion="0x00020000"
+        android:required="true" />
     <uses-feature android:name="android.hardware.camera" />
     <uses-feature android:name="android.hardware.camera.autofocus" />
 
@@ -36,7 +41,7 @@
         android:theme="@style/AppTheme" >
         <activity
             android:name="com.beyondar.example.MainActivity"
-            android:label="@string/app_name">
+            android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -44,15 +49,10 @@
             </intent-filter>
         </activity>
         
-        <activity
-            android:name="com.beyondar.example.SimpleCameraActivity" >
-        </activity>
-        
-        <activity android:name="com.beyondar.example.GoogleMapActivity"/>
-        
-        <activity
-            android:name="com.beyondar.example.CameraWithGoogleMapsActivity" >
-        </activity>
+        <activity android:name="com.beyondar.example.SimpleCameraActivity" />
+        <activity android:name="com.beyondar.example.GoogleMapActivity" />
+        <activity android:name="com.beyondar.example.CameraWithTouchEventsActivity" />
+        <activity android:name="com.beyondar.example.CameraWithGoogleMapsActivity" />
 
         <meta-data
             android:name="com.google.android.maps.v2.API_KEY"

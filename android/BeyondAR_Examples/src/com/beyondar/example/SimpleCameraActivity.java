@@ -40,14 +40,12 @@ public class SimpleCameraActivity extends FragmentActivity {
 		mBeyondarFragment = (BeyondarFragmentSupport) getSupportFragmentManager().findFragmentById(
 				R.id.beyondarFragment);
 
-		// We create the world...
-		mWorld = new World(this);
-		// ... fill it ...
-		WorldHelper.generateObjects(mWorld);
+		// We create the world and fill it ...
+		mWorld = CustomWorldHelper.generateObjects(this);
 		// .. and send it to the fragment
 		mBeyondarFragment.setWorld(mWorld);
 
-		// We can see the Frames per seconds
+		// We also can see the Frames per seconds
 		mBeyondarFragment.showFPS(true);
 
 	}

@@ -70,6 +70,7 @@ public class CameraWithTouchEventsActivity extends FragmentActivity implements O
 
 		ArrayList<BeyondarObject> geoObjects = new ArrayList<BeyondarObject>();
 
+		//This method call is better to don't do it in the UI thread!
 		beyondarView.getARObjectOnScreenCoordinates(x, y, geoObjects);
 
 		String textEvent = "";
@@ -95,7 +96,6 @@ public class CameraWithTouchEventsActivity extends FragmentActivity implements O
 
 		}
 		mLabelText.setText("Event: " + textEvent);
-
 	}
 
 	private void loadViewFromXML() {

@@ -1,9 +1,9 @@
-beyondar
+Beyondar
 ========
 
 This framework has been designed to offer some resources to those developers with an interest in working with Augmented Reality based on geolocalization on SmartPhones and tablets.
 
-[BeyondAR Game](https://play.google.com/store/apps/details?id=com.beyondar#?t=W251bGwsMSwxLDIxMiwiY29tLmJleW9uZGFyIl0.) is using this platform to show the creatures arround the user. Here some images:
+[BeyondAR Game](https://play.google.com/store/apps/details?id=com.beyondar#?t=W251bGwsMSwxLDIxMiwiY29tLmJleW9uZGFyIl0.) is using this platform to show the creatures around the user. Here some images:
 
 ![Screenshot](http://beyondar.com/pictures/screenshots/screen_4.jpg)
 ![Screenshot](http://beyondar.com/pictures/screenshots/screen_1.jpg)
@@ -65,6 +65,8 @@ public void onCreate(Bundle savedInstanceState) {
 The next step is to create the `World` that holds the information related to the objects that need to be displayed in the app using augmented reality.
 
 ```java
+World world = new World(context);
+
 // The user can set the default bitmap. This is useful if you are
 // loading images form Internet and the connection get lost
 world.setDefaultBitmap(R.drawable.beyondar_default_unknow_icon);
@@ -106,56 +108,56 @@ world.addBeyondarObject(go4);
 //Finally we add the Wold data in to the fragment
 mBeyondarFragment.setWorld(mWorld);
 ```
-Now we have the app ready to show the GeoObjects. But we also want to capture events, for instance, when the user click on a GeoObject. For that we need to implement `OnARTouchListener`
+Now we have the app ready to show the GeoObjects. But we also want to capture events, for instance, when the user clicks on a GeoObject. For that we need to implement `OnClikBeyondarObjectListener`
 ```java
 ...
-mBeyondarFragment.setonARTouchListener(this);
+mBeyondarFragment.setOnClickBeyondarObjectListener(this);
 ...
 @Override
-public void onTouchARView(MotionEvent event, BeyondarGLSurfaceView beyondarView) {
-
-     // We need the coordinates to know where the user has touched the screen
-     float x = event.getX();
-     float y = event.getY();
-
-     ArrayList<BeyondarObject> geoObjects = new ArrayList<BeyondarObject>();
-
-     //Now we use the view to collect all the objects that are touched by the user
-     beyondarView.getARObjectOnScreenCoordinates(x, y, geoObjects);
-
-     String textEvent = "";
-
-     switch (event.getAction()) {
-     case MotionEvent.ACTION_DOWN:
-          textEvent = "Event type ACTION_DOWN: ";
-          break;
-     case MotionEvent.ACTION_UP:
-          textEvent = "Event type ACTION_UP: ";
-          break;
-     case MotionEvent.ACTION_MOVE:
-          textEvent = "Event type ACTION_MOVE: ";
-          break;
-     default:
-          break;
-     }
-     // We just iterate and display the Objects. The first object will be the closest to the user
-     Iterator<BeyondarObject> iterator = geoObjects.iterator();
-     while (iterator.hasNext()) {
-          BeyondarObject geoObject = iterator.next();
-          textEvent = textEvent + " " + geoObject.getName();
-
-     }
-     doSomethingInTheUIThread(textEvent);
-}
+	public void onClikBeyondarObject(ArrayList<BeyondarObject> beyondarObjects) {
+		// The first element in the array belongs to the closest BeyondarObject
+		Toast.makeText(this, "Clicked on: " + beyondarObjects.get(0).getName(), Toast.LENGTH_LONG).show();
+	}
 ```
-
-If we want to run the `onTouchARView` method in the UI thread we can use the annotation `@OnUiThread` for that purpose.
-
+We also can capture the touch events using the `OnTouchBeyondarViewListener`:
 ```java
 ...
 @Override
-@OnUiThread
-public void onTouchARView(MotionEvent event, BeyondarGLSurfaceView beyondarView) {
+public boolean onTouchBeyondarView(MotionEvent event, BeyondarGLSurfaceView beyondarView) {
+
+	float x = event.getX();
+	float y = event.getY();
+
+	ArrayList<BeyondarObject> geoObjects = new ArrayList<BeyondarObject>();
+	
+	//This method call is better to don't do it in the UI thread!
+	beyondarView.getARObjectOnScreenCoordinates(x, y, geoObjects);
+
+	String textEvent = "";
+	switch (event.getAction()) {
+	case MotionEvent.ACTION_DOWN:
+		textEvent = "Event type ACTION_DOWN: ";
+		break;
+	case MotionEvent.ACTION_UP:
+		textEvent = "Event type ACTION_UP: ";
+		break;
+	case MotionEvent.ACTION_MOVE:
+		textEvent = "Event type ACTION_MOVE: ";
+		break;
+	default:
+		break;
+	}
+
+	Iterator<BeyondarObject> iterator = geoObjects.iterator();
+	while (iterator.hasNext()) {
+		BeyondarObject geoObject = iterator.next();
+		...
+		// Do something
+		...
+
+	}
+	return false;
+}
 ...
 ```
 

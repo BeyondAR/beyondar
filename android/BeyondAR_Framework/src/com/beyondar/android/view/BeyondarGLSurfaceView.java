@@ -82,7 +82,6 @@ public class BeyondarGLSurfaceView extends GLSurfaceView {
 			@Override
 			public GL wrap(GL gl) {
 				return new MatrixTrackingGL(gl);
-
 			}
 		});
 
@@ -198,13 +197,14 @@ public class BeyondarGLSurfaceView extends GLSurfaceView {
 
 	@Override
 	public void onPause() {
+		unregisterSensorListener();
 		super.onPause();
 	}
 
 	@Override
 	public void onResume() {
 		super.onResume();
-
+		registerSensorListener(mSensorDelay);
 		if (mRenderer != null) {
 			Display display = ((WindowManager) getContext().getSystemService(Context.WINDOW_SERVICE))
 					.getDefaultDisplay();
@@ -238,9 +238,9 @@ public class BeyondarGLSurfaceView extends GLSurfaceView {
 	 *            The list to place the objects that has been collide
 	 * @return
 	 */
-	public synchronized void getARObjectOnScreenCoordinates(float x, float y,
+	public synchronized void getBeyondarObjectsOnScreenCoordinates(float x, float y,
 			ArrayList<BeyondarObject> beyondarObjects) {
-		getARObjectOnScreenCoordinates(x, y, beyondarObjects, sRay);
+		getBeyondarObjectsOnScreenCoordinates(x, y, beyondarObjects, sRay);
 
 	}
 
@@ -255,7 +255,7 @@ public class BeyondarGLSurfaceView extends GLSurfaceView {
 	 *            The ray that will hold the direction of the screen coordinate
 	 * @return
 	 */
-	public synchronized void getARObjectOnScreenCoordinates(float x, float y,
+	public synchronized void getBeyondarObjectsOnScreenCoordinates(float x, float y,
 			ArrayList<BeyondarObject> beyondarObjects, Ray ray) {
 		mRenderer.getViewRay(x, y, ray);
 		mWorld.getBeyondarObjectsCollideRay(ray, beyondarObjects);

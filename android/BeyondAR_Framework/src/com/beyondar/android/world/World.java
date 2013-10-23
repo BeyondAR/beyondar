@@ -80,9 +80,15 @@ public class World implements Modulable<WorldModule> {
 
 	}
 
+	/**
+	 * Add a {@link WorldModule} to the {@link World}. If the module exist it
+	 * will not be added again.
+	 */
 	public void addModule(WorldModule module) {
 		synchronized (mLockModules) {
-			mModules.add(module);
+			if (!mModules.contains(module)) {
+				mModules.add(module);
+			}
 		}
 		module.setup(this, mContext);
 	}
@@ -92,6 +98,7 @@ public class World implements Modulable<WorldModule> {
 	 * 
 	 * @param module
 	 *            module to be removed
+	 * @return True if the module has been removed, false otherwise
 	 */
 	@Override
 	public boolean removeModule(WorldModule module) {
@@ -263,7 +270,6 @@ public class World implements Modulable<WorldModule> {
 	public double getAltitude() {
 		return mAltitude;
 	}
-
 
 	/**
 	 * Get the user's latitude

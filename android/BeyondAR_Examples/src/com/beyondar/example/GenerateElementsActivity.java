@@ -27,6 +27,7 @@ import android.view.View.OnClickListener;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.beyondar.android.fragment.BeyondarFragmentSupport;
 import com.beyondar.android.opengl.renderer.ARRenderer.FpsUpdatable;
@@ -57,13 +58,15 @@ public class GenerateElementsActivity extends FragmentActivity implements OnTouc
 		loadViewFromXML();
 
 		// We create the world and fill it
-		mWorld = CustomWorldHelper.generateObjects(this);
+		mWorld = new World(this);
 
 		mBeyondarFragment.setWorld(mWorld);
 		mBeyondarFragment.setFpsUpdatable(this);
 
 		// set listener for the geoObjects
 		mBeyondarFragment.setOnTouchBeyondarViewListener(this);
+
+		Toast.makeText(this, "Touch the screen to create an object", Toast.LENGTH_LONG).show();
 
 	}
 
@@ -75,7 +78,7 @@ public class GenerateElementsActivity extends FragmentActivity implements OnTouc
 
 		ArrayList<BeyondarObject> geoObjects = new ArrayList<BeyondarObject>();
 
-		beyondarView.getARObjectOnScreenCoordinates(x, y, geoObjects);
+		beyondarView.getBeyondarObjectsOnScreenCoordinates(x, y, geoObjects);
 
 		String textEvent = "";
 

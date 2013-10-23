@@ -131,7 +131,7 @@ public boolean onTouchBeyondarView(MotionEvent event, BeyondarGLSurfaceView beyo
 	ArrayList<BeyondarObject> geoObjects = new ArrayList<BeyondarObject>();
 	
 	//This method call is better to don't do it in the UI thread!
-	beyondarView.getARObjectOnScreenCoordinates(x, y, geoObjects);
+	getBeyondarObjectsOnScreenCoordinates(x, y, geoObjects);
 
 	String textEvent = "";
 	switch (event.getAction()) {

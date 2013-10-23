@@ -1,6 +1,7 @@
 package com.beyondar.android.fragment;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -221,9 +222,53 @@ public class BeyondarFragmentSupport extends Fragment implements FpsUpdatable, O
 		mBeyondarGLSurface.setVisibility(View.VISIBLE);
 	}
 
+	/**
+	 * Get the GeoObject that intersect with the coordinates x, y on the screen.<br>
+	 * NOTE: When this method is called a new {@link List} is created.
+	 * 
+	 * @param x
+	 * @param y
+	 * 
+	 * @return A new list with the {@link BeyondarObject} that collide with the
+	 *         screen cord
+	 */
+	public List<BeyondarObject> getBeyondarObjectsOnScreenCoordinates(float x, float y) {
+		ArrayList<BeyondarObject> beyondarObjects = new ArrayList<BeyondarObject>();
+		mBeyondarGLSurface.getBeyondarObjectsOnScreenCoordinates(x, y, beyondarObjects);
+		return beyondarObjects;
+	}
+
+	/**
+	 * Get the GeoObject that intersect with the coordinates x, y on the screen
+	 * 
+	 * @param x
+	 * @param y
+	 * @param beyondarObjects
+	 *            The output list to place all the {@link BeyondarObject} that
+	 *            collide with the screen cord
+	 * @return
+	 */
+	public void getBeyondarObjectsOnScreenCoordinates(float x, float y,
+			ArrayList<BeyondarObject> beyondarObjects) {
+		mBeyondarGLSurface.getBeyondarObjectsOnScreenCoordinates(x, y, beyondarObjects);
+	}
+
+	/**
+	 * Get the GeoObject that intersect with the coordinates x, y on the screen
+	 * 
+	 * @param x
+	 * @param y
+	 * @param beyondarObjects
+	 *            The output list to place all the {@link BeyondarObject} that
+	 *            collide with the screen cord
+	 * @param ray
+	 *            The ray that will hold the direction of the screen coordinate
+	 * @return
+	 */
 	public void getBeyondarObjectsOnScreenCoordinates(float x, float y,
 			ArrayList<BeyondarObject> beyondarObjects, Ray ray) {
-		mBeyondarGLSurface.getBeyondarObjectsOnScreenCoordinates(x, y, beyondarObjects);
+		mBeyondarGLSurface.getBeyondarObjectsOnScreenCoordinates(x, y, beyondarObjects, ray);
+
 	}
 
 	/**

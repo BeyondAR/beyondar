@@ -235,7 +235,8 @@ public class BeyondarGLSurfaceView extends GLSurfaceView {
 	 * @param x
 	 * @param y
 	 * @param beyondarObjects
-	 *            The list to place the objects that has been collide
+	 *            The output list to place all the {@link BeyondarObject} that
+	 *            collide with the screen cord
 	 * @return
 	 */
 	public synchronized void getBeyondarObjectsOnScreenCoordinates(float x, float y,
@@ -250,7 +251,8 @@ public class BeyondarGLSurfaceView extends GLSurfaceView {
 	 * @param x
 	 * @param y
 	 * @param beyondarObjects
-	 *            The list to place the objects that has been collide
+	 *            The output list to place all the {@link BeyondarObject} that
+	 *            collide with the screen cord
 	 * @param ray
 	 *            The ray that will hold the direction of the screen coordinate
 	 * @return

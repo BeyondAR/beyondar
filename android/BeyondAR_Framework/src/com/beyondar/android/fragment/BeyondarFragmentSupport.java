@@ -15,6 +15,7 @@ import android.widget.FrameLayout.LayoutParams;
 import android.widget.TextView;
 
 import com.beyondar.android.opengl.renderer.ARRenderer.FpsUpdatable;
+import com.beyondar.android.util.math.geom.Ray;
 import com.beyondar.android.view.BeyondarGLSurfaceView;
 import com.beyondar.android.view.CameraView;
 import com.beyondar.android.view.OnClikBeyondarObjectListener;
@@ -137,10 +138,7 @@ public class BeyondarFragmentSupport extends Fragment implements FpsUpdatable, O
 				@Override
 				public void run() {
 					final ArrayList<BeyondarObject> beyondarObjects = new ArrayList<BeyondarObject>();
-					mBeyondarGLSurface.getARObjectOnScreenCoordinates(lastX, lastY, beyondarObjects);
-					if (beyondarObjects.size() == 0) {
-						return;
-					}
+					mBeyondarGLSurface.getBeyondarObjectsOnScreenCoordinates(lastX, lastY, beyondarObjects);
 					mBeyondarGLSurface.post(new Runnable() {
 						@Override
 						public void run() {
@@ -221,6 +219,11 @@ public class BeyondarFragmentSupport extends Fragment implements FpsUpdatable, O
 	 */
 	public void startRenderingAR() {
 		mBeyondarGLSurface.setVisibility(View.VISIBLE);
+	}
+
+	public void getBeyondarObjectsOnScreenCoordinates(float x, float y,
+			ArrayList<BeyondarObject> beyondarObjects, Ray ray) {
+		mBeyondarGLSurface.getBeyondarObjectsOnScreenCoordinates(x, y, beyondarObjects);
 	}
 
 	/**

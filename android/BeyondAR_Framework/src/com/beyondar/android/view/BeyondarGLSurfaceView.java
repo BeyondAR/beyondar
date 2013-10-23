@@ -35,7 +35,6 @@ import com.beyondar.android.opengl.util.BeyondarSensorManager;
 import com.beyondar.android.opengl.util.MatrixTrackingGL;
 import com.beyondar.android.util.CompatibilityUtil;
 import com.beyondar.android.util.Logger;
-import com.beyondar.android.util.annotation.AnnotationsUtils;
 import com.beyondar.android.util.math.geom.Ray;
 import com.beyondar.android.world.BeyondarObject;
 import com.beyondar.android.world.World;
@@ -83,7 +82,6 @@ public class BeyondarGLSurfaceView extends GLSurfaceView {
 			@Override
 			public GL wrap(GL gl) {
 				return new MatrixTrackingGL(gl);
-
 			}
 		});
 
@@ -95,10 +93,11 @@ public class BeyondarGLSurfaceView extends GLSurfaceView {
 		setRenderer(mRenderer);
 
 		requestFocus();
-		// This call will allow the GLSurface to be on the top of all the Surfaces. 
-		// It is needed because when the camera is rotated the camera tend to overlap the GLSurface.
-		setFocusableInTouchMode(true);
+		// This call will allow the GLSurface to be on the top of all the
+		// Surfaces. It is needed because when the camera is rotated the camera
+		// tend to overlap the GLSurface.
 		setZOrderMediaOverlay(true);
+		setFocusableInTouchMode(true);
 	}
 
 	/**
@@ -198,13 +197,14 @@ public class BeyondarGLSurfaceView extends GLSurfaceView {
 
 	@Override
 	public void onPause() {
+		unregisterSensorListener();
 		super.onPause();
 	}
 
 	@Override
 	public void onResume() {
 		super.onResume();
-
+		registerSensorListener(mSensorDelay);
 		if (mRenderer != null) {
 			Display display = ((WindowManager) getContext().getSystemService(Context.WINDOW_SERVICE))
 					.getDefaultDisplay();
@@ -214,24 +214,14 @@ public class BeyondarGLSurfaceView extends GLSurfaceView {
 
 	@Override
 	public boolean onTouchEvent(final MotionEvent event) {
-		//TODO: Remove this code
 		if (mWorld == null || mTouchListener == null || event == null) {
 			return false;
 		}
 
-		if (AnnotationsUtils.hasUiAnnotation(mTouchListener, OnTouchBeyondarViewListener.__ON_AR_TOUCH_METHOD_NAME__)) {
-			mTouchListener.onTouchBeyondarView(event, this);
-		} else {
-			new Thread(new Runnable() {
-				@Override
-				public void run() {
-					mTouchListener.onTouchBeyondarView(event, BeyondarGLSurfaceView.this);
-				}
-			}).start();
-		}
-		return true;
+		mTouchListener.onTouchBeyondarView(event, this);
+		return false;
 	}
-	
+
 	@Deprecated
 	public void setOnTouchBeyondarViewListener(OnTouchBeyondarViewListener listener) {
 		mTouchListener = listener;
@@ -248,9 +238,9 @@ public class BeyondarGLSurfaceView extends GLSurfaceView {
 	 *            The list to place the objects that has been collide
 	 * @return
 	 */
-	public synchronized void getARObjectOnScreenCoordinates(float x, float y,
+	public synchronized void getBeyondarObjectsOnScreenCoordinates(float x, float y,
 			ArrayList<BeyondarObject> beyondarObjects) {
-		getARObjectOnScreenCoordinates(x, y, beyondarObjects, sRay);
+		getBeyondarObjectsOnScreenCoordinates(x, y, beyondarObjects, sRay);
 
 	}
 
@@ -265,7 +255,7 @@ public class BeyondarGLSurfaceView extends GLSurfaceView {
 	 *            The ray that will hold the direction of the screen coordinate
 	 * @return
 	 */
-	public synchronized void getARObjectOnScreenCoordinates(float x, float y,
+	public synchronized void getBeyondarObjectsOnScreenCoordinates(float x, float y,
 			ArrayList<BeyondarObject> beyondarObjects, Ray ray) {
 		mRenderer.getViewRay(x, y, ray);
 		mWorld.getBeyondarObjectsCollideRay(ray, beyondarObjects);

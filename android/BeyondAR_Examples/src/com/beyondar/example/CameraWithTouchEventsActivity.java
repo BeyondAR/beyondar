@@ -71,7 +71,7 @@ public class CameraWithTouchEventsActivity extends FragmentActivity implements O
 		ArrayList<BeyondarObject> geoObjects = new ArrayList<BeyondarObject>();
 
 		//This method call is better to don't do it in the UI thread!
-		beyondarView.getARObjectOnScreenCoordinates(x, y, geoObjects);
+		beyondarView.getBeyondarObjectsOnScreenCoordinates(x, y, geoObjects);
 
 		String textEvent = "";
 

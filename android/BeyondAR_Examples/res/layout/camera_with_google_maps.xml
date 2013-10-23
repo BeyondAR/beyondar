@@ -15,5 +15,5 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|right"
         android:text="Show map" />
-
+    
 </FrameLayout>

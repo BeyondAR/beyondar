@@ -70,7 +70,7 @@ public class CameraWithTouchEventsActivity extends FragmentActivity implements O
 
 		ArrayList<BeyondarObject> geoObjects = new ArrayList<BeyondarObject>();
 
-		//This method call is better to don't do it in the UI thread!
+		// This method call is better to don't do it in the UI thread!
 		beyondarView.getBeyondarObjectsOnScreenCoordinates(x, y, geoObjects);
 
 		String textEvent = "";
@@ -109,7 +109,9 @@ public class CameraWithTouchEventsActivity extends FragmentActivity implements O
 
 	@Override
 	public void onClikBeyondarObject(ArrayList<BeyondarObject> beyondarObjects) {
-		Toast.makeText(this, "Clicked on: " + beyondarObjects.get(0).getName(), Toast.LENGTH_LONG).show();
+		if (beyondarObjects.size() > 0) {
+			Toast.makeText(this, "Clicked on: " + beyondarObjects.get(0).getName(), Toast.LENGTH_LONG).show();
+		}
 	}
 
 }

@@ -114,7 +114,7 @@ Now we have the app ready to show the GeoObjects. But we also want to capture ev
 mBeyondarFragment.setOnClickBeyondarObjectListener(this);
 ...
 @Override
-	public void onClikBeyondarObject(ArrayList<BeyondarObject> beyondarObjects) {
+public void onClikBeyondarObject(ArrayList<BeyondarObject> beyondarObjects) {
 		// The first element in the array belongs to the closest BeyondarObject
 		Toast.makeText(this, "Clicked on: " + beyondarObjects.get(0).getName(), Toast.LENGTH_LONG).show();
 	}

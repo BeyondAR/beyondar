@@ -19,7 +19,7 @@ public class Constants {
 
 	public static final int E6 = 1000000;
 	
-	public static final int VERSION_NUMBER = 000300;
-	public static final String VERSION_NAME= "0.3.0";
+	public static final int VERSION_NUMBER = 000301;
+	public static final String VERSION_NAME= "0.3.1";
 
 }

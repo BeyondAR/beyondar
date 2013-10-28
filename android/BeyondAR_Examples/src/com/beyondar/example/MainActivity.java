@@ -27,7 +27,8 @@ import android.widget.ListView;
 public class MainActivity extends Activity implements OnItemClickListener {
 
 	private ListView mLisViewt;
-	private String[] values = new String[] { "Simple AR camera", "BeyondAR World in Google maps",
+	private String[] values = new String[] { "Simple AR camera",
+			"Simple camera with a top distance far for rendering", "BeyondAR World in Google maps",
 			"AR camera with Gooogle maps", "Camera with touch events" };
 
 	@Override
@@ -37,11 +38,11 @@ public class MainActivity extends Activity implements OnItemClickListener {
 		mLisViewt = (ListView) findViewById(R.id.examplesList);
 
 		fillList();
-		
-		//openActivity(SimpleCameraActivity.class);
-		//openActivity(GoogleMapActivity.class);
-		//openActivity(CameraWithGoogleMapsActivity.class);
-		//openActivity(CameraWithTouchEventsActivity.class);
+
+		// openActivity(SimpleCameraActivity.class);
+		// openActivity(GoogleMapActivity.class);
+		// openActivity(CameraWithGoogleMapsActivity.class);
+		// openActivity(CameraWithTouchEventsActivity.class);
 	}
 
 	private void fillList() {
@@ -58,12 +59,15 @@ public class MainActivity extends Activity implements OnItemClickListener {
 			openActivity(SimpleCameraActivity.class);
 			break;
 		case 1:
-			openActivity(GoogleMapActivity.class);
+			openActivity(SimpleCameraWithMaxFarAwayActivity.class);
 			break;
 		case 2:
-			openActivity(CameraWithGoogleMapsActivity.class);
+			openActivity(GoogleMapActivity.class);
 			break;
 		case 3:
+			openActivity(CameraWithGoogleMapsActivity.class);
+			break;
+		case 4:
 			openActivity(CameraWithTouchEventsActivity.class);
 			break;
 		default:
@@ -75,7 +79,7 @@ public class MainActivity extends Activity implements OnItemClickListener {
 		Intent intent = new Intent(this, ActivityClass);
 		startActivity(intent);
 	}
-	
+
 	@Override
 	protected void onResume() {
 		super.onResume();

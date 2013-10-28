@@ -16,12 +16,14 @@ import android.widget.FrameLayout.LayoutParams;
 import android.widget.TextView;
 
 import com.beyondar.android.opengl.renderer.ARRenderer.FpsUpdatable;
+import com.beyondar.android.util.math.Distance;
 import com.beyondar.android.util.math.geom.Ray;
 import com.beyondar.android.view.BeyondarGLSurfaceView;
 import com.beyondar.android.view.CameraView;
 import com.beyondar.android.view.OnClikBeyondarObjectListener;
 import com.beyondar.android.view.OnTouchBeyondarViewListener;
 import com.beyondar.android.world.BeyondarObject;
+import com.beyondar.android.world.GeoObject;
 import com.beyondar.android.world.World;
 
 public class BeyondarFragmentSupport extends Fragment implements FpsUpdatable, OnClickListener,
@@ -269,6 +271,32 @@ public class BeyondarFragmentSupport extends Fragment implements FpsUpdatable, O
 			ArrayList<BeyondarObject> beyondarObjects, Ray ray) {
 		mBeyondarGLSurface.getBeyondarObjectsOnScreenCoordinates(x, y, beyondarObjects, ray);
 
+	}
+	
+	/**
+	 * When a {@link GeoObject} is rendered according to its position it could
+	 * look very small if it is far away. Use this method to render far objects
+	 * as if there were closer.<br>
+	 * For instance if there is an object at 100 meters and we want to have
+	 * everything at least at 25 meters, we could use this method for that
+	 * purpose. <br>
+	 * To set it to the default behavior just set it to 0
+	 * 
+	 * @param maxDistanceSize
+	 *            The top far distance (in meters) which we want to draw a
+	 *            {@link GeoObject} , 0 to set again the default behavior
+	 */
+	public void setMaxDistanceSize(float maxDistanceSize) {
+		mBeyondarGLSurface.setMaxDistanceSize(maxDistanceSize);
+	}
+
+	/**
+	 * Get the max distance which a {@link GeoObject} will be rendered.
+	 * 
+	 * @return The current max distance. 0 is the default behavior
+	 */
+	public float getMaxDistanceSize() {
+		return mBeyondarGLSurface.getMaxDistanceSize();
 	}
 
 	/**

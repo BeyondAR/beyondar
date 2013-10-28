@@ -101,7 +101,7 @@ public class ARRenderer implements GLSurfaceView.Renderer, SensorEventListener,
 	private MatrixGrabber mMatrixGrabber = new MatrixGrabber();
 	private int mWidth, mHeight;
 
-	private static HashMap<String, Texture> sTextureHolder = new HashMap<String, Texture>();;
+	private static HashMap<String, Texture> sTextureHolder = new HashMap<String, Texture>();
 	private static PendingBitmapsToBeLoaded<BeyondarObject> sPendingTextureObjects = new PendingBitmapsToBeLoaded<BeyondarObject>();
 	private static ArrayList<UriAndBitmap> sNewBitmapsLoaded = new ArrayList<UriAndBitmap>();
 	private static final float[] sInclination = new float[16];
@@ -126,6 +126,8 @@ public class ARRenderer implements GLSurfaceView.Renderer, SensorEventListener,
 	private float mFrames = 0;
 	private FpsUpdatable mFpsUpdatable;
 	private boolean mFpsUpdatableOnUiThread;
+
+	private float mMaxDistanceSizePoints;
 
 	public ARRenderer() {
 		reloadWorldTextures = false;
@@ -268,7 +270,7 @@ public class ARRenderer implements GLSurfaceView.Renderer, SensorEventListener,
 				loadWorldTextures(gl);
 				reloadWorldTextures = false;
 			}
-			drawWorld(gl, time);
+			renderWorld(gl, time);
 		}
 
 		if (mScreenshot) {
@@ -352,14 +354,50 @@ public class ARRenderer implements GLSurfaceView.Renderer, SensorEventListener,
 		return result;
 	}
 
+	private static final double[] sOut = new double[3];
 	protected void convertGPStoPoint3(GeoObject geoObject, Point3 out) {
-		float x = (float) ((geoObject.getLongitude() - mWorld.getLongitude()) * Distance.METERS_TO_GEOPOINT / 2);
-		float z = (float) ((geoObject.getAltitude() - mWorld.getAltitude()) * Distance.METERS_TO_GEOPOINT / 2);
-		float y = (float) ((geoObject.getLatitude() - mWorld.getLatitude()) * Distance.METERS_TO_GEOPOINT / 2);
+		float x, z, y;
+		x = (float) ((geoObject.getLongitude() - mWorld.getLongitude()) * Distance.METERS_TO_GEOPOINT / 2);
+		z = (float) ((geoObject.getAltitude() - mWorld.getAltitude()) * Distance.METERS_TO_GEOPOINT / 2);
+		y = (float) ((geoObject.getLatitude() - mWorld.getLatitude()) * Distance.METERS_TO_GEOPOINT / 2);
+		
+		if (mMaxDistanceSizePoints > 0) {
+			double totalDst = Distance.calculateDistance(x, y, 0, 0);
+			MathUtils.linearInterpolate(x, y, z, 0,
+					0, 0, mMaxDistanceSizePoints, totalDst, sOut);
+			x = (float) sOut[0];
+			y = (float) sOut[1];
+		}
 
 		out.x = x;
 		out.y = y;
 		out.z = z;
+	}
+
+	/**
+	 * When a {@link GeoObject} is rendered according to its position it could
+	 * look very small if it is far away. Use this method to render far objects
+	 * as if there were closer.<br>
+	 * For instance if there is an object at 100 meters and we want to have
+	 * everything at least at 25 meters, we could use this method for that
+	 * purpose. <br>
+	 * To set it to the default behavior just set it to 0
+	 * 
+	 * @param maxDistanceSize
+	 *            The top far distance (in meters) which we want to draw a
+	 *            {@link GeoObject} , 0 to set again the default behavior
+	 */
+	public void setMaxDistanceSize(float maxDistanceSize) {
+		mMaxDistanceSizePoints = (float) (maxDistanceSize/2);
+	}
+
+	/**
+	 * Get the max distance which a {@link GeoObject} will be rendered.
+	 * 
+	 * @return The current max distance. 0 is the default behavior
+	 */
+	public float getMaxDistanceSize() {
+		return (float) (mMaxDistanceSizePoints * 2);
 	}
 
 	/**
@@ -378,13 +416,13 @@ public class ARRenderer implements GLSurfaceView.Renderer, SensorEventListener,
 		mGetFps = mFpsUpdatable != null;
 	}
 
-	protected void drawWorld(GL10 gl, long time) {
+	protected void renderWorld(GL10 gl, long time) {
 		BeyondarObjectList list = null;
 		try {
 			for (int i = 0; i < mWorld.getBeyondarObjectLists().size(); i++) {
 				list = mWorld.getBeyondarObjectLists().get(i);
 				if (list != null) {
-					drawList(gl, list, time);
+					renderList(gl, list, time);
 				}
 			}
 		} catch (ConcurrentModificationException e) {
@@ -415,7 +453,7 @@ public class ARRenderer implements GLSurfaceView.Renderer, SensorEventListener,
 		}
 	}
 
-	protected void drawList(GL10 gl, BeyondarObjectList list, long time) {
+	protected void renderList(GL10 gl, BeyondarObjectList list, long time) {
 
 		Texture listTexture = list.getTexture();
 
@@ -478,7 +516,7 @@ public class ARRenderer implements GLSurfaceView.Renderer, SensorEventListener,
 
 			if (!beyondarObject.getTexture().isLoaded() && beyondarObject.getBitmapUri() != null) {
 				int counter = beyondarObject.getTexture().getLoadTryCounter();
-				double timeOut= TIMEOUT_LOAD_TEXTURE * (counter + 1);
+				double timeOut = TIMEOUT_LOAD_TEXTURE * (counter + 1);
 				if (beyondarObject.getTexture().getTimeStamp() == 0
 						|| time - beyondarObject.getTexture().getTimeStamp() > timeOut) {
 					Logger.d("Loading new textures...");

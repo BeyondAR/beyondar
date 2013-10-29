@@ -48,7 +48,7 @@ public class SimpleCameraWithMaxFarAwayActivity extends FragmentActivity {
 		// We also can see the Frames per seconds
 		mBeyondarFragment.showFPS(true);
 		
-		mBeyondarFragment.setMaxDistanceSize(1);
+		mBeyondarFragment.setMaxDistanceSize(10);
 
 	}
 

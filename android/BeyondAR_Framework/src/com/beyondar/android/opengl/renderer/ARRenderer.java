@@ -357,14 +357,15 @@ public class ARRenderer implements GLSurfaceView.Renderer, SensorEventListener,
 	private static final double[] sOut = new double[3];
 	protected void convertGPStoPoint3(GeoObject geoObject, Point3 out) {
 		float x, z, y;
-		x = (float) ((geoObject.getLongitude() - mWorld.getLongitude()) * Distance.METERS_TO_GEOPOINT / 2);
-		z = (float) ((geoObject.getAltitude() - mWorld.getAltitude()) * Distance.METERS_TO_GEOPOINT / 2);
-		y = (float) ((geoObject.getLatitude() - mWorld.getLatitude()) * Distance.METERS_TO_GEOPOINT / 2);
+		x = (float) (Distance.fastConversionGeopointsToMeters(geoObject.getLongitude() - mWorld.getLongitude()) / 2);
+		z = (float) (Distance.fastConversionGeopointsToMeters(geoObject.getAltitude() - mWorld.getAltitude()) / 2);
+		y = (float) (Distance.fastConversionGeopointsToMeters(geoObject.getLatitude() - mWorld.getLatitude()) / 2);
 		
 		if (mMaxDistanceSizePoints > 0) {
 			double totalDst = Distance.calculateDistance(x, y, 0, 0);
-			MathUtils.linearInterpolate(x, y, z, 0,
-					0, 0, mMaxDistanceSizePoints, totalDst, sOut);
+			MathUtils.linearInterpolate(0, 0, 0,
+					x, y, 0,
+					mMaxDistanceSizePoints, totalDst, sOut);
 			x = (float) sOut[0];
 			y = (float) sOut[1];
 		}

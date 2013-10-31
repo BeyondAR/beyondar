@@ -186,6 +186,7 @@ public class CameraView extends SurfaceView implements SurfaceHolder.Callback, C
 		Camera.Parameters parameters = mCamera.getParameters();
 		int orientation = getCameraDisplayOrientation(mCamera);
 
+		stopPreviewCamera();
 		if (orientation == 0) {
 			mCamera.setDisplayOrientation(180);
 		} else if (orientation == 90) {
@@ -233,10 +234,10 @@ public class CameraView extends SurfaceView implements SurfaceHolder.Callback, C
 	}
 
 	public void stopPreviewCamera() {
-		mIsPreviewRunning = false;
-		if (mCamera == null) {
+		if (mCamera == null || !mIsPreviewRunning) {
 			return;
 		}
+		mIsPreviewRunning = false;
 		mCamera.stopPreview();
 
 	}

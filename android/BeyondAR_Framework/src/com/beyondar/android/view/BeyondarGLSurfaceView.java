@@ -37,6 +37,7 @@ import com.beyondar.android.util.CompatibilityUtil;
 import com.beyondar.android.util.Logger;
 import com.beyondar.android.util.math.geom.Ray;
 import com.beyondar.android.world.BeyondarObject;
+import com.beyondar.android.world.GeoObject;
 import com.beyondar.android.world.World;
 
 public class BeyondarGLSurfaceView extends GLSurfaceView {
@@ -261,6 +262,32 @@ public class BeyondarGLSurfaceView extends GLSurfaceView {
 			ArrayList<BeyondarObject> beyondarObjects, Ray ray) {
 		mRenderer.getViewRay(x, y, ray);
 		mWorld.getBeyondarObjectsCollideRay(ray, beyondarObjects);
+	}
+	
+	/**
+	 * When a {@link GeoObject} is rendered according to its position it could
+	 * look very small if it is far away. Use this method to render far objects
+	 * as if there were closer.<br>
+	 * For instance if there is an object at 100 meters and we want to have
+	 * everything at least at 25 meters, we could use this method for that
+	 * purpose. <br>
+	 * To set it to the default behavior just set it to 0
+	 * 
+	 * @param maxDistanceSize
+	 *            The top far distance (in meters) which we want to draw a
+	 *            {@link GeoObject} , 0 to set again the default behavior
+	 */
+	public void setMaxDistanceSize(float maxDistanceSize) {
+		mRenderer.setMaxDistanceSize(maxDistanceSize);
+	}
+
+	/**
+	 * Get the max distance which a {@link GeoObject} will be rendered.
+	 * 
+	 * @return The current max distance. 0 is the default behavior
+	 */
+	public float getMaxDistanceSize() {
+		return mRenderer.getMaxDistanceSize();
 	}
 
 }

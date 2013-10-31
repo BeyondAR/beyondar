@@ -53,6 +53,7 @@
         <activity android:name="com.beyondar.example.GoogleMapActivity" />
         <activity android:name="com.beyondar.example.CameraWithTouchEventsActivity" />
         <activity android:name="com.beyondar.example.CameraWithGoogleMapsActivity" />
+        <activity android:name="com.beyondar.example.SimpleCameraWithMaxFarAwayActivity" />
 
         <meta-data
             android:name="com.google.android.maps.v2.API_KEY"

@@ -80,15 +80,6 @@ public class BeyondarFragment extends Fragment implements FpsUpdatable, OnClickL
 	}
 	
 	/**
-	 * Returns the SurfaceView for this class instance
-	 * 
-	 * @return
-	 */
-	public BeyondarGLSurfaceView getGLSurfaceView(){
-		return mBeyondarGLSurface;
-	}
-	
-	/**
 	 *
 	 * Returns the CameraView for this class instance
 	 * 
@@ -96,6 +87,15 @@ public class BeyondarFragment extends Fragment implements FpsUpdatable, OnClickL
 	 */
 	public CameraView getCameraView(){
 		return mBeyondarCameraView;
+	}
+
+        /**
+	 * Returns the SurfaceView for this class instance
+	 * 
+	 * @return
+	 */
+	public BeyondarGLSurfaceView getGLSurfaceView(){
+		return mBeyondarGLSurface;
 	}
 
 	@Override

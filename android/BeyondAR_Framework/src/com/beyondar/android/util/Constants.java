@@ -17,7 +17,7 @@ package com.beyondar.android.util;
 
 public class Constants {
 
-	public static final int VERSION_NUMBER = 000302;
-	public static final String VERSION_NAME= "0.3.2";
+	public static final int VERSION_NUMBER = 000303;
+	public static final String VERSION_NAME= "0.3.3";
 
 }

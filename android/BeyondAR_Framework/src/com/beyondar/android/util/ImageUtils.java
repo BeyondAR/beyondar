@@ -142,12 +142,18 @@ public class ImageUtils {
 		int height = Math.max(bmp1.getHeight(), bmp2.getHeight());
 		
 		Bitmap bmOverlay = Bitmap.createBitmap(width, height, bmp1.getConfig());
-		Bitmap bmp1Sized = Bitmap.createScaledBitmap(bmp1, width, height, true);
-		Bitmap bmp2Sized = Bitmap.createScaledBitmap(bmp2, width, height, true);	
-		
 		Canvas canvas = new Canvas(bmOverlay);
-		canvas.drawBitmap(bmp1Sized, 0, 0, null);
-		canvas.drawBitmap(bmp2Sized, 0, 0, null);
+		
+		Bitmap bmpSized = Bitmap.createScaledBitmap(bmp1, width, height, true);
+		canvas.drawBitmap(bmpSized, 0, 0, null);
+			
+	        bmpSized.recycle();
+			
+		bmpSized = Bitmap.createScaledBitmap(bmp2, width, height, true);	
+		canvas.drawBitmap(bmpSized, 0, 0, null);
+		
+		bmpSized.recycle();
+		
 		return bmOverlay;
 		
 	}

@@ -78,6 +78,25 @@ public class BeyondarFragment extends Fragment implements FpsUpdatable, OnClickL
 	protected CameraView createCameraView() {
 		return new CameraView(getActivity());
 	}
+	
+	/**
+	 *
+	 * Returns the CameraView for this class instance
+	 * 
+	 * @return
+	 */
+	public CameraView getCameraView(){
+		return mBeyondarCameraView;
+	}
+
+        /**
+	 * Returns the SurfaceView for this class instance
+	 * 
+	 * @return
+	 */
+	public BeyondarGLSurfaceView getGLSurfaceView(){
+		return mBeyondarGLSurface;
+	}
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {

@@ -100,7 +100,7 @@ public class Utils {
 	public static void takeSnapShot(CameraView cameraView, BeyondarGLSurfaceView bgls,
 			ICallBackBeyondARPicture callback) {
 		ScreenShootCallback callbackProcessing = new ScreenShootCallback(callback);
-
+		
 		if (cameraView != null) {
 			// CacheManager.getInventoryCache().purge();
 			cameraView.tackePicture(callbackProcessing);
@@ -133,7 +133,7 @@ public class Utils {
 
 		@Override
 		public void onPictureTaken(Bitmap picture) {
-			btmCamera = picture;
+			btmCamera = ImageUtils.rotate(picture, 90);
 			checkResults();
 		}
 

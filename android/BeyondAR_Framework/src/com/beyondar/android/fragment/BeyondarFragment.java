@@ -5,6 +5,7 @@ import java.util.List;
 
 import android.annotation.SuppressLint;
 import android.app.Fragment;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -23,6 +24,7 @@ import com.beyondar.android.view.CameraView;
 import com.beyondar.android.view.OnClikBeyondarObjectListener;
 import com.beyondar.android.view.OnTouchBeyondarViewListener;
 import com.beyondar.android.world.BeyondarObject;
+import com.beyondar.android.world.GeoObject;
 import com.beyondar.android.world.World;
 
 @SuppressLint("NewApi")
@@ -46,6 +48,9 @@ public class BeyondarFragment extends Fragment implements FpsUpdatable, OnClickL
 	}
 
 	private void init() {
+
+		checkIfSensorsAvailable();
+
 		android.view.ViewGroup.LayoutParams params = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
 				ViewGroup.LayoutParams.MATCH_PARENT);
 
@@ -57,6 +62,16 @@ public class BeyondarFragment extends Fragment implements FpsUpdatable, OnClickL
 
 		mMailLayout.addView(mBeyondarCameraView, params);
 		mMailLayout.addView(mBeyondarGLSurface, params);
+	}
+
+	private void checkIfSensorsAvailable() {
+		PackageManager PM = getActivity().getPackageManager();
+		boolean compass = PM.hasSystemFeature(PackageManager.FEATURE_SENSOR_COMPASS);
+		boolean accelerometer = PM.hasSystemFeature(PackageManager.FEATURE_SENSOR_ACCELEROMETER);
+		if (!compass || !accelerometer) {
+			throw new IllegalStateException(
+					"Beyondar can not run without the compass and the acelerometer sensors.");
+		}
 	}
 
 	/**
@@ -270,6 +285,32 @@ public class BeyondarFragment extends Fragment implements FpsUpdatable, OnClickL
 			ArrayList<BeyondarObject> beyondarObjects, Ray ray) {
 		mBeyondarGLSurface.getBeyondarObjectsOnScreenCoordinates(x, y, beyondarObjects, ray);
 
+	}
+
+	/**
+	 * When a {@link GeoObject} is rendered according to its position it could
+	 * look very small if it is far away. Use this method to render far objects
+	 * as if there were closer.<br>
+	 * For instance if there is an object at 100 meters and we want to have
+	 * everything at least at 25 meters, we could use this method for that
+	 * purpose. <br>
+	 * To set it to the default behavior just set it to 0
+	 * 
+	 * @param maxDistanceSize
+	 *            The top far distance (in meters) which we want to draw a
+	 *            {@link GeoObject} , 0 to set again the default behavior
+	 */
+	public void setMaxDistanceSize(float maxDistanceSize) {
+		mBeyondarGLSurface.setMaxDistanceSize(maxDistanceSize);
+	}
+
+	/**
+	 * Get the max distance which a {@link GeoObject} will be rendered.
+	 * 
+	 * @return The current max distance. 0 is the default behavior
+	 */
+	public float getMaxDistanceSize() {
+		return mBeyondarGLSurface.getMaxDistanceSize();
 	}
 
 	/**

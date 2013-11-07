@@ -22,7 +22,7 @@
     -->
 
 
-    <!-- Minimum permissions for Beyondar -->
+    <!-- Minimum permissions for BeyondAR -->
     <uses-permission android:name="android.permission.CAMERA" />
 
     <!-- For BeyondAR this is not mandatory unless you want to load something from internet -->

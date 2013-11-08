@@ -40,8 +40,9 @@ public class GoogleMapActivity extends FragmentActivity implements OnMarkerClick
 		setContentView(R.layout.map_google);
 
 		mMap = ((SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map)).getMap();
-
-		getSupportFragmentManager().executePendingTransactions();
+		if (mMap == null){
+			return;
+		}
 
 		// We create the world and fill the world
 		mWorld = CustomWorldHelper.generateObjects(this);
@@ -52,8 +53,7 @@ public class GoogleMapActivity extends FragmentActivity implements OnMarkerClick
 		// Then we need to set the map in to the GoogleMapModule
 		mGoogleMapModule.setGoogleMap(mMap);
 		// Now that we have the module created let's add it in to our world
-		// NOTE: It is better to load the modules before start adding object in
-		// to the world
+		// NOTE: It is better to load the modules before start adding object in to the world
 		mWorld.addModule(mGoogleMapModule);
 
 		mMap.setOnMarkerClickListener(this);
@@ -62,7 +62,6 @@ public class GoogleMapActivity extends FragmentActivity implements OnMarkerClick
 		mMap.animateCamera(CameraUpdateFactory.zoomTo(19), 2000, null);
 	}
 
-	
 	@Override
 	public boolean onMarkerClick(Marker marker) {
 		// To get the GeoObject that owns the marker we use the following

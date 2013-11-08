@@ -54,8 +54,6 @@ public class CameraView extends SurfaceView implements SurfaceHolder.Callback, C
 	private List<Size> mSupportedPreviewSizes;
 	private List<String> mSupportedFlashModes;
 
-	private boolean mIsPreviewRunning;
-
 	public CameraView(Context context) {
 		super(context);
 		init(context);
@@ -234,10 +232,9 @@ public class CameraView extends SurfaceView implements SurfaceHolder.Callback, C
 	}
 
 	public void stopPreviewCamera() {
-		if (mCamera == null || !mIsPreviewRunning) {
+		if (mCamera == null) {
 			return;
 		}
-		mIsPreviewRunning = false;
 		mCamera.stopPreview();
 
 	}
@@ -246,7 +243,7 @@ public class CameraView extends SurfaceView implements SurfaceHolder.Callback, C
 		if (mCamera == null) {
 			init(getContext());
 		}
-		if (mIsPreviewRunning || mCamera == null) {
+		if (mCamera == null) {
 			return;
 		}
 		try {

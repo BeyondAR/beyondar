@@ -42,7 +42,7 @@ public class MainActivity extends Activity implements OnItemClickListener {
 		// openActivity(SimpleCameraActivity.class);
 		// openActivity(GoogleMapActivity.class);
 		// openActivity(CameraWithGoogleMapsActivity.class);
-		 openActivity(CameraWithScreenShotActivity.class);
+		// openActivity(CameraWithScreenShotActivity.class);
 	}
 
 	private void fillList() {

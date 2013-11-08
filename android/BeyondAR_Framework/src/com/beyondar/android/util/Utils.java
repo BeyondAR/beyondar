@@ -133,7 +133,7 @@ public class Utils {
 
 		@Override
 		public void onPictureTaken(Bitmap picture) {
-			btmCamera = ImageUtils.rotate(picture, 90);
+			btmCamera = picture;
 			checkResults();
 		}
 

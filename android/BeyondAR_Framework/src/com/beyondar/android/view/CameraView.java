@@ -30,6 +30,7 @@ import android.view.SurfaceView;
 import android.view.WindowManager;
 
 import com.beyondar.android.util.DebugBitmap;
+import com.beyondar.android.util.ImageUtils;
 import com.beyondar.android.util.Logger;
 
 public class CameraView extends SurfaceView implements SurfaceHolder.Callback, Camera.PictureCallback {
@@ -182,7 +183,7 @@ public class CameraView extends SurfaceView implements SurfaceHolder.Callback, C
 		}
 
 		Camera.Parameters parameters = mCamera.getParameters();
-		int orientation = getCameraDisplayOrientation(mCamera);
+		int orientation = getCameraDisplayOrientation();
 
 		stopPreviewCamera();
 		if (orientation == 0) {
@@ -191,6 +192,7 @@ public class CameraView extends SurfaceView implements SurfaceHolder.Callback, C
 			mCamera.setDisplayOrientation(90);
 		}
 
+		// parameters.setRotation(orientation);
 		parameters.setPreviewSize(mPreviewSize.width, mPreviewSize.height);
 
 		mCamera.setParameters(parameters);
@@ -198,7 +200,7 @@ public class CameraView extends SurfaceView implements SurfaceHolder.Callback, C
 
 	}
 
-	private int getCameraDisplayOrientation(Camera camera) {
+	private int getCameraDisplayOrientation() {
 		int rotation = ((WindowManager) getContext().getSystemService(Context.WINDOW_SERVICE))
 				.getDefaultDisplay().getRotation();
 		int degrees = 0;
@@ -226,7 +228,21 @@ public class CameraView extends SurfaceView implements SurfaceHolder.Callback, C
 	@Override
 	public void onPictureTaken(byte[] imageData, Camera camera) {
 		if (imageData != null && mCameraCallback != null) {
-			mCameraCallback.onPictureTaken(convertByteImage(imageData));
+			Bitmap btm = convertByteImage(imageData);
+
+			int rotation = getCameraDisplayOrientation();
+			//TODO: Improve this hack
+			if (rotation == 0) {
+				rotation = 180;
+			} else if (rotation == 180) {
+				rotation = 0;
+			}
+			Bitmap newBtm = ImageUtils.rotate(btm, rotation);
+			if (newBtm != btm) {
+				btm.recycle();
+			}
+
+			mCameraCallback.onPictureTaken(newBtm);
 		}
 		startPreviewCamera();
 	}

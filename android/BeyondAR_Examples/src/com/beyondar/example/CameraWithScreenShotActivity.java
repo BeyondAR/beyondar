@@ -26,12 +26,12 @@ import android.widget.Button;
 
 import com.beyondar.android.fragment.BeyondarFragmentSupport;
 import com.beyondar.android.util.Utils;
-import com.beyondar.android.util.Utils.ICallBackBeyondARPicture;
+import com.beyondar.android.util.Utils.CallBackBeyondARPicture;
 import com.beyondar.android.world.World;
 import com.beyondar.example.dialog.ImageDialog;
 
 public class CameraWithScreenShotActivity extends FragmentActivity implements OnClickListener,
-		ICallBackBeyondARPicture {
+		CallBackBeyondARPicture {
 
 	private BeyondarFragmentSupport mBeyondarFragment;
 	private World mWorld;

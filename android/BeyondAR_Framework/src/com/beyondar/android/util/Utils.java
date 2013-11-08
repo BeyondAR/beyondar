@@ -21,7 +21,7 @@ import android.graphics.Matrix;
 import com.beyondar.android.opengl.renderer.ARRenderer.SnapshotCallback;
 import com.beyondar.android.view.BeyondarGLSurfaceView;
 import com.beyondar.android.view.CameraView;
-import com.beyondar.android.view.CameraView.IPictureCallback;
+import com.beyondar.android.view.CameraView.BeyondarPictureCallback;
 
 public class Utils {
 
@@ -98,7 +98,7 @@ public class Utils {
 	 * @param callback
 	 */
 	public static void takeSnapShot(CameraView cameraView, BeyondarGLSurfaceView bgls,
-			ICallBackBeyondARPicture callback) {
+			CallBackBeyondARPicture callback) {
 		ScreenShootCallback callbackProcessing = new ScreenShootCallback(callback);
 		
 		if (cameraView != null) {
@@ -110,18 +110,18 @@ public class Utils {
 		bgls.tackePicture(callbackProcessing);
 	}
 
-	public static interface ICallBackBeyondARPicture {
+	public static interface CallBackBeyondARPicture {
 		void onFinishSnapShotProcess(Bitmap screenshot);
 	}
 
-	private static class ScreenShootCallback implements IPictureCallback, SnapshotCallback {
+	private static class ScreenShootCallback implements BeyondarPictureCallback, SnapshotCallback {
 
 		Bitmap btmCamera;
 		Bitmap btmGl;
 		int status = 0;
-		ICallBackBeyondARPicture callback;
+		CallBackBeyondARPicture callback;
 
-		ScreenShootCallback(ICallBackBeyondARPicture cb) {
+		ScreenShootCallback(CallBackBeyondARPicture cb) {
 			callback = cb;
 		}
 

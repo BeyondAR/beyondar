@@ -33,7 +33,7 @@ import com.beyondar.android.util.DebugBitmap;
 import com.beyondar.android.util.Logger;
 
 public class CameraView extends SurfaceView implements SurfaceHolder.Callback, Camera.PictureCallback {
-	public static interface IPictureCallback {
+	public static interface BeyondarPictureCallback {
 		/**
 		 * This method is called when the snapshot of the camera is ready. If
 		 * there is an error, the image will be null
@@ -47,7 +47,7 @@ public class CameraView extends SurfaceView implements SurfaceHolder.Callback, C
 
 	private SurfaceHolder mHolder;
 	private Camera mCamera;
-	private IPictureCallback mCameraCallback;
+	private BeyondarPictureCallback mCameraCallback;
 	private BitmapFactory.Options mOptions;
 
 	private Size mPreviewSize;
@@ -228,7 +228,7 @@ public class CameraView extends SurfaceView implements SurfaceHolder.Callback, C
 	@Override
 	public void onPictureTaken(byte[] imageData, Camera camera) {
 		if (imageData != null && mCameraCallback != null) {
-			mCameraCallback.onPictureTaken(StoreByteImage(imageData));
+			mCameraCallback.onPictureTaken(convertByteImage(imageData));
 		}
 		startPreviewCamera();
 	}
@@ -265,7 +265,7 @@ public class CameraView extends SurfaceView implements SurfaceHolder.Callback, C
 		}
 	}
 
-	private Bitmap StoreByteImage(byte[] imageData) {
+	private Bitmap convertByteImage(byte[] imageData) {
 
 		Bitmap myImage = DebugBitmap.decodeByteArray(imageData, 0, imageData.length, mOptions);
 
@@ -275,13 +275,13 @@ public class CameraView extends SurfaceView implements SurfaceHolder.Callback, C
 		return myImage;
 	}
 
-	public void tackePicture(IPictureCallback cameraCallback) {
+	public void tackePicture(BeyondarPictureCallback cameraCallback) {
 		BitmapFactory.Options options = new BitmapFactory.Options();
 		options.inSampleSize = 4;
 		tackePicture(cameraCallback, options);
 	}
 
-	public void tackePicture(IPictureCallback cameraCallback, BitmapFactory.Options options) {
+	public void tackePicture(BeyondarPictureCallback cameraCallback, BitmapFactory.Options options) {
 		if (mCamera == null) {
 			return;
 		}

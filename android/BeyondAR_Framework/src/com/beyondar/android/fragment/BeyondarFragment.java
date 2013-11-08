@@ -68,9 +68,16 @@ public class BeyondarFragment extends Fragment implements FpsUpdatable, OnClickL
 		PackageManager PM = getActivity().getPackageManager();
 		boolean compass = PM.hasSystemFeature(PackageManager.FEATURE_SENSOR_COMPASS);
 		boolean accelerometer = PM.hasSystemFeature(PackageManager.FEATURE_SENSOR_ACCELEROMETER);
-		if (!compass || !accelerometer) {
+
+		if (!compass && !accelerometer) {
 			throw new IllegalStateException(
 					"Beyondar can not run without the compass and the acelerometer sensors.");
+		}
+		if (!compass) {
+			throw new IllegalStateException("Beyondar can not run without the compass sensor.");
+		}
+		if (!accelerometer) {
+			throw new IllegalStateException("Beyondar can not run without the acelerometer sensor.");
 		}
 	}
 

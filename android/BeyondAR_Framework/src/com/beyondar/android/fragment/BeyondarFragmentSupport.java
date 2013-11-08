@@ -89,7 +89,7 @@ public class BeyondarFragmentSupport extends Fragment implements FpsUpdatable, O
 		return mBeyondarCameraView;
 	}
 
-        /**
+     /**
 	 * Returns the SurfaceView for this class instance
 	 * 
 	 * @return
@@ -351,6 +351,5 @@ public class BeyondarFragmentSupport extends Fragment implements FpsUpdatable, O
 				}
 			});
 		}
-
 	}
 }

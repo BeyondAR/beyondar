@@ -29,7 +29,7 @@ public class MainActivity extends Activity implements OnItemClickListener {
 	private ListView mLisViewt;
 	private String[] values = new String[] { "Simple AR camera",
 			"Simple camera with a top distance far for rendering", "BeyondAR World in Google maps",
-			"AR camera with Gooogle maps", "Camera with touch events" };
+			"AR camera with Gooogle maps", "Camera with touch events", "Camera with screenshot" };
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -69,6 +69,9 @@ public class MainActivity extends Activity implements OnItemClickListener {
 			break;
 		case 4:
 			openActivity(CameraWithTouchEventsActivity.class);
+			break;
+		case 5:
+			openActivity(CameraWithScreenShotActivity.class);
 			break;
 		default:
 			break;

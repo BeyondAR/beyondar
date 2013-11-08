@@ -111,7 +111,7 @@ public class Utils {
 	}
 
 	public static interface ICallBackBeyondARPicture {
-		void onFinishSnapShotProcess(Bitmap image);
+		void onFinishSnapShotProcess(Bitmap screenshot);
 	}
 
 	private static class ScreenShootCallback implements IPictureCallback, SnapshotCallback {

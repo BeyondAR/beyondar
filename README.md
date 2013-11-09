@@ -25,8 +25,12 @@ To be able to run BeyondAR we need to add the following lines on the AndroidMani
 <!-- For beyondar this is not mandatory unless you want to load something from internet (for instance images) -->
 <uses-permission android:name="android.permission.INTERNET" />
 
+<!--  BeyondAR needs the following features-->
+<uses-feature android:glEsVersion="0x00020000" android:required="true" />
 <uses-feature android:name="android.hardware.camera" />
 <uses-feature android:name="android.hardware.camera.autofocus" />
+<uses-feature android:name="android.hardware.sensor.accelerometer" />
+<uses-feature android:name="android.hardware.sensor.compass" />
 ```
 
 To create the UI it we can choose using an Android Layout XML or using java code. For both of them we can use the `BeyondarFragmentSupport` or the `BeyondarFragment` fragments.

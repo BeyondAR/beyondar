@@ -3,6 +3,7 @@ package com.beyondar.android.fragment;
 import java.util.ArrayList;
 import java.util.List;
 
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -48,6 +49,9 @@ public class BeyondarFragmentSupport extends Fragment implements FpsUpdatable, O
 	}
 
 	private void init() {
+		
+		checkIfSensorsAvailable();
+		
 		android.view.ViewGroup.LayoutParams params = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
 				ViewGroup.LayoutParams.MATCH_PARENT);
 
@@ -59,6 +63,15 @@ public class BeyondarFragmentSupport extends Fragment implements FpsUpdatable, O
 
 		mMailLayout.addView(mBeyondarCameraView, params);
 		mMailLayout.addView(mBeyondarGLSurface, params);
+	}
+	
+	private void checkIfSensorsAvailable(){
+		PackageManager PM = getActivity().getPackageManager();
+		boolean compass = PM.hasSystemFeature(PackageManager.FEATURE_SENSOR_COMPASS);
+		boolean accelerometer = PM.hasSystemFeature(PackageManager.FEATURE_SENSOR_ACCELEROMETER);
+		if (!compass || !accelerometer){
+			throw new IllegalStateException("Beyondar can not run without the compass and the acelerometer sensors.");
+		}
 	}
 
 	/**

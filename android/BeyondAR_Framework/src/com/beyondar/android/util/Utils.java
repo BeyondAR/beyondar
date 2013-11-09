@@ -18,11 +18,6 @@ package com.beyondar.android.util;
 import android.graphics.Bitmap;
 import android.graphics.Matrix;
 
-import com.beyondar.android.opengl.renderer.ARRenderer.SnapshotCallback;
-import com.beyondar.android.view.BeyondarGLSurfaceView;
-import com.beyondar.android.view.CameraView;
-import com.beyondar.android.view.CameraView.BeyondarPictureCallback;
-
 public class Utils {
 
 	public static final int MAX_SIZE = 512;
@@ -89,90 +84,6 @@ public class Utils {
 
 	}
 
-	/**
-	 * Take a snapshot of the BeyondarGLSurface with the camera image as
-	 * background
-	 * 
-	 * @param cameraView
-	 * @param bgls
-	 * @param callback
-	 */
-	public static void takeSnapShot(CameraView cameraView, BeyondarGLSurfaceView bgls,
-			CallBackBeyondARPicture callback) {
-		ScreenShootCallback callbackProcessing = new ScreenShootCallback(callback);
-		
-		if (cameraView != null) {
-			// CacheManager.getInventoryCache().purge();
-			cameraView.tackePicture(callbackProcessing);
-		} else {
-			callbackProcessing.onPictureTaken(null);
-		}
-		bgls.tackePicture(callbackProcessing);
-	}
-
-	public static interface CallBackBeyondARPicture {
-		void onFinishSnapShotProcess(Bitmap screenshot);
-	}
-
-	private static class ScreenShootCallback implements BeyondarPictureCallback, SnapshotCallback {
-
-		Bitmap btmCamera;
-		Bitmap btmGl;
-		int status = 0;
-		CallBackBeyondARPicture callback;
-
-		ScreenShootCallback(CallBackBeyondARPicture cb) {
-			callback = cb;
-		}
-
-		@Override
-		public void onSnapshootTaken(Bitmap picture) {
-			btmGl = picture;
-			checkResults();
-		}
-
-		@Override
-		public void onPictureTaken(Bitmap picture) {
-			btmCamera = picture;
-			checkResults();
-		}
-
-		private synchronized void checkResults() {
-			status++;
-
-			if (status == 2 && callback != null) {
-
-				if (btmCamera == null) {
-					callback.onFinishSnapShotProcess(btmGl);
-					return;
-				}
-				if (btmGl == null) {
-					callback.onFinishSnapShotProcess(btmCamera);
-					return;
-				}
-
-				float factor = ((float) btmGl.getWidth() / (float) btmCamera.getWidth());
-
-				float newWidth = factor * btmCamera.getWidth();
-				float newHeight = factor * btmCamera.getHeight();
-
-				Bitmap newBtmCamera = ImageUtils.resizeImage(btmCamera, (int) newWidth, (int) newHeight);
-				if (newBtmCamera != btmCamera) {
-					btmCamera.recycle();
-				}
-
-				Bitmap btm = ImageUtils.mergeBitmaps(newBtmCamera, btmGl);
-				newBtmCamera.recycle();
-
-				Bitmap result = Bitmap.createBitmap(btm, 0, 0, btmGl.getWidth(), btmGl.getHeight());
-
-				btmGl.recycle();
-				btm.recycle();
-
-				System.gc();
-				callback.onFinishSnapShotProcess(result);
-			}
-		}
-	}
+	
 
 }

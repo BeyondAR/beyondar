@@ -137,32 +137,31 @@ public class ImageUtils {
 	}
 
 	public static Bitmap mergeBitmaps(Bitmap bmp1, Bitmap bmp2) {
-		
+
 		int width = Math.max(bmp1.getWidth(), bmp2.getWidth());
 		int height = Math.max(bmp1.getHeight(), bmp2.getHeight());
-		
+
 		Bitmap bmOverlay = Bitmap.createBitmap(width, height, bmp1.getConfig());
 		Canvas canvas = new Canvas(bmOverlay);
-		
+
 		Bitmap bmpSized = Bitmap.createScaledBitmap(bmp1, width, height, true);
 		canvas.drawBitmap(bmpSized, 0, 0, null);
-			
-	        bmpSized.recycle();
-			
-		bmpSized = Bitmap.createScaledBitmap(bmp2, width, height, true);	
-		canvas.drawBitmap(bmpSized, 0, 0, null);
-		
+
 		bmpSized.recycle();
-		
+
+		bmpSized = Bitmap.createScaledBitmap(bmp2, width, height, true);
+		canvas.drawBitmap(bmpSized, 0, 0, null);
+
+		bmpSized.recycle();
+
 		return bmOverlay;
-		
+
 	}
-	
-	
-//	Matrix matrix = new Matrix();
-//	matrix.postRotate(90);
-//	Bitmap pictureRotated = Bitmap.createBitmap(picture, 0, 0,
-//	picture.getWidth(), picture.getHeight(), matrix, true);
+
+	// Matrix matrix = new Matrix();
+	// matrix.postRotate(90);
+	// Bitmap pictureRotated = Bitmap.createBitmap(picture, 0, 0,
+	// picture.getWidth(), picture.getHeight(), matrix, true);
 
 	/**
 	 * 

@@ -16,6 +16,8 @@ import android.widget.FrameLayout.LayoutParams;
 import android.widget.TextView;
 
 import com.beyondar.android.opengl.renderer.ARRenderer.FpsUpdatable;
+import com.beyondar.android.screenshot.OnScreenshotListener;
+import com.beyondar.android.screenshot.ScreenshotHelper;
 import com.beyondar.android.util.math.geom.Ray;
 import com.beyondar.android.view.BeyondarGLSurfaceView;
 import com.beyondar.android.view.CameraView;
@@ -50,7 +52,7 @@ public class BeyondarFragmentSupport extends Fragment implements FpsUpdatable, O
 				ViewGroup.LayoutParams.MATCH_PARENT);
 
 		mMailLayout = new FrameLayout(getActivity());
-		mBeyondarGLSurface = getBeyondarGLSurfaceView();
+		mBeyondarGLSurface = createBeyondarGLSurfaceView();
 		mBeyondarGLSurface.setOnTouchListener(this);
 
 		mBeyondarCameraView = createCameraView();
@@ -65,7 +67,7 @@ public class BeyondarFragmentSupport extends Fragment implements FpsUpdatable, O
 	 * 
 	 * @return
 	 */
-	protected BeyondarGLSurfaceView getBeyondarGLSurfaceView() {
+	protected BeyondarGLSurfaceView createBeyondarGLSurfaceView() {
 		return new BeyondarGLSurfaceView(getActivity());
 	}
 
@@ -80,21 +82,21 @@ public class BeyondarFragmentSupport extends Fragment implements FpsUpdatable, O
 	}
 
 	/**
-	 *
+	 * 
 	 * Returns the CameraView for this class instance
 	 * 
 	 * @return
 	 */
-	public CameraView getCameraView(){
+	public CameraView getCameraView() {
 		return mBeyondarCameraView;
 	}
 
-     /**
+	/**
 	 * Returns the SurfaceView for this class instance
 	 * 
 	 * @return
 	 */
-	public BeyondarGLSurfaceView getGLSurfaceView(){
+	public BeyondarGLSurfaceView getGLSurfaceView() {
 		return mBeyondarGLSurface;
 	}
 
@@ -290,7 +292,7 @@ public class BeyondarFragmentSupport extends Fragment implements FpsUpdatable, O
 		mBeyondarGLSurface.getBeyondarObjectsOnScreenCoordinates(x, y, beyondarObjects, ray);
 
 	}
-	
+
 	/**
 	 * When a {@link GeoObject} is rendered according to its position it could
 	 * look very small if it is far away. Use this method to render far objects
@@ -315,6 +317,16 @@ public class BeyondarFragmentSupport extends Fragment implements FpsUpdatable, O
 	 */
 	public float getMaxDistanceSize() {
 		return mBeyondarGLSurface.getMaxDistanceSize();
+	}
+
+	/**
+	 * Take a screenshot of the beyondar fragment. The screenshot will contain
+	 * the camera + the AR world
+	 * 
+	 * @param listener
+	 */
+	public void takeScreenshot(OnScreenshotListener listener) {
+		ScreenshotHelper.takeScreenshot(getCameraView(), getGLSurfaceView(), listener);
 	}
 
 	/**

@@ -17,7 +17,6 @@ package com.beyondar.example;
 
 import android.graphics.Bitmap;
 import android.os.Bundle;
-import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentActivity;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -25,13 +24,12 @@ import android.view.Window;
 import android.widget.Button;
 
 import com.beyondar.android.fragment.BeyondarFragmentSupport;
-import com.beyondar.android.util.Utils;
-import com.beyondar.android.util.Utils.CallBackBeyondARPicture;
+import com.beyondar.android.screenshot.OnScreenshotListener;
 import com.beyondar.android.world.World;
 import com.beyondar.example.dialog.ImageDialog;
 
 public class CameraWithScreenShotActivity extends FragmentActivity implements OnClickListener,
-		CallBackBeyondARPicture {
+		OnScreenshotListener {
 
 	private BeyondarFragmentSupport mBeyondarFragment;
 	private World mWorld;
@@ -67,15 +65,15 @@ public class CameraWithScreenShotActivity extends FragmentActivity implements On
 	@Override
 	public void onClick(View v) {
 		if (v == mTakeScreenShot) {
-			Utils.takeSnapShot(mBeyondarFragment.getCameraView(), mBeyondarFragment.getGLSurfaceView(), this);
+			mBeyondarFragment.takeScreenshot(this);
 		}
 	}
 
 	@Override
-	public void onFinishSnapShotProcess(Bitmap screenshot) {
+	public void onScreenshot(Bitmap screenshot) {
 		ImageDialog dialog = new ImageDialog();
 		dialog.setImage(screenshot);
-		
+
 		dialog.show(getSupportFragmentManager(), "ImageDialog");
 	}
 }

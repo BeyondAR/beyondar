@@ -21,6 +21,7 @@ import java.util.List;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.PixelFormat;
 import android.hardware.Camera;
 import android.hardware.Camera.Size;
 import android.util.AttributeSet;
@@ -54,6 +55,8 @@ public class CameraView extends SurfaceView implements SurfaceHolder.Callback, C
 	private Size mPreviewSize;
 	private List<Size> mSupportedPreviewSizes;
 	private List<String> mSupportedFlashModes;
+	
+	private boolean mIsPreviewing;
 
 	public CameraView(Context context) {
 		super(context);
@@ -105,6 +108,9 @@ public class CameraView extends SurfaceView implements SurfaceHolder.Callback, C
 		}
 	}
 
+	public boolean isPreviewing(){
+		return mCamera!= null && mIsPreviewing;
+	}
 	public void setSupportedPreviewSizes(List<Size> supportedPreviewSizes) {
 		mSupportedPreviewSizes = supportedPreviewSizes;
 	}
@@ -194,6 +200,8 @@ public class CameraView extends SurfaceView implements SurfaceHolder.Callback, C
 
 		// parameters.setRotation(orientation);
 		parameters.setPreviewSize(mPreviewSize.width, mPreviewSize.height);
+		//parameters.set("jpeg-quality", 70);
+		//parameters.setPictureSize(100, 100);
 
 		mCamera.setParameters(parameters);
 		startPreviewCamera();
@@ -248,6 +256,7 @@ public class CameraView extends SurfaceView implements SurfaceHolder.Callback, C
 	}
 
 	public void stopPreviewCamera() {
+		mIsPreviewing = false;
 		if (mCamera == null) {
 			return;
 		}
@@ -265,6 +274,7 @@ public class CameraView extends SurfaceView implements SurfaceHolder.Callback, C
 		try {
 			mCamera.setPreviewDisplay(mHolder);
 			mCamera.startPreview();
+			mIsPreviewing = true;
 		} catch (Exception e) {
 			Logger.w(TAG, "Cannot start preview.", e);
 		}
@@ -290,7 +300,9 @@ public class CameraView extends SurfaceView implements SurfaceHolder.Callback, C
 
 	public void tackePicture(BeyondarPictureCallback cameraCallback) {
 		BitmapFactory.Options options = new BitmapFactory.Options();
+		//TODO: Improve this part
 		options.inSampleSize = 4;
+		//options.inSampleSize = 1;
 		tackePicture(cameraCallback, options);
 	}
 

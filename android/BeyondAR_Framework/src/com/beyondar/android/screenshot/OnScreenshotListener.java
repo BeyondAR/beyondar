@@ -13,11 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.beyondar.android.util;
+package com.beyondar.android.screenshot;
 
-public class Constants {
+import android.graphics.Bitmap;
 
-	public static final int VERSION_NUMBER = 000302;
-	public static final String VERSION_NAME= "0.3.2";
+public interface OnScreenshotListener {
 
+	void onScreenshot(Bitmap screenshot);
 }

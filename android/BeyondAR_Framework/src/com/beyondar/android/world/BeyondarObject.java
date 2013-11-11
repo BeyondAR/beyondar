@@ -311,6 +311,7 @@ public class BeyondarObject implements Modulable<BeyondarObjectModule>{
 				module.onImageUriChanged(bitmapUri);
 			}
 		}
+		texture = new Texture();
 	}
 
 	public void setImageResource(int resID) {

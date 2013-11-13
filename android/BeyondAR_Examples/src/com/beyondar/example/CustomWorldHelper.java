@@ -84,7 +84,6 @@ public class CustomWorldHelper {
 		
 		GeoObject go9 = new GeoObject(9l);
 		go9.setGeoPosition(41.26530734214473d, 1.925808038959814d);
-		//go9.setGeoPosition(41.26526d, 1.92592d);
 		go9.setImageResource(R.drawable.creature_4);
 		go9.setName("Creature 4");
 

@@ -71,7 +71,6 @@ public class SimpleCameraWithMaxFarMinAwayActivity extends FragmentActivity impl
 		} else if (seekBar == mSeekBarMin) {
 			mBeyondarFragment.setMinFarDistanceSize(progress);
 		}
-
 	}
 
 	@Override

@@ -44,7 +44,7 @@ public class World implements Modulable<WorldModule> {
 
 	public static final int LIST_TYPE_DEFAULT = 0;
 
-	public static final String URI_PREFIX_DEFAUL_BITMAP = "beyondar_default_Bitmap_BeyondarList_type_";
+	public static final String URI_PREFIX_DEFAULT_BITMAP = "beyondar_default_Bitmap_BeyondarList_type_";
 
 	private float ZERO = 1e-8f;
 	private Object mLock = new Object();
@@ -371,8 +371,6 @@ public class World implements Modulable<WorldModule> {
 	/**
 	 * Get the default bitmap URI of the world
 	 * 
-	 * @param type
-	 *            the type of the list
 	 * @return
 	 */
 	public synchronized String getDefaultBitmap() {
@@ -467,17 +465,12 @@ public class World implements Modulable<WorldModule> {
 							}
 						}
 
-						MeshCollider colisionDetector = beyondarObject.getMeshCollider();
+						MeshCollider collisionDetector = beyondarObject.getMeshCollider();
 
-						Point3 point = colisionDetector.getIntersectionPoint(ray);
+						Point3 point = collisionDetector.getIntersectionPoint(ray);
 
-						if (point == null) {
-							// Log.d(Constants.TAG, "No colision "
-							// + mGeoObjectList.get(i).getName());
-						} else {
+						if (point != null) {
 							beyondarObjectsOutput.add(beyondarObject);
-							// Log.d(Constants.TAG, "Colision!! " +
-							// geoObject.getName());
 						}
 
 					}

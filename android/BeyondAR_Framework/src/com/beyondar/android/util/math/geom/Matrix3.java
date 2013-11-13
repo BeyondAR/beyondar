@@ -140,7 +140,7 @@ public class Matrix3 {
 	 * @param matrix
 	 *            matrix to premultiply
 	 */
-	public void preMultipliy(float matrix[]) {
+	public void pareMultiply(float matrix[]) {
 		multiplyMatrix(matrix, m, m);
 	}
 

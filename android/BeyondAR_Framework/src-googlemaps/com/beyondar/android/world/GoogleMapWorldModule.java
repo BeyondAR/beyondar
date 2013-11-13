@@ -27,7 +27,6 @@ import android.util.TypedValue;
 import com.beyondar.android.util.ImageUtils;
 import com.beyondar.android.util.PendingBitmapsToBeLoaded;
 import com.beyondar.android.util.cache.BitmapCache;
-import com.beyondar.android.util.cache.BitmapCache.OnExternalBitmapLoadedCahceListener;
 import com.beyondar.android.world.module.GoogleMapGeoObjectModule;
 import com.beyondar.android.world.module.GeoObjectModule;
 import com.beyondar.android.world.module.WorldModule;
@@ -37,7 +36,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
-public class GoogleMapWorldModule implements WorldModule, OnExternalBitmapLoadedCahceListener {
+public class GoogleMapWorldModule implements WorldModule, BitmapCache.OnExternalBitmapLoadedCacheListener {
 
 	/** Default icon size for the markers in dips */
 	public static final int DEFAULT_ICON_SIZE_MARKER = 40;

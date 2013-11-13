@@ -36,7 +36,7 @@ public class BeyondarObject implements Modulable<BeyondarObjectModule>{
 	protected Texture texture;
 	protected String bitmapUri;
 	protected String name;
-	protected boolean visibile;
+	protected boolean visible;
 	protected Renderable renderable;
 	protected Point3 position;
 	protected Point3 angle;
@@ -61,7 +61,7 @@ public class BeyondarObject implements Modulable<BeyondarObjectModule>{
 		angle = new Point3();
 		texture = new Texture();
 		faceToCamera(true);
-		setVisibile(true);
+		setVisible(true);
 	}
 
 	public long getId() {
@@ -209,6 +209,9 @@ public class BeyondarObject implements Modulable<BeyondarObjectModule>{
 	}
 
 	public void setTexturePointer(int texturePointer) {
+		if (texturePointer == texture.getTexturePointer()){
+			return;
+		}
 		texture.setTexturePointer(texturePointer);
 		synchronized (lockModules) {
 			for (BeyondarObjectModule module : modules) {
@@ -218,6 +221,9 @@ public class BeyondarObject implements Modulable<BeyondarObjectModule>{
 	}
 
 	public void setTexture(Texture texture) {
+		if (texture == this.texture){
+			return;
+		}
 		if (texture == null) {
 			texture = new Texture();
 		}
@@ -271,19 +277,19 @@ public class BeyondarObject implements Modulable<BeyondarObjectModule>{
 	 * Set the visibility of this object. if it is false, the engine will not
 	 * show it.
 	 * 
-	 * @param visibility
+	 * @param visible
 	 */
-	public void setVisibile(boolean visible) {
-		visibile = visible;
+	public void setVisible(boolean visible) {
+		this.visible = visible;
 		synchronized (lockModules) {
 			for (BeyondarObjectModule module : modules) {
-				module.onVisibilityChanged(visibile);
+				module.onVisibilityChanged(this.visible);
 			}
 		}
 	}
 
 	public boolean isVisible() {
-		return visibile;
+		return visible;
 	}
 
 	public void setName(String name) {
@@ -302,16 +308,19 @@ public class BeyondarObject implements Modulable<BeyondarObjectModule>{
 	/**
 	 * Set the image uri
 	 * 
-	 * @param url
+	 * @param uri
 	 */
 	public void setImageUri(String uri) {
+		if (uri == bitmapUri){
+			return;
+		}
 		bitmapUri = uri;
 		synchronized (lockModules) {
 			for (BeyondarObjectModule module : modules) {
 				module.onImageUriChanged(bitmapUri);
 			}
 		}
-		texture = new Texture();
+		setTexture(null);
 	}
 
 	public void setImageResource(int resID) {

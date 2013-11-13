@@ -297,15 +297,15 @@ public class CameraView extends SurfaceView implements SurfaceHolder.Callback, C
 		return myImage;
 	}
 
-	public void tackePicture(BeyondarPictureCallback cameraCallback) {
+	public void takePicture(BeyondarPictureCallback cameraCallback) {
 		BitmapFactory.Options options = new BitmapFactory.Options();
 		//TODO: Improve this part
 		options.inSampleSize = 4;
 		//options.inSampleSize = 1;
-		tackePicture(cameraCallback, options);
+		takePicture(cameraCallback, options);
 	}
 
-	public void tackePicture(BeyondarPictureCallback cameraCallback, BitmapFactory.Options options) {
+	public void takePicture(BeyondarPictureCallback cameraCallback, BitmapFactory.Options options) {
 		if (mCamera == null) {
 			return;
 		}

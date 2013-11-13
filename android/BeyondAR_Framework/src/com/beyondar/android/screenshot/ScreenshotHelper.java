@@ -39,7 +39,7 @@ public class ScreenshotHelper {
 
 		if (cameraView != null && cameraView.isPreviewing()) {
 			// CacheManager.getInventoryCache().purge();
-			cameraView.tackePicture(callbackProcessing);
+			cameraView.takePicture(callbackProcessing);
 		} else {
 			callbackProcessing.onPictureTaken(null);
 		}
@@ -58,7 +58,7 @@ public class ScreenshotHelper {
 		}
 
 		@Override
-		public void onSnapshootTaken(Bitmap picture) {
+		public void onSnapshotTaken(Bitmap picture) {
 			btmGl = picture;
 			checkResults();
 		}

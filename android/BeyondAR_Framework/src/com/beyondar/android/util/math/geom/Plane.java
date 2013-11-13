@@ -97,9 +97,9 @@ public class Plane {
 	/**
 	 * Returns a volatile plane from a point and its normal
 	 * 
-	 * @param p
+	 * @param point
 	 *            Point contained by the plane
-	 * @param n
+	 * @param normal
 	 *            Normal vector for the plane
 	 */
 	public static Plane getVolatilePlane(Point3 point, Vector3 normal) {

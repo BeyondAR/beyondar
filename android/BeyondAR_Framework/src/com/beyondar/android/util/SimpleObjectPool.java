@@ -32,7 +32,7 @@ public abstract class SimpleObjectPool<T> {
 		mLockObject = new Object();
 	}
 
-	public synchronized T borowObject() {
+	public synchronized T borrowObject() {
 		synchronized (mLockObject) {
 			T object;
 

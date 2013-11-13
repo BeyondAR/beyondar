@@ -23,17 +23,16 @@ import android.support.v4.app.FragmentActivity;
 import android.view.MotionEvent;
 import android.view.Window;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.beyondar.android.fragment.BeyondarFragmentSupport;
 import com.beyondar.android.view.BeyondarGLSurfaceView;
-import com.beyondar.android.view.OnClikBeyondarObjectListener;
+import com.beyondar.android.view.OnClickBeyondarObjectListener;
 import com.beyondar.android.view.OnTouchBeyondarViewListener;
 import com.beyondar.android.world.BeyondarObject;
 import com.beyondar.android.world.World;
 
 public class ChangeGeoObjectImagesOnTouchActivity extends FragmentActivity implements OnTouchBeyondarViewListener,
-		OnClikBeyondarObjectListener {
+        OnClickBeyondarObjectListener {
 
 	private BeyondarFragmentSupport mBeyondarFragment;
 	private World mWorld;
@@ -108,7 +107,7 @@ public class ChangeGeoObjectImagesOnTouchActivity extends FragmentActivity imple
 	}
 
 	@Override
-	public void onClikBeyondarObject(ArrayList<BeyondarObject> beyondarObjects) {
+	public void onClickBeyondarObject(ArrayList<BeyondarObject> beyondarObjects) {
 		if (beyondarObjects.size() > 0) {
 			beyondarObjects.get(0).setImageResource(R.drawable.creature_5);
 		}

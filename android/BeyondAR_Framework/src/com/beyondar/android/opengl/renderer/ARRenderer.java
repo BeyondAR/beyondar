@@ -50,7 +50,6 @@ import com.beyondar.android.util.PendingBitmapsToBeLoaded;
 import com.beyondar.android.util.Utils;
 import com.beyondar.android.util.annotation.AnnotationsUtils;
 import com.beyondar.android.util.cache.BitmapCache;
-import com.beyondar.android.util.cache.BitmapCache.OnExternalBitmapLoadedCahceListener;
 import com.beyondar.android.util.math.Distance;
 import com.beyondar.android.util.math.MathUtils;
 import com.beyondar.android.util.math.geom.Point3;
@@ -64,7 +63,7 @@ import com.beyondar.android.world.World;
 // http://ovcharov.me/2011/01/14/android-opengl-es-ray-picking/
 // http://magicscrollsofcode.blogspot.com/2010/10/3d-picking-in-android.html
 public class ARRenderer implements GLSurfaceView.Renderer, SensorEventListener,
-		OnExternalBitmapLoadedCahceListener {
+        BitmapCache.OnExternalBitmapLoadedCacheListener {
 
 	private final Handler mUiHandler = new Handler(Looper.getMainLooper());
 
@@ -75,7 +74,7 @@ public class ARRenderer implements GLSurfaceView.Renderer, SensorEventListener,
 		 * 
 		 * @param snapshot
 		 */
-		void onSnapshootTaken(Bitmap snapshot);
+		void onSnapshotTaken(Bitmap snapshot);
 	}
 
 	private class UriAndBitmap {
@@ -276,7 +275,7 @@ public class ARRenderer implements GLSurfaceView.Renderer, SensorEventListener,
 		if (mScreenshot) {
 			mScreenshot = false;
 			if (mSnapshotCallback != null) {
-				mSnapshotCallback.onSnapshootTaken(savePixels(gl));
+				mSnapshotCallback.onSnapshotTaken(savePixels(gl));
 			}
 		}
 
@@ -607,7 +606,7 @@ public class ARRenderer implements GLSurfaceView.Renderer, SensorEventListener,
 		sTextureHolder.clear();
 		Logger.d(TAG, "Loading textures...");
 		loadWorldTextures(gl);
-		loadAditionalTextures(gl);
+		loadAdditionalTextures(gl);
 		Logger.d(TAG, "TEXTURES LOADED");
 
 	}
@@ -620,7 +619,7 @@ public class ARRenderer implements GLSurfaceView.Renderer, SensorEventListener,
 	 * 
 	 * @param gl
 	 */
-	protected void loadAditionalTextures(GL10 gl) {
+	protected void loadAdditionalTextures(GL10 gl) {
 	}
 
 	/**
@@ -858,7 +857,7 @@ public class ARRenderer implements GLSurfaceView.Renderer, SensorEventListener,
 	 * 
 	 * @return
 	 */
-	public boolean isRendereing() {
+	public boolean isRendering() {
 		return mRender;
 	}
 

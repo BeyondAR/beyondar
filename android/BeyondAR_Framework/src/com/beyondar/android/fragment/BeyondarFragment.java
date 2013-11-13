@@ -21,7 +21,7 @@ import com.beyondar.android.opengl.renderer.ARRenderer.FpsUpdatable;
 import com.beyondar.android.util.math.geom.Ray;
 import com.beyondar.android.view.BeyondarGLSurfaceView;
 import com.beyondar.android.view.CameraView;
-import com.beyondar.android.view.OnClikBeyondarObjectListener;
+import com.beyondar.android.view.OnClickBeyondarObjectListener;
 import com.beyondar.android.view.OnTouchBeyondarViewListener;
 import com.beyondar.android.world.BeyondarObject;
 import com.beyondar.android.world.GeoObject;
@@ -38,7 +38,7 @@ public class BeyondarFragment extends Fragment implements FpsUpdatable, OnClickL
 	private World mWorld;
 
 	private OnTouchBeyondarViewListener mTouchListener;
-	private OnClikBeyondarObjectListener mClickListener;
+	private OnClickBeyondarObjectListener mClickListener;
 
 	private float mLastScreenTouchX, mLastScreenTouchY;
 
@@ -150,7 +150,7 @@ public class BeyondarFragment extends Fragment implements FpsUpdatable, OnClickL
 		mTouchListener = listener;
 	}
 
-	public void setOnClickBeyondarObjectListener(OnClikBeyondarObjectListener listener) {
+	public void setOnClickBeyondarObjectListener(OnClickBeyondarObjectListener listener) {
 		mClickListener = listener;
 		mMailLayout.setClickable(true);
 		mMailLayout.setOnClickListener(this);
@@ -185,9 +185,9 @@ public class BeyondarFragment extends Fragment implements FpsUpdatable, OnClickL
 					mBeyondarGLSurface.post(new Runnable() {
 						@Override
 						public void run() {
-							OnClikBeyondarObjectListener listener = mClickListener;
+							OnClickBeyondarObjectListener listener = mClickListener;
 							if (listener != null) {
-								listener.onClikBeyondarObject(beyondarObjects);
+								listener.onClickBeyondarObject(beyondarObjects);
 							}
 						}
 					});

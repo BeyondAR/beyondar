@@ -72,7 +72,7 @@ public class Utils {
 		float scaleWidth = ((float) newWidth) / width;
 		float scaleHeight = ((float) newHeight) / height;
 
-		// createa matrix for the manipulation
+		// create a matrix for the manipulation
 		Matrix matrix = new Matrix();
 		// resize the bit map
 		matrix.postScale(scaleWidth, scaleHeight);

@@ -116,16 +116,16 @@ public class DebugBitmap {
 		Logger.d("DebugBitmap", "++++++++++++++++++++++++++++++++++++++++++++");
 
 		Integer count = 0;
-		Integer recicled = 0;
+		Integer recycled = 0;
 		Iterator<String> keySet = sBitmapsTracker.keySet().iterator();
 		while (keySet.hasNext()) {
 			String string = (String) keySet.next();
 			Logger.d("DebugBitmap", "URI:  " + string);
 			ArrayList<Bitmap> arrayList = sBitmapsTracker.get(string);
-			printArrayList(arrayList, count, recicled);
+			printArrayList(arrayList, count, recycled);
 		}
-		Logger.d("DebugBitmap", "\n\nTotal=  " + recicled + "/" + count
-				+ "   recicled");
+		Logger.d("DebugBitmap", "\n\nTotal=  " + recycled + "/" + count
+				+ "   recycled");
 		Logger.d("DebugBitmap", "---------------------------------------------");
 		Logger.d("DebugBitmap", "---------------------------------------------");
 		Logger.d("DebugBitmap", "---------------------------------------------");
@@ -136,7 +136,7 @@ public class DebugBitmap {
 		if (arrayList == null || arrayList.size() == 0) {
 			Logger.d("DebugBitmap", "   No bitmaps");
 		}
-		int reciledCount = 0;
+		int recycledCount = 0;
 		int total = 0;
 		for (Bitmap bitmap : arrayList) {
 			if (bitmap == null) {
@@ -144,15 +144,15 @@ public class DebugBitmap {
 			}
 			total++;
 			if (bitmap.isRecycled()) {
-				reciledCount++;
+                recycledCount++;
 			} else {
-				Logger.d("DebugBitmap", "      Not recicled=" + bitmap.getWidth()
+				Logger.d("DebugBitmap", "      Not recycled=" + bitmap.getWidth()
 						+ "x" + bitmap.getHeight());
 
 			}
 		}
 		counter = counter + total;
-		recicled = recicled + reciledCount;
-		Logger.d("DebugBitmap", "   " + reciledCount + "/" + total + " Recicled");
+		recicled = recicled + recycledCount;
+		Logger.d("DebugBitmap", "   " + recycledCount + "/" + total + " Recycled");
 	}
 }

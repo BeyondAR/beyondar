@@ -49,7 +49,7 @@ public class Distance {
 	 * This method do an approximation form geopoints to meters. Do not use it
 	 * for long distances (> 5 km)
 	 * 
-	 * @param meters
+	 * @param geoPoints
 	 * @return
 	 */
 	public static double fastConversionGeopointsToMeters(double geoPoints) {
@@ -60,10 +60,10 @@ public class Distance {
 	 * Calculate the distance using the coordinates. It return a coordinates, no
 	 * meters
 	 * 
-	 * @param aLong
-	 * @param aLat
-	 * @param bLong
-	 * @param bLat
+	 * @param x1
+	 * @param y1
+	 * @param x2
+	 * @param y2
 	 * @return
 	 */
 	public static double calculateDistance(double x1, double y1, double x2, double y2) {

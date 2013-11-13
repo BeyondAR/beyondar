@@ -40,7 +40,7 @@ public class ImageUtils {
 		if (bitmapOrg == null) {
 			return null;
 		}
-		// load the origial BitMap
+		// load the original BitMap
 		int width = bitmapOrg.getWidth();
 		int height = bitmapOrg.getHeight();
 
@@ -75,7 +75,7 @@ public class ImageUtils {
 			return bitmapOrg;
 		}
 
-		// load the origial BitMap
+		// load the original BitMap
 		int width = bitmapOrg.getWidth();
 		int height = bitmapOrg.getHeight();
 
@@ -113,7 +113,7 @@ public class ImageUtils {
 	/**
 	 * Download the file from Internet
 	 * 
-	 * @param fileUrl
+	 * @param uri
 	 * @return
 	 * @throws Exception
 	 */

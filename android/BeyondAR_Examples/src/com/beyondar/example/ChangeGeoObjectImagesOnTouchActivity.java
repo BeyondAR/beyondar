@@ -109,7 +109,7 @@ public class ChangeGeoObjectImagesOnTouchActivity extends FragmentActivity imple
 	@Override
 	public void onClickBeyondarObject(ArrayList<BeyondarObject> beyondarObjects) {
 		if (beyondarObjects.size() > 0) {
-			beyondarObjects.get(0).setImageResource(R.drawable.creature_5);
+			beyondarObjects.get(0).setImageResource(R.drawable.splash);
 		}
 	}
 

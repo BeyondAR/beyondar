@@ -63,7 +63,7 @@ import com.beyondar.android.world.World;
 // http://ovcharov.me/2011/01/14/android-opengl-es-ray-picking/
 // http://magicscrollsofcode.blogspot.com/2010/10/3d-picking-in-android.html
 public class ARRenderer implements GLSurfaceView.Renderer, SensorEventListener,
-        BitmapCache.OnExternalBitmapLoadedCacheListener {
+		BitmapCache.OnExternalBitmapLoadedCacheListener {
 
 	private final Handler mUiHandler = new Handler(Looper.getMainLooper());
 
@@ -127,6 +127,7 @@ public class ARRenderer implements GLSurfaceView.Renderer, SensorEventListener,
 	private boolean mFpsUpdatableOnUiThread;
 
 	private float mMaxDistanceSizePoints;
+	private float mMinDistanceSizePoints;
 
 	public ARRenderer() {
 		reloadWorldTextures = false;
@@ -354,19 +355,30 @@ public class ARRenderer implements GLSurfaceView.Renderer, SensorEventListener,
 	}
 
 	private static final double[] sOut = new double[3];
+
 	protected void convertGPStoPoint3(GeoObject geoObject, Point3 out) {
 		float x, z, y;
-		x = (float) (Distance.fastConversionGeopointsToMeters(geoObject.getLongitude() - mWorld.getLongitude()) / 2);
+		x = (float) (Distance.fastConversionGeopointsToMeters(geoObject.getLongitude()
+				- mWorld.getLongitude()) / 2);
 		z = (float) (Distance.fastConversionGeopointsToMeters(geoObject.getAltitude() - mWorld.getAltitude()) / 2);
 		y = (float) (Distance.fastConversionGeopointsToMeters(geoObject.getLatitude() - mWorld.getLatitude()) / 2);
-		
-		if (mMaxDistanceSizePoints > 0) {
+
+		if (mMaxDistanceSizePoints > 0 || mMinDistanceSizePoints > 0) {
 			double totalDst = Distance.calculateDistance(x, y, 0, 0);
-			MathUtils.linearInterpolate(0, 0, 0,
-					x, y, 0,
-					mMaxDistanceSizePoints, totalDst, sOut);
-			x = (float) sOut[0];
-			y = (float) sOut[1];
+
+			if (mMaxDistanceSizePoints > 0 && totalDst > mMaxDistanceSizePoints) {
+				MathUtils.linearInterpolate(0, 0, 0, x, y, 0, mMaxDistanceSizePoints, totalDst, sOut);
+				x = (float) sOut[0];
+				y = (float) sOut[1];
+				if (mMinDistanceSizePoints > 0){
+					totalDst = Distance.calculateDistance(x, y, 0, 0);
+				}
+			} 
+			if (mMinDistanceSizePoints > 0 && totalDst < mMinDistanceSizePoints) {
+				MathUtils.linearInterpolate(0, 0, 0, x, y, 0, mMinDistanceSizePoints, totalDst, sOut);
+				x = (float) sOut[0];
+				y = (float) sOut[1];
+			}
 		}
 
 		out.x = x;
@@ -388,7 +400,7 @@ public class ARRenderer implements GLSurfaceView.Renderer, SensorEventListener,
 	 *            {@link GeoObject} , 0 to set again the default behavior
 	 */
 	public void setMaxDistanceSize(float maxDistanceSize) {
-		mMaxDistanceSizePoints = (float) (maxDistanceSize/2);
+		mMaxDistanceSizePoints = (float) (maxDistanceSize / 2);
 	}
 
 	/**
@@ -398,6 +410,32 @@ public class ARRenderer implements GLSurfaceView.Renderer, SensorEventListener,
 	 */
 	public float getMaxDistanceSize() {
 		return (float) (mMaxDistanceSizePoints * 2);
+	}
+
+	/**
+	 * When a {@link GeoObject} is rendered according to its position it could
+	 * look very big if it is too close. Use this method to render near objects
+	 * as if there were farther.<br>
+	 * For instance if there is an object at 1 meters and we want to have
+	 * everything at least at 10 meters, we could use this method for that
+	 * purpose. <br>
+	 * To set it to the default behavior just set it to 0
+	 * 
+	 * @param minDistanceSize
+	 *            The top near distance (in meters) which we want to draw a
+	 *            {@link GeoObject} , 0 to set again the default behavior
+	 */
+	public void setMinDistanceSize(float minDistanceSize) {
+		mMinDistanceSizePoints = (float) (minDistanceSize / 2);
+	}
+
+	/**
+	 * Get the minimum distance which a {@link GeoObject} will be rendered.
+	 * 
+	 * @return The current minimum distance. 0 is the default behavior
+	 */
+	public float getMinDistanceSize() {
+		return (float) (mMinDistanceSizePoints * 2);
 	}
 
 	/**

@@ -49,9 +49,9 @@ public class BeyondarFragmentSupport extends Fragment implements FpsUpdatable, O
 	}
 
 	private void init() {
-		
+
 		checkIfSensorsAvailable();
-		
+
 		android.view.ViewGroup.LayoutParams params = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
 				ViewGroup.LayoutParams.MATCH_PARENT);
 
@@ -64,13 +64,14 @@ public class BeyondarFragmentSupport extends Fragment implements FpsUpdatable, O
 		mMailLayout.addView(mBeyondarCameraView, params);
 		mMailLayout.addView(mBeyondarGLSurface, params);
 	}
-	
-	private void checkIfSensorsAvailable(){
+
+	private void checkIfSensorsAvailable() {
 		PackageManager PM = getActivity().getPackageManager();
 		boolean compass = PM.hasSystemFeature(PackageManager.FEATURE_SENSOR_COMPASS);
 		boolean accelerometer = PM.hasSystemFeature(PackageManager.FEATURE_SENSOR_ACCELEROMETER);
-		if (!compass || !accelerometer){
-			throw new IllegalStateException("Beyondar can not run without the compass and the acelerometer sensors.");
+		if (!compass || !accelerometer) {
+			throw new IllegalStateException(
+					"Beyondar can not run without the compass and the acelerometer sensors.");
 		}
 	}
 
@@ -330,6 +331,32 @@ public class BeyondarFragmentSupport extends Fragment implements FpsUpdatable, O
 	 */
 	public float getMaxDistanceSize() {
 		return mBeyondarGLSurface.getMaxDistanceSize();
+	}
+
+	/**
+	 * When a {@link GeoObject} is rendered according to its position it could
+	 * look very big if it is too close. Use this method to render near objects
+	 * as if there were farther.<br>
+	 * For instance if there is an object at 1 meters and we want to have
+	 * everything at least at 10 meters, we could use this method for that
+	 * purpose. <br>
+	 * To set it to the default behavior just set it to 0
+	 * 
+	 * @param minDistanceSize
+	 *            The top near distance (in meters) which we want to draw a
+	 *            {@link GeoObject} , 0 to set again the default behavior
+	 */
+	public void setMinDistanceSize(float minDistanceSize) {
+		mBeyondarGLSurface.setMinDistanceSize(minDistanceSize);
+	}
+
+	/**
+	 * Get the minimum distance which a {@link GeoObject} will be rendered.
+	 * 
+	 * @return The current minimum distance. 0 is the default behavior
+	 */
+	public float getMinDistanceSize() {
+		return mBeyondarGLSurface.getMinDistanceSize();
 	}
 
 	/**

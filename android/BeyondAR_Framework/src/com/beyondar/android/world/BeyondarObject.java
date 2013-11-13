@@ -30,7 +30,7 @@ import com.beyondar.android.world.module.Modulable;
 
 public class BeyondarObject implements Modulable<BeyondarObjectModule>{
 
-	private long mId;
+	private Long mId;
 	private int mTypeList;
 
 	protected Texture texture;
@@ -56,6 +56,14 @@ public class BeyondarObject implements Modulable<BeyondarObjectModule>{
 	 */
 	public BeyondarObject(long id) {
 		mId = id;
+		init();
+	}
+	
+	public BeyondarObject() {
+		init();
+	}
+	
+	private void init(){
 		modules = new ArrayList<BeyondarObjectModule>(3);
 		position = new Point3();
 		angle = new Point3();
@@ -63,9 +71,12 @@ public class BeyondarObject implements Modulable<BeyondarObjectModule>{
 		faceToCamera(true);
 		setVisible(true);
 	}
-
-	public long getId() {
-		return mId;
+	
+	public long getId(){
+		if (mId == null){
+			mId = (long) hashCode();
+		}
+		return mId.longValue();
 	}
 
 	public void addModule(BeyondarObjectModule module) {

@@ -60,6 +60,13 @@ public class GoogleMapActivity extends FragmentActivity implements OnMarkerClick
 
 		mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(mGoogleMapModule.getLatLng(), 15));
 		mMap.animateCamera(CameraUpdateFactory.zoomTo(19), 2000, null);
+		
+		// Lets add the user position
+		GeoObject user = new GeoObject(1000l);
+		user.setGeoPosition(mWorld.getLatitude(), mWorld.getLongitude());
+		user.setImageResource(R.drawable.flag);
+		user.setName("User position");
+		mWorld.addBeyondarObject(user);
 	}
 
 	@Override

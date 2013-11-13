@@ -193,6 +193,9 @@ public class GoogleMapWorldModule implements WorldModule, BitmapCache.OnExternal
 	}
 
 	private Bitmap getBitmapFromGeoObject(GeoObject geoObject) {
+		if (geoObject.getBitmapUri() == null){
+			return null;
+		}
 		boolean canRemove = !mPendingBitmaps.existPendingList(geoObject.getBitmapUri());
 		if (!mCache.isImageLoaded(geoObject.getBitmapUri())) {
 			mPendingBitmaps.addObject(geoObject.getBitmapUri(), geoObject);

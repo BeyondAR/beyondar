@@ -37,6 +37,11 @@ public class GeoObject extends BeyondarObject {
 		super(id);
 		setVisible(true);
 	}
+	
+	public GeoObject() {
+		super();
+		setVisible(true);
+	}
 
 	public void setGeoPosition(double latitude, double longitude) {
 		setGeoPosition(latitude, longitude, mAltitude);

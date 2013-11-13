@@ -29,7 +29,8 @@ public class MainActivity extends Activity implements OnItemClickListener {
 	private ListView mLisViewt;
 	private String[] values = new String[] { "Simple AR camera",
 			"Simple camera with a top distance far for rendering", "BeyondAR World in Google maps",
-			"AR camera with Gooogle maps", "Camera with touch events", "Camera with screenshot", "Change GeoObject images on touch" };
+			"AR camera with Gooogle maps", "Camera with touch events", "Camera with screenshot",
+			"Change GeoObject images on touch" };
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -42,7 +43,7 @@ public class MainActivity extends Activity implements OnItemClickListener {
 		// openActivity(SimpleCameraActivity.class);
 		// openActivity(GoogleMapActivity.class);
 		// openActivity(CameraWithGoogleMapsActivity.class);
-		// openActivity(CameraWithScreenShotActivity.class);
+		openActivity(SimpleCameraWithMaxFarAwayActivity.class);
 	}
 
 	private void fillList() {

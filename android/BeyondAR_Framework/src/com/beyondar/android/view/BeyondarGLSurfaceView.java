@@ -289,5 +289,31 @@ public class BeyondarGLSurfaceView extends GLSurfaceView {
 	public float getMaxDistanceSize() {
 		return mRenderer.getMaxDistanceSize();
 	}
+	
+	/**
+	 * When a {@link GeoObject} is rendered according to its position it could
+	 * look very big if it is too close. Use this method to render near objects
+	 * as if there were farther.<br>
+	 * For instance if there is an object at 1 meters and we want to have
+	 * everything at least at 10 meters, we could use this method for that
+	 * purpose. <br>
+	 * To set it to the default behavior just set it to 0
+	 * 
+	 * @param minDistanceSize
+	 *            The top near distance (in meters) which we want to draw a
+	 *            {@link GeoObject} , 0 to set again the default behavior
+	 */
+	public void setMinDistanceSize(float minDistanceSize) {
+		mRenderer.setMinDistanceSize(minDistanceSize);
+	}
+
+	/**
+	 * Get the minimum distance which a {@link GeoObject} will be rendered.
+	 * 
+	 * @return The current minimum distance. 0 is the default behavior
+	 */
+	public float getMinDistanceSize() {
+		return mRenderer.getMinDistanceSize();
+	}
 
 }

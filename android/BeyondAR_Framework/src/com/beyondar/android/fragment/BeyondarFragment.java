@@ -18,6 +18,8 @@ import android.widget.FrameLayout.LayoutParams;
 import android.widget.TextView;
 
 import com.beyondar.android.opengl.renderer.ARRenderer.FpsUpdatable;
+import com.beyondar.android.screenshot.OnScreenshotListener;
+import com.beyondar.android.screenshot.ScreenshotHelper;
 import com.beyondar.android.util.math.geom.Ray;
 import com.beyondar.android.view.BeyondarGLSurfaceView;
 import com.beyondar.android.view.CameraView;
@@ -55,7 +57,7 @@ public class BeyondarFragment extends Fragment implements FpsUpdatable, OnClickL
 				ViewGroup.LayoutParams.MATCH_PARENT);
 
 		mMailLayout = new FrameLayout(getActivity());
-		mBeyondarGLSurface = getBeyondarGLSurfaceView();
+		mBeyondarGLSurface = createBeyondarGLSurfaceView();
 		mBeyondarGLSurface.setOnTouchListener(this);
 
 		mBeyondarCameraView = createCameraView();
@@ -68,16 +70,9 @@ public class BeyondarFragment extends Fragment implements FpsUpdatable, OnClickL
 		PackageManager PM = getActivity().getPackageManager();
 		boolean compass = PM.hasSystemFeature(PackageManager.FEATURE_SENSOR_COMPASS);
 		boolean accelerometer = PM.hasSystemFeature(PackageManager.FEATURE_SENSOR_ACCELEROMETER);
-
-		if (!compass && !accelerometer) {
+		if (!compass || !accelerometer) {
 			throw new IllegalStateException(
 					"Beyondar can not run without the compass and the acelerometer sensors.");
-		}
-		if (!compass) {
-			throw new IllegalStateException("Beyondar can not run without the compass sensor.");
-		}
-		if (!accelerometer) {
-			throw new IllegalStateException("Beyondar can not run without the acelerometer sensor.");
 		}
 	}
 
@@ -87,7 +82,7 @@ public class BeyondarFragment extends Fragment implements FpsUpdatable, OnClickL
 	 * 
 	 * @return
 	 */
-	protected BeyondarGLSurfaceView getBeyondarGLSurfaceView() {
+	protected BeyondarGLSurfaceView createBeyondarGLSurfaceView() {
 		return new BeyondarGLSurfaceView(getActivity());
 	}
 
@@ -100,23 +95,23 @@ public class BeyondarFragment extends Fragment implements FpsUpdatable, OnClickL
 	protected CameraView createCameraView() {
 		return new CameraView(getActivity());
 	}
-	
+
 	/**
-	 *
+	 * 
 	 * Returns the CameraView for this class instance
 	 * 
 	 * @return
 	 */
-	public CameraView getCameraView(){
+	public CameraView getCameraView() {
 		return mBeyondarCameraView;
 	}
 
-        /**
+	/**
 	 * Returns the SurfaceView for this class instance
 	 * 
 	 * @return
 	 */
-	public BeyondarGLSurfaceView getGLSurfaceView(){
+	public BeyondarGLSurfaceView getGLSurfaceView() {
 		return mBeyondarGLSurface;
 	}
 
@@ -340,6 +335,42 @@ public class BeyondarFragment extends Fragment implements FpsUpdatable, OnClickL
 	}
 
 	/**
+	 * When a {@link GeoObject} is rendered according to its position it could
+	 * look very big if it is too close. Use this method to render near objects
+	 * as if there were farther.<br>
+	 * For instance if there is an object at 1 meters and we want to have
+	 * everything at least at 10 meters, we could use this method for that
+	 * purpose. <br>
+	 * To set it to the default behavior just set it to 0
+	 * 
+	 * @param minDistanceSize
+	 *            The top near distance (in meters) which we want to draw a
+	 *            {@link GeoObject} , 0 to set again the default behavior
+	 */
+	public void setMinDistanceSize(float minDistanceSize) {
+		mBeyondarGLSurface.setMinDistanceSize(minDistanceSize);
+	}
+
+	/**
+	 * Get the minimum distance which a {@link GeoObject} will be rendered.
+	 * 
+	 * @return The current minimum distance. 0 is the default behavior
+	 */
+	public float getMinDistanceSize() {
+		return mBeyondarGLSurface.getMinDistanceSize();
+	}
+
+	/**
+	 * Take a screenshot of the beyondar fragment. The screenshot will contain
+	 * the camera + the AR world
+	 * 
+	 * @param listener
+	 */
+	public void takeScreenshot(OnScreenshotListener listener) {
+		ScreenshotHelper.takeScreenshot(getCameraView(), getGLSurfaceView(), listener);
+	}
+
+	/**
 	 * Show the number of frames per second. False by default
 	 * 
 	 * @param show
@@ -373,6 +404,5 @@ public class BeyondarFragment extends Fragment implements FpsUpdatable, OnClickL
 				}
 			});
 		}
-
 	}
 }

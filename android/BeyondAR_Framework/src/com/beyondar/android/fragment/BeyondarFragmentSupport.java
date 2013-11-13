@@ -50,8 +50,6 @@ public class BeyondarFragmentSupport extends Fragment implements FpsUpdatable, O
 
 	private void init() {
 
-		checkIfSensorsAvailable();
-
 		android.view.ViewGroup.LayoutParams params = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
 				ViewGroup.LayoutParams.MATCH_PARENT);
 
@@ -69,10 +67,16 @@ public class BeyondarFragmentSupport extends Fragment implements FpsUpdatable, O
 		PackageManager PM = getActivity().getPackageManager();
 		boolean compass = PM.hasSystemFeature(PackageManager.FEATURE_SENSOR_COMPASS);
 		boolean accelerometer = PM.hasSystemFeature(PackageManager.FEATURE_SENSOR_ACCELEROMETER);
-		if (!compass || !accelerometer) {
-			throw new IllegalStateException(
-					"Beyondar can not run without the compass and the acelerometer sensors.");
+		if (!compass && !accelerometer) {
+			throw new IllegalStateException(getClass().getName()
+					+ " can not run without the compass and the acelerometer sensors.");
+		} else if (!compass) {
+			throw new IllegalStateException(getClass().getName() + " can not run without the compass sensor.");
+		} else if (!accelerometer) {
+			throw new IllegalStateException(getClass().getName()
+					+ " can not run without the acelerometer sensor.");
 		}
+
 	}
 
 	/**
@@ -205,6 +209,7 @@ public class BeyondarFragmentSupport extends Fragment implements FpsUpdatable, O
 	 * @param world
 	 */
 	public void setWorld(World world) {
+		checkIfSensorsAvailable();
 		mWorld = world;
 		mBeyondarGLSurface.setWorld(world);
 	}

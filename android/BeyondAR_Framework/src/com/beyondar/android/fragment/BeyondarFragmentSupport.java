@@ -325,7 +325,7 @@ public class BeyondarFragmentSupport extends Fragment implements FpsUpdatable, O
 	 *            The top far distance (in meters) which we want to draw a
 	 *            {@link GeoObject} , 0 to set again the default behavior
 	 */
-	public void setMaxDistanceSize(float maxDistanceSize) {
+	public void setMaxFarDistance(float maxDistanceSize) {
 		mBeyondarGLSurface.setMaxDistanceSize(maxDistanceSize);
 	}
 
@@ -351,7 +351,7 @@ public class BeyondarFragmentSupport extends Fragment implements FpsUpdatable, O
 	 *            The top near distance (in meters) which we want to draw a
 	 *            {@link GeoObject} , 0 to set again the default behavior
 	 */
-	public void setMinDistanceSize(float minDistanceSize) {
+	public void setMinFarDistanceSize(float minDistanceSize) {
 		mBeyondarGLSurface.setMinDistanceSize(minDistanceSize);
 	}
 

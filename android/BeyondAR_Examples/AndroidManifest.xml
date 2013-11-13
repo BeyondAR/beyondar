@@ -53,7 +53,7 @@
         <activity android:name="com.beyondar.example.GoogleMapActivity" />
         <activity android:name="com.beyondar.example.CameraWithTouchEventsActivity" />
         <activity android:name="com.beyondar.example.CameraWithGoogleMapsActivity" />
-        <activity android:name="com.beyondar.example.SimpleCameraWithMaxFarAwayActivity" />
+        <activity android:name="com.beyondar.example.SimpleCameraWithMaxFarMinAwayActivity" />
         <activity android:name="com.beyondar.example.CameraWithScreenShotActivity" />
         <activity android:name="com.beyondar.example.ChangeGeoObjectImagesOnTouchActivity" />
 

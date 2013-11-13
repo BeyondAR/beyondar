@@ -27,7 +27,7 @@ import android.widget.SeekBar.OnSeekBarChangeListener;
 import com.beyondar.android.fragment.BeyondarFragmentSupport;
 import com.beyondar.android.world.World;
 
-public class SimpleCameraWithMaxFarAwayActivity extends FragmentActivity implements OnSeekBarChangeListener {
+public class SimpleCameraWithMaxFarMinAwayActivity extends FragmentActivity implements OnSeekBarChangeListener {
 
 	private BeyondarFragmentSupport mBeyondarFragment;
 	private World mWorld;
@@ -61,19 +61,15 @@ public class SimpleCameraWithMaxFarAwayActivity extends FragmentActivity impleme
 		// We also can see the Frames per seconds
 		mBeyondarFragment.showFPS(true);
 		
-		
-		
-		//mBeyondarFragment.setMinDistanceSize(50);
-		//mSeekBarMin.setProgress((int) mBeyondarFragment.getMinDistanceSize());
 
 	}
 
 	@Override
 	public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
 		if (seekBar == mSeekBarMax) {
-			mBeyondarFragment.setMaxDistanceSize(progress);
+			mBeyondarFragment.setMaxFarDistance(progress);
 		} else if (seekBar == mSeekBarMin) {
-			mBeyondarFragment.setMinDistanceSize(progress);
+			mBeyondarFragment.setMinFarDistanceSize(progress);
 		}
 
 	}

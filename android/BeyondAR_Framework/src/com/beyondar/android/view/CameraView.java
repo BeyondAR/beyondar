@@ -24,6 +24,7 @@ import android.graphics.BitmapFactory;
 import android.hardware.Camera;
 import android.hardware.Camera.Size;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.Surface;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
@@ -157,25 +158,37 @@ public class CameraView extends SurfaceView implements SurfaceHolder.Callback, C
 	}
 
 	private Size getOptimalPreviewSize(List<Size> sizes, int width, int height) {
+		final double ASPECT_TOLERANCE = 0.1;
+		double targetRatio = (double) height / width;
 
-		Size result = null;
+		if (sizes == null)
+			return null;
+
+		Camera.Size optimalSize = null;
+		double minDiff = Double.MAX_VALUE;
+
+		int targetHeight = height;
 
 		for (Camera.Size size : sizes) {
-			if (size.width <= width && size.height <= height) {
-				if (result == null) {
-					result = size;
-				} else {
-					int resultArea = result.width * result.height;
-					int newArea = size.width * size.height;
-
-					if (newArea > resultArea) {
-						result = size;
-					}
-				}
+			double ratio = (double) size.width / size.height;
+			if (Math.abs(ratio - targetRatio) > ASPECT_TOLERANCE)
+				continue;
+			if (Math.abs(size.height - targetHeight) < minDiff) {
+				optimalSize = size;
+				minDiff = Math.abs(size.height - targetHeight);
 			}
 		}
 
-		return result;
+		if (optimalSize == null) {
+			minDiff = Double.MAX_VALUE;
+			for (Camera.Size size : sizes) {
+				if (Math.abs(size.height - targetHeight) < minDiff) {
+					optimalSize = size;
+					minDiff = Math.abs(size.height - targetHeight);
+				}
+			}
+		}
+		return optimalSize;
 	}
 
 	public void surfaceChanged(SurfaceHolder holder, int format, int w, int h) {
@@ -228,6 +241,8 @@ public class CameraView extends SurfaceView implements SurfaceHolder.Callback, C
 
 		degrees = (degrees + 45) / 90 * 90;
 		rotation = (degrees + 90) % 360;
+		
+		Log.d(getClass().getSimpleName(), "rotation="+ rotation);
 
 		return rotation;
 	}

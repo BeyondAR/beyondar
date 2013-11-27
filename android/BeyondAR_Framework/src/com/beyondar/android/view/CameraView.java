@@ -24,7 +24,6 @@ import android.graphics.BitmapFactory;
 import android.hardware.Camera;
 import android.hardware.Camera.Size;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.Surface;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
@@ -242,8 +241,6 @@ public class CameraView extends SurfaceView implements SurfaceHolder.Callback, C
 		degrees = (degrees + 45) / 90 * 90;
 		rotation = (degrees + 90) % 360;
 		
-		Log.d(getClass().getSimpleName(), "rotation="+ rotation);
-
 		return rotation;
 	}
 

@@ -37,8 +37,6 @@ import android.hardware.SensorManager;
 import android.opengl.GLSurfaceView;
 import android.opengl.GLU;
 import android.opengl.GLUtils;
-import android.os.Handler;
-import android.os.Looper;
 import android.view.Surface;
 
 import com.beyondar.android.opengl.renderable.Renderable;
@@ -48,7 +46,6 @@ import com.beyondar.android.opengl.util.MatrixGrabber;
 import com.beyondar.android.util.Logger;
 import com.beyondar.android.util.PendingBitmapsToBeLoaded;
 import com.beyondar.android.util.Utils;
-import com.beyondar.android.util.annotation.AnnotationsUtils;
 import com.beyondar.android.util.cache.BitmapCache;
 import com.beyondar.android.util.math.Distance;
 import com.beyondar.android.util.math.MathUtils;
@@ -64,8 +61,6 @@ import com.beyondar.android.world.World;
 // http://magicscrollsofcode.blogspot.com/2010/10/3d-picking-in-android.html
 public class ARRenderer implements GLSurfaceView.Renderer, SensorEventListener,
 		BitmapCache.OnExternalBitmapLoadedCacheListener {
-
-	private final Handler mUiHandler = new Handler(Looper.getMainLooper());
 
 	public static interface SnapshotCallback {
 		/**
@@ -124,7 +119,6 @@ public class ARRenderer implements GLSurfaceView.Renderer, SensorEventListener,
 	private long mCurrentTime = System.currentTimeMillis();
 	private float mFrames = 0;
 	private FpsUpdatable mFpsUpdatable;
-	private boolean mFpsUpdatableOnUiThread;
 
 	private float mMaxDistanceSizePoints;
 	private float mMinDistanceSizePoints;
@@ -447,8 +441,6 @@ public class ARRenderer implements GLSurfaceView.Renderer, SensorEventListener,
 	 *            {@link FpsUpdatable}
 	 */
 	public void setFpsUpdatable(FpsUpdatable fpsUpdatable) {
-		mFpsUpdatableOnUiThread = AnnotationsUtils.hasUiAnnotation(fpsUpdatable,
-				FpsUpdatable.__ON_FPS_UPDATE_METHOD_NAME__);
 		mCurrentTime = System.currentTimeMillis();
 		mFpsUpdatable = fpsUpdatable;
 		mGetFps = mFpsUpdatable != null;
@@ -475,14 +467,6 @@ public class ARRenderer implements GLSurfaceView.Renderer, SensorEventListener,
 					Logger.d("Frames/second:  " + mFrames / (timeInterval / 1000F));
 				}
 				if (mFpsUpdatable != null) {
-					if (mFpsUpdatableOnUiThread) {
-						mUiHandler.post(new Runnable() {
-							@Override
-							public void run() {
-								mFpsUpdatable.onFpsUpdate(mFrames / (timeInterval / 1000F));
-							}
-						});
-					}
 					mFpsUpdatable.onFpsUpdate(mFrames / (timeInterval / 1000F));
 				}
 				mFrames = 0;

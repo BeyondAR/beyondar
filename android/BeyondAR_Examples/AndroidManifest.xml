@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.beyondar.example"
-    android:versionCode="1"
-    android:versionName="1.0" >
+    android:versionCode="000500"
+    android:versionName="0.5.0" >
 
     <uses-sdk
         android:minSdkVersion="8"
@@ -56,10 +56,14 @@
         <activity android:name="com.beyondar.example.SimpleCameraWithMaxFarMinAwayActivity" />
         <activity android:name="com.beyondar.example.CameraWithScreenShotActivity" />
         <activity android:name="com.beyondar.example.ChangeGeoObjectImagesOnTouchActivity" />
+        <activity android:name="com.beyondar.example.AttachViewToGeoObjectActivity" />
 
         <meta-data
             android:name="com.google.android.maps.v2.API_KEY"
             android:value="AIzaSyBN2fi7bdokXVQXmMTGfqWG2oNHjopus-A" />
+        <!--<meta-data
+            android:name="com.google.android.maps.v2.API_KEY"
+            android:value="AIzaSyDw3blSITjdZh7qmz020IkDK-V2MA0a6c4" />--> 
         <meta-data
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />

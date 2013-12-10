@@ -10,11 +10,11 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.View.OnClickListener;
 import android.view.View.OnTouchListener;
-import android.widget.FrameLayout;
+import android.view.ViewGroup;
 import android.widget.FrameLayout.LayoutParams;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.beyondar.android.opengl.renderer.ARRenderer.FpsUpdatable;
@@ -22,6 +22,7 @@ import com.beyondar.android.screenshot.OnScreenshotListener;
 import com.beyondar.android.screenshot.ScreenshotHelper;
 import com.beyondar.android.util.math.geom.Ray;
 import com.beyondar.android.view.BeyondarGLSurfaceView;
+import com.beyondar.android.view.BeyondarViewAdapter;
 import com.beyondar.android.view.CameraView;
 import com.beyondar.android.view.OnClickBeyondarObjectListener;
 import com.beyondar.android.view.OnTouchBeyondarViewListener;
@@ -35,7 +36,7 @@ public class BeyondarFragment extends Fragment implements FpsUpdatable, OnClickL
 	private CameraView mBeyondarCameraView;
 	private BeyondarGLSurfaceView mBeyondarGLSurface;
 	private TextView mFpsTextView;
-	private FrameLayout mMailLayout;
+	private RelativeLayout mMailLayout;
 
 	private World mWorld;
 
@@ -51,12 +52,10 @@ public class BeyondarFragment extends Fragment implements FpsUpdatable, OnClickL
 
 	private void init() {
 
-		checkIfSensorsAvailable();
-
 		android.view.ViewGroup.LayoutParams params = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
 				ViewGroup.LayoutParams.MATCH_PARENT);
 
-		mMailLayout = new FrameLayout(getActivity());
+		mMailLayout = new RelativeLayout(getActivity());
 		mBeyondarGLSurface = createBeyondarGLSurfaceView();
 		mBeyondarGLSurface.setOnTouchListener(this);
 
@@ -70,10 +69,16 @@ public class BeyondarFragment extends Fragment implements FpsUpdatable, OnClickL
 		PackageManager PM = getActivity().getPackageManager();
 		boolean compass = PM.hasSystemFeature(PackageManager.FEATURE_SENSOR_COMPASS);
 		boolean accelerometer = PM.hasSystemFeature(PackageManager.FEATURE_SENSOR_ACCELEROMETER);
-		if (!compass || !accelerometer) {
-			throw new IllegalStateException(
-					"Beyondar can not run without the compass and the acelerometer sensors.");
+		if (!compass && !accelerometer) {
+			throw new IllegalStateException(getClass().getName()
+					+ " can not run without the compass and the acelerometer sensors.");
+		} else if (!compass) {
+			throw new IllegalStateException(getClass().getName() + " can not run without the compass sensor.");
+		} else if (!accelerometer) {
+			throw new IllegalStateException(getClass().getName()
+					+ " can not run without the acelerometer sensor.");
 		}
+
 	}
 
 	/**
@@ -206,6 +211,7 @@ public class BeyondarFragment extends Fragment implements FpsUpdatable, OnClickL
 	 * @param world
 	 */
 	public void setWorld(World world) {
+		checkIfSensorsAvailable();
 		mWorld = world;
 		mBeyondarGLSurface.setWorld(world);
 	}
@@ -321,7 +327,7 @@ public class BeyondarFragment extends Fragment implements FpsUpdatable, OnClickL
 	 *            The top far distance (in meters) which we want to draw a
 	 *            {@link GeoObject} , 0 to set again the default behavior
 	 */
-	public void setMaxDistanceSize(float maxDistanceSize) {
+	public void setMaxFarDistance(float maxDistanceSize) {
 		mBeyondarGLSurface.setMaxDistanceSize(maxDistanceSize);
 	}
 
@@ -347,7 +353,7 @@ public class BeyondarFragment extends Fragment implements FpsUpdatable, OnClickL
 	 *            The top near distance (in meters) which we want to draw a
 	 *            {@link GeoObject} , 0 to set again the default behavior
 	 */
-	public void setMinDistanceSize(float minDistanceSize) {
+	public void setMinFarDistanceSize(float minDistanceSize) {
 		mBeyondarGLSurface.setMinDistanceSize(minDistanceSize);
 	}
 
@@ -382,8 +388,8 @@ public class BeyondarFragment extends Fragment implements FpsUpdatable, OnClickL
 				mFpsTextView = new TextView(getActivity());
 				mFpsTextView.setBackgroundResource(android.R.color.black);
 				mFpsTextView.setTextColor(getResources().getColor(android.R.color.white));
-				android.view.ViewGroup.LayoutParams params = new LayoutParams(
-						ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+				LayoutParams params = new LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
+						ViewGroup.LayoutParams.WRAP_CONTENT);
 				mMailLayout.addView(mFpsTextView, params);
 			}
 			mFpsTextView.setVisibility(View.VISIBLE);
@@ -405,4 +411,17 @@ public class BeyondarFragment extends Fragment implements FpsUpdatable, OnClickL
 			});
 		}
 	}
+
+	public void setBeyondarViewAdapter(BeyondarViewAdapter adapter) {
+		mBeyondarGLSurface.setBeyondarViewAdapter(adapter, mMailLayout);
+	}
+
+	public void forceFillBeyondarObjectPositions(boolean fill) {
+		mBeyondarGLSurface.forceFillBeyondarObjectPositions(fill);
+	}
+
+	public void fillBeyondarObjectPositions(BeyondarObject beyondarObject) {
+		mBeyondarGLSurface.fillBeyondarObjectPositions(beyondarObject);
+	}
+
 }

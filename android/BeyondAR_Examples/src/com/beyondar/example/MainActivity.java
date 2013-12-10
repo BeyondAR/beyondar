@@ -30,7 +30,7 @@ public class MainActivity extends Activity implements OnItemClickListener {
 	private String[] values = new String[] { "Simple AR camera",
 			"Simple camera with a max/min distance far for rendering", "BeyondAR World in Google maps",
 			"AR camera with Gooogle maps", "Camera with touch events", "Camera with screenshot",
-			"Change GeoObject images on touch" };
+			"Change GeoObject images on touch", "Attach view to GeoObject" };
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -40,7 +40,8 @@ public class MainActivity extends Activity implements OnItemClickListener {
 
 		fillList();
 
-		// openActivity(SimpleCameraWithMaxFarMinAwayActivity.class);
+		//TESTING:
+		openActivity(AttachViewToGeoObjectActivity.class);
 	}
 
 	private void fillList() {
@@ -73,6 +74,10 @@ public class MainActivity extends Activity implements OnItemClickListener {
 			break;
 		case 6:
 			openActivity(ChangeGeoObjectImagesOnTouchActivity.class);
+			break;
+		case 7:
+			openActivity(AttachViewToGeoObjectActivity.class);
+			break;
 		default:
 			break;
 		}

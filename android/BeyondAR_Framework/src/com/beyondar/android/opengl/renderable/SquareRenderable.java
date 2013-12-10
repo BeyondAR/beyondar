@@ -81,7 +81,8 @@ public class SquareRenderable implements Renderable {
 
 		mPosition = new Point3();
 
-		mTexture = new Texture();;
+		mTexture = new Texture();
+		;
 	}
 
 	public static Renderable getInstance() {
@@ -92,8 +93,7 @@ public class SquareRenderable implements Renderable {
 	}
 
 	@Override
-	public boolean update(long time, double distance,
-			BeyondarObject beyondarObject) {
+	public boolean update(long time, double distance, BeyondarObject beyondarObject) {
 		mTimeMark = time;
 		mBeyondarObject = beyondarObject;
 
@@ -124,8 +124,7 @@ public class SquareRenderable implements Renderable {
 
 		// bind the previously generated texture
 		if (!mTexture.isLoaded()) {
-			gl.glBindTexture(GL10.GL_TEXTURE_2D,
-					defaultTexture.getTexturePointer());
+			gl.glBindTexture(GL10.GL_TEXTURE_2D, defaultTexture.getTexturePointer());
 
 		} else {
 			gl.glBindTexture(GL10.GL_TEXTURE_2D, mTexture.getTexturePointer());
@@ -161,8 +160,7 @@ public class SquareRenderable implements Renderable {
 
 	@Override
 	public Plane getPlane() {
-		Plane plane = new Plane(mBeyondarObject.getPosition(), new Vector3(0,
-				-1, 0));
+		Plane plane = new Plane(mBeyondarObject.getPosition(), new Vector3(0, -1, 0));
 		return plane;
 	}
 
@@ -204,8 +202,7 @@ public class SquareRenderable implements Renderable {
 
 	@Override
 	public Texture getTexture() {
-		// TODO Auto-generated method stub
-		return null;
+		return mTexture;
 	}
 
 }

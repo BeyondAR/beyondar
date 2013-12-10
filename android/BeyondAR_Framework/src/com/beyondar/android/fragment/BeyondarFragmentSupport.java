@@ -12,8 +12,8 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
 import android.widget.FrameLayout.LayoutParams;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.beyondar.android.opengl.renderer.ARRenderer.FpsUpdatable;
@@ -21,6 +21,7 @@ import com.beyondar.android.screenshot.OnScreenshotListener;
 import com.beyondar.android.screenshot.ScreenshotHelper;
 import com.beyondar.android.util.math.geom.Ray;
 import com.beyondar.android.view.BeyondarGLSurfaceView;
+import com.beyondar.android.view.BeyondarViewAdapter;
 import com.beyondar.android.view.CameraView;
 import com.beyondar.android.view.OnClickBeyondarObjectListener;
 import com.beyondar.android.view.OnTouchBeyondarViewListener;
@@ -34,7 +35,7 @@ public class BeyondarFragmentSupport extends Fragment implements FpsUpdatable, O
 	private CameraView mBeyondarCameraView;
 	private BeyondarGLSurfaceView mBeyondarGLSurface;
 	private TextView mFpsTextView;
-	private FrameLayout mMailLayout;
+	private RelativeLayout mMailLayout;
 
 	private World mWorld;
 
@@ -53,7 +54,7 @@ public class BeyondarFragmentSupport extends Fragment implements FpsUpdatable, O
 		android.view.ViewGroup.LayoutParams params = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
 				ViewGroup.LayoutParams.MATCH_PARENT);
 
-		mMailLayout = new FrameLayout(getActivity());
+		mMailLayout = new RelativeLayout(getActivity());
 		mBeyondarGLSurface = createBeyondarGLSurfaceView();
 		mBeyondarGLSurface.setOnTouchListener(this);
 
@@ -386,8 +387,8 @@ public class BeyondarFragmentSupport extends Fragment implements FpsUpdatable, O
 				mFpsTextView = new TextView(getActivity());
 				mFpsTextView.setBackgroundResource(android.R.color.black);
 				mFpsTextView.setTextColor(getResources().getColor(android.R.color.white));
-				android.view.ViewGroup.LayoutParams params = new LayoutParams(
-						ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+				LayoutParams params = new LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
+						ViewGroup.LayoutParams.WRAP_CONTENT);
 				mMailLayout.addView(mFpsTextView, params);
 			}
 			mFpsTextView.setVisibility(View.VISIBLE);
@@ -409,4 +410,17 @@ public class BeyondarFragmentSupport extends Fragment implements FpsUpdatable, O
 			});
 		}
 	}
+
+	public void setBeyondarViewAdapter(BeyondarViewAdapter adapter) {
+		mBeyondarGLSurface.setBeyondarViewAdapter(adapter, mMailLayout);
+	}
+
+	public void forceFillBeyondarObjectPositions(boolean fill) {
+		mBeyondarGLSurface.forceFillBeyondarObjectPositions(fill);
+	}
+	
+	public void fillBeyondarObjectPositions(BeyondarObject beyondarObject) {
+		mBeyondarGLSurface.fillBeyondarObjectPositions(beyondarObject);
+	}
+
 }

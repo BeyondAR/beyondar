@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2013 BeyondAR
+b * Copyright (C) 2013 BeyondAR
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,6 +19,9 @@ import java.nio.IntBuffer;
 import java.util.ArrayList;
 import java.util.ConcurrentModificationException;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Queue;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
@@ -123,12 +126,24 @@ public class ARRenderer implements GLSurfaceView.Renderer, SensorEventListener,
 	private float mMaxDistanceSizePoints;
 	private float mMinDistanceSizePoints;
 
+	private Queue<float[]> mFloat4ArrayPool;
+	private OnBeyondarObjectRenderedListener mOnBeyondarObjectRenderedListener;
+
+	/** This list keep track of the object that have been rendered */
+	private List<BeyondarObject> mRenderedObjects;
+
+	private boolean mFillPositions;
+
 	public ARRenderer() {
 		reloadWorldTextures = false;
 		setRendering(true);
 		cameraPosition = new Point3(0, 0, 0);
+		mFloat4ArrayPool = new ConcurrentLinkedQueue<float[]>();
+
+		mRenderedObjects = new ArrayList<BeyondarObject>();
 
 		mIsTablet = false;
+		mFillPositions = false;
 	}
 
 	/**
@@ -264,7 +279,13 @@ public class ARRenderer implements GLSurfaceView.Renderer, SensorEventListener,
 				loadWorldTextures(gl);
 				reloadWorldTextures = false;
 			}
+			mRenderedObjects.clear();
 			renderWorld(gl, time);
+
+			OnBeyondarObjectRenderedListener tmpTraker = mOnBeyondarObjectRenderedListener;
+			if (tmpTraker != null) {
+				tmpTraker.onBeyondarObjectsRendered(mRenderedObjects);
+			}
 		}
 
 		if (mScreenshot) {
@@ -364,10 +385,10 @@ public class ARRenderer implements GLSurfaceView.Renderer, SensorEventListener,
 				MathUtils.linearInterpolate(0, 0, 0, x, y, 0, mMaxDistanceSizePoints, totalDst, sOut);
 				x = (float) sOut[0];
 				y = (float) sOut[1];
-				if (mMinDistanceSizePoints > 0){
+				if (mMinDistanceSizePoints > 0) {
 					totalDst = Distance.calculateDistance(x, y, 0, 0);
 				}
-			} 
+			}
 			if (mMinDistanceSizePoints > 0 && totalDst < mMinDistanceSizePoints) {
 				MathUtils.linearInterpolate(0, 0, 0, x, y, 0, mMinDistanceSizePoints, totalDst, sOut);
 				x = (float) sOut[0];
@@ -446,6 +467,10 @@ public class ARRenderer implements GLSurfaceView.Renderer, SensorEventListener,
 		mGetFps = mFpsUpdatable != null;
 	}
 
+	public void setOnBeyondarObjectRenderedListener(OnBeyondarObjectRenderedListener rendererTracker) {
+		mOnBeyondarObjectRenderedListener = rendererTracker;
+	}
+
 	protected void renderWorld(GL10 gl, long time) {
 		BeyondarObjectList list = null;
 		try {
@@ -495,9 +520,11 @@ public class ARRenderer implements GLSurfaceView.Renderer, SensorEventListener,
 			if (beyondarObject == null) {
 				continue;
 			}
-			renderGeoObject(gl, beyondarObject, listTexture, time);
+			renderBeyondarObject(gl, beyondarObject, listTexture, time);
 		}
 	}
+
+	private float[] tmpEyeForRendering = new float[4];
 
 	/**
 	 * Override this method to customize the way to render the objects
@@ -506,7 +533,8 @@ public class ARRenderer implements GLSurfaceView.Renderer, SensorEventListener,
 	 * @param beyondarObject
 	 * @param defaultTexture
 	 */
-	protected void renderGeoObject(GL10 gl, BeyondarObject beyondarObject, Texture defaultTexture, long time) {
+	protected void renderBeyondarObject(GL10 gl, BeyondarObject beyondarObject, Texture defaultTexture,
+			long time) {
 		boolean renderObject = false;
 		Renderable renderable = beyondarObject.getOpenGLObject();
 
@@ -548,12 +576,25 @@ public class ARRenderer implements GLSurfaceView.Renderer, SensorEventListener,
 						beyondarObject.getTexture().setLoadTryCounter(counter + 1);
 					}
 				}
-
 			}
 			renderable.draw(gl, defaultTexture);
+
+			getScreenCoordinates(beyondarObject.getPosition(), beyondarObject.getScreenPositionCenter(), tmpEyeForRendering);
+
+			if (mFillPositions) {
+				fillBeyondarObjectPositions(beyondarObject);
+			}
+			mRenderedObjects.add(beyondarObject);
 		} else {
 			renderable.onNotRendered(dst);
 		}
+	}
+
+	public void fillBeyondarObjectPositions(BeyondarObject beyondarObject) {
+		getScreenCoordinates(beyondarObject.getBottomLeft(), beyondarObject.getScreenPositionBottomLeft());
+		getScreenCoordinates(beyondarObject.getBottomRight(), beyondarObject.getScreenPositionBottomRight());
+		getScreenCoordinates(beyondarObject.getTopLeft(), beyondarObject.getScreenPositionTopLeft());
+		getScreenCoordinates(beyondarObject.getTopRight(), beyondarObject.getScreenPositionTopRight());
 	}
 
 	/**
@@ -582,6 +623,7 @@ public class ARRenderer implements GLSurfaceView.Renderer, SensorEventListener,
 		GLU.gluPerspective(gl, 45.0f, ratio, 0.1f, Z_FAR);
 		mWidth = width;
 		mHeight = height;
+		setupViewPort();
 	}
 
 	public void onSurfaceCreated(GL10 gl, EGLConfig config) {
@@ -844,12 +886,24 @@ public class ARRenderer implements GLSurfaceView.Renderer, SensorEventListener,
 		}
 	}
 
+	// view port
+	private final int[] viewport = new int[4];
+
+	private void setupViewPort() {
+		viewport[2] = mWidth;
+		viewport[3] = mHeight;
+	}
+
 	public void getViewRay(float x, float y, Ray ray) {
-		// view port
-		int[] viewport = { 0, 0, mWidth, mHeight };
 
 		// far eye point
-		float[] eye = new float[4];
+		float[] eye = mFloat4ArrayPool.poll();
+		if (eye == null) {
+			eye = new float[4];
+		} else {
+			eye[0] = eye[1] = eye[2] = eye[3] = 0;
+		}
+
 		GLU.gluUnProject(x, mHeight - y, 0.9f, mMatrixGrabber.mModelView, 0, mMatrixGrabber.mProjection, 0,
 				viewport, 0, eye, 0);
 
@@ -862,6 +916,41 @@ public class ARRenderer implements GLSurfaceView.Renderer, SensorEventListener,
 
 		// ray vector
 		ray.setVector((eye[0] - cameraPosition.x), (eye[1] - cameraPosition.y), (eye[2] - cameraPosition.z));
+		mFloat4ArrayPool.add(eye);
+	}
+
+	public void getScreenCoordinates(Point3 position, Point3 point) {
+		getScreenCoordinates(position.x, position.y, position.z, point, mFloat4ArrayPool.poll());
+	}
+
+	public void getScreenCoordinates(Point3 position, Point3 point, float[] eye) {
+		getScreenCoordinates(position.x, position.y, position.z, point, eye);
+	}
+
+	public void getScreenCoordinates(float x, float y, float z, Point3 point, float[] eye) {
+		// far eye point
+		if (eye == null) {
+			eye = new float[4];
+		} else {
+			eye[0] = eye[1] = eye[2] = eye[3] = 0;
+		}
+
+		GLU.gluProject(x, y, z, mMatrixGrabber.mModelView, 0, mMatrixGrabber.mProjection, 0, viewport, 0,
+				eye, 0);
+
+		// fix
+		if (eye[3] != 0) {
+			eye[0] = eye[0] / eye[3];
+			eye[1] = eye[1] / eye[3];
+			eye[2] = eye[2] / eye[3];
+		}
+
+		// Screen coordinates
+		point.x = eye[0];
+		point.y = mHeight - eye[1];
+		point.z = eye[2];
+
+		mFloat4ArrayPool.add(eye);
 	}
 
 	/**
@@ -871,7 +960,6 @@ public class ARRenderer implements GLSurfaceView.Renderer, SensorEventListener,
 	 */
 	public void setRendering(boolean render) {
 		mRender = render;
-
 	}
 
 	/**
@@ -908,6 +996,10 @@ public class ARRenderer implements GLSurfaceView.Renderer, SensorEventListener,
 			object.setTexture(texture);
 		}
 		pendingList.removePendingList(uri);
+	}
+
+	public void forceFillBeyondarObjectPositions(boolean fill) {
+		mFillPositions = fill;
 	}
 
 	public static interface FpsUpdatable {

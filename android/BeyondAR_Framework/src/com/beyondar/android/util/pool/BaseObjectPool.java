@@ -13,38 +13,35 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.beyondar.android.util;
+package com.beyondar.android.util.pool;
 
 import java.util.LinkedList;
+import java.util.Queue;
 
-import android.os.Build;
+public abstract class BaseObjectPool<T> {
 
-public abstract class SimpleObjectPool<T> {
-
-	private LinkedList<T> mFreeObjects;
+	private Queue<T> mFreeObjects;
 	// private ArrayList<T> mBorrowedObjects;
 
 	private Object mLockObject;
 
-	public SimpleObjectPool() {
+	public BaseObjectPool() {
 		mFreeObjects = new LinkedList<T>();
 		// mBorrowedObjects = new ArrayList<T>();
 		mLockObject = new Object();
 	}
 
-	public synchronized T borrowObject() {
+	public T borrowObject() {
+		T object;
 		synchronized (mLockObject) {
-			T object;
-
 			if (mFreeObjects.size() > 0) {
-				object = mFreeObjects.removeFirst();
-			} else {
-				object = createNewObject();
+				object = mFreeObjects.poll();
+				return object;
 			}
-
-			// mBorrowedObjects.add(object);
-			return object;
 		}
+		object = createNewObject();
+
+		return object;
 	}
 
 	/**
@@ -53,14 +50,9 @@ public abstract class SimpleObjectPool<T> {
 	 * 
 	 * @param object
 	 */
-	public synchronized void recycleObject(T object) {
+	public void recycleObject(T object) {
 		synchronized (mLockObject) {
-			// mBorrowedObjects.remove(object);
-			if (Build.VERSION.SDK_INT >= 11) {
-				mFreeObjects.push(object);
-			} else {
-				mFreeObjects.add(object);
-			}
+			mFreeObjects.add(object);
 		}
 	}
 

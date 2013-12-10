@@ -21,6 +21,7 @@ import com.beyondar.android.screenshot.OnScreenshotListener;
 import com.beyondar.android.screenshot.ScreenshotHelper;
 import com.beyondar.android.util.math.geom.Ray;
 import com.beyondar.android.view.BeyondarGLSurfaceView;
+import com.beyondar.android.view.BeyondarViewAdapter;
 import com.beyondar.android.view.CameraView;
 import com.beyondar.android.view.OnClickBeyondarObjectListener;
 import com.beyondar.android.view.OnTouchBeyondarViewListener;
@@ -409,4 +410,9 @@ public class BeyondarFragmentSupport extends Fragment implements FpsUpdatable, O
 			});
 		}
 	}
+
+	public void setBeyondarViewAdapter(BeyondarViewAdapter adapter) {
+		mBeyondarGLSurface.setBeyondarViewAdapter(adapter, mMailLayout);
+	}
+
 }

@@ -22,6 +22,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
+
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
@@ -39,8 +40,6 @@ import android.hardware.SensorManager;
 import android.opengl.GLSurfaceView;
 import android.opengl.GLU;
 import android.opengl.GLUtils;
-import android.opengl.GLSurfaceView.Renderer;
-import android.util.Log;
 import android.view.Surface;
 
 import com.beyondar.android.opengl.renderable.Renderable;
@@ -53,10 +52,8 @@ import com.beyondar.android.util.Utils;
 import com.beyondar.android.util.cache.BitmapCache;
 import com.beyondar.android.util.math.Distance;
 import com.beyondar.android.util.math.MathUtils;
-import com.beyondar.android.util.math.geom.Point2;
 import com.beyondar.android.util.math.geom.Point3;
 import com.beyondar.android.util.math.geom.Ray;
-import com.beyondar.android.util.pool.FloatArrayPool;
 import com.beyondar.android.world.BeyondarObject;
 import com.beyondar.android.world.BeyondarObjectList;
 import com.beyondar.android.world.GeoObject;

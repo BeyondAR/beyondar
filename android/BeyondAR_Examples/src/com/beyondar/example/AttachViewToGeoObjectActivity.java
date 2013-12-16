@@ -94,33 +94,6 @@ public class AttachViewToGeoObjectActivity extends FragmentActivity implements O
 
 	@Override
 	public void onClickBeyondarObject(ArrayList<BeyondarObject> beyondarObjects) {
-		// if (beyondarObjects.size() == 0) {
-		// return;
-		// }
-		// Point2 point = new Point2(0, 0);
-		//
-		// BeyondarObject barObject = beyondarObjects.get(0);
-		// mBeyondarFragment
-		// .getGLSurfaceView()
-		// .getRenderer()
-		// .getScreenCoordinates(barObject.getPosition().x,
-		// barObject.getPosition().y,
-		// barObject.getPosition().z, point);
-		// Logger.d("Ray: " + point.x + "," + point.y);
-		//
-		// if (button != null) {
-		// mBeyondarFragment.getMainLayout().removeView(button);
-		// }
-		//
-		// android.view.ViewGroup.LayoutParams params = new
-		// LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
-		// ViewGroup.LayoutParams.WRAP_CONTENT);
-		// button = new Button(this);
-		// button.setText("Hello");
-		// button.setTranslationX((int) point.x);
-		// button.setTranslationY((int) point.y);
-		// // button.((int)point.x, (int)point.y, 0, 0);
-		// mBeyondarFragment.getMainLayout().addView(button, params);
 	}
 
 	private class CustomBeyondarViewAdapter extends BeyondarViewAdapter {

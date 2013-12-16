@@ -422,5 +422,4 @@ public class BeyondarFragmentSupport extends Fragment implements FpsUpdatable, O
 	public void fillBeyondarObjectPositions(BeyondarObject beyondarObject) {
 		mBeyondarGLSurface.fillBeyondarObjectPositions(beyondarObject);
 	}
-
 }

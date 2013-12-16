@@ -45,7 +45,7 @@ public abstract class BeyondarViewAdapter {
 					View recycledView = mReusedViews.poll();
 
 					glSurface.fillBeyondarObjectPositions(beyondarObject);
-					
+
 					View view = getView(beyondarObject, recycledView, mParentView);
 
 					if (recycledView != view && recycledView != null) {
@@ -79,7 +79,6 @@ public abstract class BeyondarViewAdapter {
 				Queue<View> tmp = mNewViews;
 				mNewViews = mReusedViews;
 				mReusedViews = tmp;
-
 			}
 		});
 

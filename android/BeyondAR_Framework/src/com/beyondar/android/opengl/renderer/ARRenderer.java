@@ -22,7 +22,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
-
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
@@ -40,6 +39,8 @@ import android.hardware.SensorManager;
 import android.opengl.GLSurfaceView;
 import android.opengl.GLU;
 import android.opengl.GLUtils;
+import android.opengl.GLSurfaceView.Renderer;
+import android.util.Log;
 import android.view.Surface;
 
 import com.beyondar.android.opengl.renderable.Renderable;
@@ -52,8 +53,10 @@ import com.beyondar.android.util.Utils;
 import com.beyondar.android.util.cache.BitmapCache;
 import com.beyondar.android.util.math.Distance;
 import com.beyondar.android.util.math.MathUtils;
+import com.beyondar.android.util.math.geom.Point2;
 import com.beyondar.android.util.math.geom.Point3;
 import com.beyondar.android.util.math.geom.Ray;
+import com.beyondar.android.util.pool.FloatArrayPool;
 import com.beyondar.android.world.BeyondarObject;
 import com.beyondar.android.world.BeyondarObjectList;
 import com.beyondar.android.world.GeoObject;
@@ -125,7 +128,7 @@ public class ARRenderer implements GLSurfaceView.Renderer, SensorEventListener,
 
 	private float mMaxDistanceSizePoints;
 	private float mMinDistanceSizePoints;
-
+	
 	private Queue<float[]> mFloat4ArrayPool;
 	private OnBeyondarObjectRenderedListener mOnBeyondarObjectRenderedListener;
 
@@ -466,8 +469,8 @@ public class ARRenderer implements GLSurfaceView.Renderer, SensorEventListener,
 		mFpsUpdatable = fpsUpdatable;
 		mGetFps = mFpsUpdatable != null;
 	}
-
-	public void setOnBeyondarObjectRenderedListener(OnBeyondarObjectRenderedListener rendererTracker) {
+	
+	public void setOnBeyondarObjectRenderedListener(OnBeyondarObjectRenderedListener rendererTracker){
 		mOnBeyondarObjectRenderedListener = rendererTracker;
 	}
 
@@ -578,7 +581,6 @@ public class ARRenderer implements GLSurfaceView.Renderer, SensorEventListener,
 				}
 			}
 			renderable.draw(gl, defaultTexture);
-
 			getScreenCoordinates(beyondarObject.getPosition(), beyondarObject.getScreenPositionCenter(), tmpEyeForRendering);
 
 			if (mFillPositions) {
@@ -903,7 +905,6 @@ public class ARRenderer implements GLSurfaceView.Renderer, SensorEventListener,
 		} else {
 			eye[0] = eye[1] = eye[2] = eye[3] = 0;
 		}
-
 		GLU.gluUnProject(x, mHeight - y, 0.9f, mMatrixGrabber.mModelView, 0, mMatrixGrabber.mProjection, 0,
 				viewport, 0, eye, 0);
 
@@ -920,7 +921,12 @@ public class ARRenderer implements GLSurfaceView.Renderer, SensorEventListener,
 	}
 
 	public void getScreenCoordinates(Point3 position, Point3 point) {
+		float[] eye = mFloat4ArrayPool.poll();
+		if (eye == null) {
+			eye = new float[4];
+		}
 		getScreenCoordinates(position.x, position.y, position.z, point, mFloat4ArrayPool.poll());
+		mFloat4ArrayPool.add(eye);
 	}
 
 	public void getScreenCoordinates(Point3 position, Point3 point, float[] eye) {
@@ -949,8 +955,6 @@ public class ARRenderer implements GLSurfaceView.Renderer, SensorEventListener,
 		point.x = eye[0];
 		point.y = mHeight - eye[1];
 		point.z = eye[2];
-
-		mFloat4ArrayPool.add(eye);
 	}
 
 	/**

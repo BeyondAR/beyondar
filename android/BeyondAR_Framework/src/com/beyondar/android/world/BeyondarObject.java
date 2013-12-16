@@ -24,6 +24,7 @@ import com.beyondar.android.opengl.renderable.Renderable;
 import com.beyondar.android.opengl.renderable.SquareRenderable;
 import com.beyondar.android.opengl.texture.Texture;
 import com.beyondar.android.util.cache.BitmapCache;
+import com.beyondar.android.util.math.geom.Point2;
 import com.beyondar.android.util.math.geom.Point3;
 import com.beyondar.android.world.module.BeyondarObjectModule;
 import com.beyondar.android.world.module.Modulable;

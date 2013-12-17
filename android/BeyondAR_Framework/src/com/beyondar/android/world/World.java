@@ -502,22 +502,28 @@ public class World implements Modulable<WorldModule> {
 		return mArViewDistance;
 	}
 
-	public void sortGeoObjectByDistanceFromCenter(ArrayList<BeyondarObject> vec) {
+	public static List<BeyondarObject> sortGeoObjectByDistanceFromCenter(List<BeyondarObject> vec) {
 		boolean sorted = false;
 		while (!sorted) {
 			sorted = true;
 			for (int i = 0; i < vec.size() - 1; i++) {
 				BeyondarObject go1 = vec.get(i);
 				BeyondarObject go2 = vec.get(i + 1);
-				Vector3 vec1 = new Vector3(go1.getPosition());
-				Vector3 vec2 = new Vector3(go2.getPosition());
-
-				if (vec2.module() < vec1.module()) {
+				if (go2.getDistanceFromUser() < go1.getDistanceFromUser()) {
 					sorted = false;
 					vec.set(i, go2);
 					vec.set(i + 1, go1);
 				}
+				// Vector3 vec1 = new Vector3(go1.getPosition());
+				// Vector3 vec2 = new Vector3(go2.getPosition());
+				//
+				// if (vec2.module() < vec1.module()) {
+				// sorted = false;
+				// vec.set(i, go2);
+				// vec.set(i + 1, go1);
+				// }
 			}
 		}
+		return vec;
 	}
 }

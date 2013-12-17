@@ -152,7 +152,7 @@ public class BeyondarFragment extends Fragment implements FpsUpdatable, OnClickL
 
 	public void setOnClickBeyondarObjectListener(OnClickBeyondarObjectListener listener) {
 		mClickListener = listener;
-		mMailLayout.setClickable(true);
+		mMailLayout.setClickable(listener != null);
 		mMailLayout.setOnClickListener(this);
 	}
 
@@ -412,16 +412,32 @@ public class BeyondarFragment extends Fragment implements FpsUpdatable, OnClickL
 		}
 	}
 
+	/**
+	 * Set the adapter to draw the views on top of the AR View.
+	 * 
+	 * @param adapter
+	 */
 	public void setBeyondarViewAdapter(BeyondarViewAdapter adapter) {
 		mBeyondarGLSurface.setBeyondarViewAdapter(adapter, mMailLayout);
 	}
 
-	public void forceFillBeyondarObjectPositions(boolean fill) {
-		mBeyondarGLSurface.forceFillBeyondarObjectPositions(fill);
+	public void forceFillBeyondarObjectPositionsOnRendering(boolean fill) {
+		mBeyondarGLSurface.forceFillBeyondarObjectPositionsOnRendering(fill);
 	}
 
+	/**
+	 * Use this method to fill all the screen positions of the
+	 * {@link BeyondarObject}. After this method is called you can use the
+	 * following:<br>
+	 * {@link BeyondarObject#getScreenPositionBottomLeft()}<br>
+	 * {@link BeyondarObject#getScreenPositionBottomRight()}<br>
+	 * {@link BeyondarObject#getScreenPositionTopLeft()}<br>
+	 * {@link BeyondarObject#getScreenPositionTopRight()}
+	 * 
+	 * @param beyondarObject
+	 *            The {@link BeyondarObject} to compute
+	 */
 	public void fillBeyondarObjectPositions(BeyondarObject beyondarObject) {
 		mBeyondarGLSurface.fillBeyondarObjectPositions(beyondarObject);
 	}
-
 }

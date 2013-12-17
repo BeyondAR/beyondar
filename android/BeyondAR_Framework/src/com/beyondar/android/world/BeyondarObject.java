@@ -22,9 +22,9 @@ import com.beyondar.android.opengl.colision.MeshCollider;
 import com.beyondar.android.opengl.colision.SquareMeshCollider;
 import com.beyondar.android.opengl.renderable.Renderable;
 import com.beyondar.android.opengl.renderable.SquareRenderable;
+import com.beyondar.android.opengl.renderer.ARRenderer;
 import com.beyondar.android.opengl.texture.Texture;
 import com.beyondar.android.util.cache.BitmapCache;
-import com.beyondar.android.util.math.geom.Point2;
 import com.beyondar.android.util.math.geom.Point3;
 import com.beyondar.android.world.module.BeyondarObjectModule;
 import com.beyondar.android.world.module.Modulable;
@@ -43,6 +43,7 @@ public class BeyondarObject implements Modulable<BeyondarObjectModule> {
 	protected Point3 angle;
 	protected boolean faceToCamera;
 	protected MeshCollider meshCollider;
+	protected double distanceFromUser;
 	/**
 	 * This pointer is made to track the {@link BeyondarObject} position on the
 	 * screen
@@ -372,6 +373,26 @@ public class BeyondarObject implements Modulable<BeyondarObjectModule> {
 		return mTypeList;
 	}
 
+	/**
+	 * Get the Distance from the user in meters
+	 * 
+	 * @return Distance in meters
+	 */
+	public double getDistanceFromUser() {
+		return distanceFromUser;
+	}
+
+	/**
+	 * Set how far is the object from the user.
+	 * 
+	 * This method is used by the {@link ARRenderer} to set this value.
+	 * 
+	 * @param distance
+	 */
+	public void setDistanceFromUser(double distance) {
+		distanceFromUser = distance;
+	}
+
 	public Point3 getScreenPositionBottomLeft() {
 		return screenPositionBottomLeft;
 	}
@@ -396,7 +417,7 @@ public class BeyondarObject implements Modulable<BeyondarObjectModule> {
 		topLeft.x = position.x + SquareRenderable.VERTICES[3];
 		topLeft.y = position.y + SquareRenderable.VERTICES[4];
 		topLeft.z = position.z + SquareRenderable.VERTICES[5];
-		
+
 		topLeft.rotatePointDegrees_x(angle.x, position);
 		topLeft.rotatePointDegrees_y(angle.y, position);
 		topLeft.rotatePointDegrees_z(angle.z, position);
@@ -407,7 +428,7 @@ public class BeyondarObject implements Modulable<BeyondarObjectModule> {
 		bottomLeft.x = position.x + SquareRenderable.VERTICES[0];
 		bottomLeft.y = position.y + SquareRenderable.VERTICES[1];
 		bottomLeft.z = position.z + SquareRenderable.VERTICES[2];
-		
+
 		bottomLeft.rotatePointDegrees_x(angle.x, position);
 		bottomLeft.rotatePointDegrees_y(angle.y, position);
 		bottomLeft.rotatePointDegrees_z(angle.z, position);
@@ -418,7 +439,7 @@ public class BeyondarObject implements Modulable<BeyondarObjectModule> {
 		bottomRight.x = position.x + SquareRenderable.VERTICES[6];
 		bottomRight.y = position.y + SquareRenderable.VERTICES[7];
 		bottomRight.z = position.z + SquareRenderable.VERTICES[8];
-		
+
 		bottomRight.rotatePointDegrees_x(angle.x, position);
 		bottomRight.rotatePointDegrees_y(angle.y, position);
 		bottomRight.rotatePointDegrees_z(angle.z, position);
@@ -429,7 +450,6 @@ public class BeyondarObject implements Modulable<BeyondarObjectModule> {
 		topRight.x = position.x + SquareRenderable.VERTICES[9];
 		topRight.y = position.y + SquareRenderable.VERTICES[10];
 		topRight.z = position.z + SquareRenderable.VERTICES[11];
-		
 
 		topRight.rotatePointDegrees_x(angle.x, position);
 		topRight.rotatePointDegrees_y(angle.y, position);

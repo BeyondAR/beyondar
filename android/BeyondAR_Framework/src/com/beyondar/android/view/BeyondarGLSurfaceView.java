@@ -332,14 +332,28 @@ public class BeyondarGLSurfaceView extends GLSurfaceView implements OnBeyondarOb
 	public void onBeyondarObjectsRendered(List<BeyondarObject> renderedBeyondarObjects) {
 		BeyondarViewAdapter tmpView = mViewAdapter;
 		if (tmpView != null) {
-			tmpView.processList(new ArrayList<BeyondarObject>(renderedBeyondarObjects), mParent, this);
+			List<BeyondarObject> elements = World
+					.sortGeoObjectByDistanceFromCenter(new ArrayList<BeyondarObject>(renderedBeyondarObjects));
+			tmpView.processList(elements, mParent, this);
 		}
 	}
 
-	public void forceFillBeyondarObjectPositions(boolean fill) {
+	public void forceFillBeyondarObjectPositionsOnRendering(boolean fill) {
 		mRenderer.forceFillBeyondarObjectPositions(true);
 	}
 
+	/**
+	 * Use this method to fill all the screen positions of the
+	 * {@link BeyondarObject}. After this method is called you can use the
+	 * following:<br>
+	 * {@link BeyondarObject#getScreenPositionBottomLeft()}<br>
+	 * {@link BeyondarObject#getScreenPositionBottomRight()}<br>
+	 * {@link BeyondarObject#getScreenPositionTopLeft()}<br>
+	 * {@link BeyondarObject#getScreenPositionTopRight()}
+	 * 
+	 * @param beyondarObject
+	 *            The {@link BeyondarObject} to compute
+	 */
 	public void fillBeyondarObjectPositions(BeyondarObject beyondarObject) {
 		mRenderer.fillBeyondarObjectPositions(beyondarObject);
 	}

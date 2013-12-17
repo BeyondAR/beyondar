@@ -58,14 +58,13 @@ public abstract class BeyondarViewAdapter {
 
 						if (view.getParent() == null) {
 							android.widget.RelativeLayout.LayoutParams paramsWrap = new android.widget.RelativeLayout.LayoutParams(
-									ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+									ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
 
 							mParentView.addView(view, paramsWrap);
 						}
 						if (Build.VERSION.SDK_INT >= 11) {
 							view.setTranslationX(mNewPosition.x);
 							view.setTranslationY(mNewPosition.y);
-
 						} else {
 							android.widget.RelativeLayout.LayoutParams existingParams = (android.widget.RelativeLayout.LayoutParams) view
 									.getLayoutParams();

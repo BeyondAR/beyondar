@@ -125,7 +125,7 @@ public class ARRenderer implements GLSurfaceView.Renderer, SensorEventListener,
 
 	private float mMaxDistanceSizePoints;
 	private float mMinDistanceSizePoints;
-	
+
 	private Queue<float[]> mFloat4ArrayPool;
 	private OnBeyondarObjectRenderedListener mOnBeyondarObjectRenderedListener;
 
@@ -466,8 +466,8 @@ public class ARRenderer implements GLSurfaceView.Renderer, SensorEventListener,
 		mFpsUpdatable = fpsUpdatable;
 		mGetFps = mFpsUpdatable != null;
 	}
-	
-	public void setOnBeyondarObjectRenderedListener(OnBeyondarObjectRenderedListener rendererTracker){
+
+	public void setOnBeyondarObjectRenderedListener(OnBeyondarObjectRenderedListener rendererTracker) {
 		mOnBeyondarObjectRenderedListener = rendererTracker;
 	}
 
@@ -552,6 +552,8 @@ public class ARRenderer implements GLSurfaceView.Renderer, SensorEventListener,
 					position.x, position.y, position.z));
 		}
 
+		beyondarObject.setDistanceFromUser(dst);
+
 		if (dst < mWorld.getArViewDistance()) {
 			renderObject = true;
 		}
@@ -578,7 +580,8 @@ public class ARRenderer implements GLSurfaceView.Renderer, SensorEventListener,
 				}
 			}
 			renderable.draw(gl, defaultTexture);
-			getScreenCoordinates(beyondarObject.getPosition(), beyondarObject.getScreenPositionCenter(), tmpEyeForRendering);
+			getScreenCoordinates(beyondarObject.getPosition(), beyondarObject.getScreenPositionCenter(),
+					tmpEyeForRendering);
 
 			if (mFillPositions) {
 				fillBeyondarObjectPositions(beyondarObject);
@@ -589,6 +592,18 @@ public class ARRenderer implements GLSurfaceView.Renderer, SensorEventListener,
 		}
 	}
 
+	/**
+	 * Use this method to fill all the screen positions of the
+	 * {@link BeyondarObject}. After this method is called you can use the
+	 * following:<br>
+	 * {@link BeyondarObject#getScreenPositionBottomLeft()}<br>
+	 * {@link BeyondarObject#getScreenPositionBottomRight()}<br>
+	 * {@link BeyondarObject#getScreenPositionTopLeft()}<br>
+	 * {@link BeyondarObject#getScreenPositionTopRight()}
+	 * 
+	 * @param beyondarObject
+	 *            The {@link BeyondarObject} to compute
+	 */
 	public void fillBeyondarObjectPositions(BeyondarObject beyondarObject) {
 		getScreenCoordinates(beyondarObject.getBottomLeft(), beyondarObject.getScreenPositionBottomLeft());
 		getScreenCoordinates(beyondarObject.getBottomRight(), beyondarObject.getScreenPositionBottomRight());

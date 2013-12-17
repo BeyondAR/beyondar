@@ -208,9 +208,16 @@ public class BeyondarFragmentSupport extends Fragment implements FpsUpdatable, O
 	 * Set the world to be shown
 	 * 
 	 * @param world
+	 * 
+	 * @throws IllegalStateException
+	 *             If the device do not have the required sensors available
 	 */
 	public void setWorld(World world) {
-		checkIfSensorsAvailable();
+		try {
+			checkIfSensorsAvailable();
+		} catch (IllegalStateException e) {
+			throw e;
+		}
 		mWorld = world;
 		mBeyondarGLSurface.setWorld(world);
 	}

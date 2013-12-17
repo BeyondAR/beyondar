@@ -62,14 +62,16 @@ public abstract class BeyondarViewAdapter {
 
 							mParentView.addView(view, paramsWrap);
 						}
-						if (Build.VERSION.SDK_INT >= 11) {
-							view.setTranslationX(mNewPosition.x);
-							view.setTranslationY(mNewPosition.y);
-						} else {
-							android.widget.RelativeLayout.LayoutParams existingParams = (android.widget.RelativeLayout.LayoutParams) view
-									.getLayoutParams();
-							existingParams.leftMargin = (int) mNewPosition.x;
-							existingParams.topMargin = (int) mNewPosition.y;
+						if (mNewPosition != null) {
+							if (Build.VERSION.SDK_INT >= 11) {
+								view.setTranslationX(mNewPosition.x);
+								view.setTranslationY(mNewPosition.y);
+							} else {
+								android.widget.RelativeLayout.LayoutParams existingParams = (android.widget.RelativeLayout.LayoutParams) view
+										.getLayoutParams();
+								existingParams.leftMargin = (int) mNewPosition.x;
+								existingParams.topMargin = (int) mNewPosition.y;
+							}
 						}
 					}
 				}
@@ -78,6 +80,7 @@ public abstract class BeyondarViewAdapter {
 				Queue<View> tmp = mNewViews;
 				mNewViews = mReusedViews;
 				mReusedViews = tmp;
+				mNewPosition = null;
 			}
 		});
 

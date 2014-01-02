@@ -15,8 +15,8 @@
  */
 package com.beyondar.example;
 
+import java.io.FileNotFoundException;
 import android.content.Context;
-
 import com.beyondar.android.world.GeoObject;
 import com.beyondar.android.world.World;
 
@@ -62,11 +62,22 @@ public class CustomWorldHelper {
 		go4.setImageUri("assets://creature_7.png");
 		go4.setName("Image from assets");
 
-		GeoObject go5 = new GeoObject(5l);
+		final GeoObject go5 = new GeoObject(5l);
 		go5.setGeoPosition(41.26553066234138d, 1.925777906882577d);
-		go5.setImageResource(R.drawable.creature_5);
+		
+		try {
+			String uri = LayoutToImageConvertor.convert(context, R.layout.tv, LayoutType.RELATIVE_LAYOUT, "creature_5.png");
+			go5.setImageUri(uri);
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		
+		
 		go5.setName("Creature 5");
-
+		
+		
 		GeoObject go6 = new GeoObject(6l);
 		go6.setGeoPosition(41.26496218466268d, 1.925250806050688d);
 		go6.setImageResource(R.drawable.creature_6);
@@ -99,5 +110,4 @@ public class CustomWorldHelper {
 
 		return sharedWorld;
 	}
-
 }

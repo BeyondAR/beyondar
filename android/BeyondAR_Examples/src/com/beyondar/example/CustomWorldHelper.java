@@ -17,6 +17,10 @@ package com.beyondar.example;
 
 import java.io.FileNotFoundException;
 import android.content.Context;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.widget.TextView;
+
 import com.beyondar.android.world.GeoObject;
 import com.beyondar.android.world.World;
 
@@ -66,7 +70,12 @@ public class CustomWorldHelper {
 		go5.setGeoPosition(41.26553066234138d, 1.925777906882577d);
 		
 		try {
-			String uri = LayoutToImageConvertor.convert(context, R.layout.tv, LayoutType.RELATIVE_LAYOUT, "creature_5.png");
+			LayoutInflater inflater = ((SimpleCameraActivity) context).getLayoutInflater();
+			View view = inflater.inflate(R.layout.tv, null);
+			((TextView)view.findViewById(R.id.textViewTitle)).setText("Go5");
+			((TextView)view.findViewById(R.id.textViewDescription)).setText("Distance: 5km");
+			
+			String uri = LayoutToImageConvertor.convert(context, view, LayoutType.RELATIVE_LAYOUT, "creature_5.png");
 			go5.setImageUri(uri);
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block

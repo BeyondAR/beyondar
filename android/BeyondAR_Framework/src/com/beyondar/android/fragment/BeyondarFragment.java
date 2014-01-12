@@ -2,6 +2,10 @@ package com.beyondar.android.fragment;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 import android.annotation.SuppressLint;
 import android.app.Fragment;
@@ -33,6 +37,10 @@ import com.beyondar.android.world.World;
 @SuppressLint("NewApi")
 public class BeyondarFragment extends Fragment implements FpsUpdatable, OnClickListener, OnTouchListener {
 
+	private static final int CORE_POOL_SIZE = 1;
+	private static final int MAXIMUM_POOL_SIZE = 1;
+	private static final long KEEP_ALIVE_TIME = 1000; // 1000 ms
+
 	private CameraView mBeyondarCameraView;
 	private BeyondarGLSurfaceView mBeyondarGLSurface;
 	private TextView mFpsTextView;
@@ -45,9 +53,15 @@ public class BeyondarFragment extends Fragment implements FpsUpdatable, OnClickL
 
 	private float mLastScreenTouchX, mLastScreenTouchY;
 
+	private ThreadPoolExecutor mThreadPool;
+	private BlockingQueue<Runnable> mBlockingQueue;
+
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		mBlockingQueue = new LinkedBlockingQueue<Runnable>();
+		mThreadPool = new ThreadPoolExecutor(CORE_POOL_SIZE, MAXIMUM_POOL_SIZE, KEEP_ALIVE_TIME,
+				TimeUnit.MILLISECONDS, mBlockingQueue);
 	}
 
 	private void init() {
@@ -177,7 +191,7 @@ public class BeyondarFragment extends Fragment implements FpsUpdatable, OnClickL
 			final float lastX = mLastScreenTouchX;
 			final float lastY = mLastScreenTouchY;
 
-			new Thread(new Runnable() {
+			mThreadPool.execute(new Runnable() {
 				@Override
 				public void run() {
 					final ArrayList<BeyondarObject> beyondarObjects = new ArrayList<BeyondarObject>();
@@ -192,7 +206,7 @@ public class BeyondarFragment extends Fragment implements FpsUpdatable, OnClickL
 						}
 					});
 				}
-			}).start();
+			});
 		}
 	}
 

@@ -33,7 +33,6 @@ public abstract class BeyondarViewAdapter {
 		mParentView = parent;
 
 		mParentView.post(new Runnable() {
-
 			@Override
 			public void run() {
 				for (BeyondarObject beyondarObject : list) {
@@ -41,13 +40,9 @@ public abstract class BeyondarViewAdapter {
 					if (beyondarObject.getScreenPositionCenter().z > 1) {
 						continue;
 					}
-
 					View recycledView = mReusedViews.poll();
-
 					glSurface.fillBeyondarObjectPositions(beyondarObject);
-
 					View view = getView(beyondarObject, recycledView, mParentView);
-
 					if (recycledView != view && recycledView != null) {
 						// Store it again to recycle it
 						mReusedViews.add(recycledView);
@@ -58,7 +53,7 @@ public abstract class BeyondarViewAdapter {
 
 						if (view.getParent() == null) {
 							android.widget.RelativeLayout.LayoutParams paramsWrap = new android.widget.RelativeLayout.LayoutParams(
-									ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+									ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
 
 							mParentView.addView(view, paramsWrap);
 						}

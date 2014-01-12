@@ -196,6 +196,8 @@ public class BeyondarFragment extends Fragment implements FpsUpdatable, OnClickL
 				public void run() {
 					final ArrayList<BeyondarObject> beyondarObjects = new ArrayList<BeyondarObject>();
 					mBeyondarGLSurface.getBeyondarObjectsOnScreenCoordinates(lastX, lastY, beyondarObjects);
+					if (beyondarObjects.size() == 0)
+						return;
 					mBeyondarGLSurface.post(new Runnable() {
 						@Override
 						public void run() {

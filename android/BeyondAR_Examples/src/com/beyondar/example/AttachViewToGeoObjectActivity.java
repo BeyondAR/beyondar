@@ -16,6 +16,8 @@
 package com.beyondar.example;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 import android.content.Context;
 import android.os.Build;
@@ -24,10 +26,12 @@ import android.support.v4.app.FragmentActivity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.FrameLayout.LayoutParams;
 
 import com.beyondar.android.fragment.BeyondarFragmentSupport;
@@ -39,16 +43,19 @@ import com.beyondar.android.world.BeyondarObject;
 import com.beyondar.android.world.BeyondarObjectList;
 import com.beyondar.android.world.World;
 
-public class AttachViewToGeoObjectActivity extends FragmentActivity implements OnClickBeyondarObjectListener {
+public class AttachViewToGeoObjectActivity extends FragmentActivity implements OnClickBeyondarObjectListener,
+		OnClickListener {
 
 	private BeyondarFragmentSupport mBeyondarFragment;
 	private World mWorld;
-	private Button button;
+
+	private List<BeyondarObject> showViewOn;
 
 	/** Called when the activity is first created. */
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		showViewOn = Collections.synchronizedList(new ArrayList<BeyondarObject>());
 
 		// Hide the window title.
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -72,9 +79,11 @@ public class AttachViewToGeoObjectActivity extends FragmentActivity implements O
 
 		CustomBeyondarViewAdapter customBeyondarViewAdapter = new CustomBeyondarViewAdapter(this);
 		mBeyondarFragment.setBeyondarViewAdapter(customBeyondarViewAdapter);
+		
+		Toast.makeText(this, "Click on any object to attach it a view", Toast.LENGTH_LONG).show();
 	}
 
-	public void attchView(World world) {
+	private void attchView(World world) {
 		for (BeyondarObjectList beyondarList : world.getBeyondarObjectLists()) {
 			for (BeyondarObject beyondarObject : beyondarList) {
 				if (beyondarObject.getId() == 8d) {
@@ -84,16 +93,23 @@ public class AttachViewToGeoObjectActivity extends FragmentActivity implements O
 	}
 
 	@Override
-	public boolean onTouchEvent(MotionEvent event) {
+	public void onClick(View v) {
+		Toast.makeText(this, "Click", Toast.LENGTH_SHORT).show();
+	}
 
+	@Override
+	public boolean onTouchEvent(MotionEvent event) {
 		return super.onTouchEvent(event);
 	}
 
-	// Arreglar el on touch, que el absorbeix el view qu hi ha dins del fragment
-	// i no permet que aquesta activity revi el ebent
-
 	@Override
 	public void onClickBeyondarObject(ArrayList<BeyondarObject> beyondarObjects) {
+		BeyondarObject beyondarObject = beyondarObjects.get(0);
+		if (showViewOn.contains(beyondarObject)) {
+			showViewOn.remove(beyondarObject);
+		} else {
+			showViewOn.add(beyondarObject);
+		}
 	}
 
 	private class CustomBeyondarViewAdapter extends BeyondarViewAdapter {
@@ -107,12 +123,17 @@ public class AttachViewToGeoObjectActivity extends FragmentActivity implements O
 
 		@Override
 		public View getView(BeyondarObject beyondarObject, View recycledView, ViewGroup parent) {
+			if (!showViewOn.contains(beyondarObject)) {
+				return null;
+			}
 			if (recycledView == null) {
 				recycledView = inflater.inflate(R.layout.beyondar_object_view, null);
 			}
 
 			TextView textView = (TextView) recycledView.findViewById(R.id.titleTextView);
 			textView.setText(beyondarObject.getName());
+			Button button = (Button) recycledView.findViewById(R.id.button);
+			button.setOnClickListener(AttachViewToGeoObjectActivity.this);
 
 			setPosition(beyondarObject.getScreenPositionTopRight());
 

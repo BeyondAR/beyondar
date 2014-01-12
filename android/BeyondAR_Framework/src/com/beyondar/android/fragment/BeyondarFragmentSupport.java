@@ -33,8 +33,7 @@ import com.beyondar.android.world.BeyondarObject;
 import com.beyondar.android.world.GeoObject;
 import com.beyondar.android.world.World;
 
-public class BeyondarFragmentSupport extends Fragment implements FpsUpdatable, OnClickListener,
-		OnTouchListener {
+public class BeyondarFragmentSupport extends Fragment implements FpsUpdatable, OnClickListener, OnTouchListener {
 
 	private static final int CORE_POOL_SIZE = 1;
 	private static final int MAXIMUM_POOL_SIZE = 1;
@@ -195,6 +194,8 @@ public class BeyondarFragmentSupport extends Fragment implements FpsUpdatable, O
 				public void run() {
 					final ArrayList<BeyondarObject> beyondarObjects = new ArrayList<BeyondarObject>();
 					mBeyondarGLSurface.getBeyondarObjectsOnScreenCoordinates(lastX, lastY, beyondarObjects);
+					if (beyondarObjects.size() == 0)
+						return;
 					mBeyondarGLSurface.post(new Runnable() {
 						@Override
 						public void run() {

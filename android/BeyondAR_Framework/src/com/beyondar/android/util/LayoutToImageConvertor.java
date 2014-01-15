@@ -1,4 +1,8 @@
-package com.beyondar.example;
+package com.beyondar.android.util;
+
+/*
+ * @author Yasir.Ali <ali.yasir0@gmail.com>
+ */
 
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -15,27 +19,20 @@ import android.widget.RelativeLayout;
 import android.widget.RelativeLayout.LayoutParams;
 
 public class LayoutToImageConvertor {
-	public static String convert(Context context, View view, LayoutType layoutType, String fileName) throws FileNotFoundException{
+	public static String convert(Context context, View view, String fileName) throws FileNotFoundException{
 		
 		
-		Bitmap bitmap = getBitmapFromView(view, layoutType);
+		Bitmap bitmap = getBitmapFromView(view);
 		bitmap.compress(CompressFormat.PNG, 100, new FileOutputStream(Environment.getExternalStorageDirectory()+"/"+fileName));
 		return Environment.getExternalStorageDirectory()+"/"+fileName;
 	}
 
-	private static Bitmap getBitmapFromView(View v, LayoutType layoutType) {
+	private static Bitmap getBitmapFromView(View v) {
 
-		switch (layoutType) {
-		case LINEAR_LAYOUT:
+		if(v instanceof LinearLayout)
 			v.setLayoutParams(new LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT));
-			break;
-		case RELATIVE_LAYOUT:
+		else if(v instanceof RelativeLayout)
 			v.setLayoutParams(new LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT));
-			break;
-
-		default:
-			break;
-		}
 
 		v.measure(MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED), MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED));
 		v.layout(0, 0, v.getMeasuredWidth(), v.getMeasuredHeight());

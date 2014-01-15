@@ -11,7 +11,6 @@
     <!-- Google maps stuff -->
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="com.google.android.providers.gsf.permission.READ_GSERVICES" />
     <!--
      The following two permissions are not required to use
@@ -57,6 +56,9 @@
         <activity android:name="com.beyondar.example.SimpleCameraWithMaxFarMinAwayActivity" />
         <activity android:name="com.beyondar.example.CameraWithScreenShotActivity" />
         <activity android:name="com.beyondar.example.ChangeGeoObjectImagesOnTouchActivity" />
+        
+        <activity android:name="com.beyondar.example.CameraWithCustomViewMarkerActivity" />
+        <activity android:name="com.beyondar.example.CameraWithGenRadarActivity" />
 
         <meta-data
             android:name="com.google.android.maps.v2.API_KEY"

@@ -56,13 +56,16 @@
         <activity android:name="com.beyondar.example.SimpleCameraWithMaxFarMinAwayActivity" />
         <activity android:name="com.beyondar.example.CameraWithScreenShotActivity" />
         <activity android:name="com.beyondar.example.ChangeGeoObjectImagesOnTouchActivity" />
+        
+        <activity android:name="com.beyondar.example.CameraWithCustomViewMarkerActivity" />
+        <activity android:name="com.beyondar.example.CameraWithGenRadarActivity" />
 
         <meta-data
             android:name="com.google.android.maps.v2.API_KEY"
             android:value="AIzaSyBN2fi7bdokXVQXmMTGfqWG2oNHjopus-A" />
-        <meta-data
+        <!-- <meta-data
             android:name="com.google.android.gms.version"
-            android:value="@integer/google_play_services_version" />
+            android:value="@integer/google_play_services_version" /> -->
     </application>
 
 </manifest>

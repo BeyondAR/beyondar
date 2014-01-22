@@ -18,7 +18,6 @@ package com.beyondar.example;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.view.Window;
-
 import com.beyondar.android.fragment.BeyondarFragmentSupport;
 import com.beyondar.android.world.World;
 
@@ -49,5 +48,4 @@ public class SimpleCameraActivity extends FragmentActivity {
 		mBeyondarFragment.showFPS(true);
 
 	}
-
 }

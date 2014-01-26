@@ -40,8 +40,6 @@ public class MainActivity extends Activity implements OnItemClickListener {
 
 		fillList();
 
-		//TESTING:
-		openActivity(AttachViewToGeoObjectActivity.class);
 	}
 
 	private void fillList() {

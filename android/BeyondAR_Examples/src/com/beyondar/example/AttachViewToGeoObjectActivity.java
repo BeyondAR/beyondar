@@ -20,7 +20,6 @@ import java.util.Collections;
 import java.util.List;
 
 import android.content.Context;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.view.LayoutInflater;
@@ -32,11 +31,8 @@ import android.view.Window;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.FrameLayout.LayoutParams;
 
 import com.beyondar.android.fragment.BeyondarFragmentSupport;
-import com.beyondar.android.util.Logger;
-import com.beyondar.android.util.math.geom.Point2;
 import com.beyondar.android.view.BeyondarViewAdapter;
 import com.beyondar.android.view.OnClickBeyondarObjectListener;
 import com.beyondar.android.world.BeyondarObject;
@@ -104,6 +100,9 @@ public class AttachViewToGeoObjectActivity extends FragmentActivity implements O
 
 	@Override
 	public void onClickBeyondarObject(ArrayList<BeyondarObject> beyondarObjects) {
+		if (beyondarObjects.size() == 0) {
+			return;
+		}
 		BeyondarObject beyondarObject = beyondarObjects.get(0);
 		if (showViewOn.contains(beyondarObject)) {
 			showViewOn.remove(beyondarObject);

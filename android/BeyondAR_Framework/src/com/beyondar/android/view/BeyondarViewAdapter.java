@@ -8,25 +8,29 @@ import android.content.Context;
 import android.os.Build;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewGroup.LayoutParams;
 
 import com.beyondar.android.util.math.geom.Point2;
 import com.beyondar.android.world.BeyondarObject;
 
 public abstract class BeyondarViewAdapter {
 
-	private Queue<View> mReusedViews;
-	private Queue<View> mNewViews;
+	Queue<ViewGroup> mReusedViews;
+	Queue<ViewGroup> mNewViews;
 
-	private ViewGroup mParentView;
+	ViewGroup mParentView;
 
-	private Point2 mNewPosition;
+	Point2 mNewPosition;
 
-	// private Context mContext;
+	Context mContext;
+	
+	final LayoutParams mLayoutParams;
 
 	public BeyondarViewAdapter(Context context) {
-		mReusedViews = new LinkedList<View>();
-		mNewViews = new LinkedList<View>();
-		// mContext = context;
+		mReusedViews = new LinkedList<ViewGroup>();
+		mNewViews = new LinkedList<ViewGroup>();
+		mContext = context;
+		mLayoutParams = new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
 	}
 
 	void processList(final List<BeyondarObject> list, ViewGroup parent, final BeyondarGLSurfaceView glSurface) {
@@ -40,39 +44,58 @@ public abstract class BeyondarViewAdapter {
 					if (beyondarObject.getScreenPositionCenter().z > 1) {
 						continue;
 					}
-					View recycledView = mReusedViews.poll();
+					CustomLayout recycledParent = (CustomLayout) mReusedViews.poll();
 					glSurface.fillBeyondarObjectPositions(beyondarObject);
-					View view = getView(beyondarObject, recycledView, mParentView);
-					if (recycledView != view && recycledView != null) {
-						// Store it again to recycle it
-						mReusedViews.add(recycledView);
+					View toRecycle = null;
+					
+					if (recycledParent !=null && recycledParent.getChildCount() > 0){
+						toRecycle = recycledParent.getChildAt(0);
 					}
+					
+					View view = getView(beyondarObject, toRecycle, mParentView);
+
+					boolean added = false;
+					// Check if the recyclable view has been used, otherwise add it to the queue to recycle it
+					if ((toRecycle != view || view == null ) && toRecycle != null) {
+						// Store it again to recycle it
+						mReusedViews.add(recycledParent);
+						added = true;
+					}
+					
+					//Check if the view has a parent, if not create it
+					if (view != null &&( recycledParent == null || view.getParent() != recycledParent) ){
+						CustomLayout parentLayout = new CustomLayout(mContext);
+						parentLayout.addView(view, mLayoutParams);
+						if (!added){
+							mReusedViews.add(recycledParent);
+						}
+						recycledParent = parentLayout;
+					}
+					
 
 					if (view != null) {
-						mNewViews.add(view);
+						mNewViews.add(recycledParent);
 
-						if (view.getParent() == null) {
-							android.widget.RelativeLayout.LayoutParams paramsWrap = new android.widget.RelativeLayout.LayoutParams(
-									ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-
-							mParentView.addView(view, paramsWrap);
+						if (recycledParent.getParent() == null) {
+							mParentView.addView(recycledParent, mLayoutParams);
 						}
 						if (mNewPosition != null) {
-							if (Build.VERSION.SDK_INT >= 11) {
-								view.setTranslationX(mNewPosition.x);
-								view.setTranslationY(mNewPosition.y);
-							} else {
-								android.widget.RelativeLayout.LayoutParams existingParams = (android.widget.RelativeLayout.LayoutParams) view
-										.getLayoutParams();
-								existingParams.leftMargin = (int) mNewPosition.x;
-								existingParams.topMargin = (int) mNewPosition.y;
-							}
+							recycledParent.setPosition((int)mNewPosition.x, (int)mNewPosition.y);
+//							if (Build.VERSION.SDK_INT >= 11) {
+//								recycledParent.setTranslationX(mNewPosition.x);
+//								recycledParent.setTranslationY(mNewPosition.y);
+//							} else {
+//								android.widget.RelativeLayout.LayoutParams existingParams = (android.widget.RelativeLayout.LayoutParams) recycledParent
+//										.getLayoutParams();
+//								existingParams.leftMargin = (int) mNewPosition.x;
+//								existingParams.topMargin = (int) mNewPosition.y;
+//							}
 						}
 					}
 				}
 
 				removeUnusedViews();
-				Queue<View> tmp = mNewViews;
+				Queue<ViewGroup> tmp = mNewViews;
 				mNewViews = mReusedViews;
 				mReusedViews = tmp;
 				mNewPosition = null;

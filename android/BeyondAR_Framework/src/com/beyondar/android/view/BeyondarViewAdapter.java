@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.Queue;
 
 import android.content.Context;
-import android.os.Build;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
@@ -23,7 +22,7 @@ public abstract class BeyondarViewAdapter {
 	Point2 mNewPosition;
 
 	Context mContext;
-	
+
 	final LayoutParams mLayoutParams;
 
 	public BeyondarViewAdapter(Context context) {
@@ -47,50 +46,38 @@ public abstract class BeyondarViewAdapter {
 					CustomLayout recycledParent = (CustomLayout) mReusedViews.poll();
 					glSurface.fillBeyondarObjectPositions(beyondarObject);
 					View toRecycle = null;
-					
-					if (recycledParent !=null && recycledParent.getChildCount() > 0){
+
+					if (recycledParent != null && recycledParent.getChildCount() > 0) {
 						toRecycle = recycledParent.getChildAt(0);
 					}
-					
+
 					View view = getView(beyondarObject, toRecycle, mParentView);
 
 					boolean added = false;
-					// Check if the recyclable view has been used, otherwise add it to the queue to recycle it
-					if ((toRecycle != view || view == null ) && toRecycle != null) {
+					// Check if the recyclable view has been used, otherwise add
+					// it to the queue to recycle it
+					if ((toRecycle != view || view == null) && toRecycle != null) {
 						// Store it again to recycle it
 						mReusedViews.add(recycledParent);
 						added = true;
 					}
-					
-					//Check if the view has a parent, if not create it
-					if (view != null &&( recycledParent == null || view.getParent() != recycledParent) ){
+
+					// Check if the view has a parent, if not create it
+					if (view != null && (recycledParent == null || view.getParent() != recycledParent)) {
 						CustomLayout parentLayout = new CustomLayout(mContext);
 						parentLayout.addView(view, mLayoutParams);
-						if (!added){
+						if (!added) {
 							mReusedViews.add(recycledParent);
 						}
 						recycledParent = parentLayout;
 					}
-					
 
 					if (view != null) {
 						mNewViews.add(recycledParent);
-
 						if (recycledParent.getParent() == null) {
 							mParentView.addView(recycledParent, mLayoutParams);
 						}
-						if (mNewPosition != null) {
-							recycledParent.setPosition((int)mNewPosition.x, (int)mNewPosition.y);
-//							if (Build.VERSION.SDK_INT >= 11) {
-//								recycledParent.setTranslationX(mNewPosition.x);
-//								recycledParent.setTranslationY(mNewPosition.y);
-//							} else {
-//								android.widget.RelativeLayout.LayoutParams existingParams = (android.widget.RelativeLayout.LayoutParams) recycledParent
-//										.getLayoutParams();
-//								existingParams.leftMargin = (int) mNewPosition.x;
-//								existingParams.topMargin = (int) mNewPosition.y;
-//							}
-						}
+						recycledParent.setPosition((int) mNewPosition.x, (int) mNewPosition.y);
 					}
 				}
 

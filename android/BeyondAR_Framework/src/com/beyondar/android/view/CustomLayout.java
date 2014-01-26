@@ -1,18 +1,30 @@
+/*
+ * Copyright (C) 2013 BeyondAR
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package com.beyondar.android.view;
 
-import com.beyondar.android.util.math.geom.Point2;
-
 import android.content.Context;
-import android.graphics.Canvas;
 import android.graphics.Rect;
-import android.util.Log;
+import android.os.Build;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RemoteViews.RemoteView;
 
 @RemoteView
-public class CustomLayout extends ViewGroup {
+class CustomLayout extends ViewGroup {
 	/** The amount of space used by children in the left gutter. */
 	private int mLeftWidth;
 
@@ -25,9 +37,8 @@ public class CustomLayout extends ViewGroup {
 
 	private int xPos, yPos;
 
-	public CustomLayout(Context context) {
+	CustomLayout(Context context) {
 		super(context);
-		// setWillNotDraw(false);
 	}
 
 	/**
@@ -39,6 +50,13 @@ public class CustomLayout extends ViewGroup {
 	}
 
 	public void setPosition(int x, int y) {
+		// If the android version is >= 3.0, use the existing way
+		if (Build.VERSION.SDK_INT >= 11) {
+			setTranslationX(x);
+			setTranslationY(y);
+			return;
+		}
+		
 		if (xPos == x && yPos == y) {
 			return;
 		}
@@ -183,7 +201,7 @@ public class CustomLayout extends ViewGroup {
 	/**
 	 * Custom per-child layout information.
 	 */
-	public static class LayoutParams extends MarginLayoutParams {
+	static class LayoutParams extends MarginLayoutParams {
 		/**
 		 * The gravity to apply with the View to which these layout parameters
 		 * are associated.

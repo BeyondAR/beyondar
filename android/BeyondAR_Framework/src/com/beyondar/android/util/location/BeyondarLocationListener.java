@@ -17,13 +17,13 @@ package com.beyondar.android.util.location;
 
 import java.util.ArrayList;
 
-import com.beyondar.android.world.GeoObject;
-import com.beyondar.android.world.World;
-
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
+
+import com.beyondar.android.world.GeoObject;
+import com.beyondar.android.world.World;
 
 public class BeyondarLocationListener implements LocationListener {
 

@@ -15,14 +15,13 @@
  */
 package com.beyondar.android.util.location;
 
-import com.beyondar.android.world.GeoObject;
-import com.beyondar.android.world.World;
-
+import android.location.GpsStatus;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 
-import android.location.GpsStatus;
+import com.beyondar.android.world.GeoObject;
+import com.beyondar.android.world.World;
 
 public class BeyondarLocationHelper {
 

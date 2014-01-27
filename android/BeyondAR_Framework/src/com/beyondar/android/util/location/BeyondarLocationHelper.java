@@ -42,7 +42,7 @@ import com.beyondar.android.world.World;
  * 	BeyondarLocationHelper.setLocationManager((LocationManager) this.getSystemService(Context.LOCATION_SERVICE));
  * 	BeyondarLocationHelper.addGeoObjectLocationUpdate(beyondarObject);
  * 	// You also can register a World or a LocationListener
- * 	// Don't forget to remove the object that you register.
+ * 	// Don't forget to remove the object that you register
  * }
  * onResume(){
  * 	BeyondarLocationHelper.enable();
@@ -160,7 +160,7 @@ public class BeyondarLocationHelper {
 
 	/**
 	 * Set the {@link LocationManager} needed by the helper to be able to take
-	 * care of the location
+	 * care of the location.
 	 * 
 	 * @param locationManager
 	 */
@@ -169,7 +169,7 @@ public class BeyondarLocationHelper {
 	}
 
 	/**
-	 * Add a {@link GeoObject} that will be updated with the user location
+	 * Add a {@link GeoObject} that will be updated with the user location.
 	 * 
 	 * @param geoObject
 	 */
@@ -179,7 +179,7 @@ public class BeyondarLocationHelper {
 
 	/**
 	 * Remove the specified {@link GeoObject} to don't get any update about the
-	 * user location
+	 * user location.
 	 * 
 	 * @param geoObject
 	 */
@@ -188,14 +188,14 @@ public class BeyondarLocationHelper {
 	}
 
 	/**
-	 * Remove all the {@link GeoObject} to get the location updates
+	 * Remove all the {@link GeoObject} to get the location updates.
 	 */
 	public static void removeAllGeoObjectsUpdates() {
 		BeyondarLocationManagerSingleton.INSTANCE.mLocationListener.removeAllGeoObjectsUpdates();
 	}
 
 	/**
-	 * Add a {@link World} object that will be updated with the user location
+	 * Add a {@link World} object that will be updated with the user location.
 	 * 
 	 * @param world
 	 */
@@ -205,7 +205,7 @@ public class BeyondarLocationHelper {
 
 	/**
 	 * Remove the specified {@link World} to don't get any update about the user
-	 * location
+	 * location.
 	 * 
 	 * @param world
 	 */
@@ -214,7 +214,7 @@ public class BeyondarLocationHelper {
 	}
 
 	/**
-	 * Remove all the {@link World} to get the location updates
+	 * Remove all the {@link World} to get the location updates.
 	 */
 	public static void removeAllWorldsUpdates() {
 		BeyondarLocationManagerSingleton.INSTANCE.mLocationListener.removeAllWorldsUpdates();
@@ -222,7 +222,7 @@ public class BeyondarLocationHelper {
 
 	/**
 	 * Add a {@link LocationListener} object that will be updated with the user
-	 * location
+	 * location.
 	 * 
 	 * @param locationListener
 	 */
@@ -232,7 +232,7 @@ public class BeyondarLocationHelper {
 
 	/**
 	 * Remove the specified {@link LocationListener} to don't get any update
-	 * about the user location
+	 * about the user location.
 	 * 
 	 * @param locationListener
 	 */
@@ -241,7 +241,7 @@ public class BeyondarLocationHelper {
 	}
 
 	/**
-	 * Remove all the {@link LocationListener} to get the location updates
+	 * Remove all the {@link LocationListener} to get the location updates.
 	 */
 	public static void removeAllLocationListener() {
 		BeyondarLocationManagerSingleton.INSTANCE.mLocationListener.removeAllLocationListener();
@@ -257,7 +257,7 @@ public class BeyondarLocationHelper {
 
 	/**
 	 * Disable the location services for the helper. If the location is not
-	 * needed use this method in order to save battery
+	 * needed use this method in order to save battery.
 	 */
 	public static void disable() {
 		BeyondarLocationManagerSingleton.INSTANCE.disable();

@@ -841,12 +841,14 @@ public class ARRenderer implements GLSurfaceView.Renderer, SensorEventListener,
 		if (null == bitmap) {
 			return null;
 		}
+		int imageWidth = bitmap.getWidth();
+		int imageHeight = bitmap.getHeight();
 
-		if (!Utils.isCompatibleWithOpenGL(bitmap)) {
-			Bitmap tmp = Utils.resizeImageToPowerOfTwo(bitmap);
-			bitmap.recycle();
-			bitmap = tmp;
-		}
+//		if (!Utils.isCompatibleWithOpenGL(bitmap)) {
+//			Bitmap tmp = Utils.resizeImageToPowerOfTwo(bitmap);
+//			bitmap.recycle();
+//			bitmap = tmp;
+//		}
 
 		// generate one texture pointer
 		gl.glGenTextures(1, tmpTexture, 0);
@@ -868,7 +870,7 @@ public class ARRenderer implements GLSurfaceView.Renderer, SensorEventListener,
 		//
 		// Clean up
 		bitmap.recycle();
-		return new Texture(tmpTexture[0]);
+		return new Texture(tmpTexture[0]).setImageSize(imageWidth, imageHeight);
 
 	}
 

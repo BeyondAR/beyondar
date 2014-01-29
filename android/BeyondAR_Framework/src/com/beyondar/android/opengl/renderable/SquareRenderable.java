@@ -39,21 +39,12 @@ public class SquareRenderable implements Renderable {
 	private long mTimeMark;
 
 	private FloatBuffer vertexBuffer; // buffer holding the vertices
-	public static final float VERTICES[] = { -1.0f, 0.0f, -1.0f, // V1 - bottom
-																	// left
+	public static final float VERTICES[] = {
+			//
+			-1.0f, 0.0f, -1.0f, // V1 - bottom left
 			-1.0f, 0.0f, 1.0f, // V2 - top left
 			1.0f, 0.0f, -1.0f, // V3 - bottom right
 			1.0f, 0.0f, 1.0f // V4 - top right
-	};
-
-	private static FloatBuffer textureBuffer; // buffer holding the texture
-												// coordinates
-	private static float TEXTURE[] = {
-			// Mapping coordinates for the vertices
-			0.0f, 1.0f, // top left (V2)
-			0.0f, 0.0f, // bottom left (V1)
-			1.0f, 1.0f, // top right (V4)
-			1.0f, 0.0f // bottom right (V3)
 	};
 
 	private SquareRenderable() {
@@ -70,19 +61,13 @@ public class SquareRenderable implements Renderable {
 		// set the cursor position to the beginning of the buffer
 		vertexBuffer.position(0);
 
-		byteBuffer = ByteBuffer.allocateDirect(TEXTURE.length * 4);
-		byteBuffer.order(ByteOrder.nativeOrder());
-		textureBuffer = byteBuffer.asFloatBuffer();
-		textureBuffer.put(TEXTURE);
-		textureBuffer.position(0);
-
 		// ////////////////////
 		mAngle = new Point3();
 
 		mPosition = new Point3();
 
 		mTexture = new Texture();
-		;
+		
 	}
 
 	public static Renderable getInstance() {
@@ -113,19 +98,21 @@ public class SquareRenderable implements Renderable {
 	public void draw(GL10 gl, Texture defaultTexture) {
 
 		mTexture = mBeyondarObject.getTexture();
+		Texture texture = mTexture;
 
 		gl.glTranslatef(mPosition.x, mPosition.y, mPosition.z);
 
-		// ROTATE Acoriding to the angles
+		// ROTATE According to the angles
 
 		gl.glRotatef((float) mAngle.x, 1, 0, 0);
 		gl.glRotatef((float) mAngle.y, 0, 1, 0);
 		gl.glRotatef((float) mAngle.z, 0, 0, 1);
+		
 
 		// bind the previously generated texture
 		if (!mTexture.isLoaded()) {
 			gl.glBindTexture(GL10.GL_TEXTURE_2D, defaultTexture.getTexturePointer());
-
+			texture = defaultTexture;
 		} else {
 			gl.glBindTexture(GL10.GL_TEXTURE_2D, mTexture.getTexturePointer());
 		}
@@ -139,7 +126,7 @@ public class SquareRenderable implements Renderable {
 
 		// Point to our vertex buffer
 		gl.glVertexPointer(3, GL10.GL_FLOAT, 0, vertexBuffer);
-		gl.glTexCoordPointer(2, GL10.GL_FLOAT, 0, textureBuffer);
+		gl.glTexCoordPointer(2, GL10.GL_FLOAT, 0, texture.getTextureBuffer());
 
 		// Draw the vertices as triangle strip
 		gl.glDrawArrays(GL10.GL_TRIANGLE_STRIP, 0, VERTICES.length / 3);

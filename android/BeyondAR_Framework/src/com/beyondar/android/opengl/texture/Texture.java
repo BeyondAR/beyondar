@@ -16,20 +16,94 @@
 package com.beyondar.android.opengl.texture;
 
 import java.io.Serializable;
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
+import java.nio.FloatBuffer;
 
-public class Texture implements Serializable{
+public class Texture implements Serializable {
+
+	public static float TEMPLATE_TEXTURE[] = {
+			// Mapping coordinates for the vertices
+			0.0f, 1.0f, // top left (V2)
+			0.0f, 0.0f, // bottom left (V1)
+			1.0f, 1.0f, // top right (V4)
+			1.0f, 0.0f // bottom right (V3)
+	};
+
+	// buffer holding the texture coordinates
+	private FloatBuffer mTextureBuffer;
 
 	private static final long serialVersionUID = -3680867097568273278L;
-	
+
+	private int mWidth, mHeight;
+	private float mWidthRate, mHeightRate;
 	private int mTexture;
 	private boolean mIsLoaded;
 	private double mTimeStamp;
 	private int mCounterLoaded;
+	private float[] mTextureMap = new float[TEMPLATE_TEXTURE.length];
 
 	public Texture(int textureReference) {
 		mTexture = textureReference;
 		mIsLoaded = true;
 		mCounterLoaded = 0;
+		System.arraycopy(TEMPLATE_TEXTURE, 0, mTextureMap, 0, mTextureMap.length);
+	}
+
+	public Texture setImageSize(int width, int height) {
+		mWidth = width;
+		mHeight = height;
+		calculateImageSizeRate();
+		return this;
+	}
+
+	private void calculateImageSizeRate() {
+		if (mWidth < mHeight) {
+			mWidthRate = ((float) mWidth / (float) mHeight);
+			mHeightRate = 1;
+		} else {
+			mHeightRate = ((float) mHeight / (float) mWidth);
+			mWidthRate = 1;
+		}
+
+//		for (int i = 0; i < mTextureMap.length; i++) {
+//			if (i % 2 == 0) {
+//				mTextureMap[i] = mTextureMap[i] * mWidthRate;
+//			} else {
+//				mTextureMap[i] = mTextureMap[i] * mHeightRate;
+//			}
+//		}
+
+		ByteBuffer byteBuffer = ByteBuffer.allocateDirect(mTextureMap.length * 4);
+		byteBuffer.order(ByteOrder.nativeOrder());
+		mTextureBuffer = byteBuffer.asFloatBuffer();
+		mTextureBuffer.put(mTextureMap);
+		mTextureBuffer.position(0);
+
+	}
+
+	public FloatBuffer getTextureBuffer() {
+		return mTextureBuffer;
+	}
+
+	public float[] getTextureMap() {
+		return mTextureMap;
+	}
+
+	public float getWithRate() {
+		return mWidthRate;
+	}
+
+	public float getHeightRate() {
+		return mHeightRate;
+	}
+
+	public int getImageWidth() {
+		return mWidth;
+	}
+
+	public int getImageHeight() {
+		return mHeight;
 	}
 
 	public Texture() {
@@ -40,44 +114,45 @@ public class Texture implements Serializable{
 		return mTexture;
 	}
 
-	public void setTexturePointer(int texture) {
+	public Texture setTexturePointer(int texture) {
 		mTexture = texture;
 		mIsLoaded = true;
 		mCounterLoaded = 0;
+		return this;
 	}
 
-	public void setLoaded(boolean isLoaded) {
+	public Texture setLoaded(boolean isLoaded) {
 		mIsLoaded = isLoaded;
+		return this;
 	}
 
 	public boolean isLoaded() {
 		return mIsLoaded;
 	}
 
-	public void setTimeStamp(double time) {
+	public Texture setTimeStamp(double time) {
 		mTimeStamp = time;
+		return this;
 	}
 
 	public double getTimeStamp() {
 		return mTimeStamp;
 	}
-	
-	public void setLoadTryCounter(int counter){
+
+	public Texture setLoadTryCounter(int counter) {
 		mCounterLoaded = counter;
+		return this;
 	}
-	
-	public int getLoadTryCounter(){
+
+	public int getLoadTryCounter() {
 		return mCounterLoaded;
 	}
-	
 
 	public Texture clone() {
 		Texture clone = new Texture();
-		clone.setLoaded(isLoaded());
-		clone.setTexturePointer(getTexturePointer());
-		clone.setTimeStamp(getTimeStamp());
-		clone.setLoadTryCounter(getLoadTryCounter());
-		return clone;
+		return clone.setLoaded(isLoaded()).setTexturePointer(getTexturePointer())
+				.setTimeStamp(getTimeStamp()).setLoadTryCounter(getLoadTryCounter())
+				.setImageSize(mWidth, mHeight);
 	}
 
 	@Override

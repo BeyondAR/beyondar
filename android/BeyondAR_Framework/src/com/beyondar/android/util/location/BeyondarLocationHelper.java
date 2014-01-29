@@ -165,6 +165,7 @@ public class BeyondarLocationHelper {
 	 * @param locationManager
 	 */
 	public static void setLocationManager(LocationManager locationManager) {
+		//TODO: Check what happens if an other locationManager is set
 		BeyondarLocationManagerSingleton.INSTANCE.setLocationManager(locationManager);
 	}
 

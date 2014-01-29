@@ -40,8 +40,6 @@ public class MainActivity extends Activity implements OnItemClickListener {
 
 		fillList();
 		
-		openActivity(SimpleCameraActivity.class);
-
 	}
 
 	private void fillList() {

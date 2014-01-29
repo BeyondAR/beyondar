@@ -79,22 +79,22 @@ public class CustomWorldHelper {
 
 		GeoObject go8 = new GeoObject(8l);
 		go8.setGeoPosition(41.26534261025682d, 1.926164369775198d);
-		go8.setImageResource(R.drawable.image_test_pow2_small);
+		go8.setImageResource(R.drawable.rectangle);
 		go8.setName("Object 8");
 		
 		GeoObject go9 = new GeoObject(9l);
 		go9.setGeoPosition(41.26530734214473d, 1.925808038959814d);
-		go9.setImageResource(R.drawable.rectangle);
+		go9.setImageResource(R.drawable.creature_4);
 		go9.setName("Creature 4");
 
-//		sharedWorld.addBeyondarObject(go1);
-//		sharedWorld.addBeyondarObject(go2);
-//		sharedWorld.addBeyondarObject(go3);
-//		sharedWorld.addBeyondarObject(go4);
-//		sharedWorld.addBeyondarObject(go5);
-//		sharedWorld.addBeyondarObject(go6);
-//		sharedWorld.addBeyondarObject(go7);
-//		sharedWorld.addBeyondarObject(go8);
+		sharedWorld.addBeyondarObject(go1);
+		sharedWorld.addBeyondarObject(go2);
+		sharedWorld.addBeyondarObject(go3);
+		sharedWorld.addBeyondarObject(go4);
+		sharedWorld.addBeyondarObject(go5);
+		sharedWorld.addBeyondarObject(go6);
+		sharedWorld.addBeyondarObject(go7);
+		sharedWorld.addBeyondarObject(go8);
 		sharedWorld.addBeyondarObject(go9);
 
 		return sharedWorld;

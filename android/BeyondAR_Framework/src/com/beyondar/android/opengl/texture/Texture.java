@@ -22,7 +22,7 @@ import java.nio.FloatBuffer;
 
 public class Texture implements Serializable {
 
-	public static float TEMPLATE_TEXTURE[] = {
+	public final static float TEMPLATE_TEXTURE[] = {
 			// Mapping coordinates for the vertices
 			0.0f, 1.0f, // top left (V2)
 			0.0f, 0.0f, // bottom left (V1)
@@ -41,13 +41,19 @@ public class Texture implements Serializable {
 	private boolean mIsLoaded;
 	private double mTimeStamp;
 	private int mCounterLoaded;
-	private float[] mTextureMap = new float[TEMPLATE_TEXTURE.length];
+	private float[] mTextureMap;
 
 	public Texture(int textureReference) {
 		mTexture = textureReference;
 		mIsLoaded = true;
 		mCounterLoaded = 0;
-		System.arraycopy(TEMPLATE_TEXTURE, 0, mTextureMap, 0, mTextureMap.length);
+		mTextureMap = new float[TEMPLATE_TEXTURE.length];
+		System.arraycopy(TEMPLATE_TEXTURE, 0, mTextureMap, 0, TEMPLATE_TEXTURE.length);
+	}
+	
+	public Texture() {
+		this(0);
+		mIsLoaded = false;
 	}
 
 	public Texture setImageSize(int width, int height) {
@@ -66,13 +72,13 @@ public class Texture implements Serializable {
 			mWidthRate = 1;
 		}
 
-//		for (int i = 0; i < mTextureMap.length; i++) {
-//			if (i % 2 == 0) {
-//				mTextureMap[i] = mTextureMap[i] * mWidthRate;
-//			} else {
-//				mTextureMap[i] = mTextureMap[i] * mHeightRate;
-//			}
-//		}
+		for (int i = 0; i < mTextureMap.length; i++) {
+			if (i % 2 != 0) {
+				mTextureMap[i] = mTextureMap[i] * mWidthRate;
+			} else {
+				mTextureMap[i] = mTextureMap[i] * mHeightRate;
+			}
+		}
 
 		ByteBuffer byteBuffer = ByteBuffer.allocateDirect(mTextureMap.length * 4);
 		byteBuffer.order(ByteOrder.nativeOrder());
@@ -81,7 +87,7 @@ public class Texture implements Serializable {
 		mTextureBuffer.position(0);
 
 	}
-
+	
 	public FloatBuffer getTextureBuffer() {
 		return mTextureBuffer;
 	}
@@ -106,9 +112,6 @@ public class Texture implements Serializable {
 		return mHeight;
 	}
 
-	public Texture() {
-		mIsLoaded = false;
-	}
 
 	public int getTexturePointer() {
 		return mTexture;

@@ -39,6 +39,8 @@ public class MainActivity extends Activity implements OnItemClickListener {
 		mLisViewt = (ListView) findViewById(R.id.examplesList);
 
 		fillList();
+		
+		openActivity(SimpleCameraActivity.class);
 
 	}
 

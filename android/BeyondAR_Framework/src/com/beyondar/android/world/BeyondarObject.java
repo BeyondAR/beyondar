@@ -414,9 +414,9 @@ public class BeyondarObject implements Modulable<BeyondarObjectModule> {
 	}
 
 	public Point3 getTopLeft() {
-		topLeft.x = position.x + SquareRenderable.VERTICES[3];
-		topLeft.y = position.y + SquareRenderable.VERTICES[4];
-		topLeft.z = position.z + SquareRenderable.VERTICES[5];
+		topLeft.x = position.x + texture.getVertices()[3];
+		topLeft.y = position.y + texture.getVertices()[4];
+		topLeft.z = position.z + texture.getVertices()[5];
 
 		topLeft.rotatePointDegrees_x(angle.x, position);
 		topLeft.rotatePointDegrees_y(angle.y, position);
@@ -425,9 +425,9 @@ public class BeyondarObject implements Modulable<BeyondarObjectModule> {
 	}
 
 	public Point3 getBottomLeft() {
-		bottomLeft.x = position.x + SquareRenderable.VERTICES[0];
-		bottomLeft.y = position.y + SquareRenderable.VERTICES[1];
-		bottomLeft.z = position.z + SquareRenderable.VERTICES[2];
+		bottomLeft.x = position.x + texture.getVertices()[0];
+		bottomLeft.y = position.y + texture.getVertices()[1];
+		bottomLeft.z = position.z + texture.getVertices()[2];
 
 		bottomLeft.rotatePointDegrees_x(angle.x, position);
 		bottomLeft.rotatePointDegrees_y(angle.y, position);
@@ -436,9 +436,9 @@ public class BeyondarObject implements Modulable<BeyondarObjectModule> {
 	}
 
 	public Point3 getBottomRight() {
-		bottomRight.x = position.x + SquareRenderable.VERTICES[6];
-		bottomRight.y = position.y + SquareRenderable.VERTICES[7];
-		bottomRight.z = position.z + SquareRenderable.VERTICES[8];
+		bottomRight.x = position.x + texture.getVertices()[6];
+		bottomRight.y = position.y + texture.getVertices()[7];
+		bottomRight.z = position.z + texture.getVertices()[8];
 
 		bottomRight.rotatePointDegrees_x(angle.x, position);
 		bottomRight.rotatePointDegrees_y(angle.y, position);
@@ -447,9 +447,9 @@ public class BeyondarObject implements Modulable<BeyondarObjectModule> {
 	}
 
 	public Point3 getTopRight() {
-		topRight.x = position.x + SquareRenderable.VERTICES[9];
-		topRight.y = position.y + SquareRenderable.VERTICES[10];
-		topRight.z = position.z + SquareRenderable.VERTICES[11];
+		topRight.x = position.x + texture.getVertices()[9];
+		topRight.y = position.y + texture.getVertices()[10];
+		topRight.z = position.z + texture.getVertices()[11];
 
 		topRight.rotatePointDegrees_x(angle.x, position);
 		topRight.rotatePointDegrees_y(angle.y, position);

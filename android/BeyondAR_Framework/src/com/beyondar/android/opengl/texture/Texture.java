@@ -15,12 +15,19 @@
  */
 package com.beyondar.android.opengl.texture;
 
-import java.io.Serializable;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
 
-public class Texture implements Serializable {
+public class Texture {
+
+	public static final float TEMPLATE_VERTICES[] = {
+			//
+			-1.0f, 0.0f, -1.0f, // V1 - bottom left
+			-1.0f, 0.0f, 1.0f, // V2 - top left
+			1.0f, 0.0f, -1.0f, // V3 - bottom right
+			1.0f, 0.0f, 1.0f // V4 - top right
+	};
 
 	public final static float TEMPLATE_TEXTURE[] = {
 			// Mapping coordinates for the vertices
@@ -32,8 +39,8 @@ public class Texture implements Serializable {
 
 	// buffer holding the texture coordinates
 	private FloatBuffer mTextureBuffer;
-
-	private static final long serialVersionUID = -3680867097568273278L;
+	// buffer holding the vertices
+	private FloatBuffer mVertexBuffer;
 
 	private int mWidth, mHeight;
 	private float mWidthRate, mHeightRate;
@@ -42,15 +49,19 @@ public class Texture implements Serializable {
 	private double mTimeStamp;
 	private int mCounterLoaded;
 	private float[] mTextureMap;
+	private float[] mVertices;
 
 	public Texture(int textureReference) {
 		mTexture = textureReference;
 		mIsLoaded = true;
 		mCounterLoaded = 0;
+		mVertices = new float[TEMPLATE_VERTICES.length];
+		System.arraycopy(TEMPLATE_VERTICES, 0, mVertices, 0, TEMPLATE_VERTICES.length);
+		
 		mTextureMap = new float[TEMPLATE_TEXTURE.length];
 		System.arraycopy(TEMPLATE_TEXTURE, 0, mTextureMap, 0, TEMPLATE_TEXTURE.length);
 	}
-	
+
 	public Texture() {
 		this(0);
 		mIsLoaded = false;
@@ -72,24 +83,42 @@ public class Texture implements Serializable {
 			mWidthRate = 1;
 		}
 
-		for (int i = 0; i < mTextureMap.length; i++) {
-			if (i % 2 != 0) {
-				mTextureMap[i] = mTextureMap[i] * mWidthRate;
+		for (int i = 0; i < mVertices.length; i++) {
+			if ((i+1) % 3 == 0) {
+				mVertices[i] = mVertices[i] * mHeightRate;
 			} else {
-				mTextureMap[i] = mTextureMap[i] * mHeightRate;
+				mVertices[i] = mVertices[i] * mWidthRate;
 			}
 		}
 
-		ByteBuffer byteBuffer = ByteBuffer.allocateDirect(mTextureMap.length * 4);
+		// a float has 4 bytes so we allocate for each coordinate 4 bytes
+		ByteBuffer byteBuffer = ByteBuffer.allocateDirect(mVertices.length * 4);
 		byteBuffer.order(ByteOrder.nativeOrder());
-		mTextureBuffer = byteBuffer.asFloatBuffer();
+		// allocates the memory from the byte buffer
+		mVertexBuffer = byteBuffer.asFloatBuffer();
+		// fill the vertexBuffer with the vertices
+		mVertexBuffer.put(mVertices);
+		// set the cursor position to the beginning of the buffer
+		mVertexBuffer.position(0);
+
+		ByteBuffer byteBuffer2 = ByteBuffer.allocateDirect(mTextureMap.length * 4);
+		byteBuffer2.order(ByteOrder.nativeOrder());
+		mTextureBuffer = byteBuffer2.asFloatBuffer();
 		mTextureBuffer.put(mTextureMap);
 		mTextureBuffer.position(0);
 
 	}
-	
+
 	public FloatBuffer getTextureBuffer() {
 		return mTextureBuffer;
+	}
+	
+	public FloatBuffer getVerticesBuffer() {
+		return mVertexBuffer;
+	}
+
+	public float[] getVertices() {
+		return mVertices;
 	}
 
 	public float[] getTextureMap() {
@@ -111,7 +140,6 @@ public class Texture implements Serializable {
 	public int getImageHeight() {
 		return mHeight;
 	}
-
 
 	public int getTexturePointer() {
 		return mTexture;

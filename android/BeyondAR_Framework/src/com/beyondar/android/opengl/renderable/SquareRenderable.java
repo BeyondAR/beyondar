@@ -15,10 +15,6 @@
  */
 package com.beyondar.android.opengl.renderable;
 
-import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
-import java.nio.FloatBuffer;
-
 import javax.microedition.khronos.opengles.GL10;
 
 import com.beyondar.android.opengl.texture.Texture;
@@ -38,36 +34,10 @@ public class SquareRenderable implements Renderable {
 
 	private long mTimeMark;
 
-	private FloatBuffer vertexBuffer; // buffer holding the vertices
-	public static final float VERTICES[] = {
-			//
-			-1.0f, 0.0f, -1.0f, // V1 - bottom left
-			-1.0f, 0.0f, 1.0f, // V2 - top left
-			1.0f, 0.0f, -1.0f, // V3 - bottom right
-			1.0f, 0.0f, 1.0f // V4 - top right
-	};
-
 	private SquareRenderable() {
-		// a float has 4 bytes so we allocate for each coordinate 4 bytes
-		ByteBuffer byteBuffer = ByteBuffer.allocateDirect(VERTICES.length * 4);
-		byteBuffer.order(ByteOrder.nativeOrder());
-
-		// allocates the memory from the byte buffer
-		vertexBuffer = byteBuffer.asFloatBuffer();
-
-		// fill the vertexBuffer with the vertices
-		vertexBuffer.put(VERTICES);
-
-		// set the cursor position to the beginning of the buffer
-		vertexBuffer.position(0);
-
-		// ////////////////////
 		mAngle = new Point3();
-
 		mPosition = new Point3();
-
 		mTexture = new Texture();
-		
 	}
 
 	public static Renderable getInstance() {
@@ -125,11 +95,11 @@ public class SquareRenderable implements Renderable {
 		gl.glFrontFace(GL10.GL_CW);
 
 		// Point to our vertex buffer
-		gl.glVertexPointer(3, GL10.GL_FLOAT, 0, vertexBuffer);
+		gl.glVertexPointer(3, GL10.GL_FLOAT, 0, texture.getVerticesBuffer());
 		gl.glTexCoordPointer(2, GL10.GL_FLOAT, 0, texture.getTextureBuffer());
 
 		// Draw the vertices as triangle strip
-		gl.glDrawArrays(GL10.GL_TRIANGLE_STRIP, 0, VERTICES.length / 3);
+		gl.glDrawArrays(GL10.GL_TRIANGLE_STRIP, 0, texture.getVertices().length / 3);
 
 		// Disable the client state before leaving
 		gl.glDisableClientState(GL10.GL_VERTEX_ARRAY);

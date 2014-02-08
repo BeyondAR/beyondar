@@ -31,7 +31,6 @@ import android.view.SurfaceView;
 import android.view.WindowManager;
 
 import com.beyondar.android.util.DebugBitmap;
-import com.beyondar.android.util.ImageUtils;
 import com.beyondar.android.util.Logger;
 
 public class CameraView extends SurfaceView implements SurfaceHolder.Callback, Camera.PictureCallback {
@@ -46,6 +45,8 @@ public class CameraView extends SurfaceView implements SurfaceHolder.Callback, C
 	}
 
 	private static final String TAG = "camera";
+	private static final double ASPECT_TOLERANCE = 0.25;
+	private static final int MAX_TIME_WAIT_FOR_CAMERA = 1000;
 
 	private SurfaceHolder mHolder;
 	private Camera mCamera;
@@ -55,7 +56,7 @@ public class CameraView extends SurfaceView implements SurfaceHolder.Callback, C
 	private Size mPreviewSize;
 	private List<Size> mSupportedPreviewSizes;
 	private List<String> mSupportedFlashModes;
-	
+
 	private boolean mIsPreviewing;
 
 	public CameraView(Context context) {
@@ -90,7 +91,8 @@ public class CameraView extends SurfaceView implements SurfaceHolder.Callback, C
 			return;
 		}
 		try {
-			mCamera = Camera.open();
+			getTheCamera();
+			// mCamera = Camera.open();
 		} catch (Exception e) {
 			Logger.e(TAG, "ERROR: Unable to open the camera", e);
 			return;
@@ -108,9 +110,10 @@ public class CameraView extends SurfaceView implements SurfaceHolder.Callback, C
 		}
 	}
 
-	public boolean isPreviewing(){
-		return mCamera!= null && mIsPreviewing;
+	public boolean isPreviewing() {
+		return mCamera != null && mIsPreviewing;
 	}
+
 	public void setSupportedPreviewSizes(List<Size> supportedPreviewSizes) {
 		mSupportedPreviewSizes = supportedPreviewSizes;
 	}
@@ -158,8 +161,7 @@ public class CameraView extends SurfaceView implements SurfaceHolder.Callback, C
 	}
 
 	private Size getOptimalPreviewSize(List<Size> sizes, int width, int height) {
-		final double ASPECT_TOLERANCE = 0.1;
-		double targetRatio = (double) height / width;
+		double targetRatio = (double) width / height;
 
 		if (sizes == null)
 			return null;
@@ -171,8 +173,9 @@ public class CameraView extends SurfaceView implements SurfaceHolder.Callback, C
 
 		for (Camera.Size size : sizes) {
 			double ratio = (double) size.width / size.height;
-			if (Math.abs(ratio - targetRatio) > ASPECT_TOLERANCE)
+			if (Math.abs(ratio - targetRatio) > ASPECT_TOLERANCE) {
 				continue;
+			}
 			if (Math.abs(size.height - targetHeight) < minDiff) {
 				optimalSize = size;
 				minDiff = Math.abs(size.height - targetHeight);
@@ -202,18 +205,16 @@ public class CameraView extends SurfaceView implements SurfaceHolder.Callback, C
 
 		Camera.Parameters parameters = mCamera.getParameters();
 		int orientation = getCameraDisplayOrientation();
+		mCamera.setDisplayOrientation(orientation);
 
 		stopPreviewCamera();
-		if (orientation == 0) {
-			mCamera.setDisplayOrientation(180);
-		} else if (orientation == 90) {
-			mCamera.setDisplayOrientation(90);
-		}
 
-		// parameters.setRotation(orientation);
 		parameters.setPreviewSize(mPreviewSize.width, mPreviewSize.height);
-		//parameters.set("jpeg-quality", 70);
-		//parameters.setPictureSize(100, 100);
+
+		parameters.setRotation(orientation);
+
+		// parameters.set("jpeg-quality", 70);
+		// parameters.setPictureSize(100, 100);
 
 		mCamera.setParameters(parameters);
 		startPreviewCamera();
@@ -221,6 +222,9 @@ public class CameraView extends SurfaceView implements SurfaceHolder.Callback, C
 	}
 
 	private int getCameraDisplayOrientation() {
+		android.hardware.Camera.CameraInfo info = new android.hardware.Camera.CameraInfo();
+		android.hardware.Camera.getCameraInfo(Camera.CameraInfo.CAMERA_FACING_BACK, info);
+
 		int rotation = ((WindowManager) getContext().getSystemService(Context.WINDOW_SERVICE))
 				.getDefaultDisplay().getRotation();
 		int degrees = 0;
@@ -239,12 +243,14 @@ public class CameraView extends SurfaceView implements SurfaceHolder.Callback, C
 			break;
 		}
 
-		degrees = (degrees + 45) / 90 * 90;
-		rotation = (degrees + 90) % 360;
-		
-		Log.d(getClass().getSimpleName(), "rotation="+ rotation);
-
-		return rotation;
+		int result;
+		if (info.facing == Camera.CameraInfo.CAMERA_FACING_FRONT) {
+			result = (info.orientation + degrees) % 360;
+			result = (360 - result) % 360; // compensate the mirror
+		} else { // back-facing
+			result = (info.orientation - degrees + 360) % 360;
+		}
+		return result;
 	}
 
 	@Override
@@ -252,19 +258,7 @@ public class CameraView extends SurfaceView implements SurfaceHolder.Callback, C
 		if (imageData != null && mCameraCallback != null) {
 			Bitmap btm = convertByteImage(imageData);
 
-			int rotation = getCameraDisplayOrientation();
-			//TODO: Improve this hack
-			if (rotation == 0) {
-				rotation = 180;
-			} else if (rotation == 180) {
-				rotation = 0;
-			}
-			Bitmap newBtm = ImageUtils.rotate(btm, rotation);
-			if (newBtm != btm) {
-				btm.recycle();
-			}
-
-			mCameraCallback.onPictureTaken(newBtm);
+			mCameraCallback.onPictureTaken(btm);
 		}
 		startPreviewCamera();
 	}
@@ -314,9 +308,9 @@ public class CameraView extends SurfaceView implements SurfaceHolder.Callback, C
 
 	public void takePicture(BeyondarPictureCallback cameraCallback) {
 		BitmapFactory.Options options = new BitmapFactory.Options();
-		//TODO: Improve this part
+		// TODO: Improve this part
 		options.inSampleSize = 4;
-		//options.inSampleSize = 1;
+		// options.inSampleSize = 1;
 		takePicture(cameraCallback, options);
 	}
 
@@ -327,5 +321,30 @@ public class CameraView extends SurfaceView implements SurfaceHolder.Callback, C
 		mCameraCallback = cameraCallback;
 		mCamera.takePicture(null, this, this);
 		mOptions = options;
+	}
+
+	private boolean getTheCamera() {
+		Log.v(TAG, "getTheCamera");
+		// keep trying to acquire the camera until "maximumWaitTimeForCamera"
+		// seconds have passed
+		boolean acquiredCam = false;
+		int timePassed = 0;
+		while (!acquiredCam && timePassed < MAX_TIME_WAIT_FOR_CAMERA) {
+			try {
+				mCamera = Camera.open();
+				Log.v(TAG, "acquired the camera");
+				acquiredCam = true;
+				return true;
+			} catch (Exception e) {
+				Log.e(TAG, "Exception encountered opening camera:" + e.getLocalizedMessage());
+			}
+			try {
+				Thread.sleep(200);
+			} catch (InterruptedException ee) {
+				Log.e(TAG, "Exception encountered sleeping:" + ee.getLocalizedMessage());
+			}
+			timePassed += 200;
+		}
+		return false;
 	}
 }

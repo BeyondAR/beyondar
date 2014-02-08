@@ -48,6 +48,7 @@ import com.beyondar.android.opengl.util.LowPassFilter;
 import com.beyondar.android.opengl.util.MatrixGrabber;
 import com.beyondar.android.util.Logger;
 import com.beyondar.android.util.PendingBitmapsToBeLoaded;
+import com.beyondar.android.util.Utils;
 import com.beyondar.android.util.cache.BitmapCache;
 import com.beyondar.android.util.math.Distance;
 import com.beyondar.android.util.math.MathUtils;
@@ -132,6 +133,9 @@ public class ARRenderer implements GLSurfaceView.Renderer, SensorEventListener,
 	private List<BeyondarObject> mRenderedObjects;
 
 	private boolean mFillPositions;
+
+	// This GL extension allow us to load non square textures.
+	private boolean isGL_OES_texture_npot;
 
 	public ARRenderer() {
 		reloadWorldTextures = false;
@@ -639,7 +643,20 @@ public class ARRenderer implements GLSurfaceView.Renderer, SensorEventListener,
 		setupViewPort();
 	}
 
+	private void checkGlExtensions(GL10 gl) {
+
+		String extensions = gl.glGetString(GL10.GL_EXTENSIONS);
+		
+		if (extensions.contains("GL_OES_texture_npot")) {
+			isGL_OES_texture_npot = true;
+		}
+	}
+
 	public void onSurfaceCreated(GL10 gl, EGLConfig config) {
+
+		// Let's check the available OpenGL Extensions:
+		checkGlExtensions(gl);
+
 		/*
 		 * By default, OpenGL enables features that improve quality but reduce
 		 * performance. One might want to tweak that especially on software
@@ -843,11 +860,11 @@ public class ARRenderer implements GLSurfaceView.Renderer, SensorEventListener,
 		int imageWidth = bitmap.getWidth();
 		int imageHeight = bitmap.getHeight();
 
-//		if (!Utils.isCompatibleWithOpenGL(bitmap)) {
-//			Bitmap tmp = Utils.resizeImageToPowerOfTwo(bitmap);
-//			bitmap.recycle();
-//			bitmap = tmp;
-//		}
+		if (!isGL_OES_texture_npot && !Utils.isCompatibleWithOpenGL(bitmap)) {
+			Bitmap tmp = Utils.resizeImageToPowerOfTwo(bitmap);
+			bitmap.recycle();
+			bitmap = tmp;
+		}
 
 		// generate one texture pointer
 		gl.glGenTextures(1, tmpTexture, 0);

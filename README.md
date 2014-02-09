@@ -8,6 +8,9 @@ This framework has been designed to offer some resources to those developers wit
 ![Screenshot](http://beyondar.com/pictures/screenshots/screen_4.jpg)
 ![Screenshot](http://beyondar.com/pictures/screenshots/screen_1.jpg)
 
+BeyondAR platform now supports Google Glass
+![Screenshot](http://beyondar.com/pictures/glass.jpg)
+
 ##Adding BeyondAR in to your project
 
 Just download the latest version of the framework [here](https://github.com/BeyondAR/beyondar/tree/master/android/libs) and add the needed jar files in to you libs folder.

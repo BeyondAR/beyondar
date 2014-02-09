@@ -13,24 +13,32 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.beyondar.android.util.tasks;
+package com.beyondar.android.util;
 
-/**
- * 
- *         This is a runable for synchronized data. Use setResult() to store the result of the process and getResult() to get it.<br>
- *         NOTE: Thi class is not used inside the TaskExecutor
- * 
- */
+import android.os.Build;
 
-public abstract class RunnableWithResults implements Runnable {
+public class GoogleGlassUtils {
 
-	private Object _result;
-	
-	protected void setResult(Object result){
-		_result = result;
+	private static Boolean sIsGoogleGlass = null;
+
+	public static boolean isGoogleGlass() {
+		if (sIsGoogleGlass != null) {
+			return sIsGoogleGlass;
+		}
+		String model = Build.MODEL.toLowerCase();
+
+		if (model.contains("glass")) {
+			sIsGoogleGlass = true;
+			return true;
+		}
+		try {
+			Class.forName("com.google.android.glass.timeline.TimelineManager");
+			sIsGoogleGlass = true;
+			return true;
+		} catch (ClassNotFoundException e) {
+			sIsGoogleGlass = false;
+			return false;
+		}
 	}
-	
-	public Object getResult(){
-		return _result;
-	}
+
 }

@@ -44,6 +44,13 @@ public class Point2 {
 		this.x = x;
 		this.y = y;
 	}
+	
+	/**
+	 * Constructs a point from its 2D coordinates
+	 * 
+	 */
+	public Point2() {
+	}
 
 	/**
 	 * Constructs a 2D point from a 3D point, giving one coordinate to be

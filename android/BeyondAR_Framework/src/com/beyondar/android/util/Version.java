@@ -17,7 +17,7 @@ package com.beyondar.android.util;
 
 public class Version {
 
-	public static final int VERSION_NUMBER = 000500;
-	public static final String VERSION_NAME= "0.5.0";
+	public static final int VERSION_NUMBER = 000501;
+	public static final String VERSION_NAME= "0.5.1";
 
 }

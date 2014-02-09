@@ -79,7 +79,7 @@ public class CustomWorldHelper {
 
 		GeoObject go8 = new GeoObject(8l);
 		go8.setGeoPosition(41.26534261025682d, 1.926164369775198d);
-		go8.setImageResource(R.drawable.image_test_pow2_small);
+		go8.setImageResource(R.drawable.rectangle);
 		go8.setName("Object 8");
 		
 		GeoObject go9 = new GeoObject(9l);

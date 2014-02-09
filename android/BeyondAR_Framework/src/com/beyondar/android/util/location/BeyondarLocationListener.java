@@ -16,33 +16,38 @@
 package com.beyondar.android.util.location;
 
 import java.util.ArrayList;
-
-import com.beyondar.android.world.GeoObject;
-import com.beyondar.android.world.World;
+import java.util.List;
 
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 
+import com.beyondar.android.world.GeoObject;
+import com.beyondar.android.world.World;
+
 public class BeyondarLocationListener implements LocationListener {
 
-	private ArrayList<GeoObject> mArrayListGeoObject;
-	private ArrayList<World> mArrayListWorld;
-	// private ArrayList<LocationListener> mArrayLocationListener;
-	private Object mLock;
+	private List<GeoObject> mArrayListGeoObject;
+	private List<World> mArrayListWorld;
+	private List<LocationListener> mArrayLocationListener;
+	private Object mLockGeoObject;
+	private Object mLockWorld;
+	private Object mLockLocationListener;
 	private volatile Location mLastBestLocation;
 	private volatile Location mLastGPSLocation;
 
 	BeyondarLocationListener() {
-		mLock = new Object();
+		mLockGeoObject = new Object();
+		mLockWorld = new Object();
+		mLockLocationListener = new Object();
 		mArrayListGeoObject = new ArrayList<GeoObject>();
 		mArrayListWorld = new ArrayList<World>();
-		// mArrayLocationListener = new ArrayList<LocationListener>();
+		mArrayLocationListener = new ArrayList<LocationListener>();
 	}
 
-	public void addGeoObjectLocationUpdate(GeoObject geoObject) {
-		synchronized (mLock) {
+	void addGeoObjectLocationUpdate(GeoObject geoObject) {
+		synchronized (mLockGeoObject) {
 			if (mLastBestLocation != null) {
 				geoObject.setLocation(mLastBestLocation);
 			}
@@ -50,14 +55,14 @@ public class BeyondarLocationListener implements LocationListener {
 		}
 	}
 
-	public void removeGeoObjectLocationUpdate(GeoObject geoObject) {
-		synchronized (mLock) {
+	void removeGeoObjectLocationUpdate(GeoObject geoObject) {
+		synchronized (mLockGeoObject) {
 			mArrayListGeoObject.remove(geoObject);
 		}
 	}
 
-	public void addWorldLocationUpdate(World world) {
-		synchronized (mLock) {
+	void addWorldLocationUpdate(World world) {
+		synchronized (mLockWorld) {
 			if (mLastBestLocation != null) {
 				world.setLocation(mLastBestLocation);
 			}
@@ -65,21 +70,39 @@ public class BeyondarLocationListener implements LocationListener {
 		}
 	}
 
-	public void removeWorldLocationUpdate(World world) {
-		synchronized (mLock) {
+	void removeWorldLocationUpdate(World world) {
+		synchronized (mLockWorld) {
 			mArrayListWorld.remove(world);
 		}
 	}
 
-	public void removeAllGeoObjectsUpdates() {
-		synchronized (mLock) {
-			mArrayListGeoObject.clear();
+	void removeAllWorldsUpdates() {
+		synchronized (mLockWorld) {
+			mArrayListWorld.clear();
 		}
 	}
 
-	public void removeAllWorldsUpdates() {
-		synchronized (mLock) {
-			mArrayListWorld.clear();
+	void addLocationListener(LocationListener locationListener) {
+		synchronized (mLockLocationListener) {
+			mArrayLocationListener.add(locationListener);
+		}
+	}
+
+	void removeLocationListener(LocationListener locationListener) {
+		synchronized (mLockLocationListener) {
+			mArrayLocationListener.remove(locationListener);
+		}
+	}
+
+	void removeAllLocationListener() {
+		synchronized (mLockLocationListener) {
+			mArrayLocationListener.clear();
+		}
+	}
+
+	void removeAllGeoObjectsUpdates() {
+		synchronized (mLockGeoObject) {
+			mArrayListGeoObject.clear();
 		}
 	}
 
@@ -100,18 +123,20 @@ public class BeyondarLocationListener implements LocationListener {
 		}
 		mLastBestLocation = location;
 
-		synchronized (mLock) {
+		synchronized (mLockGeoObject) {
 			for (int i = 0; i < mArrayListGeoObject.size(); i++) {
 				mArrayListGeoObject.get(i).setLocation(location);
 			}
-
+		}
+		synchronized (mLockWorld) {
 			for (int i = 0; i < mArrayListWorld.size(); i++) {
 				mArrayListWorld.get(i).setLocation(location);
 			}
-
-			// for (int i = 0; i < mArrayLocationListener.size(); i++) {
-			// mArrayLocationListener.get(i).onLocationChanged(mLastBestLocation);
-			// }
+		}
+		synchronized (mLockLocationListener) {
+			for (LocationListener listener : mArrayLocationListener) {
+				listener.onLocationChanged(mLastBestLocation);
+			}
 		}
 	}
 
@@ -121,13 +146,28 @@ public class BeyondarLocationListener implements LocationListener {
 
 	@Override
 	public void onProviderDisabled(String provider) {
+		synchronized (mLockLocationListener) {
+			for (LocationListener listener : mArrayLocationListener) {
+				listener.onProviderDisabled(provider);
+			}
+		}
 	}
 
 	@Override
 	public void onProviderEnabled(String provider) {
+		synchronized (mLockLocationListener) {
+			for (LocationListener listener : mArrayLocationListener) {
+				listener.onProviderEnabled(provider);
+			}
+		}
 	}
 
 	@Override
 	public void onStatusChanged(String provider, int status, Bundle extras) {
+		synchronized (mLockLocationListener) {
+			for (LocationListener listener : mArrayLocationListener) {
+				listener.onStatusChanged(provider, status, extras);
+			}
+		}
 	}
 }

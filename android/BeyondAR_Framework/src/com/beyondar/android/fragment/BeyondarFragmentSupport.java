@@ -2,6 +2,10 @@ package com.beyondar.android.fragment;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 import android.content.pm.PackageManager;
 import android.os.Bundle;
@@ -12,8 +16,8 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
 import android.widget.FrameLayout.LayoutParams;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.beyondar.android.opengl.renderer.ARRenderer.FpsUpdatable;
@@ -21,6 +25,7 @@ import com.beyondar.android.screenshot.OnScreenshotListener;
 import com.beyondar.android.screenshot.ScreenshotHelper;
 import com.beyondar.android.util.math.geom.Ray;
 import com.beyondar.android.view.BeyondarGLSurfaceView;
+import com.beyondar.android.view.BeyondarViewAdapter;
 import com.beyondar.android.view.CameraView;
 import com.beyondar.android.view.OnClickBeyondarObjectListener;
 import com.beyondar.android.view.OnTouchBeyondarViewListener;
@@ -28,13 +33,16 @@ import com.beyondar.android.world.BeyondarObject;
 import com.beyondar.android.world.GeoObject;
 import com.beyondar.android.world.World;
 
-public class BeyondarFragmentSupport extends Fragment implements FpsUpdatable, OnClickListener,
-		OnTouchListener {
+public class BeyondarFragmentSupport extends Fragment implements FpsUpdatable, OnClickListener, OnTouchListener {
+
+	private static final int CORE_POOL_SIZE = 1;
+	private static final int MAXIMUM_POOL_SIZE = 1;
+	private static final long KEEP_ALIVE_TIME = 1000; // 1000 ms
 
 	private CameraView mBeyondarCameraView;
 	private BeyondarGLSurfaceView mBeyondarGLSurface;
 	private TextView mFpsTextView;
-	private FrameLayout mMailLayout;
+	private RelativeLayout mMailLayout;
 
 	private World mWorld;
 
@@ -43,9 +51,15 @@ public class BeyondarFragmentSupport extends Fragment implements FpsUpdatable, O
 
 	private float mLastScreenTouchX, mLastScreenTouchY;
 
+	private ThreadPoolExecutor mThreadPool;
+	private BlockingQueue<Runnable> mBlockingQueue;
+
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		mBlockingQueue = new LinkedBlockingQueue<Runnable>();
+		mThreadPool = new ThreadPoolExecutor(CORE_POOL_SIZE, MAXIMUM_POOL_SIZE, KEEP_ALIVE_TIME,
+				TimeUnit.MILLISECONDS, mBlockingQueue);
 	}
 
 	private void init() {
@@ -53,7 +67,7 @@ public class BeyondarFragmentSupport extends Fragment implements FpsUpdatable, O
 		android.view.ViewGroup.LayoutParams params = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
 				ViewGroup.LayoutParams.MATCH_PARENT);
 
-		mMailLayout = new FrameLayout(getActivity());
+		mMailLayout = new RelativeLayout(getActivity());
 		mBeyondarGLSurface = createBeyondarGLSurfaceView();
 		mBeyondarGLSurface.setOnTouchListener(this);
 
@@ -150,7 +164,7 @@ public class BeyondarFragmentSupport extends Fragment implements FpsUpdatable, O
 
 	public void setOnClickBeyondarObjectListener(OnClickBeyondarObjectListener listener) {
 		mClickListener = listener;
-		mMailLayout.setClickable(true);
+		mMailLayout.setClickable(listener != null);
 		mMailLayout.setOnClickListener(this);
 	}
 
@@ -175,11 +189,13 @@ public class BeyondarFragmentSupport extends Fragment implements FpsUpdatable, O
 			final float lastX = mLastScreenTouchX;
 			final float lastY = mLastScreenTouchY;
 
-			new Thread(new Runnable() {
+			mThreadPool.execute(new Runnable() {
 				@Override
 				public void run() {
 					final ArrayList<BeyondarObject> beyondarObjects = new ArrayList<BeyondarObject>();
 					mBeyondarGLSurface.getBeyondarObjectsOnScreenCoordinates(lastX, lastY, beyondarObjects);
+					if (beyondarObjects.size() == 0)
+						return;
 					mBeyondarGLSurface.post(new Runnable() {
 						@Override
 						public void run() {
@@ -190,7 +206,7 @@ public class BeyondarFragmentSupport extends Fragment implements FpsUpdatable, O
 						}
 					});
 				}
-			}).start();
+			});
 		}
 	}
 
@@ -207,9 +223,16 @@ public class BeyondarFragmentSupport extends Fragment implements FpsUpdatable, O
 	 * Set the world to be shown
 	 * 
 	 * @param world
+	 * 
+	 * @throws IllegalStateException
+	 *             If the device do not have the required sensors available
 	 */
 	public void setWorld(World world) {
-		checkIfSensorsAvailable();
+		try {
+			checkIfSensorsAvailable();
+		} catch (IllegalStateException e) {
+			throw e;
+		}
 		mWorld = world;
 		mBeyondarGLSurface.setWorld(world);
 	}
@@ -386,8 +409,8 @@ public class BeyondarFragmentSupport extends Fragment implements FpsUpdatable, O
 				mFpsTextView = new TextView(getActivity());
 				mFpsTextView.setBackgroundResource(android.R.color.black);
 				mFpsTextView.setTextColor(getResources().getColor(android.R.color.white));
-				android.view.ViewGroup.LayoutParams params = new LayoutParams(
-						ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+				LayoutParams params = new LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
+						ViewGroup.LayoutParams.WRAP_CONTENT);
 				mMailLayout.addView(mFpsTextView, params);
 			}
 			mFpsTextView.setVisibility(View.VISIBLE);
@@ -408,5 +431,34 @@ public class BeyondarFragmentSupport extends Fragment implements FpsUpdatable, O
 				}
 			});
 		}
+	}
+
+	/**
+	 * Set the adapter to draw the views on top of the AR View.
+	 * 
+	 * @param adapter
+	 */
+	public void setBeyondarViewAdapter(BeyondarViewAdapter adapter) {
+		mBeyondarGLSurface.setBeyondarViewAdapter(adapter, mMailLayout);
+	}
+
+	public void forceFillBeyondarObjectPositionsOnRendering(boolean fill) {
+		mBeyondarGLSurface.forceFillBeyondarObjectPositionsOnRendering(fill);
+	}
+
+	/**
+	 * Use this method to fill all the screen positions of the
+	 * {@link BeyondarObject}. After this method is called you can use the
+	 * following:<br>
+	 * {@link BeyondarObject#getScreenPositionBottomLeft()}<br>
+	 * {@link BeyondarObject#getScreenPositionBottomRight()}<br>
+	 * {@link BeyondarObject#getScreenPositionTopLeft()}<br>
+	 * {@link BeyondarObject#getScreenPositionTopRight()}
+	 * 
+	 * @param beyondarObject
+	 *            The {@link BeyondarObject} to compute
+	 */
+	public void fillBeyondarObjectPositions(BeyondarObject beyondarObject) {
+		mBeyondarGLSurface.fillBeyondarObjectPositions(beyondarObject);
 	}
 }

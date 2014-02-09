@@ -15,10 +15,6 @@
  */
 package com.beyondar.android.opengl.renderable;
 
-import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
-import java.nio.FloatBuffer;
-
 import javax.microedition.khronos.opengles.GL10;
 
 import com.beyondar.android.opengl.texture.Texture;
@@ -38,50 +34,10 @@ public class SquareRenderable implements Renderable {
 
 	private long mTimeMark;
 
-	private FloatBuffer vertexBuffer; // buffer holding the vertices
-	public static final float VERTICES[] = { -1.0f, 0.0f, -1.0f, // V1 - bottom
-																	// left
-			-1.0f, 0.0f, 1.0f, // V2 - top left
-			1.0f, 0.0f, -1.0f, // V3 - bottom right
-			1.0f, 0.0f, 1.0f // V4 - top right
-	};
-
-	private static FloatBuffer textureBuffer; // buffer holding the texture
-												// coordinates
-	private static float TEXTURE[] = {
-			// Mapping coordinates for the vertices
-			0.0f, 1.0f, // top left (V2)
-			0.0f, 0.0f, // bottom left (V1)
-			1.0f, 1.0f, // top right (V4)
-			1.0f, 0.0f // bottom right (V3)
-	};
-
 	private SquareRenderable() {
-		// a float has 4 bytes so we allocate for each coordinate 4 bytes
-		ByteBuffer byteBuffer = ByteBuffer.allocateDirect(VERTICES.length * 4);
-		byteBuffer.order(ByteOrder.nativeOrder());
-
-		// allocates the memory from the byte buffer
-		vertexBuffer = byteBuffer.asFloatBuffer();
-
-		// fill the vertexBuffer with the vertices
-		vertexBuffer.put(VERTICES);
-
-		// set the cursor position to the beginning of the buffer
-		vertexBuffer.position(0);
-
-		byteBuffer = ByteBuffer.allocateDirect(TEXTURE.length * 4);
-		byteBuffer.order(ByteOrder.nativeOrder());
-		textureBuffer = byteBuffer.asFloatBuffer();
-		textureBuffer.put(TEXTURE);
-		textureBuffer.position(0);
-
-		// ////////////////////
 		mAngle = new Point3();
-
 		mPosition = new Point3();
-
-		mTexture = new Texture();;
+		mTexture = new Texture();
 	}
 
 	public static Renderable getInstance() {
@@ -92,8 +48,7 @@ public class SquareRenderable implements Renderable {
 	}
 
 	@Override
-	public boolean update(long time, double distance,
-			BeyondarObject beyondarObject) {
+	public boolean update(long time, double distance, BeyondarObject beyondarObject) {
 		mTimeMark = time;
 		mBeyondarObject = beyondarObject;
 
@@ -113,20 +68,21 @@ public class SquareRenderable implements Renderable {
 	public void draw(GL10 gl, Texture defaultTexture) {
 
 		mTexture = mBeyondarObject.getTexture();
+		Texture texture = mTexture;
 
 		gl.glTranslatef(mPosition.x, mPosition.y, mPosition.z);
 
-		// ROTATE Acoriding to the angles
+		// ROTATE According to the angles
 
 		gl.glRotatef((float) mAngle.x, 1, 0, 0);
 		gl.glRotatef((float) mAngle.y, 0, 1, 0);
 		gl.glRotatef((float) mAngle.z, 0, 0, 1);
+		
 
 		// bind the previously generated texture
 		if (!mTexture.isLoaded()) {
-			gl.glBindTexture(GL10.GL_TEXTURE_2D,
-					defaultTexture.getTexturePointer());
-
+			gl.glBindTexture(GL10.GL_TEXTURE_2D, defaultTexture.getTexturePointer());
+			texture = defaultTexture;
 		} else {
 			gl.glBindTexture(GL10.GL_TEXTURE_2D, mTexture.getTexturePointer());
 		}
@@ -139,11 +95,11 @@ public class SquareRenderable implements Renderable {
 		gl.glFrontFace(GL10.GL_CW);
 
 		// Point to our vertex buffer
-		gl.glVertexPointer(3, GL10.GL_FLOAT, 0, vertexBuffer);
-		gl.glTexCoordPointer(2, GL10.GL_FLOAT, 0, textureBuffer);
+		gl.glVertexPointer(3, GL10.GL_FLOAT, 0, texture.getVerticesBuffer());
+		gl.glTexCoordPointer(2, GL10.GL_FLOAT, 0, texture.getTextureBuffer());
 
 		// Draw the vertices as triangle strip
-		gl.glDrawArrays(GL10.GL_TRIANGLE_STRIP, 0, VERTICES.length / 3);
+		gl.glDrawArrays(GL10.GL_TRIANGLE_STRIP, 0, texture.getVertices().length / 3);
 
 		// Disable the client state before leaving
 		gl.glDisableClientState(GL10.GL_VERTEX_ARRAY);
@@ -161,8 +117,7 @@ public class SquareRenderable implements Renderable {
 
 	@Override
 	public Plane getPlane() {
-		Plane plane = new Plane(mBeyondarObject.getPosition(), new Vector3(0,
-				-1, 0));
+		Plane plane = new Plane(mBeyondarObject.getPosition(), new Vector3(0, -1, 0));
 		return plane;
 	}
 
@@ -204,8 +159,7 @@ public class SquareRenderable implements Renderable {
 
 	@Override
 	public Texture getTexture() {
-		// TODO Auto-generated method stub
-		return null;
+		return mTexture;
 	}
 
 }

@@ -20,13 +20,13 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 
-import com.beyondar.android.util.cache.BitmapCache;
-
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.BitmapFactory.Options;
 import android.graphics.Rect;
+
+import com.beyondar.android.util.cache.BitmapCache;
 
 public class DebugBitmap {
 

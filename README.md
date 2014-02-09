@@ -8,7 +8,7 @@ This framework has been designed to offer some resources to those developers wit
 ![Screenshot](http://beyondar.com/pictures/screenshots/screen_4.jpg)
 ![Screenshot](http://beyondar.com/pictures/screenshots/screen_1.jpg)
 
-BeyondAR platform now supports Google Glass
+BeyondAR platform also supports Google Glass
 
 ![Screenshot](http://beyondar.com/pictures/glass.jpg)
 

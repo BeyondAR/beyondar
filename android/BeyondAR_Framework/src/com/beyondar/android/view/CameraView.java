@@ -336,12 +336,12 @@ public class CameraView extends SurfaceView implements SurfaceHolder.Callback, C
 				acquiredCam = true;
 				return true;
 			} catch (Exception e) {
-				Log.e(TAG, "Exception encountered opening camera:" + e.getLocalizedMessage());
+				Logger.e(TAG, "Exception encountered opening camera:" + e.getLocalizedMessage());
 			}
 			try {
 				Thread.sleep(200);
 			} catch (InterruptedException ee) {
-				Log.e(TAG, "Exception encountered sleeping:" + ee.getLocalizedMessage());
+				Logger.e(TAG, "Exception encountered sleeping:" + ee.getLocalizedMessage());
 			}
 			timePassed += 200;
 		}

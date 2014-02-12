@@ -33,13 +33,15 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.beyondar.android.fragment.BeyondarFragmentSupport;
+import com.beyondar.android.util.ImageUtils;
 import com.beyondar.android.view.BeyondarViewAdapter;
 import com.beyondar.android.view.OnClickBeyondarObjectListener;
 import com.beyondar.android.world.BeyondarObject;
 import com.beyondar.android.world.BeyondarObjectList;
+import com.beyondar.android.world.GeoObject;
 import com.beyondar.android.world.World;
 
-public class AttachViewToGeoObjectActivity extends FragmentActivity implements OnClickBeyondarObjectListener,
+public class StaticViewGeoObjectActivity extends FragmentActivity implements OnClickBeyondarObjectListener,
 		OnClickListener {
 
 	private BeyondarFragmentSupport mBeyondarFragment;
@@ -71,10 +73,25 @@ public class AttachViewToGeoObjectActivity extends FragmentActivity implements O
 
 		mBeyondarFragment.setOnClickBeyondarObjectListener(this);
 
+		createStaticView(mWorld);
+
 		CustomBeyondarViewAdapter customBeyondarViewAdapter = new CustomBeyondarViewAdapter(this);
 		mBeyondarFragment.setBeyondarViewAdapter(customBeyondarViewAdapter);
 		
 		Toast.makeText(this, "Click on any object to attach it a view", Toast.LENGTH_LONG).show();
+	}
+
+	private void createStaticView(World world) {
+		for (BeyondarObjectList beyondarList : world.getBeyondarObjectLists()) {
+			for (BeyondarObject beyondarObject : beyondarList) {
+				View view = getLayoutInflater().inflate(R.layout.static_beyondar_object_view, null);
+				TextView textView = (TextView) view.findViewById(R.id.geoObjectName);
+				textView.setText(beyondarObject.getName());
+				String image = ImageUtils.convert(this, view, "test.png");
+				//ImageUtils.getBitmapFromView(R.layout.static_beyondar_object_view, getLayoutInflater());
+				beyondarObject.setImageUri(image);
+			}
+		}
 	}
 
 	@Override
@@ -121,7 +138,7 @@ public class AttachViewToGeoObjectActivity extends FragmentActivity implements O
 			TextView textView = (TextView) recycledView.findViewById(R.id.titleTextView);
 			textView.setText(beyondarObject.getName());
 			Button button = (Button) recycledView.findViewById(R.id.button);
-			button.setOnClickListener(AttachViewToGeoObjectActivity.this);
+			button.setOnClickListener(StaticViewGeoObjectActivity.this);
 
 			setPosition(beyondarObject.getScreenPositionTopRight());
 

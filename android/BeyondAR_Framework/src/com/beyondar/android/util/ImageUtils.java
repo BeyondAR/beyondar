@@ -15,13 +15,27 @@
  */
 package com.beyondar.android.util;
 
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.net.URLConnection;
 
+import com.beyondar.example.R;
+
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Matrix;
+import android.graphics.Bitmap.CompressFormat;
+import android.os.Environment;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.View.MeasureSpec;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
+import android.widget.RelativeLayout.LayoutParams;
 
 public class ImageUtils {
 
@@ -175,7 +189,7 @@ public class ImageUtils {
 	 * @return Interpolated color Y.
 	 * 
 	 */
-	public int linearInterpolate(int A, int B, int l, int L) {
+	public static int linearInterpolate(int A, int B, int l, int L) {
 		// extract r, g, b information
 		// A and B is a ARGB-packed int so we use bit operation to extract
 		int Ar = (A >> 16) & 0xff;
@@ -192,6 +206,51 @@ public class ImageUtils {
 		// pack ARGB with hardcoded alpha
 		return 0xff000000 | // alpha
 				((Yr << 16) & 0xff0000) | ((Yg << 8) & 0xff00) | (Yb & 0xff);
+	}
+
+	public static String convert(Context context, View view, String fileName){
+
+		//TODO: the paths should be defined by the user or create a temp folder
+		FileOutputStream file = null;
+		try {
+			file = new FileOutputStream(Environment.getExternalStorageDirectory() + "/"
+					+ fileName);
+		} catch (FileNotFoundException e1) {
+			e1.printStackTrace();
+		}
+		Bitmap bitmap = getBitmapFromView(view);
+		bitmap.compress(CompressFormat.PNG, 100, file);
+		try {
+			file.close();
+		} catch (IOException e) {
+			Logger.e("Error closing FileOutputStream: ", e);
+		}
+		bitmap.recycle();
+		return Environment.getExternalStorageDirectory() + "/" + fileName;
+	}
+
+	public static Bitmap getBitmapFromView(int layoutId, LayoutInflater inflater) {
+		View view = inflater.inflate(layoutId, null);
+		return getBitmapFromView(view);
+	}
+	
+	public static Bitmap getBitmapFromView(View view) {
+
+//		if (v instanceof LinearLayout)
+//			v.setLayoutParams(new LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
+//					LinearLayout.LayoutParams.MATCH_PARENT));
+//		else if (v instanceof RelativeLayout)
+//			v.setLayoutParams(new LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT,
+//					RelativeLayout.LayoutParams.MATCH_PARENT));
+
+		view.measure(MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED),
+				MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED));
+		view.layout(0, 0, view.getMeasuredWidth(), view.getMeasuredHeight());
+		Bitmap b = Bitmap.createBitmap(view.getMeasuredWidth(), view.getMeasuredHeight(), Bitmap.Config.ARGB_8888);
+
+		Canvas c = new Canvas(b);
+		view.draw(c);
+		return b;
 	}
 
 }

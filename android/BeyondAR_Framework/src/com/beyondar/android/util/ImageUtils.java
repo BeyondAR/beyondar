@@ -15,19 +15,17 @@
  */
 package com.beyondar.android.util;
 
-import java.io.FileNotFoundException;
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.net.URLConnection;
 
-import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.CompressFormat;
 import android.graphics.Canvas;
 import android.graphics.Matrix;
-import android.os.Environment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.MeasureSpec;
@@ -203,45 +201,34 @@ public class ImageUtils {
 				((Yr << 16) & 0xff0000) | ((Yg << 8) & 0xff00) | (Yb & 0xff);
 	}
 
-	public static String convert(Context context, View view, String fileName){
+	public static void storeView(View view, String filePath, String fileName) throws IOException {
+		storeView(view, new File(filePath), fileName);
+	}
 
-		//TODO: the paths should be defined by the user or create a temp folder
-		FileOutputStream file = null;
-		try {
-			file = new FileOutputStream(Environment.getExternalStorageDirectory() + "/"
-					+ fileName);
-		} catch (FileNotFoundException e1) {
-			e1.printStackTrace();
+	public static void storeView(View view, File filePath, String fileName) throws IOException {
+
+		if (!filePath.exists()){
+			filePath.mkdirs();
 		}
+		FileOutputStream file = new FileOutputStream(new File(filePath, fileName));
 		Bitmap bitmap = getBitmapFromView(view);
 		bitmap.compress(CompressFormat.PNG, 100, file);
-		try {
-			file.close();
-		} catch (IOException e) {
-			Logger.e("Error closing FileOutputStream: ", e);
-		}
+		file.close();
 		bitmap.recycle();
-		return Environment.getExternalStorageDirectory() + "/" + fileName;
 	}
 
 	public static Bitmap getBitmapFromView(int layoutId, LayoutInflater inflater) {
 		View view = inflater.inflate(layoutId, null);
 		return getBitmapFromView(view);
 	}
-	
-	public static Bitmap getBitmapFromView(View view) {
 
-//		if (v instanceof LinearLayout)
-//			v.setLayoutParams(new LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
-//					LinearLayout.LayoutParams.MATCH_PARENT));
-//		else if (v instanceof RelativeLayout)
-//			v.setLayoutParams(new LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT,
-//					RelativeLayout.LayoutParams.MATCH_PARENT));
+	public static Bitmap getBitmapFromView(View view) {
 
 		view.measure(MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED),
 				MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED));
 		view.layout(0, 0, view.getMeasuredWidth(), view.getMeasuredHeight());
-		Bitmap b = Bitmap.createBitmap(view.getMeasuredWidth(), view.getMeasuredHeight(), Bitmap.Config.ARGB_8888);
+		Bitmap b = Bitmap.createBitmap(view.getMeasuredWidth(), view.getMeasuredHeight(),
+				Bitmap.Config.ARGB_8888);
 
 		Canvas c = new Canvas(b);
 		view.draw(c);

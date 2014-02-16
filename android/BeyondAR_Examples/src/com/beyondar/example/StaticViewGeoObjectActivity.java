@@ -15,6 +15,8 @@
  */
 package com.beyondar.example;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -38,11 +40,11 @@ import com.beyondar.android.view.BeyondarViewAdapter;
 import com.beyondar.android.view.OnClickBeyondarObjectListener;
 import com.beyondar.android.world.BeyondarObject;
 import com.beyondar.android.world.BeyondarObjectList;
-import com.beyondar.android.world.GeoObject;
 import com.beyondar.android.world.World;
 
-public class StaticViewGeoObjectActivity extends FragmentActivity implements OnClickBeyondarObjectListener,
-		OnClickListener {
+public class StaticViewGeoObjectActivity extends FragmentActivity {
+
+	private static final String TMP_IMAGE_PREFIX = "viewImage_";
 
 	private BeyondarFragmentSupport mBeyondarFragment;
 	private World mWorld;
@@ -53,6 +55,11 @@ public class StaticViewGeoObjectActivity extends FragmentActivity implements OnC
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		// The first thing that we do is to remove all the generated temporal
+		// images. Remember that the application needs external storage write
+		// permission.
+		cleanTempFolder();
+
 		showViewOn = Collections.synchronizedList(new ArrayList<BeyondarObject>());
 
 		// Hide the window title.
@@ -71,80 +78,43 @@ public class StaticViewGeoObjectActivity extends FragmentActivity implements OnC
 		// We also can see the Frames per seconds
 		mBeyondarFragment.showFPS(true);
 
-		mBeyondarFragment.setOnClickBeyondarObjectListener(this);
+		replaceImagesByStaticViews(mWorld);
 
-		createStaticView(mWorld);
-
-		CustomBeyondarViewAdapter customBeyondarViewAdapter = new CustomBeyondarViewAdapter(this);
-		mBeyondarFragment.setBeyondarViewAdapter(customBeyondarViewAdapter);
-		
-		Toast.makeText(this, "Click on any object to attach it a view", Toast.LENGTH_LONG).show();
 	}
 
-	private void createStaticView(World world) {
+	private void replaceImagesByStaticViews(World world) {
+		String path = getTmpPath();
+
 		for (BeyondarObjectList beyondarList : world.getBeyondarObjectLists()) {
 			for (BeyondarObject beyondarObject : beyondarList) {
 				View view = getLayoutInflater().inflate(R.layout.static_beyondar_object_view, null);
 				TextView textView = (TextView) view.findViewById(R.id.geoObjectName);
 				textView.setText(beyondarObject.getName());
-				String image = ImageUtils.convert(this, view, "test.png");
-				//ImageUtils.getBitmapFromView(R.layout.static_beyondar_object_view, getLayoutInflater());
-				beyondarObject.setImageUri(image);
+				try {
+					String tmpPath = TMP_IMAGE_PREFIX + view.hashCode() + ".png";
+					ImageUtils.storeView(view, path, tmpPath);
+					beyondarObject.setImageUri(path + tmpPath);
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
 			}
 		}
 	}
 
-	@Override
-	public void onClick(View v) {
-		Toast.makeText(this, "Click", Toast.LENGTH_SHORT).show();
+	private String getTmpPath() {
+		return getExternalFilesDir(null).getAbsoluteFile() + "/tmp/";
 	}
 
-	@Override
-	public boolean onTouchEvent(MotionEvent event) {
-		return super.onTouchEvent(event);
-	}
-
-	@Override
-	public void onClickBeyondarObject(ArrayList<BeyondarObject> beyondarObjects) {
-		if (beyondarObjects.size() == 0) {
-			return;
-		}
-		BeyondarObject beyondarObject = beyondarObjects.get(0);
-		if (showViewOn.contains(beyondarObject)) {
-			showViewOn.remove(beyondarObject);
-		} else {
-			showViewOn.add(beyondarObject);
-		}
-	}
-
-	private class CustomBeyondarViewAdapter extends BeyondarViewAdapter {
-
-		LayoutInflater inflater;
-
-		public CustomBeyondarViewAdapter(Context context) {
-			super(context);
-			inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-		}
-
-		@Override
-		public View getView(BeyondarObject beyondarObject, View recycledView, ViewGroup parent) {
-			if (!showViewOn.contains(beyondarObject)) {
-				return null;
+	private void cleanTempFolder() {
+		File tmpFolder = new File(getTmpPath());
+		if (tmpFolder.isDirectory()) {
+			String[] children = tmpFolder.list();
+			for (int i = 0; i < children.length; i++) {
+				if (children[i].startsWith(TMP_IMAGE_PREFIX)) {
+					new File(tmpFolder, children[i]).delete();
+				}
 			}
-			if (recycledView == null) {
-				recycledView = inflater.inflate(R.layout.beyondar_object_view, null);
-			}
-
-			TextView textView = (TextView) recycledView.findViewById(R.id.titleTextView);
-			textView.setText(beyondarObject.getName());
-			Button button = (Button) recycledView.findViewById(R.id.button);
-			button.setOnClickListener(StaticViewGeoObjectActivity.this);
-
-			setPosition(beyondarObject.getScreenPositionTopRight());
-
-			return recycledView;
 		}
-
 	}
 
 }

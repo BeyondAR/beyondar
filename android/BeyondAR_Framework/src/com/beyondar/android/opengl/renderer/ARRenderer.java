@@ -223,10 +223,14 @@ public class ARRenderer implements GLSurfaceView.Renderer, SensorEventListener,
 		long time = System.currentTimeMillis();
 
 		SensorManager.getInclination(sInclination);
-		SensorManager.getRotationMatrix(mRotationMatrix, sInclination, mAccelerometerValues, mMagneticValues);
+		SensorManager.getRotationMatrix(mRotationMatrix, sInclination, mAccelerometerValues,
+				mMagneticValues);
 		if (mIsTablet) {
-			SensorManager.remapCoordinateSystem(mRotationMatrix, SensorManager.AXIS_MINUS_Y,
-					SensorManager.AXIS_X, mRotationMatrix);
+			// SensorManager.remapCoordinateSystem(mRotationMatrix,
+			// SensorManager.AXIS_MINUS_Y,
+			// SensorManager.AXIS_X, mRotationMatrix);
+			SensorManager.remapCoordinateSystem(mRotationMatrix, SensorManager.AXIS_X,
+					SensorManager.AXIS_Y, mRotationMatrix);
 		}
 
 		// TODO: Optimize this code
@@ -364,8 +368,8 @@ public class ARRenderer implements GLSurfaceView.Renderer, SensorEventListener,
 										// flip
 
 		// new bitmap, using the flipping matrix
-		Bitmap result = Bitmap
-				.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
+		Bitmap result = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(),
+				matrix, true);
 
 		bitmap.recycle();
 		System.gc();
@@ -378,14 +382,17 @@ public class ARRenderer implements GLSurfaceView.Renderer, SensorEventListener,
 		float x, z, y;
 		x = (float) (Distance.fastConversionGeopointsToMeters(geoObject.getLongitude()
 				- mWorld.getLongitude()) / 2);
-		z = (float) (Distance.fastConversionGeopointsToMeters(geoObject.getAltitude() - mWorld.getAltitude()) / 2);
-		y = (float) (Distance.fastConversionGeopointsToMeters(geoObject.getLatitude() - mWorld.getLatitude()) / 2);
+		z = (float) (Distance.fastConversionGeopointsToMeters(geoObject.getAltitude()
+				- mWorld.getAltitude()) / 2);
+		y = (float) (Distance.fastConversionGeopointsToMeters(geoObject.getLatitude()
+				- mWorld.getLatitude()) / 2);
 
 		if (mMaxDistanceSizePoints > 0 || mMinDistanceSizePoints > 0) {
 			double totalDst = Distance.calculateDistance(x, y, 0, 0);
 
 			if (mMaxDistanceSizePoints > 0 && totalDst > mMaxDistanceSizePoints) {
-				MathUtils.linearInterpolate(0, 0, 0, x, y, 0, mMaxDistanceSizePoints, totalDst, sOut);
+				MathUtils.linearInterpolate(0, 0, 0, x, y, 0, mMaxDistanceSizePoints, totalDst,
+						sOut);
 				x = (float) sOut[0];
 				y = (float) sOut[1];
 				if (mMinDistanceSizePoints > 0) {
@@ -393,7 +400,8 @@ public class ARRenderer implements GLSurfaceView.Renderer, SensorEventListener,
 				}
 			}
 			if (mMinDistanceSizePoints > 0 && totalDst < mMinDistanceSizePoints) {
-				MathUtils.linearInterpolate(0, 0, 0, x, y, 0, mMinDistanceSizePoints, totalDst, sOut);
+				MathUtils.linearInterpolate(0, 0, 0, x, y, 0, mMinDistanceSizePoints, totalDst,
+						sOut);
 				x = (float) sOut[0];
 				y = (float) sOut[1];
 			}
@@ -536,8 +544,8 @@ public class ARRenderer implements GLSurfaceView.Renderer, SensorEventListener,
 	 * @param beyondarObject
 	 * @param defaultTexture
 	 */
-	protected void renderBeyondarObject(GL10 gl, BeyondarObject beyondarObject, Texture defaultTexture,
-			long time) {
+	protected void renderBeyondarObject(GL10 gl, BeyondarObject beyondarObject,
+			Texture defaultTexture, long time) {
 		boolean renderObject = false;
 		Renderable renderable = beyondarObject.getOpenGLObject();
 
@@ -583,8 +591,8 @@ public class ARRenderer implements GLSurfaceView.Renderer, SensorEventListener,
 				}
 			}
 			renderable.draw(gl, defaultTexture);
-			getScreenCoordinates(beyondarObject.getPosition(), beyondarObject.getScreenPositionCenter(),
-					tmpEyeForRendering);
+			getScreenCoordinates(beyondarObject.getPosition(),
+					beyondarObject.getScreenPositionCenter(), tmpEyeForRendering);
 
 			if (mFillPositions) {
 				fillBeyondarObjectPositions(beyondarObject);
@@ -608,10 +616,13 @@ public class ARRenderer implements GLSurfaceView.Renderer, SensorEventListener,
 	 *            The {@link BeyondarObject} to compute
 	 */
 	public void fillBeyondarObjectPositions(BeyondarObject beyondarObject) {
-		getScreenCoordinates(beyondarObject.getBottomLeft(), beyondarObject.getScreenPositionBottomLeft());
-		getScreenCoordinates(beyondarObject.getBottomRight(), beyondarObject.getScreenPositionBottomRight());
+		getScreenCoordinates(beyondarObject.getBottomLeft(),
+				beyondarObject.getScreenPositionBottomLeft());
+		getScreenCoordinates(beyondarObject.getBottomRight(),
+				beyondarObject.getScreenPositionBottomRight());
 		getScreenCoordinates(beyondarObject.getTopLeft(), beyondarObject.getScreenPositionTopLeft());
-		getScreenCoordinates(beyondarObject.getTopRight(), beyondarObject.getScreenPositionTopRight());
+		getScreenCoordinates(beyondarObject.getTopRight(),
+				beyondarObject.getScreenPositionTopRight());
 	}
 
 	/**
@@ -646,7 +657,7 @@ public class ARRenderer implements GLSurfaceView.Renderer, SensorEventListener,
 	private void checkGlExtensions(GL10 gl) {
 
 		String extensions = gl.glGetString(GL10.GL_EXTENSIONS);
-		
+
 		if (extensions.contains("GL_OES_texture_npot")) {
 			isGL_OES_texture_npot = true;
 		}
@@ -728,7 +739,8 @@ public class ARRenderer implements GLSurfaceView.Renderer, SensorEventListener,
 				for (int i = 0; i < mWorld.getBeyondarObjectLists().size(); i++) {
 					list = mWorld.getBeyondarObjectLists().get(i);
 					if (null != list) {
-						Bitmap defaultBtm = mWorld.getBitmapCache().getBitmap(list.getDefaultBitmapURI());
+						Bitmap defaultBtm = mWorld.getBitmapCache().getBitmap(
+								list.getDefaultBitmapURI());
 						Texture texture = load2DTexture(gl, defaultBtm);
 						list.setTexture(texture);
 
@@ -935,8 +947,8 @@ public class ARRenderer implements GLSurfaceView.Renderer, SensorEventListener,
 		} else {
 			eye[0] = eye[1] = eye[2] = eye[3] = 0;
 		}
-		GLU.gluUnProject(x, mHeight - y, 0.9f, mMatrixGrabber.mModelView, 0, mMatrixGrabber.mProjection, 0,
-				viewport, 0, eye, 0);
+		GLU.gluUnProject(x, mHeight - y, 0.9f, mMatrixGrabber.mModelView, 0,
+				mMatrixGrabber.mProjection, 0, viewport, 0, eye, 0);
 
 		// fix
 		if (eye[3] != 0) {
@@ -946,7 +958,8 @@ public class ARRenderer implements GLSurfaceView.Renderer, SensorEventListener,
 		}
 
 		// ray vector
-		ray.setVector((eye[0] - cameraPosition.x), (eye[1] - cameraPosition.y), (eye[2] - cameraPosition.z));
+		ray.setVector((eye[0] - cameraPosition.x), (eye[1] - cameraPosition.y),
+				(eye[2] - cameraPosition.z));
 		mFloat4ArrayPool.add(eye);
 	}
 
@@ -971,8 +984,8 @@ public class ARRenderer implements GLSurfaceView.Renderer, SensorEventListener,
 			eye[0] = eye[1] = eye[2] = eye[3] = 0;
 		}
 
-		GLU.gluProject(x, y, z, mMatrixGrabber.mModelView, 0, mMatrixGrabber.mProjection, 0, viewport, 0,
-				eye, 0);
+		GLU.gluProject(x, y, z, mMatrixGrabber.mModelView, 0, mMatrixGrabber.mProjection, 0,
+				viewport, 0, eye, 0);
 
 		// fix
 		if (eye[3] != 0) {

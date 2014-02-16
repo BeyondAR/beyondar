@@ -18,38 +18,28 @@ package com.beyondar.example;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
-import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
-import android.view.View.OnClickListener;
-import android.view.ViewGroup;
 import android.view.Window;
-import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.beyondar.android.fragment.BeyondarFragmentSupport;
 import com.beyondar.android.util.ImageUtils;
-import com.beyondar.android.view.BeyondarViewAdapter;
 import com.beyondar.android.view.OnClickBeyondarObjectListener;
 import com.beyondar.android.world.BeyondarObject;
 import com.beyondar.android.world.BeyondarObjectList;
 import com.beyondar.android.world.World;
 
-public class StaticViewGeoObjectActivity extends FragmentActivity {
+public class StaticViewGeoObjectActivity extends FragmentActivity implements
+		OnClickBeyondarObjectListener {
 
 	private static final String TMP_IMAGE_PREFIX = "viewImage_";
 
 	private BeyondarFragmentSupport mBeyondarFragment;
 	private World mWorld;
-
-	private List<BeyondarObject> showViewOn;
 
 	/** Called when the activity is first created. */
 	@Override
@@ -60,8 +50,6 @@ public class StaticViewGeoObjectActivity extends FragmentActivity {
 		// permission.
 		cleanTempFolder();
 
-		showViewOn = Collections.synchronizedList(new ArrayList<BeyondarObject>());
-
 		// Hide the window title.
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 
@@ -69,6 +57,8 @@ public class StaticViewGeoObjectActivity extends FragmentActivity {
 
 		mBeyondarFragment = (BeyondarFragmentSupport) getSupportFragmentManager().findFragmentById(
 				R.id.beyondarFragment);
+
+		mBeyondarFragment.setOnClickBeyondarObjectListener(this);
 
 		// We create the world and fill it ...
 		mWorld = CustomWorldHelper.generateObjects(this);
@@ -78,6 +68,8 @@ public class StaticViewGeoObjectActivity extends FragmentActivity {
 		// We also can see the Frames per seconds
 		mBeyondarFragment.showFPS(true);
 
+		// This method will replace all GeoObjects the images with a simple
+		// static view
 		replaceImagesByStaticViews(mWorld);
 
 	}
@@ -87,13 +79,20 @@ public class StaticViewGeoObjectActivity extends FragmentActivity {
 
 		for (BeyondarObjectList beyondarList : world.getBeyondarObjectLists()) {
 			for (BeyondarObject beyondarObject : beyondarList) {
+				// First let's get the view, inflate it and change some stuff
 				View view = getLayoutInflater().inflate(R.layout.static_beyondar_object_view, null);
 				TextView textView = (TextView) view.findViewById(R.id.geoObjectName);
 				textView.setText(beyondarObject.getName());
 				try {
-					String tmpPath = TMP_IMAGE_PREFIX + view.hashCode() + ".png";
-					ImageUtils.storeView(view, path, tmpPath);
-					beyondarObject.setImageUri(path + tmpPath);
+					// Now that we have it we need to store this view in the
+					// storage in order to allow the framework to load it when
+					// it will be need it
+					String imageName = TMP_IMAGE_PREFIX + beyondarObject.getName() + ".png";
+					ImageUtils.storeView(view, path, imageName);
+
+					// If there are no errors we can tell the object to use the
+					// view that we just stored
+					beyondarObject.setImageUri(path + imageName);
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
@@ -101,10 +100,16 @@ public class StaticViewGeoObjectActivity extends FragmentActivity {
 		}
 	}
 
+	/**
+	 * Get the path to store temporally the images. Remember that you need to
+	 * set WRITE_EXTERNAL_STORAGE permission in your manifest in order to
+	 * write/read the storage
+	 */
 	private String getTmpPath() {
 		return getExternalFilesDir(null).getAbsoluteFile() + "/tmp/";
 	}
 
+	/** Clean all the generated files */
 	private void cleanTempFolder() {
 		File tmpFolder = new File(getTmpPath());
 		if (tmpFolder.isDirectory()) {
@@ -114,6 +119,13 @@ public class StaticViewGeoObjectActivity extends FragmentActivity {
 					new File(tmpFolder, children[i]).delete();
 				}
 			}
+		}
+	}
+	
+	@Override
+	public void onClickBeyondarObject(ArrayList<BeyondarObject> beyondarObjects) {
+		if (beyondarObjects.size() > 0) {
+			Toast.makeText(this, "Clicked on: " + beyondarObjects.get(0).getName(), Toast.LENGTH_LONG).show();
 		}
 	}
 

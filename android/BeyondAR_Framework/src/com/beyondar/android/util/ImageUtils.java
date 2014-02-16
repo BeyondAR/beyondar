@@ -22,13 +22,15 @@ import java.io.InputStream;
 import java.net.URL;
 import java.net.URLConnection;
 
+import android.Manifest;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.CompressFormat;
 import android.graphics.Canvas;
 import android.graphics.Matrix;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.MeasureSpec;
+
+import com.beyondar.android.world.BeyondarObject;
 
 public class ImageUtils {
 
@@ -201,29 +203,62 @@ public class ImageUtils {
 				((Yr << 16) & 0xff0000) | ((Yg << 8) & 0xff00) | (Yb & 0xff);
 	}
 
-	public static void storeView(View view, String filePath, String fileName) throws IOException {
-		storeView(view, new File(filePath), fileName);
+	/**
+	 * Save the view in the the storage. This can be used to set a static view
+	 * to a {@link BeyondarObject}. Remember that in order to use this feature
+	 * you may need to set {@link Manifest.permission#WRITE_EXTERNAL_STORAGE}
+	 * permission in your application manifest.<br>
+	 * 
+	 * This method uses PNG compression.
+	 * 
+	 * @param view
+	 *            The view to be stored.
+	 * @param path
+	 *            The path where it will be saved
+	 * @param fileName
+	 *            The name of the image
+	 * @throws IOException
+	 */
+	public static void storeView(View view, String path, String fileName) throws IOException {
+		storeView(view, new File(path), fileName);
 	}
 
-	public static void storeView(View view, File filePath, String fileName) throws IOException {
+	/**
+	 * Save the view in the the storage. This can be used to set a static view
+	 * to a {@link BeyondarObject#}. Remember that in order to use this feature
+	 * you may need to set {@link Manifest.permission#WRITE_EXTERNAL_STORAGE}
+	 * permission in your application manifest.<br>
+	 * 
+	 * This method uses PNG compression.
+	 * 
+	 * @param view
+	 *            The view to be stored.
+	 * @param path
+	 *            The path where it will be saved
+	 * @param fileName
+	 *            The name of the image
+	 * @throws IOException
+	 */
+	public static void storeView(View view, File path, String fileName) throws IOException {
 
-		if (!filePath.exists()){
-			filePath.mkdirs();
+		if (!path.exists()) {
+			path.mkdirs();
 		}
-		FileOutputStream file = new FileOutputStream(new File(filePath, fileName));
+		FileOutputStream file = new FileOutputStream(new File(path, fileName));
 		Bitmap bitmap = getBitmapFromView(view);
 		bitmap.compress(CompressFormat.PNG, 100, file);
 		file.close();
 		bitmap.recycle();
 	}
 
-	public static Bitmap getBitmapFromView(int layoutId, LayoutInflater inflater) {
-		View view = inflater.inflate(layoutId, null);
-		return getBitmapFromView(view);
-	}
-
+	/**
+	 * Generate a {@link Bitmap} from a view.
+	 * 
+	 * @param view
+	 *            The view to convert to {@link Bitmap}
+	 * @return A bitmap representing the view.
+	 */
 	public static Bitmap getBitmapFromView(View view) {
-
 		view.measure(MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED),
 				MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED));
 		view.layout(0, 0, view.getMeasuredWidth(), view.getMeasuredHeight());

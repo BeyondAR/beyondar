@@ -22,20 +22,15 @@ import java.io.InputStream;
 import java.net.URL;
 import java.net.URLConnection;
 
-import com.beyondar.example.R;
-
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.Bitmap.CompressFormat;
 import android.graphics.Canvas;
 import android.graphics.Matrix;
-import android.graphics.Bitmap.CompressFormat;
 import android.os.Environment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.MeasureSpec;
-import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
-import android.widget.RelativeLayout.LayoutParams;
 
 public class ImageUtils {
 

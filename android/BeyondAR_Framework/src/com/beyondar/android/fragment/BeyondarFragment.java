@@ -151,7 +151,7 @@ public class BeyondarFragment extends Fragment implements FpsUpdatable, OnClickL
 	@Override
 	public void onPause() {
 		super.onPause();
-		mBeyondarCameraView.stopPreviewCamera();
+		mBeyondarCameraView.releaseCamera();
 		mBeyondarGLSurface.onPause();
 	}
 

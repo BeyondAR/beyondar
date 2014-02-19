@@ -87,15 +87,15 @@ public class CustomWorldHelper {
 		go9.setImageResource(R.drawable.creature_4);
 		go9.setName("Creature 4");
 
-		sharedWorld.addBeyondarObject(go1);
-		sharedWorld.addBeyondarObject(go2);
-		sharedWorld.addBeyondarObject(go3);
-		sharedWorld.addBeyondarObject(go4);
-		sharedWorld.addBeyondarObject(go5);
-		sharedWorld.addBeyondarObject(go6);
-		sharedWorld.addBeyondarObject(go7);
-		sharedWorld.addBeyondarObject(go8);
-		sharedWorld.addBeyondarObject(go9);
+//		sharedWorld.addBeyondarObject(go1);
+//		sharedWorld.addBeyondarObject(go2);
+//		sharedWorld.addBeyondarObject(go3);
+//		sharedWorld.addBeyondarObject(go4);
+//		sharedWorld.addBeyondarObject(go5);
+//		sharedWorld.addBeyondarObject(go6);
+//		sharedWorld.addBeyondarObject(go7);
+//		sharedWorld.addBeyondarObject(go8);
+//		sharedWorld.addBeyondarObject(go9);
 
 		return sharedWorld;
 	}

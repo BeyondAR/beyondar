@@ -19,10 +19,12 @@ import java.io.IOException;
 import java.util.List;
 
 import android.content.Context;
+import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.hardware.Camera;
 import android.hardware.Camera.Size;
+import android.os.Build;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.Surface;
@@ -43,6 +45,10 @@ public class CameraView extends SurfaceView implements SurfaceHolder.Callback, C
 		 */
 		void onPictureTaken(Bitmap picture);
 	}
+
+	private static final String CAMERA_PARAM_ORIENTATION = "orientation";
+	private static final String CAMERA_PARAM_LANDSCAPE = "landscape";
+	private static final String CAMERA_PARAM_PORTRAIT = "portrait";
 
 	private static final String TAG = "camera";
 	private static final double ASPECT_TOLERANCE = 0.25;
@@ -76,12 +82,13 @@ public class CameraView extends SurfaceView implements SurfaceHolder.Callback, C
 
 	@SuppressWarnings("deprecation")
 	private void init(Context context) {
+		mIsPreviewing = false;
 		mHolder = getHolder();
 		mHolder.addCallback(this);
 
 		configureCamera();
 
-		if (android.os.Build.VERSION.SDK_INT <= 10) {// Android 2.3.x or lower
+		if (Build.VERSION.SDK_INT <= 10) {// Android 2.3.x or lower
 			mHolder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
 		}
 	}
@@ -202,16 +209,27 @@ public class CameraView extends SurfaceView implements SurfaceHolder.Callback, C
 		if (mCamera == null || mPreviewSize == null) {
 			return;
 		}
-
-		Camera.Parameters parameters = mCamera.getParameters();
-		int orientation = getCameraDisplayOrientation();
-		mCamera.setDisplayOrientation(orientation);
-
 		stopPreviewCamera();
 
-		parameters.setPreviewSize(mPreviewSize.width, mPreviewSize.height);
+		Camera.Parameters parameters = mCamera.getParameters();
+		
+		int orientation = 0;
 
-		parameters.setRotation(orientation);
+		if (Build.VERSION.SDK_INT < 9) {
+			if (isPortrait()) {
+				parameters.set(CAMERA_PARAM_ORIENTATION, CAMERA_PARAM_PORTRAIT);
+				orientation = 90;
+			} else {
+				parameters.set(CAMERA_PARAM_ORIENTATION, CAMERA_PARAM_LANDSCAPE);
+				orientation = 0;
+			}
+		} else {
+			orientation = getCameraDisplayOrientation();
+			parameters.setRotation(orientation);
+		}
+		mCamera.setDisplayOrientation(orientation);
+
+		parameters.setPreviewSize(mPreviewSize.width, mPreviewSize.height);
 
 		// parameters.set("jpeg-quality", 70);
 		// parameters.setPictureSize(100, 100);
@@ -222,9 +240,6 @@ public class CameraView extends SurfaceView implements SurfaceHolder.Callback, C
 	}
 
 	private int getCameraDisplayOrientation() {
-		android.hardware.Camera.CameraInfo info = new android.hardware.Camera.CameraInfo();
-		android.hardware.Camera.getCameraInfo(Camera.CameraInfo.CAMERA_FACING_BACK, info);
-
 		int rotation = ((WindowManager) getContext().getSystemService(Context.WINDOW_SERVICE))
 				.getDefaultDisplay().getRotation();
 		int degrees = 0;
@@ -243,7 +258,9 @@ public class CameraView extends SurfaceView implements SurfaceHolder.Callback, C
 			break;
 		}
 
-		int result;
+		int result = 0;
+		android.hardware.Camera.CameraInfo info = new android.hardware.Camera.CameraInfo();
+		android.hardware.Camera.getCameraInfo(Camera.CameraInfo.CAMERA_FACING_BACK, info);
 		if (info.facing == Camera.CameraInfo.CAMERA_FACING_FRONT) {
 			result = (info.orientation + degrees) % 360;
 			result = (360 - result) % 360; // compensate the mirror
@@ -251,6 +268,10 @@ public class CameraView extends SurfaceView implements SurfaceHolder.Callback, C
 			result = (info.orientation - degrees + 360) % 360;
 		}
 		return result;
+	}
+
+	private boolean isPortrait() {
+		return (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT);
 	}
 
 	@Override
@@ -264,10 +285,10 @@ public class CameraView extends SurfaceView implements SurfaceHolder.Callback, C
 	}
 
 	public void stopPreviewCamera() {
-		mIsPreviewing = false;
-		if (mCamera == null) {
+		if (mCamera == null || !mIsPreviewing) {
 			return;
 		}
+		mIsPreviewing = false;
 		mCamera.stopPreview();
 
 	}
@@ -276,15 +297,16 @@ public class CameraView extends SurfaceView implements SurfaceHolder.Callback, C
 		if (mCamera == null) {
 			init(getContext());
 		}
-		if (mCamera == null) {
+		if (mCamera == null || mIsPreviewing) {
 			return;
 		}
+		mIsPreviewing = true;
 		try {
 			mCamera.setPreviewDisplay(mHolder);
 			mCamera.startPreview();
-			mIsPreviewing = true;
 		} catch (Exception e) {
 			Logger.w(TAG, "Cannot start preview.", e);
+			mIsPreviewing = false;
 		}
 	}
 

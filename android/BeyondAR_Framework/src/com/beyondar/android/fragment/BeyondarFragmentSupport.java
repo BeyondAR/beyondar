@@ -149,7 +149,7 @@ public class BeyondarFragmentSupport extends Fragment implements FpsUpdatable, O
 	@Override
 	public void onPause() {
 		super.onPause();
-		mBeyondarCameraView.stopPreviewCamera();
+		mBeyondarCameraView.releaseCamera();
 		mBeyondarGLSurface.onPause();
 	}
 

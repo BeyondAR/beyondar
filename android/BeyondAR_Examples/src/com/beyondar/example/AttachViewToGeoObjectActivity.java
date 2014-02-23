@@ -36,7 +36,6 @@ import com.beyondar.android.fragment.BeyondarFragmentSupport;
 import com.beyondar.android.view.BeyondarViewAdapter;
 import com.beyondar.android.view.OnClickBeyondarObjectListener;
 import com.beyondar.android.world.BeyondarObject;
-import com.beyondar.android.world.BeyondarObjectList;
 import com.beyondar.android.world.World;
 
 public class AttachViewToGeoObjectActivity extends FragmentActivity implements OnClickBeyondarObjectListener,
@@ -71,21 +70,10 @@ public class AttachViewToGeoObjectActivity extends FragmentActivity implements O
 
 		mBeyondarFragment.setOnClickBeyondarObjectListener(this);
 
-		attchView(mWorld);
-
 		CustomBeyondarViewAdapter customBeyondarViewAdapter = new CustomBeyondarViewAdapter(this);
 		mBeyondarFragment.setBeyondarViewAdapter(customBeyondarViewAdapter);
 		
 		Toast.makeText(this, "Click on any object to attach it a view", Toast.LENGTH_LONG).show();
-	}
-
-	private void attchView(World world) {
-		for (BeyondarObjectList beyondarList : world.getBeyondarObjectLists()) {
-			for (BeyondarObject beyondarObject : beyondarList) {
-				if (beyondarObject.getId() == 8d) {
-				}
-			}
-		}
 	}
 
 	@Override

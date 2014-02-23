@@ -22,7 +22,7 @@ public class LowPassFilter {
 	 * basically means more smoothing See:
 	 * http://en.wikipedia.org/wiki/Low-pass_filter#Discrete-time_realization
 	 */
-	private static final float ALPHA = 0.05f;
+	public static float ALPHA = 0.03f;
 
 	/**
 	 * Filter the given input against the previous values and return a low-pass

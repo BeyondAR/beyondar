@@ -22,6 +22,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.beyondar.android.opengl.renderer.ARRenderer.FpsUpdatable;
+import com.beyondar.android.opengl.util.LowPassFilter;
 import com.beyondar.android.screenshot.OnScreenshotListener;
 import com.beyondar.android.screenshot.ScreenshotHelper;
 import com.beyondar.android.util.math.geom.Ray;
@@ -35,7 +36,8 @@ import com.beyondar.android.world.GeoObject;
 import com.beyondar.android.world.World;
 
 @SuppressLint("NewApi")
-public class BeyondarFragment extends Fragment implements FpsUpdatable, OnClickListener, OnTouchListener {
+public class BeyondarFragment extends Fragment implements FpsUpdatable,
+		OnClickListener, OnTouchListener {
 
 	private static final int CORE_POOL_SIZE = 1;
 	private static final int MAXIMUM_POOL_SIZE = 1;
@@ -60,13 +62,14 @@ public class BeyondarFragment extends Fragment implements FpsUpdatable, OnClickL
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		mBlockingQueue = new LinkedBlockingQueue<Runnable>();
-		mThreadPool = new ThreadPoolExecutor(CORE_POOL_SIZE, MAXIMUM_POOL_SIZE, KEEP_ALIVE_TIME,
-				TimeUnit.MILLISECONDS, mBlockingQueue);
+		mThreadPool = new ThreadPoolExecutor(CORE_POOL_SIZE, MAXIMUM_POOL_SIZE,
+				KEEP_ALIVE_TIME, TimeUnit.MILLISECONDS, mBlockingQueue);
 	}
 
 	private void init() {
 
-		android.view.ViewGroup.LayoutParams params = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+		android.view.ViewGroup.LayoutParams params = new LayoutParams(
+				ViewGroup.LayoutParams.MATCH_PARENT,
 				ViewGroup.LayoutParams.MATCH_PARENT);
 
 		mMailLayout = new RelativeLayout(getActivity());
@@ -81,13 +84,17 @@ public class BeyondarFragment extends Fragment implements FpsUpdatable, OnClickL
 
 	private void checkIfSensorsAvailable() {
 		PackageManager PM = getActivity().getPackageManager();
-		boolean compass = PM.hasSystemFeature(PackageManager.FEATURE_SENSOR_COMPASS);
-		boolean accelerometer = PM.hasSystemFeature(PackageManager.FEATURE_SENSOR_ACCELEROMETER);
+		boolean compass = PM
+				.hasSystemFeature(PackageManager.FEATURE_SENSOR_COMPASS);
+		boolean accelerometer = PM
+				.hasSystemFeature(PackageManager.FEATURE_SENSOR_ACCELEROMETER);
 		if (!compass && !accelerometer) {
-			throw new IllegalStateException(getClass().getName()
-					+ " can not run without the compass and the acelerometer sensors.");
+			throw new IllegalStateException(
+					getClass().getName()
+							+ " can not run without the compass and the acelerometer sensors.");
 		} else if (!compass) {
-			throw new IllegalStateException(getClass().getName() + " can not run without the compass sensor.");
+			throw new IllegalStateException(getClass().getName()
+					+ " can not run without the compass sensor.");
 		} else if (!accelerometer) {
 			throw new IllegalStateException(getClass().getName()
 					+ " can not run without the acelerometer sensor.");
@@ -135,7 +142,8 @@ public class BeyondarFragment extends Fragment implements FpsUpdatable, OnClickL
 	}
 
 	@Override
-	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+	public View onCreateView(LayoutInflater inflater, ViewGroup container,
+			Bundle savedInstanceState) {
 		init();
 		startRenderingAR();
 		return mMailLayout;
@@ -160,11 +168,13 @@ public class BeyondarFragment extends Fragment implements FpsUpdatable, OnClickL
 	 * 
 	 * @param listener
 	 */
-	public void setOnTouchBeyondarViewListener(OnTouchBeyondarViewListener listener) {
+	public void setOnTouchBeyondarViewListener(
+			OnTouchBeyondarViewListener listener) {
 		mTouchListener = listener;
 	}
 
-	public void setOnClickBeyondarObjectListener(OnClickBeyondarObjectListener listener) {
+	public void setOnClickBeyondarObjectListener(
+			OnClickBeyondarObjectListener listener) {
 		mClickListener = listener;
 		mMailLayout.setClickable(listener != null);
 		mMailLayout.setOnClickListener(this);
@@ -195,7 +205,8 @@ public class BeyondarFragment extends Fragment implements FpsUpdatable, OnClickL
 				@Override
 				public void run() {
 					final ArrayList<BeyondarObject> beyondarObjects = new ArrayList<BeyondarObject>();
-					mBeyondarGLSurface.getBeyondarObjectsOnScreenCoordinates(lastX, lastY, beyondarObjects);
+					mBeyondarGLSurface.getBeyondarObjectsOnScreenCoordinates(
+							lastX, lastY, beyondarObjects);
 					if (beyondarObjects.size() == 0)
 						return;
 					mBeyondarGLSurface.post(new Runnable() {
@@ -298,9 +309,11 @@ public class BeyondarFragment extends Fragment implements FpsUpdatable, OnClickL
 	 * @return A new list with the {@link BeyondarObject} that collide with the
 	 *         screen cord
 	 */
-	public List<BeyondarObject> getBeyondarObjectsOnScreenCoordinates(float x, float y) {
+	public List<BeyondarObject> getBeyondarObjectsOnScreenCoordinates(float x,
+			float y) {
 		ArrayList<BeyondarObject> beyondarObjects = new ArrayList<BeyondarObject>();
-		mBeyondarGLSurface.getBeyondarObjectsOnScreenCoordinates(x, y, beyondarObjects);
+		mBeyondarGLSurface.getBeyondarObjectsOnScreenCoordinates(x, y,
+				beyondarObjects);
 		return beyondarObjects;
 	}
 
@@ -316,7 +329,8 @@ public class BeyondarFragment extends Fragment implements FpsUpdatable, OnClickL
 	 */
 	public void getBeyondarObjectsOnScreenCoordinates(float x, float y,
 			ArrayList<BeyondarObject> beyondarObjects) {
-		mBeyondarGLSurface.getBeyondarObjectsOnScreenCoordinates(x, y, beyondarObjects);
+		mBeyondarGLSurface.getBeyondarObjectsOnScreenCoordinates(x, y,
+				beyondarObjects);
 	}
 
 	/**
@@ -333,7 +347,8 @@ public class BeyondarFragment extends Fragment implements FpsUpdatable, OnClickL
 	 */
 	public void getBeyondarObjectsOnScreenCoordinates(float x, float y,
 			ArrayList<BeyondarObject> beyondarObjects, Ray ray) {
-		mBeyondarGLSurface.getBeyondarObjectsOnScreenCoordinates(x, y, beyondarObjects, ray);
+		mBeyondarGLSurface.getBeyondarObjectsOnScreenCoordinates(x, y,
+				beyondarObjects, ray);
 
 	}
 
@@ -396,7 +411,8 @@ public class BeyondarFragment extends Fragment implements FpsUpdatable, OnClickL
 	 * @param listener
 	 */
 	public void takeScreenshot(OnScreenshotListener listener) {
-		ScreenshotHelper.takeScreenshot(getCameraView(), getGLSurfaceView(), listener);
+		ScreenshotHelper.takeScreenshot(getCameraView(), getGLSurfaceView(),
+				listener);
 	}
 
 	/**
@@ -410,8 +426,10 @@ public class BeyondarFragment extends Fragment implements FpsUpdatable, OnClickL
 			if (mFpsTextView == null) {
 				mFpsTextView = new TextView(getActivity());
 				mFpsTextView.setBackgroundResource(android.R.color.black);
-				mFpsTextView.setTextColor(getResources().getColor(android.R.color.white));
-				LayoutParams params = new LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
+				mFpsTextView.setTextColor(getResources().getColor(
+						android.R.color.white));
+				LayoutParams params = new LayoutParams(
+						ViewGroup.LayoutParams.WRAP_CONTENT,
 						ViewGroup.LayoutParams.WRAP_CONTENT);
 				mMailLayout.addView(mFpsTextView, params);
 			}
@@ -462,5 +480,18 @@ public class BeyondarFragment extends Fragment implements FpsUpdatable, OnClickL
 	 */
 	public void fillBeyondarObjectPositions(BeyondarObject beyondarObject) {
 		mBeyondarGLSurface.fillBeyondarObjectPositions(beyondarObject);
+	}
+
+	/**
+	 * Set the alpha value of the sensors low pass filter.
+	 * 
+	 * @param alpha
+	 *            A number between 0 and 1
+	 */
+	public void setSensorFilterAlpha(float alpha) {
+		if (alpha < 0 || alpha > 1) {
+			throw new IllegalArgumentException("Alpha must be between 0 and 1");
+		}
+		LowPassFilter.ALPHA = alpha;
 	}
 }

@@ -58,6 +58,7 @@
         <activity android:name="com.beyondar.example.ChangeGeoObjectImagesOnTouchActivity" />
         <activity android:name="com.beyondar.example.AttachViewToGeoObjectActivity" />
         <activity android:name="com.beyondar.example.StaticViewGeoObjectActivity" />
+        <activity android:name="com.beyondar.example.SimpleCameraWithCustomFilterActivity" />
 
         <meta-data
             android:name="com.google.android.maps.v2.API_KEY"

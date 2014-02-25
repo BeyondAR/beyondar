@@ -106,7 +106,11 @@ class CustomLayout extends ViewGroup {
 					maxWidth = Math.max(maxWidth, child.getMeasuredWidth() + lp.leftMargin + lp.rightMargin);
 				}
 				maxHeight = Math.max(maxHeight, child.getMeasuredHeight() + lp.topMargin + lp.bottomMargin);
-				childState = combineMeasuredStates(childState, child.getMeasuredState());
+				 if (Build.VERSION.SDK_INT >= 11) {
+					 childState = combineMeasuredStates(childState, child.getMeasuredState());
+				 } else {
+					 supportCombineMeasuredStates(childState, 0);
+				 }
 			}
 		}
 
@@ -124,6 +128,10 @@ class CustomLayout extends ViewGroup {
 		setMeasuredDimension(resolveSizeAndState(maxWidth, widthMeasureSpec, childState) + xPos,
 				resolveSizeAndState(maxHeight, heightMeasureSpec, childState << MEASURED_HEIGHT_STATE_SHIFT)
 						+ yPos);
+	}
+	
+	private static int supportCombineMeasuredStates(int curState, int newState) {
+		return curState | newState;
 	}
 
 	@Override

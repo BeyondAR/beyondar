@@ -21,22 +21,23 @@ import com.beyondar.android.util.math.geom.Point3;
 import com.beyondar.android.world.BeyondarObject;
 
 public interface BeyondarObjectModule extends BeyondarModule {
-	
+
+	/** This method is called when the */
 	public void setup(BeyondarObject beyondarObject);
-	
+
 	public void onAngleChanged(Point3 angle);
-	
+
 	public void onPositionChanged(Point3 position);
-	
+
 	public void onTextureChanged(Texture texture);
-	
+
 	public void onRenderableChanged(Renderable openglObject);
-	
+
 	public void onFaceToCameraChanged(boolean faceToCamera);
-	
+
 	public void onVisibilityChanged(boolean visible);
-	
+
 	public void onNameChanged(String name);
-	
+
 	public void onImageUriChanged(String uri);
 }

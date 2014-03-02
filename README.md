@@ -221,4 +221,14 @@ public boolean onMarkerClick(Marker marker) {
 }
 ```	
 
+##Creating your own module
+BeyondAR architecture allows you to create your own modules that can be attached to the framework. For instance to have a better access to the `World` object in order to perform other extra task, for example to have Google Maps, or a radar view.
+
+The first thing that we need to do is understand what do we need to implement in order to create our module. There are only thre interfaces for that purpose:
+
+* `WorldModule`: This interface will allow your module to be notyfied when some events occur, like when the position has changed, a new object has been added/removed, all the `World` is cleaned, etc. ([here](https://github.com/BeyondAR/beyondar/blob/master/android/BeyondAR_Framework/src/com/beyondar/android/world/module/WorldModule.java) you will find the code).
+* `BeyondarObjectModule`: This interface allows your module to get notified when there are changes in a specific `BeyondarObject`. ([here](https://github.com/BeyondAR/beyondar/blob/master/android/BeyondAR_Framework/src/com/beyondar/android/world/module/BeyondarObjectModule.java) you will find the code).
+* `GeoObjectModule`: This interface extends `BeyondarObjectModule`, but it have some extra code to make easier the control of the geo position of this kind of objects. ([here](https://github.com/BeyondAR/beyondar/blob/master/android/BeyondAR_Framework/src/com/beyondar/android/world/module/BeyondarObjectModule.java) you will find the code).
+
+
 

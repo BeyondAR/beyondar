@@ -19,8 +19,8 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.widget.Toast;
 
+import com.beyondar.android.module.googlemap.GoogleMapWorldModule;
 import com.beyondar.android.world.GeoObject;
-import com.beyondar.android.world.GoogleMapWorldModule;
 import com.beyondar.android.world.World;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;

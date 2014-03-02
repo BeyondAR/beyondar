@@ -31,7 +31,7 @@ public class BeyondarExamples extends Activity implements OnItemClickListener {
 			"Simple camera with a max/min distance far for rendering", "BeyondAR World in Google maps",
 			"AR camera with Gooogle maps", "Camera with touch events", "Camera with screenshot",
 			"Change GeoObject images on touch", "Attach view to GeoObject", "Set static view to geoObject",
-			"Customize sensor filter"};
+			"Customize sensor filter", "Simple AR camera with a radar view"};
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -40,6 +40,8 @@ public class BeyondarExamples extends Activity implements OnItemClickListener {
 		mLisViewt = (ListView) findViewById(R.id.examplesList);
 
 		fillList();
+		
+		openActivity(SimpleCameraWithRadarActivity.class);
 		
 	}
 
@@ -83,6 +85,8 @@ public class BeyondarExamples extends Activity implements OnItemClickListener {
 		case 9:
 			openActivity(SimpleCameraWithCustomFilterActivity.class);
 			break;
+		case 10:
+			openActivity(SimpleCameraWithRadarActivity.class);
 		default:
 			break;
 		}

@@ -15,21 +15,6 @@
  */
 package com.beyondar.android.world.module;
 
-/*
- * Copyright (C) 2013 BeyondAR
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 import android.content.Context;
 
 import com.beyondar.android.world.BeyondarObject;
@@ -43,6 +28,9 @@ public interface WorldModule extends BeyondarModule {
 	 * 
 	 * @param world
 	 *            The world that loads the module
+	 * 
+	 * @param context
+	 *            Activity context.
 	 */
 	public void setup(World world, Context context);
 
@@ -85,7 +73,9 @@ public interface WorldModule extends BeyondarModule {
 	public void onGeoPositionChanged(double latitude, double longitude, double altitude);
 
 	/**
-	 * This method is invoked when the default image for all the {@link BeyondarObject} is set
+	 * This method is invoked when the default image for all the
+	 * {@link BeyondarObject} is set
+	 * 
 	 * @param uri
 	 */
 	public void onDefaultImageChanged(String uri);

@@ -35,3 +35,4 @@ proguard/
 #Ignore linked source folder used for testing/development
 src-framework/
 src-googlemaps/
+src-radar/

@@ -14,6 +14,8 @@
         android:id="@+id/radarView"
         android:layout_gravity="right|top"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:src="@drawable/radar_north_small"
+        android:background="@drawable/radar_bg_small" />
 
 </FrameLayout>

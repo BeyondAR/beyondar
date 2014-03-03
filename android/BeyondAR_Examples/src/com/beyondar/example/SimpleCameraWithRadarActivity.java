@@ -52,6 +52,8 @@ public class SimpleCameraWithRadarActivity extends FragmentActivity {
 		mWorld = CustomWorldHelper.generateObjects(this);
 		// .. and send it to the fragment
 		mBeyondarFragment.setWorld(mWorld);
+		
+		mWorld.addModule(mRadarModule);
 
 		// We also can see the Frames per seconds
 		mBeyondarFragment.showFPS(true);

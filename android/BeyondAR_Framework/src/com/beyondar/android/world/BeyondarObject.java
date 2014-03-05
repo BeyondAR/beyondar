@@ -383,7 +383,7 @@ public class BeyondarObject implements Modulable<BeyondarObjectModule> {
 	}
 
 	/**
-	 * Set how far is the object from the user.
+	 * Set how far is the object from the user (meters).
 	 * 
 	 * This method is used by the {@link ARRenderer} to set this value.
 	 * 

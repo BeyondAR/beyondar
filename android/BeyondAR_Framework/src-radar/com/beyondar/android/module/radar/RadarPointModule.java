@@ -18,6 +18,8 @@
  */
 package com.beyondar.android.module.radar;
 
+import android.R;
+import android.graphics.Color;
 import android.location.Location;
 
 import com.beyondar.android.opengl.renderable.Renderable;
@@ -41,6 +43,8 @@ public class RadarPointModule implements GeoObjectModule {
 
 	public RadarPointModule(RadarWorldModule radarWorldModule) {
 		mRadarWorldModule = radarWorldModule;
+		mColor = Color.BLUE;
+		mRaduis = 5;
 	}
 
 	@Override

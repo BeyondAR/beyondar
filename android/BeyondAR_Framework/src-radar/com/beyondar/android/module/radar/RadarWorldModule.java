@@ -54,6 +54,8 @@ public class RadarWorldModule implements WorldModule, SensorEventListener {
 	private float[] mOrientation = new float[3];
 	private float currentDegree = 0;
 
+	private double mMaxDistance = -1;
+
 	private List<RadarPointModule> mRadarPoints;
 
 	public RadarWorldModule() {
@@ -76,6 +78,9 @@ public class RadarWorldModule implements WorldModule, SensorEventListener {
 	@Override
 	public void setup(World world, Context context) {
 		mWorld = world;
+		if (mMaxDistance == -1) {
+			mMaxDistance = mWorld.getArViewDistance();
+		}
 		mContext = context;
 
 		addModuleToAllObjects();
@@ -124,6 +129,7 @@ public class RadarWorldModule implements WorldModule, SensorEventListener {
 
 	public void setRadarView(RadarView radarView) {
 		mRadarView = radarView;
+		mRadarView.setRadarModule(this);
 	}
 
 	public void unregisterListeners() {
@@ -192,19 +198,37 @@ public class RadarWorldModule implements WorldModule, SensorEventListener {
 
 	}
 
+	/**
+	 * Set the max distance rendered by the view in meters
+	 * 
+	 * @param maxDistance
+	 */
+	public void setMaxDistance(double maxDistance) {
+		mMaxDistance = maxDistance;
+	}
+
+	/**
+	 * Get the max distance rendered by the view in meters
+	 * 
+	 * @return max distance to render the {@link GeoObject}s
+	 */
+	public double getMaxDistance() {
+		return mMaxDistance;
+	}
+
 	private void rotateView(float degree) {
 		// create a rotation animation (reverse turn degree degrees)
-		RotateAnimation ra = new RotateAnimation(currentDegree, -degree, Animation.RELATIVE_TO_SELF, 0.5f,
-				Animation.RELATIVE_TO_SELF, 0.5f);
+		RotateAnimation animation = new RotateAnimation(currentDegree, -degree, Animation.RELATIVE_TO_SELF,
+				0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
 
 		// how long the animation will take place
-		ra.setDuration(210);
+		animation.setDuration(210);
 
 		// set the animation after the end of the reservation status
-		ra.setFillAfter(true);
+		animation.setFillAfter(true);
 
 		// Start the animation
-		mRadarView.startAnimation(ra);
+		mRadarView.startAnimation(animation);
 		currentDegree = -degree;
 	}
 }

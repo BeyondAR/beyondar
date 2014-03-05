@@ -595,7 +595,7 @@ public class ARRenderer implements GLSurfaceView.Renderer, SensorEventListener,
 					beyondarObject.getScreenPositionCenter(), tmpEyeForRendering);
 
 			if (mFillPositions) {
-				fillBeyondarObjectPositions(beyondarObject);
+				fillBeyondarObjectScreenPositions(beyondarObject);
 			}
 			mRenderedObjects.add(beyondarObject);
 		} else {
@@ -615,7 +615,7 @@ public class ARRenderer implements GLSurfaceView.Renderer, SensorEventListener,
 	 * @param beyondarObject
 	 *            The {@link BeyondarObject} to compute
 	 */
-	public void fillBeyondarObjectPositions(BeyondarObject beyondarObject) {
+	public void fillBeyondarObjectScreenPositions(BeyondarObject beyondarObject) {
 		getScreenCoordinates(beyondarObject.getBottomLeft(),
 				beyondarObject.getScreenPositionBottomLeft());
 		getScreenCoordinates(beyondarObject.getBottomRight(),

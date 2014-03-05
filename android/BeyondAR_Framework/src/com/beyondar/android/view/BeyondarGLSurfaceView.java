@@ -355,6 +355,6 @@ public class BeyondarGLSurfaceView extends GLSurfaceView implements OnBeyondarOb
 	 *            The {@link BeyondarObject} to compute
 	 */
 	public void fillBeyondarObjectPositions(BeyondarObject beyondarObject) {
-		mRenderer.fillBeyondarObjectPositions(beyondarObject);
+		mRenderer.fillBeyondarObjectScreenPositions(beyondarObject);
 	}
 }

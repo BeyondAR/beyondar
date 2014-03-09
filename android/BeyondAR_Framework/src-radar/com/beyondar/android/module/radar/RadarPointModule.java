@@ -21,12 +21,12 @@ package com.beyondar.android.module.radar;
 import android.graphics.Color;
 import android.location.Location;
 
+import com.beyondar.android.module.GeoObjectModule;
 import com.beyondar.android.opengl.renderable.Renderable;
 import com.beyondar.android.opengl.texture.Texture;
 import com.beyondar.android.util.math.geom.Point3;
 import com.beyondar.android.world.BeyondarObject;
 import com.beyondar.android.world.GeoObject;
-import com.beyondar.android.world.module.GeoObjectModule;
 
 public class RadarPointModule implements GeoObjectModule {
 
@@ -40,14 +40,15 @@ public class RadarPointModule implements GeoObjectModule {
 	private int mColor;
 	private float[] mDistanceArray = new float[1];
 
-	public RadarPointModule(RadarWorldModule radarWorldModule) {
+	public RadarPointModule(RadarWorldModule radarWorldModule, BeyondarObject beyondarObject) {
 		mRadarWorldModule = radarWorldModule;
 		mColor = Color.BLUE;
 		mRaduis = 5;
+		
+		setBeyondarObject(beyondarObject);
 	}
 
-	@Override
-	public void setup(BeyondarObject beyondarObject) {
+	public void setBeyondarObject(BeyondarObject beyondarObject) {
 		if (beyondarObject instanceof GeoObject) {
 			mGeoObject = (GeoObject) beyondarObject;
 		}

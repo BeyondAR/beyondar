@@ -13,20 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.beyondar.android.world.module;
+package com.beyondar.android.module;
 
-public interface BeyondarModule {
+import com.beyondar.android.world.GeoObject;
+
+public interface GeoObjectModule extends BeyondarObjectModule {
 
 	/**
-	 * This method is invoked when the module is removed.
+	 * Notified when the geo position changes
 	 */
-	public void onDetached();
+	public void onGeoPositionChanged(double latitude, double longitude, double altitude);
 
 	/**
-	 * Check if the module is attached.
+	 * Get the {@link GeoObject} where the module is attached
 	 * 
 	 * @return
 	 */
-	public boolean isAttached();
+	public GeoObject getGeoObject();
 
 }

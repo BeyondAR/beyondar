@@ -28,14 +28,14 @@ import android.hardware.SensorManager;
 import android.view.animation.Animation;
 import android.view.animation.RotateAnimation;
 
+import com.beyondar.android.module.BeyondarModule;
 import com.beyondar.android.opengl.util.LowPassFilter;
 import com.beyondar.android.world.BeyondarObject;
 import com.beyondar.android.world.BeyondarObjectList;
 import com.beyondar.android.world.GeoObject;
 import com.beyondar.android.world.World;
-import com.beyondar.android.world.module.WorldModule;
 
-public class RadarWorldModule implements WorldModule, SensorEventListener {
+public class RadarWorldModule implements BeyondarModule, SensorEventListener {
 
 	private World mWorld;
 	private Context mContext;
@@ -55,7 +55,8 @@ public class RadarWorldModule implements WorldModule, SensorEventListener {
 
 	private double mMaxDistance = -1;
 
-	public RadarWorldModule() {
+	public RadarWorldModule(Context context) {
+		mContext = context;
 	}
 
 	World getWorld() {
@@ -72,13 +73,11 @@ public class RadarWorldModule implements WorldModule, SensorEventListener {
 		return false;
 	}
 
-	@Override
-	public void setup(World world, Context context) {
+	public void setup(World world) {
 		mWorld = world;
 		if (mMaxDistance == -1) {
 			mMaxDistance = mWorld.getArViewDistance();
 		}
-		mContext = context;
 
 		addModuleToAllObjects();
 
@@ -118,7 +117,7 @@ public class RadarWorldModule implements WorldModule, SensorEventListener {
 	protected void addRadarPointModule(BeyondarObject beyondarObject) {
 		if (beyondarObject instanceof GeoObject) {
 			if (!beyondarObject.containsAnyModule(RadarPointModule.class)) {
-				RadarPointModule module = new RadarPointModule(this);
+				RadarPointModule module = new RadarPointModule(this, beyondarObject);
 				beyondarObject.addModule(module);
 			}
 		}
@@ -226,5 +225,13 @@ public class RadarWorldModule implements WorldModule, SensorEventListener {
 		// Start the animation
 		mRadarView.startAnimation(animation);
 		currentDegree = -degree;
+	}
+
+	@Override
+	public void onResume() {
+	}
+
+	@Override
+	public void onPause() {
 	}
 }

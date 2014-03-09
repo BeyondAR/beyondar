@@ -17,6 +17,7 @@ package com.beyondar.android.module.googlemap;
 
 import android.graphics.Bitmap;
 
+import com.beyondar.android.module.GeoObjectModule;
 import com.beyondar.android.opengl.renderable.Renderable;
 import com.beyondar.android.opengl.texture.Texture;
 import com.beyondar.android.util.math.geom.Point3;
@@ -27,7 +28,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
-class GoogleMapGeoObjectModuleImpl implements GoogleMapGeoObjectModule {
+class GoogleMapGeoObjectModuleImpl implements GeoObjectModule {
 
 	private Marker mMarker;
 	private LatLng mLatLng;
@@ -35,20 +36,26 @@ class GoogleMapGeoObjectModuleImpl implements GoogleMapGeoObjectModule {
 	private boolean mAttached;
 	private GoogleMapWorldModule mWorldGoogleMapModule;
 
-	public GoogleMapGeoObjectModuleImpl(GoogleMapWorldModule worldGoogleMapModule) {
+	public GoogleMapGeoObjectModuleImpl(GoogleMapWorldModule worldGoogleMapModule, BeyondarObject beyondarObject) {
 		mAttached = false;
 		mWorldGoogleMapModule = worldGoogleMapModule;
 		if (mWorldGoogleMapModule == null){
 			throw new NullPointerException("The WorldGoogleMapModule must not be null");
 		}
+		
+		setBeyondarObject(beyondarObject);
 	}
 
-	@Override
-	public void setup(BeyondarObject beyondarObject) {
+	/**
+	 * Setup the module according to the BeyondarObject
+	 * 
+	 * @param BeyondarObject
+	 */
+	private void setBeyondarObject(BeyondarObject beyondarObject) {
 		if (beyondarObject instanceof GeoObject) {
 			mGeoObject = (GeoObject) beyondarObject;
 		}else{
-			throw new IllegalArgumentException("beyondarObject must be a GeoObject");
+			//throw new IllegalArgumentException("beyondarObject must be a GeoObject");
 		}
 		if (mGeoObject == null){
 			throw new NullPointerException("The BeyondarObject must not be null");
@@ -64,7 +71,12 @@ class GoogleMapGeoObjectModuleImpl implements GoogleMapGeoObjectModule {
 		mMarker.setPosition(getLatLng());
 	}
 
-	@Override
+	/**
+	 * Get the {@link LatLng} instance that represents the {@link GeoObject}. It
+	 * will try to recycle the {@link LatLng} object if it is possible
+	 * 
+	 * @return
+	 */
 	public LatLng getLatLng() {
 		if (mLatLng == null) {
 			mLatLng = new LatLng(mGeoObject.getLatitude(), mGeoObject.getLongitude());
@@ -79,13 +91,21 @@ class GoogleMapGeoObjectModuleImpl implements GoogleMapGeoObjectModule {
 		return mLatLng;
 	}
 
-	@Override
+	/**
+	 * Set the {@link Marker} that belongs to the {@link GeoObject}
+	 * 
+	 * @param marker
+	 */
 	public void setMarker(Marker marker) {
 		mMarker = marker;
 		mWorldGoogleMapModule.registerMarker(mMarker, this);
 	}
 
-	@Override
+	/**
+	 * Get the marker that belongs to the {@link GeoObject}
+	 * 
+	 * @return
+	 */
 	public Marker getMarker() {
 		return mMarker;
 	}
@@ -95,7 +115,12 @@ class GoogleMapGeoObjectModuleImpl implements GoogleMapGeoObjectModule {
 		return mGeoObject;
 	}
 	
-	@Override
+	/**
+	 * Create the marker options in order to create the Marker.
+	 * 
+	 * @param bitmap The bitmap to use for representing the {@link Marker}
+	 * @return
+	 */
 	public MarkerOptions createMarkerOptions(Bitmap bitmap) {
 		MarkerOptions markerOptions = new MarkerOptions();
 		markerOptions.title(mGeoObject.getName());

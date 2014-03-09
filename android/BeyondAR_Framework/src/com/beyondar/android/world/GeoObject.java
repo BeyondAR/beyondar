@@ -17,9 +17,9 @@ package com.beyondar.android.world;
 
 import android.location.Location;
 
+import com.beyondar.android.module.BeyondarObjectModule;
+import com.beyondar.android.module.GeoObjectModule;
 import com.beyondar.android.util.math.Distance;
-import com.beyondar.android.world.module.BeyondarObjectModule;
-import com.beyondar.android.world.module.GeoObjectModule;
 
 public class GeoObject extends BeyondarObject {
 

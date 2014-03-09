@@ -13,17 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.beyondar.android.world.module;
+package com.beyondar.android.module;
 
 import com.beyondar.android.opengl.renderable.Renderable;
 import com.beyondar.android.opengl.texture.Texture;
 import com.beyondar.android.util.math.geom.Point3;
-import com.beyondar.android.world.BeyondarObject;
 
-public interface BeyondarObjectModule extends BeyondarModule {
-
-	/** This method is called when the */
-	public void setup(BeyondarObject beyondarObject);
+public interface BeyondarObjectModule extends Module{
 
 	public void onAngleChanged(Point3 angle);
 
@@ -40,4 +36,16 @@ public interface BeyondarObjectModule extends BeyondarModule {
 	public void onNameChanged(String name);
 
 	public void onImageUriChanged(String uri);
+
+	/**
+	 * This method is invoked when the module is removed.
+	 */
+	public void onDetached();
+
+	/**
+	 * Check if the module is attached.
+	 * 
+	 * @return
+	 */
+	public boolean isAttached();
 }

@@ -13,11 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.beyondar.android.world.module;
+package com.beyondar.android.module;
 
 import java.util.List;
 
-public interface Modulable<T extends BeyondarModule> {
+public interface Modulable<T extends Module> {
 
 	/**
 	 * Add a new module. This modules will be initialize ones is added

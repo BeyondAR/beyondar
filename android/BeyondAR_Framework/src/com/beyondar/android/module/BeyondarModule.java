@@ -13,15 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.beyondar.android.world.module;
-
-import android.content.Context;
+package com.beyondar.android.module;
 
 import com.beyondar.android.world.BeyondarObject;
 import com.beyondar.android.world.BeyondarObjectList;
 import com.beyondar.android.world.World;
 
-public interface WorldModule extends BeyondarModule {
+public interface BeyondarModule extends Module{
+
+	/**
+	 * This method is invoked when the module is removed.
+	 */
+	public void onDetached();
+
+	/**
+	 * Check if the module is attached.
+	 * 
+	 * @return
+	 */
+	public boolean isAttached();
 
 	/**
 	 * Setup the module according to the world
@@ -29,10 +39,8 @@ public interface WorldModule extends BeyondarModule {
 	 * @param world
 	 *            The world that loads the module
 	 * 
-	 * @param context
-	 *            Activity context.
 	 */
-	public void setup(World world, Context context);
+	public void setup(World world);
 
 	/**
 	 * This method is invoked when a new {@link BeyondarObject} is added to the
@@ -80,4 +88,9 @@ public interface WorldModule extends BeyondarModule {
 	 */
 	public void onDefaultImageChanged(String uri);
 
+	/** Called when the fragment is resumed */
+	public void onResume();
+
+	/** Called when the fragment is paused */
+	public void onPause();
 }

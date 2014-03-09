@@ -21,11 +21,11 @@ import com.beyondar.android.world.GeoObject;
 import com.beyondar.android.world.World;
 
 public class CustomWorldHelper {
-	
+
 	public static World sharedWorld;
 
 	public static World generateObjects(Context context) {
-		if (sharedWorld != null){
+		if (sharedWorld != null) {
 			return sharedWorld;
 		}
 		sharedWorld = new World(context);
@@ -81,11 +81,11 @@ public class CustomWorldHelper {
 		go8.setGeoPosition(41.26534261025682d, 1.926164369775198d);
 		go8.setImageResource(R.drawable.rectangle);
 		go8.setName("Object 8");
-		
+
 		GeoObject go9 = new GeoObject(9l);
 		go9.setGeoPosition(41.26530734214473d, 1.925808038959814d);
 		go9.setImageResource(R.drawable.creature_4);
-		go9.setName("Creature 88884");
+		go9.setName("Creature 4");
 
 		sharedWorld.addBeyondarObject(go1);
 		sharedWorld.addBeyondarObject(go2);

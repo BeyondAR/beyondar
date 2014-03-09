@@ -22,7 +22,6 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.widget.ImageView;
 
 import com.beyondar.android.world.BeyondarObject;
@@ -71,11 +70,12 @@ public class RadarView extends ImageView {
 				RadarPointModule radarPointModule = (RadarPointModule) beyondarObject
 						.getFirstModule(RadarPointModule.class);
 				if (radarPointModule != null) {
-					if (radarPointModule.getGeoObject().getDistanceFromUser() < mRadarModule.getMaxDistance()) {
+					if (radarPointModule.getGeoObject().getDistanceFromUser() < mRadarModule.getMaxDistance()
+							&& radarPointModule.getGeoObject().isVisible()) {
 						updateRadarPointPosition(radarPointModule, maxDistance);
 
 						mPaint.setColor(radarPointModule.getColor());
-						
+
 						canvas.drawCircle(radarPointModule.getX(), radarPointModule.getY(),
 								radarPointModule.getRaduis(), mPaint);
 					}

@@ -77,7 +77,6 @@ public class RadarPointModule implements GeoObjectModule {
 
 	@Override
 	public void onVisibilityChanged(boolean visible) {
-		// TODO
 	}
 
 	@Override

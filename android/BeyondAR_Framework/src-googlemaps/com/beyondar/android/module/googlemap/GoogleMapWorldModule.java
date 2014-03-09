@@ -51,7 +51,7 @@ public class GoogleMapWorldModule implements BeyondarModule, BitmapCache.OnExter
 	private int mIconSize;
 	private PendingBitmapsToBeLoaded<GeoObject> mPendingBitmaps;
 
-	private HashMap<Marker, GoogleMapGeoObjectModuleImpl> mMarkerHashMap;
+	private HashMap<Marker, GoogleMapGeoObjectModule> mMarkerHashMap;
 
 	private LatLng mLatLng;
 
@@ -62,7 +62,7 @@ public class GoogleMapWorldModule implements BeyondarModule, BitmapCache.OnExter
 	private Context mContext;
 
 	public GoogleMapWorldModule(Context context) {
-		mMarkerHashMap = new HashMap<Marker, GoogleMapGeoObjectModuleImpl>();
+		mMarkerHashMap = new HashMap<Marker, GoogleMapGeoObjectModule>();
 		mPendingBitmaps = new PendingBitmapsToBeLoaded<GeoObject>();
 		mAttached = false;
 		mContext = context;
@@ -101,8 +101,8 @@ public class GoogleMapWorldModule implements BeyondarModule, BitmapCache.OnExter
 	 */
 	protected void addGooGleMapModule(BeyondarObject beyondarObject) {
 		if (beyondarObject instanceof GeoObject) {
-			if (!beyondarObject.containsAnyModule(GoogleMapGeoObjectModuleImpl.class)) {
-				GoogleMapGeoObjectModuleImpl module = new GoogleMapGeoObjectModuleImpl(this, beyondarObject);
+			if (!beyondarObject.containsAnyModule(GoogleMapGeoObjectModule.class)) {
+				GoogleMapGeoObjectModule module = new GoogleMapGeoObjectModule(this, beyondarObject);
 				beyondarObject.addModule(module);
 				createMarker((GeoObject) beyondarObject, module);
 			}
@@ -152,10 +152,10 @@ public class GoogleMapWorldModule implements BeyondarModule, BitmapCache.OnExter
 
 	protected void createMarker(GeoObject geoObject) {
 		createMarker(geoObject,
-				(GoogleMapGeoObjectModuleImpl) geoObject.getFirstModule(GoogleMapGeoObjectModuleImpl.class));
+				(GoogleMapGeoObjectModule) geoObject.getFirstModule(GoogleMapGeoObjectModule.class));
 	}
 
-	protected void createMarker(GeoObject geoObject, GoogleMapGeoObjectModuleImpl module) {
+	protected void createMarker(GeoObject geoObject, GoogleMapGeoObjectModule module) {
 		if (geoObject == null || module == null) {
 			return;
 		}
@@ -174,11 +174,11 @@ public class GoogleMapWorldModule implements BeyondarModule, BitmapCache.OnExter
 		}
 	}
 
-	public void registerMarker(Marker marker, GoogleMapGeoObjectModuleImpl module) {
+	public void registerMarker(Marker marker, GoogleMapGeoObjectModule module) {
 		mMarkerHashMap.put(marker, module);
 	}
 
-	protected MarkerOptions createMarkerOptions(GeoObject geoObject, GoogleMapGeoObjectModuleImpl module) {
+	protected MarkerOptions createMarkerOptions(GeoObject geoObject, GoogleMapGeoObjectModule module) {
 		if (geoObject == null || module == null) {
 			return null;
 		}
@@ -192,8 +192,8 @@ public class GoogleMapWorldModule implements BeyondarModule, BitmapCache.OnExter
 		if (geoObject == null) {
 			return null;
 		}
-		GoogleMapGeoObjectModuleImpl module = (GoogleMapGeoObjectModuleImpl) geoObject
-				.getFirstModule(GoogleMapGeoObjectModuleImpl.class);
+		GoogleMapGeoObjectModule module = (GoogleMapGeoObjectModule) geoObject
+				.getFirstModule(GoogleMapGeoObjectModule.class);
 
 		return createMarkerOptions(geoObject, module);
 	}
@@ -250,8 +250,8 @@ public class GoogleMapWorldModule implements BeyondarModule, BitmapCache.OnExter
 		for (int i = 0; i < list.size(); i++) {
 			GeoObject gogm = list.get(i);
 
-			final GoogleMapGeoObjectModuleImpl module = (GoogleMapGeoObjectModuleImpl) gogm
-					.getFirstModule(GoogleMapGeoObjectModuleImpl.class);
+			final GoogleMapGeoObjectModule module = (GoogleMapGeoObjectModule) gogm
+					.getFirstModule(GoogleMapGeoObjectModule.class);
 			if (module != null) {
 				sHandler.post(new Runnable() {
 					@Override
@@ -316,8 +316,8 @@ public class GoogleMapWorldModule implements BeyondarModule, BitmapCache.OnExter
 	public void onBeyondarObjectRemoved(BeyondarObject beyondarObject, BeyondarObjectList beyondarObjectList) {
 		if (beyondarObject instanceof GeoObject) {
 			GeoObject geoObject = (GeoObject) beyondarObject;
-			GoogleMapGeoObjectModuleImpl gogmMod = (GoogleMapGeoObjectModuleImpl) geoObject
-					.getFirstModule(GoogleMapGeoObjectModuleImpl.class);
+			GoogleMapGeoObjectModule gogmMod = (GoogleMapGeoObjectModule) geoObject
+					.getFirstModule(GoogleMapGeoObjectModule.class);
 			if (gogmMod != null) {
 				if (gogmMod.getMarker() != null) {
 					mMarkerHashMap.remove(gogmMod.getMarker());

@@ -28,7 +28,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
-class GoogleMapGeoObjectModuleImpl implements GeoObjectModule {
+class GoogleMapGeoObjectModule implements GeoObjectModule {
 
 	private Marker mMarker;
 	private LatLng mLatLng;
@@ -36,7 +36,7 @@ class GoogleMapGeoObjectModuleImpl implements GeoObjectModule {
 	private boolean mAttached;
 	private GoogleMapWorldModule mWorldGoogleMapModule;
 
-	public GoogleMapGeoObjectModuleImpl(GoogleMapWorldModule worldGoogleMapModule, BeyondarObject beyondarObject) {
+	public GoogleMapGeoObjectModule(GoogleMapWorldModule worldGoogleMapModule, BeyondarObject beyondarObject) {
 		mAttached = false;
 		mWorldGoogleMapModule = worldGoogleMapModule;
 		if (mWorldGoogleMapModule == null){

@@ -189,7 +189,7 @@ protected void onCreate(Bundle savedInstanceState) {
      mWorld = new World(this);
      // As we want to use GoogleMaps, we are going to create the module and
      // attach it to the World
-     mGoogleMapModule = new GoogleMapWorldModule();
+     mGoogleMapModule = new GoogleMapWorldModule(context);
      // Then we need to set the map in to the GoogleMapModule
      mGoogleMapModule.setGoogleMap(mMap);
      // Now that we have the module created let's add it in to our world

@@ -75,6 +75,7 @@ public class RadarView extends ImageView {
 						updateRadarPointPosition(radarPointModule, maxDistance);
 
 						mPaint.setColor(radarPointModule.getColor());
+						
 						canvas.drawCircle(radarPointModule.getX(), radarPointModule.getY(),
 								radarPointModule.getRaduis(), mPaint);
 					}
@@ -90,10 +91,7 @@ public class RadarView extends ImageView {
 		float y = (float) ((getMeasuredHeight() / 2) / maxDistance * radarPointModule.getGeoObject()
 				.getPosition().y);
 		x = x + (getMeasuredWidth() / 2);
-		y = y + (getMeasuredHeight() / 2);
-		// Log.d("beyondar", "x=" + x + " y=" + y + " (" + getMeasuredWidth() +
-		// "x" + getMeasuredHeight() + ")");
-
+		y = -y + (getMeasuredHeight() / 2);
 		radarPointModule.setX(x);
 		radarPointModule.setY(y);
 

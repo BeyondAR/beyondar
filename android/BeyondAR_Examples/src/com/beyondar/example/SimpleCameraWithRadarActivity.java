@@ -54,13 +54,9 @@ public class SimpleCameraWithRadarActivity extends FragmentActivity implements O
 				R.id.beyondarFragment);
 
 		mTextviewMaxDistance = (TextView) findViewById(R.id.textMaxDistance);
-
 		mSeekBarMaxDistance = (SeekBar) findViewById(R.id.seekBarMaxDistance);
-		mSeekBarMaxDistance.setOnSeekBarChangeListener(this);
-		mSeekBarMaxDistance.setMax(500);
-		mSeekBarMaxDistance.setProgress(100);
-
 		mRadarView = (RadarView) findViewById(R.id.radarView);
+
 		mRadarModule = new RadarWorldModule();
 		mRadarModule.setRadarView(mRadarView);
 		mRadarModule.setMaxDistance(100);
@@ -74,6 +70,10 @@ public class SimpleCameraWithRadarActivity extends FragmentActivity implements O
 
 		// We also can see the Frames per seconds
 		mBeyondarFragment.showFPS(true);
+		
+		mSeekBarMaxDistance.setOnSeekBarChangeListener(this);
+		mSeekBarMaxDistance.setMax(300);
+		mSeekBarMaxDistance.setProgress(23);
 
 	}
 

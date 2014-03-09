@@ -19,7 +19,6 @@
 package com.beyondar.android.module.radar;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import android.content.Context;
 import android.hardware.Sensor;
@@ -55,8 +54,6 @@ public class RadarWorldModule implements WorldModule, SensorEventListener {
 	private float currentDegree = 0;
 
 	private double mMaxDistance = -1;
-
-	private List<RadarPointModule> mRadarPoints;
 
 	public RadarWorldModule() {
 	}
@@ -167,8 +164,6 @@ public class RadarWorldModule implements WorldModule, SensorEventListener {
 
 	@Override
 	public void onAccuracyChanged(Sensor sensor, int accuracy) {
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override
@@ -176,7 +171,8 @@ public class RadarWorldModule implements WorldModule, SensorEventListener {
 		if (mRadarView == null)
 			return;
 
-		// TODO: This operations are don in the ARRenderer, share the results to
+		// TODO: This operations are done in the ARRenderer, share the results
+		// to
 		// improve performance
 		switch (event.sensor.getType()) {
 		case Sensor.TYPE_ACCELEROMETER:

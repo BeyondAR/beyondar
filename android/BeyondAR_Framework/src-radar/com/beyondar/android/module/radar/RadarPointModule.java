@@ -18,7 +18,6 @@
  */
 package com.beyondar.android.module.radar;
 
-import android.R;
 import android.graphics.Color;
 import android.location.Location;
 

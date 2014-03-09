@@ -23,40 +23,32 @@ import java.util.ArrayList;
 import android.content.Context;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
-import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.view.animation.Animation;
 import android.view.animation.RotateAnimation;
 
 import com.beyondar.android.module.BeyondarModule;
-import com.beyondar.android.opengl.util.LowPassFilter;
+import com.beyondar.android.sensor.BeyondarSensorListener;
+import com.beyondar.android.sensor.BeyondarSensorManager;
 import com.beyondar.android.world.BeyondarObject;
 import com.beyondar.android.world.BeyondarObjectList;
 import com.beyondar.android.world.GeoObject;
 import com.beyondar.android.world.World;
 
-public class RadarWorldModule implements BeyondarModule, SensorEventListener {
+public class RadarWorldModule implements BeyondarModule, BeyondarSensorListener {
 
 	private World mWorld;
-	private Context mContext;
 	private RadarView mRadarView;
 
-	private SensorManager mSensorManager;
-
-	private Sensor mSensorAccelerometer;
-	private Sensor mSensorMagneticField;
 	private float[] mLastAccelerometer = new float[3];
 	private float[] mLastMagnetometer = new float[3];
-	private boolean mLastAccelerometerSet = false;
-	private boolean mLastMagnetometerSet = false;
 	private float[] mR = new float[9];
 	private float[] mOrientation = new float[3];
 	private float currentDegree = 0;
 
 	private double mMaxDistance = -1;
 
-	public RadarWorldModule(Context context) {
-		mContext = context;
+	public RadarWorldModule() {
 	}
 
 	World getWorld() {
@@ -65,7 +57,7 @@ public class RadarWorldModule implements BeyondarModule, SensorEventListener {
 
 	@Override
 	public void onDetached() {
-		unregisterListeners();
+		BeyondarSensorManager.unregisterSensorListener(this);
 	}
 
 	@Override
@@ -81,23 +73,8 @@ public class RadarWorldModule implements BeyondarModule, SensorEventListener {
 
 		addModuleToAllObjects();
 
-		mSensorManager = (SensorManager) mContext.getSystemService(Context.SENSOR_SERVICE);
-		mSensorAccelerometer = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
-		mSensorMagneticField = mSensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
+		BeyondarSensorManager.registerSensorListener(this);
 
-		registerSensors();
-
-	}
-
-	// TODO: Add onResume and onPause events in the module and force
-	private void registerSensors() {
-		mSensorManager.registerListener(this, mSensorAccelerometer, SensorManager.SENSOR_DELAY_GAME);
-		mSensorManager.registerListener(this, mSensorMagneticField, SensorManager.SENSOR_DELAY_GAME);
-	}
-
-	private void unregisterSensors() {
-		mSensorManager.unregisterListener(this, mSensorAccelerometer);
-		mSensorManager.unregisterListener(this, mSensorMagneticField);
 	}
 
 	private void addModuleToAllObjects() {
@@ -126,11 +103,6 @@ public class RadarWorldModule implements BeyondarModule, SensorEventListener {
 	public void setRadarView(RadarView radarView) {
 		mRadarView = radarView;
 		mRadarView.setRadarModule(this);
-	}
-
-	public void unregisterListeners() {
-		// to stop the listener and save battery
-		mSensorManager.unregisterListener(this);
 	}
 
 	@Override
@@ -162,34 +134,24 @@ public class RadarWorldModule implements BeyondarModule, SensorEventListener {
 	}
 
 	@Override
-	public void onAccuracyChanged(Sensor sensor, int accuracy) {
-	}
-
-	@Override
-	public void onSensorChanged(SensorEvent event) {
+	public void onSensorChanged(float[] filteredValues, SensorEvent event) {
 		if (mRadarView == null)
 			return;
-
-		// TODO: This operations are done in the ARRenderer, share the results
-		// to
-		// improve performance
 		switch (event.sensor.getType()) {
 		case Sensor.TYPE_ACCELEROMETER:
-			LowPassFilter.filter(event.values, mLastAccelerometer);
-			mLastAccelerometerSet = true;
+			mLastAccelerometer = filteredValues;
 			break;
 		case Sensor.TYPE_MAGNETIC_FIELD:
-			LowPassFilter.filter(event.values, mLastMagnetometer);
-			mLastMagnetometerSet = true;
+			mLastMagnetometer = filteredValues;
 			break;
 		}
-		if (mLastAccelerometerSet && mLastMagnetometerSet) {
-			boolean success = SensorManager
-					.getRotationMatrix(mR, null, mLastAccelerometer, mLastMagnetometer);
-			SensorManager.getOrientation(mR, mOrientation);
-			if (success)
-				rotateView((float) Math.toDegrees(mOrientation[0]));
-		}
+		if (mLastAccelerometer == null || mLastMagnetometer == null)
+			return;
+		
+		boolean success = SensorManager.getRotationMatrix(mR, null, mLastAccelerometer, mLastMagnetometer);
+		SensorManager.getOrientation(mR, mOrientation);
+		if (success)
+			rotateView((float) Math.toDegrees(mOrientation[0]));
 
 	}
 
@@ -227,11 +189,4 @@ public class RadarWorldModule implements BeyondarModule, SensorEventListener {
 		currentDegree = -degree;
 	}
 
-	@Override
-	public void onResume() {
-	}
-
-	@Override
-	public void onPause() {
-	}
 }

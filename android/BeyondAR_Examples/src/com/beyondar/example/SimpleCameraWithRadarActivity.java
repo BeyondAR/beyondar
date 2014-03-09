@@ -57,7 +57,7 @@ public class SimpleCameraWithRadarActivity extends FragmentActivity implements O
 		mSeekBarMaxDistance = (SeekBar) findViewById(R.id.seekBarMaxDistance);
 		mRadarView = (RadarView) findViewById(R.id.radarView);
 
-		mRadarModule = new RadarWorldModule(this);
+		mRadarModule = new RadarWorldModule();
 		mRadarModule.setRadarView(mRadarView);
 		mRadarModule.setMaxDistance(100);
 

@@ -52,8 +52,8 @@ public class GoogleMapActivity extends FragmentActivity implements OnMarkerClick
 		mGoogleMapModule = new GoogleMapWorldModule(this);
 		// Then we need to set the map in to the GoogleMapModule
 		mGoogleMapModule.setGoogleMap(mMap);
-		// Now that we have the module created let's add it in to our world
-		// NOTE: It is better to load the modules before start adding object in to the world
+		// Now that we have the module created let's add it to our world.
+		// NOTE: It is better to load the modules before start adding object in to the world.
 		mWorld.addModule(mGoogleMapModule);
 
 		mMap.setOnMarkerClickListener(this);

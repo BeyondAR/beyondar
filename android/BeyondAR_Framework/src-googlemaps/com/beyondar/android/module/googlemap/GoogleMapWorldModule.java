@@ -73,11 +73,6 @@ public class GoogleMapWorldModule implements BeyondarModule, BitmapCache.OnExter
 		mMap = map;
 	}
 
-	public GoogleMapWorldModule(Context context, int iconSize) {
-		this(context);
-		mIconSize = iconSize;
-	}
-
 	/**
 	 * Set the size of the marker icons in pixels
 	 * 
@@ -353,13 +348,5 @@ public class GoogleMapWorldModule implements BeyondarModule, BitmapCache.OnExter
 
 	@Override
 	public void onDefaultImageChanged(String uri) {
-	}
-
-	@Override
-	public void onResume() {
-	}
-
-	@Override
-	public void onPause() {
 	}
 }

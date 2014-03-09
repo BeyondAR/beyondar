@@ -22,7 +22,6 @@ import java.util.List;
 import android.content.Context;
 import android.location.Location;
 
-import com.beyondar.android.fragment.BeyondarFragment;
 import com.beyondar.android.module.BeyondarModule;
 import com.beyondar.android.module.Modulable;
 import com.beyondar.android.opengl.colision.MeshCollider;
@@ -83,9 +82,7 @@ public class World implements Modulable<BeyondarModule> {
 
 	/**
 	 * Add a {@link BeyondarModule} to the {@link World}. If the module exist it
-	 * will not be added again.<br>
-	 * This method should be only called from the {@link BeyondarFragment}, to
-	 * add a module use {@link BeyondarFragment}.
+	 * will not be added again.
 	 */
 	public void addModule(BeyondarModule module) {
 		synchronized (mLockModules) {
@@ -97,9 +94,7 @@ public class World implements Modulable<BeyondarModule> {
 	}
 
 	/**
-	 * Remove existing module. <br>
-	 * This method should be only called from the {@link BeyondarFragment}, to
-	 * remove a module use {@link BeyondarFragment}.
+	 * Remove existing module.
 	 * 
 	 * @param module
 	 *            module to be removed

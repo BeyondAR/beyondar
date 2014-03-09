@@ -35,7 +35,6 @@ import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
-import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.opengl.GLSurfaceView;
 import android.opengl.GLU;
@@ -44,8 +43,8 @@ import android.view.Surface;
 
 import com.beyondar.android.opengl.renderable.Renderable;
 import com.beyondar.android.opengl.texture.Texture;
-import com.beyondar.android.opengl.util.LowPassFilter;
 import com.beyondar.android.opengl.util.MatrixGrabber;
+import com.beyondar.android.sensor.BeyondarSensorListener;
 import com.beyondar.android.util.Logger;
 import com.beyondar.android.util.PendingBitmapsToBeLoaded;
 import com.beyondar.android.util.Utils;
@@ -62,7 +61,7 @@ import com.beyondar.android.world.World;
 // Some references:
 // http://ovcharov.me/2011/01/14/android-opengl-es-ray-picking/
 // http://magicscrollsofcode.blogspot.com/2010/10/3d-picking-in-android.html
-public class ARRenderer implements GLSurfaceView.Renderer, SensorEventListener,
+public class ARRenderer implements GLSurfaceView.Renderer, BeyondarSensorListener,
 		BitmapCache.OnExternalBitmapLoadedCacheListener {
 
 	public static interface SnapshotCallback {
@@ -107,7 +106,6 @@ public class ARRenderer implements GLSurfaceView.Renderer, SensorEventListener,
 
 	private boolean mScreenshot;
 	private SnapshotCallback mSnapshotCallback;
-	private SensorEventListener mExternalSensorListener;
 
 	private boolean mIsTablet;
 	private int mSurfaceRotation;
@@ -902,32 +900,23 @@ public class ARRenderer implements GLSurfaceView.Renderer, SensorEventListener,
 
 	}
 
-	@Override
-	public void onAccuracyChanged(Sensor sensor, int accuracy) {
-		if (mExternalSensorListener != null) {
-			mExternalSensorListener.onAccuracyChanged(sensor, accuracy);
-		}
-	}
 
 	@Override
-	public void onSensorChanged(SensorEvent event) {
+	public void onSensorChanged(float[] filteredValues, SensorEvent event){
 		if (!mRender) {
 			return;
 		}
 		switch (event.sensor.getType()) {
 		case Sensor.TYPE_ACCELEROMETER:
-			LowPassFilter.filter(event.values, mAccelerometerValues);
+			mAccelerometerValues = filteredValues;
 			break;
 		case Sensor.TYPE_MAGNETIC_FIELD:
-			LowPassFilter.filter(event.values, mMagneticValues);
+			mMagneticValues = filteredValues;
 			break;
 		default:
 			break;
 		}
 
-		if (mExternalSensorListener != null) {
-			mExternalSensorListener.onSensorChanged(event);
-		}
 	}
 
 	// view port

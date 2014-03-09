@@ -23,6 +23,7 @@ import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.TextView;
 
 import com.beyondar.android.fragment.BeyondarFragmentSupport;
+import com.beyondar.android.opengl.util.LowPassFilter;
 import com.beyondar.android.world.World;
 
 public class SimpleCameraWithCustomFilterActivity extends FragmentActivity implements OnSeekBarChangeListener {
@@ -70,7 +71,7 @@ public class SimpleCameraWithCustomFilterActivity extends FragmentActivity imple
 		if (seekBar == mSeekBarFilter) {
 			float value = ((float) progress/(float) 10000);
 			mTextviewFilterValue.setText("Filter value: " + value);
-			mBeyondarFragment.setSensorFilterAlpha(value);
+			LowPassFilter.ALPHA = value;
 		} 
 	}
 

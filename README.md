@@ -17,7 +17,7 @@ BeyondAR platform also supports Google Glass
 Just download the latest version of the framework [here](https://github.com/BeyondAR/beyondar/tree/master/android/libs) and add the needed jar files in to you libs folder.
 
 * beyondar-v#.jar: The basic lib to be able to run the framework
-* beyondar-googlemap-module-v#.jar: Module to use GoogleMaps with your `World`
+* beyondar-googlemap-module-v#.jar: Module to use GoogleMaps with your `World `
 
 ##How to build your first app
 
@@ -37,7 +37,7 @@ To be able to run BeyondAR we need to add the following lines on the AndroidMani
 <uses-feature android:name="android.hardware.sensor.compass" />
 ```
 
-To create the UI it we can choose using an Android Layout XML or using Java code. For both of them we can use the `BeyondarFragmentSupport` or the `BeyondarFragment` fragments.
+To create the UI it we can choose using an Android Layout XML or using Java code. For both of them we can use the `BeyondarFragmentSupport ` or the `BeyondarFragment ` fragments.
 
 ```xml
 <?xml version="1.0" encoding="utf-8"?>
@@ -68,9 +68,10 @@ public void onCreate(Bundle savedInstanceState) {
      getSupportFragmentManager().findFragmentById(R.id.beyondarFragment);
      ...
 }
+
 ```
 
-The next step is to create the `World` that holds the information related to the objects that need to be displayed in the app using augmented reality.
+The next step is to create the `World ` that holds the information related to the objects that need to be displayed in the app using augmented reality.
 
 ```java
 World world = new World(context);
@@ -116,7 +117,7 @@ world.addBeyondarObject(go4);
 //Finally we add the Wold data in to the fragment
 mBeyondarFragment.setWorld(mWorld);
 ```
-Now we have the app ready to show the GeoObjects. But we also want to capture events, for instance, when the user clicks on a GeoObject. For that we need to implement `OnClikBeyondarObjectListener`
+Now we have the app ready to show the GeoObjects. But we also want to capture events, for instance, when the user clicks on a GeoObject. For that we need to implement `OnClikBeyondarObjectListener `
 ```java
 ...
 mBeyondarFragment.setOnClickBeyondarObjectListener(this);
@@ -127,7 +128,7 @@ public void onClickBeyondarObject(ArrayList<BeyondarObject> beyondarObjects) {
 		Toast.makeText(this, "Clicked on: " + beyondarObjects.get(0).getName(), Toast.LENGTH_LONG).show();
 	}
 ```
-We also can capture the touch events using the `OnTouchBeyondarViewListener`:
+We also can capture the touch events using the `OnTouchBeyondarViewListener `:
 ```java
 ...
 @Override
@@ -172,7 +173,7 @@ public void onTouchBeyondarView(MotionEvent event, BeyondarGLSurfaceView beyonda
 ## Adding GoogleMaps module
 BeyondAR Framework uses modules to be able to add multiple features to the world engine. Google Maps Module is one example (available [here](https://github.com/BeyondAR/beyondar/tree/master/android/libs/modules)).
 
-To draw the all the `World` elements in the Google Map framework we just need a few lines of code:
+To draw the all the `World ` elements in the Google Map framework we just need a few lines of code:
 
 ```java
 ...
@@ -199,7 +200,7 @@ protected void onCreate(Bundle savedInstanceState) {
      ...
 }
 ```
-The `GoogleMapWorldModule` will take care of drawing all the `GeoObjects` in the `GoogleMap` object. So we also can add the a listener to the map to get notify when a `Marker` is click and then we can check which `GeoObject` is the owner of that `Marker`:
+The `GoogleMapWorldModule ` will take care of drawing all the `GeoObjects ` in the `GoogleMap ` object. So we also can add the a listener to the map to get notify when a `Marker ` is click and then we can check which `GeoObject ` is the owner of that `Marker `:
 
 ```java
 @Override
@@ -243,7 +244,7 @@ To do that let's add the view in our layout file:
 </FrameLayout>
 ```
 
-Now it is time to get the view in our `Activity` and play with it
+Now it is time to get the view in our `Activity ` and play with it
 
 ```java
 public void onCreate(Bundle savedInstanceState) {
@@ -262,18 +263,17 @@ public void onCreate(Bundle savedInstanceState) {
 
 ```
 
-
 ## Creating your own module
 
-BeyondAR architecture allows you to create your own modules that can be attached to the framework. For instance to have a better access to the `World` object in order to perform other extra task like using Google Maps, or a radar view.
+BeyondAR architecture allows you to create your own modules that can be attached to the framework. For instance to have a better access to the `World ` object in order to perform other extra task like using Google Maps, or a radar view.
 
-The first thing that we need to do is understand what do we need to implement in order to create our module. The interfaces are located in `com.beyondar.android.module`:
+The first thing that we need to do is understand what do we need to implement in order to create our module. The interfaces are located in `com.beyondar.android.module `:
 
-* `WorldModule`: This interface will allow your module to be notified when some events occur, like when the position has changed, a new object has been added/removed, all the `World` is cleaned, etc. ([here](https://github.com/BeyondAR/beyondar/blob/master/android/BeyondAR_Framework/src/com/beyondar/android/module/WorldModule.java) you will find the code).
-* `BeyondarObjectModule`: This interface allows your module to get notified when there are changes in a specific `BeyondarObject`. ([here](https://github.com/BeyondAR/beyondar/blob/master/android/BeyondAR_Framework/src/com/beyondar/android/module/BeyondarObjectModule.java) you will find the code).
-* `GeoObjectModule`: This interface extends `BeyondarObjectModule` and it have some extra code to make easier the control of the geo position of this kind of objects. ([here](https://github.com/BeyondAR/beyondar/blob/master/android/BeyondAR_Framework/src/com/beyondar/android/module/BeyondarObjectModule.java) you will find the code).
+* `WorldModule `: This interface will allow your module to be notified when some events occur, like when the position has changed, a new object has been added/removed, all the `World ` is cleaned, etc. ([here](https://github.com/BeyondAR/beyondar/blob/master/android/BeyondAR_Framework/src/com/beyondar/android/module/WorldModule.java) you will find the code).
+* `BeyondarObjectModule `: This interface allows your module to get notified when there are changes in a specific `BeyondarObject `. ([here](https://github.com/BeyondAR/beyondar/blob/master/android/BeyondAR_Framework/src/com/beyondar/android/module/BeyondarObjectModule.java) you will find the code).
+* `GeoObjectModule `: This interface extends `BeyondarObjectModule ` and it have some extra code to make easier the control of the geo position of this kind of objects. ([here](https://github.com/BeyondAR/beyondar/blob/master/android/BeyondAR_Framework/src/com/beyondar/android/module/BeyondarObjectModule.java) you will find the code).
 
-One of the main goals of `WorldModule` is to add `BeyondarObjectModule`/`GeoObjectModule` to all the `BeyondarObject`/`GeoObject` in the `World` object. To do that make sure to add you own module in when `setup(World world)` is called and when a new `BeyondarObject` is added:
+One of the main goals of `WorldModule ` is to add `BeyondarObjectModule `/`GeoObjectModule ` to all the `BeyondarObject `/`GeoObject ` in the `World ` object. To do that make sure to add you own module in when `setup(World world) ` is called and when a new `BeyondarObject ` is added:
 
 ```java
 @Override
@@ -288,7 +288,7 @@ public void onBeyondarObjectAdded(BeyondarObject beyondarObject, BeyondarObjectL
 }
 ```
 
-Once we have created the module we need to add it to the `World` class, for that we just use the method `myWorld.addModule(myModule)`.
+Once we have created the module we need to add it to the `World ` class, for that we just use the method `myWorld.addModule(myModule) `.
 
 
 

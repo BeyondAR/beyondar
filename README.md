@@ -171,7 +171,7 @@ public void onTouchBeyondarView(MotionEvent event, BeyondarGLSurfaceView beyonda
 ```
 
 ## Adding GoogleMaps module
-BeyondAR Framework uses modules to be able to add multiple features to the world engine. Google Maps Module is one example (available [here](https://github.com/BeyondAR/beyondar/tree/master/android/libs/modules)).
+BeyondAR Framework uses modules to be able to add multiple features to the world engine. Google Maps Module is one example ([jar](https://github.com/BeyondAR/beyondar/tree/master/android/libs/modules) & [src](https://github.com/BeyondAR/beyondar/tree/master/android/BeyondAR_Framework/src-googlemaps)).
 
 To draw the all the `World ` elements in the Google Map framework we just need a few lines of code:
 
@@ -223,7 +223,7 @@ public boolean onMarkerClick(Marker marker) {
 ```	
 ## Add radar view module
 
-If you want to add a radar view you could use the Radar module (available [here](https://github.com/BeyondAR/beyondar/tree/master/android/libs/modules)).
+If you want to add a radar view you could use the Radar module ([jar](https://github.com/BeyondAR/beyondar/tree/master/android/libs/modules) & [src](https://github.com/BeyondAR/beyondar/tree/master/android/BeyondAR_Framework/src-radar)).
 
 ![radar](http://beyondar.com/pictures/radar.jpg)
 
@@ -270,8 +270,8 @@ BeyondAR architecture allows you to create your own modules that can be attached
 The first thing that we need to do is understand what do we need to implement in order to create our module. The interfaces are located in `com.beyondar.android.module `:
 
 * `WorldModule `: This interface will allow your module to be notified when some events occur, like when the position has changed, a new object has been added/removed, all the `World ` is cleaned, etc. ([here](https://github.com/BeyondAR/beyondar/blob/master/android/BeyondAR_Framework/src/com/beyondar/android/module/WorldModule.java) you will find the code).
-* `BeyondarObjectModule `: This interface allows your module to get notified when there are changes in a specific `BeyondarObject `. ([here](https://github.com/BeyondAR/beyondar/blob/master/android/BeyondAR_Framework/src/com/beyondar/android/module/BeyondarObjectModule.java) you will find the code).
-* `GeoObjectModule `: This interface extends `BeyondarObjectModule ` and it have some extra code to make easier the control of the geo position of this kind of objects. ([here](https://github.com/BeyondAR/beyondar/blob/master/android/BeyondAR_Framework/src/com/beyondar/android/module/BeyondarObjectModule.java) you will find the code).
+* `BeyondarObjectModule `: This interface allows your module to get notified when there are changes in a specific `BeyondarObject ` ([here](https://github.com/BeyondAR/beyondar/blob/master/android/BeyondAR_Framework/src/com/beyondar/android/module/BeyondarObjectModule.java) you will find the code).
+* `GeoObjectModule `: This interface extends `BeyondarObjectModule ` and it have some extra code to make easier the control of the geo position of this kind of objects ([here](https://github.com/BeyondAR/beyondar/blob/master/android/BeyondAR_Framework/src/com/beyondar/android/module/BeyondarObjectModule.java) you will find the code).
 
 One of the main goals of `WorldModule ` is to add `BeyondarObjectModule `/`GeoObjectModule ` to all the `BeyondarObject `/`GeoObject ` in the `World ` object. To do that make sure to add you own module in when `setup(World world) ` is called and when a new `BeyondarObject ` is added:
 
@@ -279,7 +279,8 @@ One of the main goals of `WorldModule ` is to add `BeyondarObjectModule `/`GeoOb
 @Override
 public void onBeyondarObjectAdded(BeyondarObject beyondarObject, BeyondarObjectList beyondarObjectList) {
      if (beyondarObject instanceof GeoObject) { // Check if it is a GeoObject
-        if (!beyondarObject.containsAnyModule(RadarPointModule.class)) { // We need to check if there is our own module already attached
+        // We need to check if there is our own module already attached
+        if (!beyondarObject.containsAnyModule(RadarPointModule.class)) { 
             // Then we just create it and add it
             RadarPointModule module = new RadarPointModule(this, beyondarObject);
             beyondarObject.addModule(module);

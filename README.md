@@ -10,7 +10,7 @@ This framework has been designed to offer some resources to those developers wit
 
 BeyondAR platform also supports Google Glass
 
-![Screenshot](http://beyondar.com/pictures/glass.jpg)
+![glass](http://beyondar.com/pictures/glass.jpg)
 
 ##Adding BeyondAR in to your project
 
@@ -169,8 +169,8 @@ public void onTouchBeyondarView(MotionEvent event, BeyondarGLSurfaceView beyonda
 ...
 ```
 
-## Adding GoogleMaps support
-BeyondAR Framework uses modules to be able to add multiple features to the world engine. Google Maps is one example.
+## Adding GoogleMaps module
+BeyondAR Framework uses modules to be able to add multiple features to the world engine. Google Maps Module is one example (available [here](https://github.com/BeyondAR/beyondar/tree/master/android/libs/modules)).
 
 To draw the all the `World` elements in the Google Map framework we just need a few lines of code:
 
@@ -221,6 +221,27 @@ public boolean onMarkerClick(Marker marker) {
 }
 ```	
 ## Add radar view module
+
+If you want to add a radar view you could use the Radar module (available [here](https://github.com/BeyondAR/beyondar/tree/master/android/libs/modules)).
+
+![radar](http://beyondar.com/pictures/radar.jpg)
+
+To do that let's add the view in our layout file:
+
+```xml
+<FrameLayout
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_gravity="right|top"
+    android:background="@drawable/radar_bg_small" >
+
+    <com.beyondar.android.module.radar.RadarView
+        android:id="@+id/radarView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/radar_north_small" />
+</FrameLayout>
+```
 
 
 

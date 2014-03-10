@@ -26,7 +26,7 @@ To be able to run BeyondAR we need to add the following lines on the AndroidMani
 <!-- Minimum permissions for Beyondar -->
 <uses-permission android:name="android.permission.CAMERA" />
     
-<!-- For beyondar this is not mandatory unless you want to load something from internet (for instance images) -->
+<!-- For beyondar this is not mandatory unless you want to load something from Internet (for instance images) -->
 <uses-permission android:name="android.permission.INTERNET" />
 
 <!--  BeyondAR needs the following features-->
@@ -37,7 +37,7 @@ To be able to run BeyondAR we need to add the following lines on the AndroidMani
 <uses-feature android:name="android.hardware.sensor.compass" />
 ```
 
-To create the UI it we can choose using an Android Layout XML or using java code. For both of them we can use the `BeyondarFragmentSupport` or the `BeyondarFragment` fragments.
+To create the UI it we can choose using an Android Layout XML or using Java code. For both of them we can use the `BeyondarFragmentSupport` or the `BeyondarFragment` fragments.
 
 ```xml
 <?xml version="1.0" encoding="utf-8"?>
@@ -243,6 +243,24 @@ To do that let's add the view in our layout file:
 </FrameLayout>
 ```
 
+Now it is time to get the view in our `Activity` and play with it
+
+```java
+public void onCreate(Bundle savedInstanceState) {
+    ...
+    radarView = (RadarView) findViewById(R.id.radarView);
+    // Create the Radar module
+    mRadarModule = new RadarWorldModule();
+    // set the radar view in to our radar module
+    mRadarModule.setRadarView(mRadarView);
+    // Set how far (in meters) we want to display in the view
+    mRadarModule.setMaxDistance(100);
+    // and finally let's add the module
+    mWorld.addModule(mRadarModule);
+    ...
+}
+
+```
 
 
 ## Creating your own module

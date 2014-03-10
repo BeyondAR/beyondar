@@ -19,7 +19,7 @@ import com.beyondar.android.world.BeyondarObject;
 import com.beyondar.android.world.BeyondarObjectList;
 import com.beyondar.android.world.World;
 
-public interface BeyondarModule extends Module {
+public interface WorldModule extends Module {
 
 	/**
 	 * This method is invoked when the module is removed.

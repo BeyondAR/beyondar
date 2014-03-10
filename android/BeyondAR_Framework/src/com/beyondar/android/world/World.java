@@ -22,7 +22,7 @@ import java.util.List;
 import android.content.Context;
 import android.location.Location;
 
-import com.beyondar.android.module.BeyondarModule;
+import com.beyondar.android.module.WorldModule;
 import com.beyondar.android.module.Modulable;
 import com.beyondar.android.opengl.colision.MeshCollider;
 import com.beyondar.android.util.cache.BitmapCache;
@@ -32,7 +32,7 @@ import com.beyondar.android.util.math.geom.Point3;
 import com.beyondar.android.util.math.geom.Ray;
 import com.beyondar.android.util.math.geom.Vector3;
 
-public class World implements Modulable<BeyondarModule> {
+public class World implements Modulable<WorldModule> {
 
 	protected static final String TAG = "world";
 
@@ -55,7 +55,7 @@ public class World implements Modulable<BeyondarModule> {
 	private BitmapCache mBitmapHolder;
 	private String mDefaultBitmap;
 
-	private List<BeyondarModule> mModules;
+	private List<WorldModule> mModules;
 	private Object mLockModules = new Object();
 
 	public World(Context context) {
@@ -63,7 +63,7 @@ public class World implements Modulable<BeyondarModule> {
 		mBitmapHolder = BitmapCache.initialize(mContext.getResources(), getClass().getName(), true);
 		createBeyondarObjectListArray();
 		mArViewDistance = MAX_AR_VIEW_DISTANCE;
-		mModules = new ArrayList<BeyondarModule>(5);
+		mModules = new ArrayList<WorldModule>(5);
 	}
 
 	protected Context getContext() {
@@ -81,10 +81,10 @@ public class World implements Modulable<BeyondarModule> {
 	}
 
 	/**
-	 * Add a {@link BeyondarModule} to the {@link World}. If the module exist it
+	 * Add a {@link WorldModule} to the {@link World}. If the module exist it
 	 * will not be added again.
 	 */
-	public void addModule(BeyondarModule module) {
+	public void addModule(WorldModule module) {
 		synchronized (mLockModules) {
 			if (!mModules.contains(module)) {
 				mModules.add(module);
@@ -101,7 +101,7 @@ public class World implements Modulable<BeyondarModule> {
 	 * @return True if the module has been removed, false otherwise
 	 */
 	@Override
-	public boolean removeModule(BeyondarModule module) {
+	public boolean removeModule(WorldModule module) {
 		boolean removed = false;
 		synchronized (mLockModules) {
 			removed = mModules.remove(module);
@@ -115,16 +115,16 @@ public class World implements Modulable<BeyondarModule> {
 	@Override
 	public void cleanModules() {
 		synchronized (mLockModules) {
-			for (BeyondarModule module : mModules) {
+			for (WorldModule module : mModules) {
 				removeModule(module);
 			}
 		}
 	}
 
 	@Override
-	public BeyondarModule getFirstModule(Class<? extends BeyondarModule> moduleClass) {
+	public WorldModule getFirstModule(Class<? extends WorldModule> moduleClass) {
 		synchronized (mLockModules) {
-			for (BeyondarModule module : mModules) {
+			for (WorldModule module : mModules) {
 				if (moduleClass.isInstance(module)) {
 					return module;
 				}
@@ -134,28 +134,28 @@ public class World implements Modulable<BeyondarModule> {
 	}
 
 	@Override
-	public boolean containsAnyModule(Class<? extends BeyondarModule> moduleClass) {
+	public boolean containsAnyModule(Class<? extends WorldModule> moduleClass) {
 		return getFirstModule(moduleClass) != null;
 	}
 
 	@Override
-	public boolean containsModule(BeyondarModule module) {
+	public boolean containsModule(WorldModule module) {
 		synchronized (mLockModules) {
 			return mModules.contains(module);
 		}
 	}
 
 	@Override
-	public List<BeyondarModule> getAllModules(Class<? extends BeyondarModule> moduleClass) {
-		ArrayList<BeyondarModule> result = new ArrayList<BeyondarModule>(5);
+	public List<WorldModule> getAllModules(Class<? extends WorldModule> moduleClass) {
+		ArrayList<WorldModule> result = new ArrayList<WorldModule>(5);
 		return getAllModules(moduleClass, result);
 	}
 
 	@Override
-	public List<BeyondarModule> getAllModules(Class<? extends BeyondarModule> moduleClass,
-			List<BeyondarModule> result) {
+	public List<WorldModule> getAllModules(Class<? extends WorldModule> moduleClass,
+			List<WorldModule> result) {
 		synchronized (mLockModules) {
-			for (BeyondarModule module : mModules) {
+			for (WorldModule module : mModules) {
 				if (moduleClass.isInstance(module)) {
 					result.add(module);
 				}
@@ -165,9 +165,9 @@ public class World implements Modulable<BeyondarModule> {
 	}
 
 	@Override
-	public List<BeyondarModule> getAllModules() {
+	public List<WorldModule> getAllModules() {
 		synchronized (mLockModules) {
-			return new ArrayList<BeyondarModule>(mModules);
+			return new ArrayList<WorldModule>(mModules);
 		}
 	}
 
@@ -195,7 +195,7 @@ public class World implements Modulable<BeyondarModule> {
 				listTmp = new BeyondarObjectList(worldListType, this);
 				mBeyondarObjectLists.add(listTmp);
 				synchronized (mLockModules) {
-					for (BeyondarModule module : mModules) {
+					for (WorldModule module : mModules) {
 						module.onBeyondarObjectListCreated(listTmp);
 					}
 				}
@@ -203,7 +203,7 @@ public class World implements Modulable<BeyondarModule> {
 			beyondarObject.setWorldListType(worldListType);
 			listTmp.add(beyondarObject);
 			synchronized (mLockModules) {
-				for (BeyondarModule module : mModules) {
+				for (WorldModule module : mModules) {
 					module.onBeyondarObjectAdded(beyondarObject, listTmp);
 				}
 			}
@@ -223,7 +223,7 @@ public class World implements Modulable<BeyondarModule> {
 			if (listTmp != null) {
 				listTmp.remove(beyondarObject);
 				synchronized (mLockModules) {
-					for (BeyondarModule module : mModules) {
+					for (WorldModule module : mModules) {
 						module.onBeyondarObjectRemoved(beyondarObject, listTmp);
 					}
 				}
@@ -286,7 +286,7 @@ public class World implements Modulable<BeyondarModule> {
 		mLongitude = longitude;
 		mAltitude = altitude;
 		synchronized (mLockModules) {
-			for (BeyondarModule module : mModules) {
+			for (WorldModule module : mModules) {
 				module.onGeoPositionChanged(latitude, longitude, altitude);
 			}
 		}
@@ -314,7 +314,7 @@ public class World implements Modulable<BeyondarModule> {
 	public synchronized void setDefaultBitmap(String uri) {
 		mDefaultBitmap = uri;
 		synchronized (mLockModules) {
-			for (BeyondarModule module : mModules) {
+			for (WorldModule module : mModules) {
 				module.onDefaultImageChanged(uri);
 			}
 		}

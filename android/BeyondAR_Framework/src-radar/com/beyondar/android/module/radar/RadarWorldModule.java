@@ -20,14 +20,13 @@ package com.beyondar.android.module.radar;
 
 import java.util.ArrayList;
 
-import android.content.Context;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorManager;
 import android.view.animation.Animation;
 import android.view.animation.RotateAnimation;
 
-import com.beyondar.android.module.BeyondarModule;
+import com.beyondar.android.module.WorldModule;
 import com.beyondar.android.sensor.BeyondarSensorListener;
 import com.beyondar.android.sensor.BeyondarSensorManager;
 import com.beyondar.android.world.BeyondarObject;
@@ -35,7 +34,7 @@ import com.beyondar.android.world.BeyondarObjectList;
 import com.beyondar.android.world.GeoObject;
 import com.beyondar.android.world.World;
 
-public class RadarWorldModule implements BeyondarModule, BeyondarSensorListener {
+public class RadarWorldModule implements WorldModule, BeyondarSensorListener {
 
 	private World mWorld;
 	private RadarView mRadarView;

@@ -169,7 +169,7 @@ public void onTouchBeyondarView(MotionEvent event, BeyondarGLSurfaceView beyonda
 ...
 ```
 
-##Adding GoogleMaps support
+## Adding GoogleMaps support
 BeyondAR Framework uses modules to be able to add multiple features to the world engine. Google Maps is one example.
 
 To draw the all the `World` elements in the Google Map framework we just need a few lines of code:
@@ -220,6 +220,9 @@ public boolean onMarkerClick(Marker marker) {
      return false;
 }
 ```	
+## Add radar view module
+
+
 
 ## Creating your own module
 
@@ -236,13 +239,15 @@ One of the main goals of `WorldModule` is to add `BeyondarObjectModule`/`GeoObje
 ```java
 @Override
 public void onBeyondarObjectAdded(BeyondarObject beyondarObject, BeyondarObjectList beyondarObjectList) {
-     if (beyondarObject instanceof GeoObject) { // Check if is a GeoObject
-        if (!beyondarObject.containsAnyModule(RadarPointModule.class)) { // We need to check if there is already our own module already attached
-            RadarPointModule module = new RadarPointModule(this, beyondarObject); // If not, we just create it and add it
+     if (beyondarObject instanceof GeoObject) { // Check if it is a GeoObject
+        if (!beyondarObject.containsAnyModule(RadarPointModule.class)) { // We need to check if there is our own module already attached
+            // Then we just create it and add it
+            RadarPointModule module = new RadarPointModule(this, beyondarObject);
             beyondarObject.addModule(module);
         }
     }
 }
+```
 
 Once we have created the module we need to add it to the `World` class, for that we just use the method `myWorld.addModule(myModule)`.
 

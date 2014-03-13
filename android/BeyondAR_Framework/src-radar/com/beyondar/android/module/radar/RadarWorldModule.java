@@ -19,6 +19,7 @@
 package com.beyondar.android.module.radar;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
@@ -47,7 +48,10 @@ public class RadarWorldModule implements WorldModule, BeyondarSensorListener {
 
 	private double mMaxDistance = -1;
 
+	private HashMap<Integer, Integer> mColorMaping;
+
 	public RadarWorldModule() {
+		mColorMaping = new HashMap<Integer, Integer>();
 	}
 
 	World getWorld() {
@@ -76,11 +80,15 @@ public class RadarWorldModule implements WorldModule, BeyondarSensorListener {
 
 	}
 
+	public void setListColor(int listType, int color) {
+		mColorMaping.put(listType, color);
+	}
+
 	private void addModuleToAllObjects() {
 		ArrayList<BeyondarObjectList> beyondARLists = mWorld.getBeyondarObjectLists();
 		for (BeyondarObjectList list : beyondARLists) {
 			for (BeyondarObject beyondarObject : list) {
-				addRadarPointModule(beyondarObject);
+				addRadarPointModule(beyondarObject, list.getType());
 			}
 		}
 	}
@@ -90,10 +98,13 @@ public class RadarWorldModule implements WorldModule, BeyondarSensorListener {
 	 * 
 	 * @param beyondarObject
 	 */
-	protected void addRadarPointModule(BeyondarObject beyondarObject) {
+	protected void addRadarPointModule(BeyondarObject beyondarObject, int listType) {
 		if (beyondarObject instanceof GeoObject) {
 			if (!beyondarObject.containsAnyModule(RadarPointModule.class)) {
 				RadarPointModule module = new RadarPointModule(this, beyondarObject);
+				if (mColorMaping.containsKey(listType)) {
+					module.setColor(mColorMaping.get(listType));
+				}
 				beyondarObject.addModule(module);
 			}
 		}
@@ -106,17 +117,15 @@ public class RadarWorldModule implements WorldModule, BeyondarSensorListener {
 
 	@Override
 	public void onBeyondarObjectAdded(BeyondarObject beyondarObject, BeyondarObjectList beyondarObjectList) {
-		addRadarPointModule(beyondarObject);
+		addRadarPointModule(beyondarObject, beyondarObjectList.getType());
 	}
 
 	@Override
 	public void onBeyondarObjectRemoved(BeyondarObject beyondarObject, BeyondarObjectList beyondarObjectList) {
-
 	}
 
 	@Override
 	public void onBeyondarObjectListCreated(BeyondarObjectList beyondarObjectList) {
-
 	}
 
 	@Override
@@ -146,7 +155,7 @@ public class RadarWorldModule implements WorldModule, BeyondarSensorListener {
 		}
 		if (mLastAccelerometer == null || mLastMagnetometer == null)
 			return;
-		
+
 		boolean success = SensorManager.getRotationMatrix(mR, null, mLastAccelerometer, mLastMagnetometer);
 		SensorManager.getOrientation(mR, mOrientation);
 		if (success)

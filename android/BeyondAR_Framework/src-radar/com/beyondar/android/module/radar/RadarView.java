@@ -61,7 +61,6 @@ public class RadarView extends ImageView {
 	private void drawRadarPoints(Canvas canvas) {
 		if (mRadarModule == null)
 			return;
-		// Log.d("beyondar", "=======");
 		double maxDistance = mRadarModule.getMaxDistance();
 		for (int i = 0; i < mRadarModule.getWorld().getBeyondarObjectLists().size(); i++) {
 			BeyondarObjectList list = mRadarModule.getWorld().getBeyondarObjectList(i);

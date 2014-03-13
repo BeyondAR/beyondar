@@ -22,8 +22,8 @@ import java.util.List;
 import android.content.Context;
 import android.location.Location;
 
-import com.beyondar.android.module.WorldModule;
 import com.beyondar.android.module.Modulable;
+import com.beyondar.android.module.WorldModule;
 import com.beyondar.android.opengl.colision.MeshCollider;
 import com.beyondar.android.util.cache.BitmapCache;
 import com.beyondar.android.util.math.Distance;

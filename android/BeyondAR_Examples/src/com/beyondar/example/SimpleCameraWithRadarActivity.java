@@ -15,6 +15,7 @@
  */
 package com.beyondar.example;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.view.Window;
@@ -63,6 +64,8 @@ public class SimpleCameraWithRadarActivity extends FragmentActivity implements O
 		mRadarModule.setRadarView(mRadarView);
 		// Set how far (in meters) we want to display in the view
 		mRadarModule.setMaxDistance(100);
+		
+		mRadarModule.setListColor(World.LIST_TYPE_DEFAULT, Color.RED);
 
 		// We create the world and fill it ...
 		mWorld = CustomWorldHelper.generateObjects(this);

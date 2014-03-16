@@ -30,21 +30,25 @@ import com.beyondar.android.world.GeoObject;
 
 public class RadarPointModule implements GeoObjectModule {
 
+	public static final int DEFAULT_COLOR = Color.BLUE;
+	public static final float DEFAULT_RADIUS_DP = 1.5f;
+
 	private RadarWorldModule mRadarWorldModule;
 	private GeoObject mGeoObject;
 	private boolean mAttached;
 
 	private float mX;
 	private float mY;
-	private float mRaduis;
+	private float mRaduis, mRaduisPixels;
 	private int mColor;
 	private float[] mDistanceArray = new float[1];
 
 	public RadarPointModule(RadarWorldModule radarWorldModule, BeyondarObject beyondarObject) {
 		mRadarWorldModule = radarWorldModule;
-		mColor = Color.BLUE;
-		mRaduis = 5;
-		
+		mColor = DEFAULT_COLOR;
+		mRaduis = DEFAULT_RADIUS_DP;
+		mRaduisPixels = -1;
+
 		setBeyondarObject(beyondarObject);
 	}
 
@@ -143,5 +147,14 @@ public class RadarPointModule implements GeoObjectModule {
 
 	public void setRaduis(float raduis) {
 		mRaduis = raduis;
+		mRaduisPixels = -1;
+	}
+
+	float getRaduisPixels() {
+		return mRaduisPixels;
+	}
+
+	void setRaduisPixels(float raduis) {
+		mRaduisPixels = raduis;
 	}
 }

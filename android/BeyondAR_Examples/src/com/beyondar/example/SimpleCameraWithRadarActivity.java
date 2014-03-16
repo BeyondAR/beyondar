@@ -65,7 +65,10 @@ public class SimpleCameraWithRadarActivity extends FragmentActivity implements O
 		// Set how far (in meters) we want to display in the view
 		mRadarModule.setMaxDistance(100);
 		
-		mRadarModule.setListColor(World.LIST_TYPE_DEFAULT, Color.RED);
+		// We can customize the color of the items
+		mRadarModule.setListColor(CustomWorldHelper.LIST_TYPE_EXAMPLE_1, Color.RED);
+		// and also the size
+		mRadarModule.setListDotRadius(CustomWorldHelper.LIST_TYPE_EXAMPLE_1, 3);
 
 		// We create the world and fill it ...
 		mWorld = CustomWorldHelper.generateObjects(this);

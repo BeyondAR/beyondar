@@ -21,6 +21,7 @@ package com.beyondar.android.module.radar;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import android.graphics.Color;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorManager;
@@ -49,9 +50,11 @@ public class RadarWorldModule implements WorldModule, BeyondarSensorListener {
 	private double mMaxDistance = -1;
 
 	private HashMap<Integer, Integer> mColorMaping;
+	private HashMap<Integer, Float> mRadiusMaping;
 
 	public RadarWorldModule() {
 		mColorMaping = new HashMap<Integer, Integer>();
+		mRadiusMaping = new HashMap<Integer, Float>();
 	}
 
 	World getWorld() {
@@ -77,11 +80,45 @@ public class RadarWorldModule implements WorldModule, BeyondarSensorListener {
 		addModuleToAllObjects();
 
 		BeyondarSensorManager.registerSensorListener(this);
-
 	}
 
+	/**
+	 * Set the color for a specific list type. Use the {@link Color} class to
+	 * help you with that task.
+	 * 
+	 * @param listType
+	 *            The list type that will have the specified color.
+	 * @param color
+	 *            The color for the dots.
+	 */
 	public void setListColor(int listType, int color) {
 		mColorMaping.put(listType, color);
+	}
+
+	/**
+	 * Set the size of the dot's radius in the radars in dp.
+	 * 
+	 * @param listType
+	 *            The list type that will have the specified size
+	 * @param size
+	 *            The size in dp
+	 */
+	public void setListDotRadius(int listType, float size) {
+		mRadiusMaping.put(listType, size);
+	}
+
+	public int getListColor(int listType) {
+		if (mColorMaping.containsKey(listType)) {
+			return mColorMaping.get(listType);
+		}
+		return RadarPointModule.DEFAULT_COLOR;
+	}
+
+	public float getListDotRadius(int listType) {
+		if (mRadiusMaping.containsKey(listType)) {
+			return mRadiusMaping.get(listType);
+		}
+		return RadarPointModule.DEFAULT_RADIUS_DP;
 	}
 
 	private void addModuleToAllObjects() {
@@ -104,6 +141,9 @@ public class RadarWorldModule implements WorldModule, BeyondarSensorListener {
 				RadarPointModule module = new RadarPointModule(this, beyondarObject);
 				if (mColorMaping.containsKey(listType)) {
 					module.setColor(mColorMaping.get(listType));
+				}
+				if (mRadiusMaping.containsKey(listType)) {
+					module.setRaduis(mRadiusMaping.get(listType));
 				}
 				beyondarObject.addModule(module);
 			}
@@ -130,7 +170,8 @@ public class RadarWorldModule implements WorldModule, BeyondarSensorListener {
 
 	@Override
 	public void onWorldCleaned() {
-		// mRadarPoints.clear();
+		mColorMaping.clear();
+		mRadiusMaping.clear();
 	}
 
 	@Override

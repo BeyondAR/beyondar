@@ -21,6 +21,7 @@ import com.beyondar.android.world.GeoObject;
 import com.beyondar.android.world.World;
 
 public class CustomWorldHelper {
+	public static final int LIST_TYPE_EXAMPLE_1 = 1;
 
 	public static World sharedWorld;
 
@@ -88,7 +89,7 @@ public class CustomWorldHelper {
 		go9.setName("Creature 4");
 
 		sharedWorld.addBeyondarObject(go1);
-		sharedWorld.addBeyondarObject(go2);
+		sharedWorld.addBeyondarObject(go2, LIST_TYPE_EXAMPLE_1);
 		sharedWorld.addBeyondarObject(go3);
 		sharedWorld.addBeyondarObject(go4);
 		sharedWorld.addBeyondarObject(go5);

@@ -19,9 +19,11 @@
 package com.beyondar.android.module.radar;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.util.AttributeSet;
+import android.util.TypedValue;
 import android.widget.ImageView;
 
 import com.beyondar.android.world.BeyondarObject;
@@ -75,8 +77,11 @@ public class RadarView extends ImageView {
 
 						mPaint.setColor(radarPointModule.getColor());
 
+						if (radarPointModule.getRaduisPixels() == -1) {
+							radarPointModule.setRaduisPixels(dpToPixels(radarPointModule.getRaduis()));
+						}
 						canvas.drawCircle(radarPointModule.getX(), radarPointModule.getY(),
-								radarPointModule.getRaduis(), mPaint);
+								radarPointModule.getRaduisPixels(), mPaint);
 					}
 				}
 			}
@@ -98,5 +103,11 @@ public class RadarView extends ImageView {
 
 	void setRadarModule(RadarWorldModule radarModule) {
 		mRadarModule = radarModule;
+	}
+
+	private float dpToPixels(float dp) {
+		Resources r = getResources();
+		float px = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, r.getDisplayMetrics());
+		return px;
 	}
 }

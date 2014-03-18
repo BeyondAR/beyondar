@@ -18,8 +18,8 @@
  */
 package com.beyondar.android.module.radar;
 
-import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import android.graphics.Color;
 import android.hardware.Sensor;
@@ -122,7 +122,7 @@ public class RadarWorldModule implements WorldModule, BeyondarSensorListener {
 	}
 
 	private void addModuleToAllObjects() {
-		ArrayList<BeyondarObjectList> beyondARLists = mWorld.getBeyondarObjectLists();
+		List<BeyondarObjectList> beyondARLists = mWorld.getBeyondarObjectLists();
 		for (BeyondarObjectList list : beyondARLists) {
 			for (BeyondarObject beyondarObject : list) {
 				addRadarPointModule(beyondarObject, list.getType());

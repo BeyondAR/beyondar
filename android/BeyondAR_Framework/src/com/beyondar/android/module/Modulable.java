@@ -19,6 +19,7 @@ import java.util.List;
 
 public interface Modulable<T extends Module> {
 
+	public static int DEFAULT_INIT_MODULES_CAPACITY = 3;
 	/**
 	 * Add a new module. This modules will be initialize ones is added
 	 * 

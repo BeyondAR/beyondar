@@ -17,6 +17,7 @@ package com.beyondar.android.module.googlemap;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -279,7 +280,7 @@ public class GoogleMapWorldModule implements WorldModule, BitmapCache.OnExternal
 	}
 
 	private void addModuleToAllObjects() {
-		ArrayList<BeyondarObjectList> beyondARLists = mWorld.getBeyondarObjectLists();
+		List<BeyondarObjectList> beyondARLists = mWorld.getBeyondarObjectLists();
 		for (BeyondarObjectList list : beyondARLists) {
 			for (BeyondarObject beyondarObject : list) {
 				addGooGleMapModule(beyondarObject);

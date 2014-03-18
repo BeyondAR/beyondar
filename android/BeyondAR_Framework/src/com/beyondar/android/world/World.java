@@ -48,22 +48,24 @@ public class World implements Modulable<WorldModule> {
 
 	private float ZERO = 1e-8f;
 	private Object mLock = new Object();
-	protected ArrayList<BeyondarObjectList> mBeyondarObjectLists;
-	protected double mLongitude, mLatitude, mAltitude;
+	
+	protected List<BeyondarObjectList> beyondarObjectLists;
+	protected double longitude, latitude, altitude;
+	
 	private Context mContext;
 	private double mArViewDistance;
 	private BitmapCache mBitmapHolder;
 	private String mDefaultBitmap;
 
-	private List<WorldModule> mModules;
-	private Object mLockModules = new Object();
+	protected List<WorldModule> modules;
+	protected Object lockModules = new Object();
 
 	public World(Context context) {
 		mContext = context;
 		mBitmapHolder = BitmapCache.initialize(mContext.getResources(), getClass().getName(), true);
 		createBeyondarObjectListArray();
 		mArViewDistance = MAX_AR_VIEW_DISTANCE;
-		mModules = new ArrayList<WorldModule>(5);
+		modules = new ArrayList<WorldModule>(DEFAULT_INIT_MODULES_CAPACITY);
 	}
 
 	protected Context getContext() {
@@ -75,8 +77,8 @@ public class World implements Modulable<WorldModule> {
 	}
 
 	private void createBeyondarObjectListArray() {
-		mBeyondarObjectLists = new ArrayList<BeyondarObjectList>();
-		mBeyondarObjectLists.add(new BeyondarObjectList(LIST_TYPE_DEFAULT, this));
+		beyondarObjectLists = new ArrayList<BeyondarObjectList>();
+		beyondarObjectLists.add(new BeyondarObjectList(LIST_TYPE_DEFAULT, this));
 
 	}
 
@@ -85,9 +87,9 @@ public class World implements Modulable<WorldModule> {
 	 * will not be added again.
 	 */
 	public void addModule(WorldModule module) {
-		synchronized (mLockModules) {
-			if (!mModules.contains(module)) {
-				mModules.add(module);
+		synchronized (lockModules) {
+			if (!modules.contains(module)) {
+				modules.add(module);
 			}
 		}
 		module.setup(this);
@@ -103,8 +105,8 @@ public class World implements Modulable<WorldModule> {
 	@Override
 	public boolean removeModule(WorldModule module) {
 		boolean removed = false;
-		synchronized (mLockModules) {
-			removed = mModules.remove(module);
+		synchronized (lockModules) {
+			removed = modules.remove(module);
 		}
 		if (removed) {
 			module.onDetached();
@@ -114,8 +116,8 @@ public class World implements Modulable<WorldModule> {
 
 	@Override
 	public void cleanModules() {
-		synchronized (mLockModules) {
-			for (WorldModule module : mModules) {
+		synchronized (lockModules) {
+			for (WorldModule module : modules) {
 				removeModule(module);
 			}
 		}
@@ -123,8 +125,8 @@ public class World implements Modulable<WorldModule> {
 
 	@Override
 	public WorldModule getFirstModule(Class<? extends WorldModule> moduleClass) {
-		synchronized (mLockModules) {
-			for (WorldModule module : mModules) {
+		synchronized (lockModules) {
+			for (WorldModule module : modules) {
 				if (moduleClass.isInstance(module)) {
 					return module;
 				}
@@ -140,8 +142,8 @@ public class World implements Modulable<WorldModule> {
 
 	@Override
 	public boolean containsModule(WorldModule module) {
-		synchronized (mLockModules) {
-			return mModules.contains(module);
+		synchronized (lockModules) {
+			return modules.contains(module);
 		}
 	}
 
@@ -154,8 +156,8 @@ public class World implements Modulable<WorldModule> {
 	@Override
 	public List<WorldModule> getAllModules(Class<? extends WorldModule> moduleClass,
 			List<WorldModule> result) {
-		synchronized (mLockModules) {
-			for (WorldModule module : mModules) {
+		synchronized (lockModules) {
+			for (WorldModule module : modules) {
 				if (moduleClass.isInstance(module)) {
 					result.add(module);
 				}
@@ -166,8 +168,8 @@ public class World implements Modulable<WorldModule> {
 
 	@Override
 	public List<WorldModule> getAllModules() {
-		synchronized (mLockModules) {
-			return new ArrayList<WorldModule>(mModules);
+		synchronized (lockModules) {
+			return new ArrayList<WorldModule>(modules);
 		}
 	}
 
@@ -193,17 +195,17 @@ public class World implements Modulable<WorldModule> {
 			BeyondarObjectList listTmp = getBeyondarObjectList(worldListType);
 			if (listTmp == null) {
 				listTmp = new BeyondarObjectList(worldListType, this);
-				mBeyondarObjectLists.add(listTmp);
-				synchronized (mLockModules) {
-					for (WorldModule module : mModules) {
+				beyondarObjectLists.add(listTmp);
+				synchronized (lockModules) {
+					for (WorldModule module : modules) {
 						module.onBeyondarObjectListCreated(listTmp);
 					}
 				}
 			}
 			beyondarObject.setWorldListType(worldListType);
 			listTmp.add(beyondarObject);
-			synchronized (mLockModules) {
-				for (WorldModule module : mModules) {
+			synchronized (lockModules) {
+				for (WorldModule module : modules) {
 					module.onBeyondarObjectAdded(beyondarObject, listTmp);
 				}
 			}
@@ -222,8 +224,8 @@ public class World implements Modulable<WorldModule> {
 			BeyondarObjectList listTmp = getBeyondarObjectList(beyondarObject.getWorldListType());
 			if (listTmp != null) {
 				listTmp.remove(beyondarObject);
-				synchronized (mLockModules) {
-					for (WorldModule module : mModules) {
+				synchronized (lockModules) {
+					for (WorldModule module : modules) {
 						module.onBeyondarObjectRemoved(beyondarObject, listTmp);
 					}
 				}
@@ -235,10 +237,10 @@ public class World implements Modulable<WorldModule> {
 	}
 
 	public synchronized void forceProcessRemoveQueue() {
-		if (mBeyondarObjectLists.size() > 0) {
+		if (beyondarObjectLists.size() > 0) {
 			synchronized (mLock) {
-				for (int i = 0; i < mBeyondarObjectLists.size(); i++) {
-					mBeyondarObjectLists.get(i).forceRemoveObjectsInQueue();
+				for (int i = 0; i < beyondarObjectLists.size(); i++) {
+					beyondarObjectLists.get(i).forceRemoveObjectsInQueue();
 				}
 			}
 		}
@@ -249,7 +251,7 @@ public class World implements Modulable<WorldModule> {
 	 */
 	public synchronized void clearWorld() {
 		synchronized (mLock) {
-			mBeyondarObjectLists.clear();
+			beyondarObjectLists.clear();
 			mBitmapHolder.clean();
 		}
 	}
@@ -260,7 +262,7 @@ public class World implements Modulable<WorldModule> {
 	 * @return
 	 */
 	public double getLongitude() {
-		return mLongitude;
+		return longitude;
 	}
 
 	/**
@@ -269,7 +271,7 @@ public class World implements Modulable<WorldModule> {
 	 * @return
 	 */
 	public double getAltitude() {
-		return mAltitude;
+		return altitude;
 	}
 
 	/**
@@ -278,22 +280,22 @@ public class World implements Modulable<WorldModule> {
 	 * @return
 	 */
 	public double getLatitude() {
-		return mLatitude;
+		return latitude;
 	}
 
 	public void setGeoPosition(double latitude, double longitude, double altitude) {
-		mLatitude = latitude;
-		mLongitude = longitude;
-		mAltitude = altitude;
-		synchronized (mLockModules) {
-			for (WorldModule module : mModules) {
+		this.latitude = latitude;
+		this.longitude = longitude;
+		this.altitude = altitude;
+		synchronized (lockModules) {
+			for (WorldModule module : modules) {
 				module.onGeoPositionChanged(latitude, longitude, altitude);
 			}
 		}
 	}
 
 	public final void setGeoPosition(double latitude, double longitude) {
-		setGeoPosition(latitude, longitude, mAltitude);
+		setGeoPosition(latitude, longitude, altitude);
 	}
 
 	public void setLocation(Location location) {
@@ -313,8 +315,8 @@ public class World implements Modulable<WorldModule> {
 
 	public synchronized void setDefaultBitmap(String uri) {
 		mDefaultBitmap = uri;
-		synchronized (mLockModules) {
-			for (WorldModule module : mModules) {
+		synchronized (lockModules) {
+			for (WorldModule module : modules) {
 				module.onDefaultImageChanged(uri);
 			}
 		}
@@ -407,8 +409,8 @@ public class World implements Modulable<WorldModule> {
 	 */
 	public BeyondarObjectList getBeyondarObjectList(int type) {
 		BeyondarObjectList list = null;
-		for (int i = 0; i < mBeyondarObjectLists.size(); i++) {
-			list = mBeyondarObjectLists.get(i);
+		for (int i = 0; i < beyondarObjectLists.size(); i++) {
+			list = beyondarObjectLists.get(i);
 			if (list.getType() == type) {
 				return list;
 			}
@@ -423,8 +425,8 @@ public class World implements Modulable<WorldModule> {
 	 * 
 	 * @return The list of the lists
 	 */
-	public ArrayList<BeyondarObjectList> getBeyondarObjectLists() {
-		return mBeyondarObjectLists;
+	public List<BeyondarObjectList> getBeyondarObjectLists() {
+		return beyondarObjectLists;
 	}
 
 	/**
@@ -447,8 +449,8 @@ public class World implements Modulable<WorldModule> {
 		BeyondarObjectList beyondarList = null;
 
 		try {
-			for (int i = 0; i < mBeyondarObjectLists.size(); i++) {
-				beyondarList = mBeyondarObjectLists.get(i);
+			for (int i = 0; i < beyondarObjectLists.size(); i++) {
+				beyondarList = beyondarObjectLists.get(i);
 				if (beyondarList != null) {
 					for (int j = 0; j < beyondarList.size(); j++) {
 

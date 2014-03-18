@@ -74,7 +74,7 @@ public class BeyondarObject implements Modulable<BeyondarObjectModule> {
 	}
 
 	private void init() {
-		modules = new ArrayList<BeyondarObjectModule>(3);
+		modules = new ArrayList<BeyondarObjectModule>(DEFAULT_INIT_MODULES_CAPACITY);
 		position = new Point3();
 		angle = new Point3();
 		texture = new Texture();

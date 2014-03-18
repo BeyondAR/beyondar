@@ -41,6 +41,8 @@ import android.opengl.GLU;
 import android.opengl.GLUtils;
 import android.view.Surface;
 
+import com.beyondar.android.module.GLModule;
+import com.beyondar.android.module.Modulable;
 import com.beyondar.android.opengl.renderable.Renderable;
 import com.beyondar.android.opengl.texture.Texture;
 import com.beyondar.android.opengl.util.MatrixGrabber;
@@ -62,7 +64,7 @@ import com.beyondar.android.world.World;
 // http://ovcharov.me/2011/01/14/android-opengl-es-ray-picking/
 // http://magicscrollsofcode.blogspot.com/2010/10/3d-picking-in-android.html
 public class ARRenderer implements GLSurfaceView.Renderer, BeyondarSensorListener,
-		BitmapCache.OnExternalBitmapLoadedCacheListener {
+		BitmapCache.OnExternalBitmapLoadedCacheListener, Modulable<GLModule> {
 
 	public static interface SnapshotCallback {
 		/**
@@ -103,6 +105,9 @@ public class ARRenderer implements GLSurfaceView.Renderer, BeyondarSensorListene
 	private static final float[] sInclination = new float[16];
 
 	private World mWorld;
+
+	protected List<GLModule> modules;
+	protected Object lockModules = new Object();
 
 	private boolean mScreenshot;
 	private SnapshotCallback mSnapshotCallback;
@@ -145,6 +150,8 @@ public class ARRenderer implements GLSurfaceView.Renderer, BeyondarSensorListene
 
 		mIsTablet = false;
 		mFillPositions = false;
+
+		modules = new ArrayList<GLModule>();
 	}
 
 	/**
@@ -180,6 +187,11 @@ public class ARRenderer implements GLSurfaceView.Renderer, BeyondarSensorListene
 		mWorld = world;
 		mWorld.getBitmapCache().addOnExternalBitmapLoadedCahceListener(this);
 		reloadWorldTextures = true;
+		synchronized (lockModules) {
+			for (GLModule module : modules) {
+				module.setup(mWorld, this);
+			}
+		}
 	}
 
 	public World getWorld() {
@@ -194,6 +206,11 @@ public class ARRenderer implements GLSurfaceView.Renderer, BeyondarSensorListene
 	 */
 	public void setCameraPosition(Point3 newCameraPos) {
 		cameraPosition = newCameraPos;
+		synchronized (lockModules) {
+			for (GLModule module : modules) {
+				module.onCameraPositionChanged(newCameraPos);
+			}
+		}
 	}
 
 	/**
@@ -203,6 +220,7 @@ public class ARRenderer implements GLSurfaceView.Renderer, BeyondarSensorListene
 		cameraPosition.x = 0;
 		cameraPosition.y = 0;
 		cameraPosition.z = 0;
+		setCameraPosition(cameraPosition);
 	}
 
 	/**
@@ -221,14 +239,13 @@ public class ARRenderer implements GLSurfaceView.Renderer, BeyondarSensorListene
 		long time = System.currentTimeMillis();
 
 		SensorManager.getInclination(sInclination);
-		SensorManager.getRotationMatrix(mRotationMatrix, sInclination, mAccelerometerValues,
-				mMagneticValues);
+		SensorManager.getRotationMatrix(mRotationMatrix, sInclination, mAccelerometerValues, mMagneticValues);
 		if (mIsTablet) {
 			// SensorManager.remapCoordinateSystem(mRotationMatrix,
 			// SensorManager.AXIS_MINUS_Y,
 			// SensorManager.AXIS_X, mRotationMatrix);
-			SensorManager.remapCoordinateSystem(mRotationMatrix, SensorManager.AXIS_X,
-					SensorManager.AXIS_Y, mRotationMatrix);
+			SensorManager.remapCoordinateSystem(mRotationMatrix, SensorManager.AXIS_X, SensorManager.AXIS_Y,
+					mRotationMatrix);
 		}
 
 		// TODO: Optimize this code
@@ -291,6 +308,14 @@ public class ARRenderer implements GLSurfaceView.Renderer, BeyondarSensorListene
 			if (tmpTraker != null) {
 				tmpTraker.onBeyondarObjectsRendered(mRenderedObjects);
 			}
+		}
+
+		try {
+			for (GLModule module : modules) {
+				module.onDrawFrame(gl);
+			}
+		} catch (ConcurrentModificationException e) {
+			Logger.w("Some modules where changed while drawing a frame");
 		}
 
 		if (mScreenshot) {
@@ -366,8 +391,8 @@ public class ARRenderer implements GLSurfaceView.Renderer, BeyondarSensorListene
 										// flip
 
 		// new bitmap, using the flipping matrix
-		Bitmap result = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(),
-				matrix, true);
+		Bitmap result = Bitmap
+				.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
 
 		bitmap.recycle();
 		System.gc();
@@ -380,17 +405,14 @@ public class ARRenderer implements GLSurfaceView.Renderer, BeyondarSensorListene
 		float x, z, y;
 		x = (float) (Distance.fastConversionGeopointsToMeters(geoObject.getLongitude()
 				- mWorld.getLongitude()) / 2);
-		z = (float) (Distance.fastConversionGeopointsToMeters(geoObject.getAltitude()
-				- mWorld.getAltitude()) / 2);
-		y = (float) (Distance.fastConversionGeopointsToMeters(geoObject.getLatitude()
-				- mWorld.getLatitude()) / 2);
+		z = (float) (Distance.fastConversionGeopointsToMeters(geoObject.getAltitude() - mWorld.getAltitude()) / 2);
+		y = (float) (Distance.fastConversionGeopointsToMeters(geoObject.getLatitude() - mWorld.getLatitude()) / 2);
 
 		if (mMaxDistanceSizePoints > 0 || mMinDistanceSizePoints > 0) {
 			double totalDst = Distance.calculateDistance(x, y, 0, 0);
 
 			if (mMaxDistanceSizePoints > 0 && totalDst > mMaxDistanceSizePoints) {
-				MathUtils.linearInterpolate(0, 0, 0, x, y, 0, mMaxDistanceSizePoints, totalDst,
-						sOut);
+				MathUtils.linearInterpolate(0, 0, 0, x, y, 0, mMaxDistanceSizePoints, totalDst, sOut);
 				x = (float) sOut[0];
 				y = (float) sOut[1];
 				if (mMinDistanceSizePoints > 0) {
@@ -398,8 +420,7 @@ public class ARRenderer implements GLSurfaceView.Renderer, BeyondarSensorListene
 				}
 			}
 			if (mMinDistanceSizePoints > 0 && totalDst < mMinDistanceSizePoints) {
-				MathUtils.linearInterpolate(0, 0, 0, x, y, 0, mMinDistanceSizePoints, totalDst,
-						sOut);
+				MathUtils.linearInterpolate(0, 0, 0, x, y, 0, mMinDistanceSizePoints, totalDst, sOut);
 				x = (float) sOut[0];
 				y = (float) sOut[1];
 			}
@@ -425,6 +446,11 @@ public class ARRenderer implements GLSurfaceView.Renderer, BeyondarSensorListene
 	 */
 	public void setMaxDistanceSize(float maxDistanceSize) {
 		mMaxDistanceSizePoints = (float) (maxDistanceSize / 2);
+		synchronized (lockModules) {
+			for (GLModule module : modules) {
+				module.onMaxDistanceSizeChanged(mMaxDistanceSizePoints);
+			}
+		}
 	}
 
 	/**
@@ -451,6 +477,11 @@ public class ARRenderer implements GLSurfaceView.Renderer, BeyondarSensorListene
 	 */
 	public void setMinDistanceSize(float minDistanceSize) {
 		mMinDistanceSizePoints = (float) (minDistanceSize / 2);
+		synchronized (lockModules) {
+			for (GLModule module : modules) {
+				module.onMaxDistanceSizeChanged(mMinDistanceSizePoints);
+			}
+		}
 	}
 
 	/**
@@ -542,8 +573,8 @@ public class ARRenderer implements GLSurfaceView.Renderer, BeyondarSensorListene
 	 * @param beyondarObject
 	 * @param defaultTexture
 	 */
-	protected void renderBeyondarObject(GL10 gl, BeyondarObject beyondarObject,
-			Texture defaultTexture, long time) {
+	protected void renderBeyondarObject(GL10 gl, BeyondarObject beyondarObject, Texture defaultTexture,
+			long time) {
 		boolean renderObject = false;
 		Renderable renderable = beyondarObject.getOpenGLObject();
 
@@ -589,8 +620,8 @@ public class ARRenderer implements GLSurfaceView.Renderer, BeyondarSensorListene
 				}
 			}
 			renderable.draw(gl, defaultTexture);
-			getScreenCoordinates(beyondarObject.getPosition(),
-					beyondarObject.getScreenPositionCenter(), tmpEyeForRendering);
+			getScreenCoordinates(beyondarObject.getPosition(), beyondarObject.getScreenPositionCenter(),
+					tmpEyeForRendering);
 
 			if (mFillPositions) {
 				fillBeyondarObjectScreenPositions(beyondarObject);
@@ -614,13 +645,10 @@ public class ARRenderer implements GLSurfaceView.Renderer, BeyondarSensorListene
 	 *            The {@link BeyondarObject} to compute
 	 */
 	public void fillBeyondarObjectScreenPositions(BeyondarObject beyondarObject) {
-		getScreenCoordinates(beyondarObject.getBottomLeft(),
-				beyondarObject.getScreenPositionBottomLeft());
-		getScreenCoordinates(beyondarObject.getBottomRight(),
-				beyondarObject.getScreenPositionBottomRight());
+		getScreenCoordinates(beyondarObject.getBottomLeft(), beyondarObject.getScreenPositionBottomLeft());
+		getScreenCoordinates(beyondarObject.getBottomRight(), beyondarObject.getScreenPositionBottomRight());
 		getScreenCoordinates(beyondarObject.getTopLeft(), beyondarObject.getScreenPositionTopLeft());
-		getScreenCoordinates(beyondarObject.getTopRight(),
-				beyondarObject.getScreenPositionTopRight());
+		getScreenCoordinates(beyondarObject.getTopRight(), beyondarObject.getScreenPositionTopRight());
 	}
 
 	/**
@@ -723,6 +751,11 @@ public class ARRenderer implements GLSurfaceView.Renderer, BeyondarSensorListene
 	 * @param gl
 	 */
 	protected void loadAdditionalTextures(GL10 gl) {
+		synchronized (lockModules) {
+			for (GLModule module : modules) {
+				module.loadAdditionalTextures(gl);
+			}
+		}
 	}
 
 	/**
@@ -737,8 +770,7 @@ public class ARRenderer implements GLSurfaceView.Renderer, BeyondarSensorListene
 				for (int i = 0; i < mWorld.getBeyondarObjectLists().size(); i++) {
 					list = mWorld.getBeyondarObjectLists().get(i);
 					if (null != list) {
-						Bitmap defaultBtm = mWorld.getBitmapCache().getBitmap(
-								list.getDefaultBitmapURI());
+						Bitmap defaultBtm = mWorld.getBitmapCache().getBitmap(list.getDefaultBitmapURI());
 						Texture texture = load2DTexture(gl, defaultBtm);
 						list.setTexture(texture);
 
@@ -763,7 +795,7 @@ public class ARRenderer implements GLSurfaceView.Renderer, BeyondarSensorListene
 	 * @param geoObject
 	 *            The object to load the textures
 	 */
-	protected void loadBeyondarObjectTexture(GL10 gl, BeyondarObject geoObject) {
+	public void loadBeyondarObjectTexture(GL10 gl, BeyondarObject geoObject) {
 
 		Texture texture = getTexture(geoObject.getBitmapUri());
 
@@ -796,7 +828,7 @@ public class ARRenderer implements GLSurfaceView.Renderer, BeyondarSensorListene
 	 *            The unique id of the bitmap
 	 * @return The {@link Texture} object
 	 */
-	protected Texture loadBitmapTexture(GL10 gl, Bitmap btm, String uri) {
+	public Texture loadBitmapTexture(GL10 gl, Bitmap btm, String uri) {
 
 		if (null == btm) {
 			return null;
@@ -820,7 +852,7 @@ public class ARRenderer implements GLSurfaceView.Renderer, BeyondarSensorListene
 	 * @param bitmap
 	 * @return true if it is already loaded, false otherwise.
 	 */
-	protected boolean isTextureLoaded(Bitmap bitmap) {
+	public boolean isTextureLoaded(Bitmap bitmap) {
 		return sTextureHolder.containsValue(bitmap);
 	}
 
@@ -831,7 +863,7 @@ public class ARRenderer implements GLSurfaceView.Renderer, BeyondarSensorListene
 	 * @param uri
 	 * @return true if it is already loaded, false otherwise.
 	 */
-	protected boolean isTextureObjectLoaded(String uri) {
+	public boolean isTextureObjectLoaded(String uri) {
 		return sTextureHolder.get(uri) != null;
 	}
 
@@ -841,7 +873,7 @@ public class ARRenderer implements GLSurfaceView.Renderer, BeyondarSensorListene
 	 * @param uri
 	 * @return
 	 */
-	protected Texture getTexture(String uri) {
+	public Texture getTexture(String uri) {
 		if (uri == null) {
 			return null;
 		}
@@ -860,7 +892,7 @@ public class ARRenderer implements GLSurfaceView.Renderer, BeyondarSensorListene
 	 * @param bitmap
 	 * @return
 	 */
-	protected Texture load2DTexture(GL10 gl, Bitmap bitmap) {
+	public Texture load2DTexture(GL10 gl, Bitmap bitmap) {
 		// see
 		// http://stackoverflow.com/questions/3921685/issues-with-glutils-teximage2d-and-alpha-in-textures
 		int[] tmpTexture = new int[1];
@@ -900,9 +932,8 @@ public class ARRenderer implements GLSurfaceView.Renderer, BeyondarSensorListene
 
 	}
 
-
 	@Override
-	public void onSensorChanged(float[] filteredValues, SensorEvent event){
+	public void onSensorChanged(float[] filteredValues, SensorEvent event) {
 		if (!mRender) {
 			return;
 		}
@@ -936,8 +967,8 @@ public class ARRenderer implements GLSurfaceView.Renderer, BeyondarSensorListene
 		} else {
 			eye[0] = eye[1] = eye[2] = eye[3] = 0;
 		}
-		GLU.gluUnProject(x, mHeight - y, 0.9f, mMatrixGrabber.mModelView, 0,
-				mMatrixGrabber.mProjection, 0, viewport, 0, eye, 0);
+		GLU.gluUnProject(x, mHeight - y, 0.9f, mMatrixGrabber.mModelView, 0, mMatrixGrabber.mProjection, 0,
+				viewport, 0, eye, 0);
 
 		// fix
 		if (eye[3] != 0) {
@@ -947,8 +978,7 @@ public class ARRenderer implements GLSurfaceView.Renderer, BeyondarSensorListene
 		}
 
 		// ray vector
-		ray.setVector((eye[0] - cameraPosition.x), (eye[1] - cameraPosition.y),
-				(eye[2] - cameraPosition.z));
+		ray.setVector((eye[0] - cameraPosition.x), (eye[1] - cameraPosition.y), (eye[2] - cameraPosition.z));
 		mFloat4ArrayPool.add(eye);
 	}
 
@@ -973,8 +1003,8 @@ public class ARRenderer implements GLSurfaceView.Renderer, BeyondarSensorListene
 			eye[0] = eye[1] = eye[2] = eye[3] = 0;
 		}
 
-		GLU.gluProject(x, y, z, mMatrixGrabber.mModelView, 0, mMatrixGrabber.mProjection, 0,
-				viewport, 0, eye, 0);
+		GLU.gluProject(x, y, z, mMatrixGrabber.mModelView, 0, mMatrixGrabber.mProjection, 0, viewport, 0,
+				eye, 0);
 
 		// fix
 		if (eye[3] != 0) {
@@ -1050,5 +1080,85 @@ public class ARRenderer implements GLSurfaceView.Renderer, BeyondarSensorListene
 		 *            The Frames per second rendered
 		 */
 		public void onFpsUpdate(float fps);
+	}
+
+	@Override
+	public void addModule(GLModule module) {
+		synchronized (lockModules) {
+			if (!modules.contains(module)) {
+				modules.add(module);
+			}
+		}
+		module.setup(mWorld, this);
+	}
+
+	@Override
+	public boolean removeModule(GLModule module) {
+		boolean removed = false;
+		synchronized (lockModules) {
+			removed = modules.remove(module);
+		}
+		if (removed) {
+			module.onDetached();
+		}
+		return removed;
+	}
+
+	@Override
+	public void cleanModules() {
+		synchronized (lockModules) {
+			for (GLModule module : modules) {
+				removeModule(module);
+			}
+		}
+	}
+
+	@Override
+	public GLModule getFirstModule(Class<? extends GLModule> moduleClass) {
+		synchronized (lockModules) {
+			for (GLModule module : modules) {
+				if (moduleClass.isInstance(module)) {
+					return module;
+				}
+			}
+		}
+		return null;
+	}
+
+	@Override
+	public boolean containsAnyModule(Class<? extends GLModule> moduleClass) {
+		return getFirstModule(moduleClass) != null;
+	}
+
+	@Override
+	public boolean containsModule(GLModule module) {
+		synchronized (lockModules) {
+			return modules.contains(module);
+		}
+	}
+
+	@Override
+	public List<GLModule> getAllModules(Class<? extends GLModule> moduleClass, List<GLModule> result) {
+		synchronized (lockModules) {
+			for (GLModule module : modules) {
+				if (moduleClass.isInstance(module)) {
+					result.add(module);
+				}
+			}
+		}
+		return result;
+	}
+
+	@Override
+	public List<GLModule> getAllModules(Class<? extends GLModule> moduleClass) {
+		ArrayList<GLModule> result = new ArrayList<GLModule>(5);
+		return getAllModules(moduleClass, result);
+	}
+
+	@Override
+	public List<GLModule> getAllModules() {
+		synchronized (lockModules) {
+			return new ArrayList<GLModule>(modules);
+		}
 	}
 }

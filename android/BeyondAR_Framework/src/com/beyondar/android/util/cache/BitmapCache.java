@@ -23,6 +23,10 @@ import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.Map;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 import android.content.res.AssetManager;
 import android.content.res.Resources;
@@ -32,9 +36,6 @@ import android.graphics.BitmapFactory.Options;
 
 import com.beyondar.android.util.DebugBitmap;
 import com.beyondar.android.util.Logger;
-import com.beyondar.android.util.tasks.Task;
-import com.beyondar.android.util.tasks.TaskExecutor;
-import com.beyondar.android.util.tasks.TaskResult;
 
 public class BitmapCache {
 
@@ -42,6 +43,10 @@ public class BitmapCache {
 	public static final int IMAGE_LOADED = 1;
 	public static final int IMAGE_IN_PROGRESS = 2;
 	public static final int ERROR_LOADING_IMAGE = 3;
+	
+	private static final int MAXIMUM_POOL_SIZE = 10;
+	private static final int CORE_POOL_SIZE = 4;
+	private static final int KEEP_ALIVE_THREAD = 5000;
 
 	private static final String TAG = "bitmapHolder";
 
@@ -73,7 +78,11 @@ public class BitmapCache {
 
 	private BitmapCacheContainer mBitmapContainer;
 
-	private ArrayList<OnExternalBitmapLoadedCahceListener> mOnLoadBitmapListener;
+	private ArrayList<OnExternalBitmapLoadedCacheListener> mOnLoadBitmapListener;
+	
+	private ThreadPoolExecutor mThreadPool;
+	private BlockingQueue<Runnable> mBlockingQueue;
+
 
 	private class BitmapCacheContainer extends LruCache<String, Bitmap> {
 
@@ -120,7 +129,7 @@ public class BitmapCache {
 			mLoadingResources.remove(key);
 			if (value != null && (alwaysPurge || purge)) {
 				value.recycle();
-				cacheLogD(mIdCache + "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Purge madafaka: " + key);
+				cacheLogD(mIdCache + "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Purge: " + key);
 			}
 		}
 
@@ -192,6 +201,9 @@ public class BitmapCache {
 		mRes = resources;
 		mBitmapContainer = new BitmapCacheContainer(cacheSize, alwaysPurge);
 		mLoadingResources = new Hashtable<String, Integer>();
+		
+		mBlockingQueue = new ArrayBlockingQueue<Runnable>(MAXIMUM_POOL_SIZE);
+		mThreadPool = new ThreadPoolExecutor(CORE_POOL_SIZE, MAXIMUM_POOL_SIZE, KEEP_ALIVE_THREAD, TimeUnit.MILLISECONDS, mBlockingQueue);
 	}
 
 	public BitmapFactory.Options getOptimizedBitmapOption() {
@@ -232,10 +244,9 @@ public class BitmapCache {
 		if (DEBUG_CACHE) {
 			cacheLogD(mIdCache + "  --- Cleaning the images");
 		}
-		TaskExecutor.getInstance().cleanAllHistory();
-		TaskExecutor.getInstance().removeAllQueuedTask();
 		mBitmapContainer.evictAll();
 		mLoadingResources.clear();
+		mBlockingQueue.clear();
 		System.gc();
 	}
 
@@ -253,12 +264,11 @@ public class BitmapCache {
 	 */
 	public void purge() {
 		if (DEBUG_CACHE) {
-			cacheLogD(mIdCache + "  --- Purguing all the images");
+			cacheLogD(mIdCache + "  --- Purging all the images");
 		}
-		TaskExecutor.getInstance().cleanAllHistory();
-		TaskExecutor.getInstance().removeAllQueuedTask();
 		mBitmapContainer.purge();
 		mLoadingResources.clear();
+		mBlockingQueue.clear();
 		System.gc();
 	}
 
@@ -303,7 +313,7 @@ public class BitmapCache {
 			if (mBitmapContainer.get(uri) != null) {
 				if (DEBUG_CACHE) {
 					Logger.w(TAG, mIdCache + "  = The image with the URI=" + uri
-							+ " already exist. Overwritting...");
+							+ " already exist. Overwriting...");
 				}
 				// return btm;
 			}
@@ -430,7 +440,7 @@ public class BitmapCache {
 	/**
 	 * Get the image from the resources.
 	 * 
-	 * @param res
+	 * @param id
 	 *            The resource id to load
 	 * @return The bitmap if the image is already loaded, null otherwise
 	 */
@@ -482,9 +492,9 @@ public class BitmapCache {
 	 * 
 	 * @param listener
 	 */
-	public void addOnExternalBitmapLoadedCahceListener(OnExternalBitmapLoadedCahceListener listener) {
+	public void addOnExternalBitmapLoadedCahceListener(OnExternalBitmapLoadedCacheListener listener) {
 		if (mOnLoadBitmapListener == null) {
-			mOnLoadBitmapListener = new ArrayList<BitmapCache.OnExternalBitmapLoadedCahceListener>();
+			mOnLoadBitmapListener = new ArrayList<OnExternalBitmapLoadedCacheListener>();
 		}
 		if (!mOnLoadBitmapListener.contains(listener)) {
 			mOnLoadBitmapListener.add(listener);
@@ -497,8 +507,8 @@ public class BitmapCache {
 	 * @param listener
 	 * @return
 	 */
-	public boolean removeOnExternalBitmapLoadedCahceListener(
-			OnExternalBitmapLoadedCahceListener listener) {
+	public boolean removeOnExternalBitmapLoadedCacheListener(
+            OnExternalBitmapLoadedCacheListener listener) {
 		if (mOnLoadBitmapListener == null) {
 			return true;
 		}
@@ -519,7 +529,7 @@ public class BitmapCache {
 		Integer state = mLoadingResources.get(uri);
 		if (state == null || state == IMAGE_NOT_LOADED || state == ERROR_LOADING_IMAGE) {
 			mLoadingResources.put(uri, IMAGE_IN_PROGRESS);
-			TaskExecutor.getInstance().addTask(new TaskLoadHttpBitmap(uri));
+			mThreadPool.execute(new TaskLoadHttpBitmap(uri));
 		}
 		return null;
 	}
@@ -536,24 +546,18 @@ public class BitmapCache {
 		Logger.e(TAG, msg);
 	}
 
-	private class TaskLoadHttpBitmap extends Task {
+	private class TaskLoadHttpBitmap implements Runnable {
 
 		private Bitmap mBtm;
 		private String mUri;
 
 		public TaskLoadHttpBitmap(String uri) {
-			super(uri.hashCode());
+			super();
 			mUri = uri;
 		}
 
 		@Override
-		public TaskResult checkDependencies() {
-			return null;
-		}
-
-		@Override
-		public TaskResult runTask() {
-			TaskResult resultDependencies = null;
+		public void run() {
 			long time = System.currentTimeMillis();
 			Bitmap btm = null;
 
@@ -584,16 +588,13 @@ public class BitmapCache {
 				btm = DebugBitmap.decodeStream(is, null, options, mUri);
 
 			} catch (MalformedURLException e) {
-				String strData = mIdCache + " Error geting the image form internet: " + e;
+				String strData = mIdCache + " Error getting the image form internet: " + e;
 				cacheLogE(strData);
-				resultDependencies = new TaskResult(getIdTask(), true,
-						TaskResult.TASK_MESSAGE_ERROR_MAIN_TASK);
+				Logger.e(TAG, strData);
 			} catch (IOException e) {
-				String strData = mIdCache + " Error geting the image form internet: " + e;
+				String strData = mIdCache + " Error getting the image form internet: " + e;
 				cacheLogE(strData);
-				resultDependencies = new TaskResult(getIdTask(), true,
-						TaskResult.TASK_MESSAGE_ERROR_MAIN_TASK);
-
+				Logger.e(TAG, strData);
 			}
 			mBtm = btm;
 
@@ -613,18 +614,11 @@ public class BitmapCache {
 				mLoadingResources.put(mUri, ERROR_LOADING_IMAGE);
 			}
 
-			return resultDependencies;
-		}
-
-		@Override
-		public void onKillTask(TaskResult outpuCode) {
-			mBitmapContainer.remove(mUri);
-			super.onKillTask(outpuCode);
 		}
 
 	}
 
-	public static interface OnExternalBitmapLoadedCahceListener {
+	public static interface OnExternalBitmapLoadedCacheListener {
 
 		/**
 		 * This method is called when an external image (such as a network

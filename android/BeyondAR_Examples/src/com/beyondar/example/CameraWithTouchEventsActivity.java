@@ -27,13 +27,13 @@ import android.widget.Toast;
 
 import com.beyondar.android.fragment.BeyondarFragmentSupport;
 import com.beyondar.android.view.BeyondarGLSurfaceView;
-import com.beyondar.android.view.OnClikBeyondarObjectListener;
+import com.beyondar.android.view.OnClickBeyondarObjectListener;
 import com.beyondar.android.view.OnTouchBeyondarViewListener;
 import com.beyondar.android.world.BeyondarObject;
 import com.beyondar.android.world.World;
 
-public class CameraWithTouchEventsActivity extends FragmentActivity implements OnTouchBeyondarViewListener,
-		OnClikBeyondarObjectListener {
+public class CameraWithTouchEventsActivity extends FragmentActivity implements
+		OnTouchBeyondarViewListener, OnClickBeyondarObjectListener {
 
 	private BeyondarFragmentSupport mBeyondarFragment;
 	private World mWorld;
@@ -59,6 +59,15 @@ public class CameraWithTouchEventsActivity extends FragmentActivity implements O
 		// set listener for the geoObjects
 		mBeyondarFragment.setOnTouchBeyondarViewListener(this);
 		mBeyondarFragment.setOnClickBeyondarObjectListener(this);
+
+	}
+
+	private void loadViewFromXML() {
+		setContentView(R.layout.camera_with_text);
+		mBeyondarFragment = (BeyondarFragmentSupport) getSupportFragmentManager().findFragmentById(
+				R.id.beyondarFragment);
+
+		mLabelText = (TextView) findViewById(R.id.labelText);
 
 	}
 
@@ -98,19 +107,11 @@ public class CameraWithTouchEventsActivity extends FragmentActivity implements O
 		mLabelText.setText("Event: " + textEvent);
 	}
 
-	private void loadViewFromXML() {
-		setContentView(R.layout.camera_with_text);
-		mBeyondarFragment = (BeyondarFragmentSupport) getSupportFragmentManager().findFragmentById(
-				R.id.beyondarFragment);
-
-		mLabelText = (TextView) findViewById(R.id.labelText);
-
-	}
-
 	@Override
-	public void onClikBeyondarObject(ArrayList<BeyondarObject> beyondarObjects) {
+	public void onClickBeyondarObject(ArrayList<BeyondarObject> beyondarObjects) {
 		if (beyondarObjects.size() > 0) {
-			Toast.makeText(this, "Clicked on: " + beyondarObjects.get(0).getName(), Toast.LENGTH_LONG).show();
+			Toast.makeText(this, "Clicked on: " + beyondarObjects.get(0).getName(),
+					Toast.LENGTH_LONG).show();
 		}
 	}
 

@@ -248,7 +248,7 @@ public class Vector3 extends Point3 {
 	/**
 	 * Rotate the vector around y-axis
 	 * 
-	 * @param rotY
+	 * @param angle
 	 *            rotation in radians
 	 */
 	public void rotateY(float angle) {
@@ -335,7 +335,7 @@ public class Vector3 extends Point3 {
 		updateModule();
 	}
 
-	public void substract(Vector3 u) {
+	public void subtract(Vector3 u) {
 		x -= u.x;
 		y -= u.y;
 		z -= u.z;

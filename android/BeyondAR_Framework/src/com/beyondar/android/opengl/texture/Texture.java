@@ -15,69 +15,175 @@
  */
 package com.beyondar.android.opengl.texture;
 
-import java.io.Serializable;
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
+import java.nio.FloatBuffer;
 
-public class Texture implements Serializable{
+public class Texture {
 
-	private static final long serialVersionUID = -3680867097568273278L;
-	
+	public static final float TEMPLATE_VERTICES[] = {
+			//
+			-1.0f, 0.0f, -1.0f, // V1 - bottom left
+			-1.0f, 0.0f, 1.0f, // V2 - top left
+			1.0f, 0.0f, -1.0f, // V3 - bottom right
+			1.0f, 0.0f, 1.0f // V4 - top right
+	};
+
+	public final static float TEMPLATE_TEXTURE[] = {
+			// Mapping coordinates for the vertices
+			0.0f, 1.0f, // top left (V2)
+			0.0f, 0.0f, // bottom left (V1)
+			1.0f, 1.0f, // top right (V4)
+			1.0f, 0.0f // bottom right (V3)
+	};
+
+	// buffer holding the texture coordinates
+	private FloatBuffer mTextureBuffer;
+	// buffer holding the vertices
+	private FloatBuffer mVertexBuffer;
+
+	private int mWidth, mHeight;
+	private float mWidthRate, mHeightRate;
 	private int mTexture;
 	private boolean mIsLoaded;
 	private double mTimeStamp;
 	private int mCounterLoaded;
+	private float[] mTextureMap;
+	private float[] mVertices;
 
 	public Texture(int textureReference) {
 		mTexture = textureReference;
 		mIsLoaded = true;
 		mCounterLoaded = 0;
+		mVertices = new float[TEMPLATE_VERTICES.length];
+		System.arraycopy(TEMPLATE_VERTICES, 0, mVertices, 0, TEMPLATE_VERTICES.length);
+		
+		mTextureMap = new float[TEMPLATE_TEXTURE.length];
+		System.arraycopy(TEMPLATE_TEXTURE, 0, mTextureMap, 0, TEMPLATE_TEXTURE.length);
 	}
 
 	public Texture() {
+		this(0);
 		mIsLoaded = false;
+	}
+
+	public Texture setImageSize(int width, int height) {
+		mWidth = width;
+		mHeight = height;
+		calculateImageSizeRate();
+		return this;
+	}
+
+	private void calculateImageSizeRate() {
+		if (mWidth < mHeight) {
+			mWidthRate = ((float) mWidth / (float) mHeight);
+			mHeightRate = 1;
+		} else {
+			mHeightRate = ((float) mHeight / (float) mWidth);
+			mWidthRate = 1;
+		}
+
+		for (int i = 0; i < mVertices.length; i++) {
+			if ((i+1) % 3 == 0) {
+				mVertices[i] = mVertices[i] * mHeightRate;
+			} else {
+				mVertices[i] = mVertices[i] * mWidthRate;
+			}
+		}
+
+		// a float has 4 bytes so we allocate for each coordinate 4 bytes
+		ByteBuffer byteBuffer = ByteBuffer.allocateDirect(mVertices.length * 4);
+		byteBuffer.order(ByteOrder.nativeOrder());
+		// allocates the memory from the byte buffer
+		mVertexBuffer = byteBuffer.asFloatBuffer();
+		// fill the vertexBuffer with the vertices
+		mVertexBuffer.put(mVertices);
+		// set the cursor position to the beginning of the buffer
+		mVertexBuffer.position(0);
+
+		ByteBuffer byteBuffer2 = ByteBuffer.allocateDirect(mTextureMap.length * 4);
+		byteBuffer2.order(ByteOrder.nativeOrder());
+		mTextureBuffer = byteBuffer2.asFloatBuffer();
+		mTextureBuffer.put(mTextureMap);
+		mTextureBuffer.position(0);
+
+	}
+
+	public FloatBuffer getTextureBuffer() {
+		return mTextureBuffer;
+	}
+	
+	public FloatBuffer getVerticesBuffer() {
+		return mVertexBuffer;
+	}
+
+	public float[] getVertices() {
+		return mVertices;
+	}
+
+	public float[] getTextureMap() {
+		return mTextureMap;
+	}
+
+	public float getWithRate() {
+		return mWidthRate;
+	}
+
+	public float getHeightRate() {
+		return mHeightRate;
+	}
+
+	public int getImageWidth() {
+		return mWidth;
+	}
+
+	public int getImageHeight() {
+		return mHeight;
 	}
 
 	public int getTexturePointer() {
 		return mTexture;
 	}
 
-	public void setTexturePointer(int texture) {
+	public Texture setTexturePointer(int texture) {
 		mTexture = texture;
 		mIsLoaded = true;
 		mCounterLoaded = 0;
+		return this;
 	}
 
-	public void setLoaded(boolean isLoaded) {
+	public Texture setLoaded(boolean isLoaded) {
 		mIsLoaded = isLoaded;
+		return this;
 	}
 
 	public boolean isLoaded() {
 		return mIsLoaded;
 	}
 
-	public void setTimeStamp(double time) {
+	public Texture setTimeStamp(double time) {
 		mTimeStamp = time;
+		return this;
 	}
 
 	public double getTimeStamp() {
 		return mTimeStamp;
 	}
-	
-	public void setLoadTryCounter(int counter){
+
+	public Texture setLoadTryCounter(int counter) {
 		mCounterLoaded = counter;
+		return this;
 	}
-	
-	public int getLoadTryCounter(){
+
+	public int getLoadTryCounter() {
 		return mCounterLoaded;
 	}
-	
 
 	public Texture clone() {
 		Texture clone = new Texture();
-		clone.setLoaded(isLoaded());
-		clone.setTexturePointer(getTexturePointer());
-		clone.setTimeStamp(getTimeStamp());
-		clone.setLoadTryCounter(getLoadTryCounter());
-		return clone;
+		return clone.setLoaded(isLoaded()).setTexturePointer(getTexturePointer())
+				.setTimeStamp(getTimeStamp()).setLoadTryCounter(getLoadTryCounter())
+				.setImageSize(mWidth, mHeight);
 	}
 
 	@Override

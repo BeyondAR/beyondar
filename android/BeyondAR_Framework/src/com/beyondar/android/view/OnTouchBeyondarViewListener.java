@@ -8,7 +8,7 @@ public interface OnTouchBeyondarViewListener {
 
 	/**
 	 * Use
-	 * {@link BeyondarGLSurfaceView#getARObjectOnScreenCoordinates(float, float)}
+	 * {@link BeyondarGLSurfaceView#getBeyondarObjectsOnScreenCoordinates(float, float, java.util.ArrayList)}}
 	 * to get the object touched:<br>
 	 * 
 	 * <pre>
@@ -24,7 +24,7 @@ public interface OnTouchBeyondarViewListener {
 	 * </pre>
 	 * 
 	 * @param event
-	 * @param BeyondarView
+	 * @param beyondarView
 	 */
 	public void onTouchBeyondarView(MotionEvent event, BeyondarGLSurfaceView beyondarView);
 

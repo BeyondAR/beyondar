@@ -55,8 +55,12 @@ public class Ray {
 	 * Constructs a ray from a point and a vector. The point is defined as
 	 * (0,0,0)
 	 * 
-	 * @param v
-	 *            the vector
+	 * @param vec_x
+	 *            the vector x value
+     * @param vec_y
+     *            the vector y value
+     * @param vec_z
+     *            the vector z value
 	 */
 	public Ray(float vec_x, float vec_y, float vec_z) {
 		this.point = new Point3(0, 0, 0);

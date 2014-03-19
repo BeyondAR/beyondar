@@ -111,7 +111,7 @@ public class BeyondarObjectList implements Iterable<BeyondarObject> {
 	synchronized void remove(BeyondarObject object) {
 		synchronized (mLock) {
 			mToRemoveQueue.add(object);
-			object.setVisibile(false);
+			object.setVisible(false);
 		}
 	}
 

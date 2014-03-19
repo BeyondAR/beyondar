@@ -27,6 +27,10 @@ public class Point3 extends Point2 {
 	 */
 	public float z;
 
+	private final double[] rotateOut_x = new double[2];
+	private final double[] rotateOut_y = new double[2];
+	private final double[] rotateOut_z = new double[2];
+
 	/**
 	 * Constructs a 3D point
 	 * 
@@ -172,11 +176,9 @@ public class Point3 extends Point2 {
 		z = p.z;
 	}
 
-	private double[] rotatePointRadiansOrigin(double a, double b, double alpha) {
-		double result[] = new double[2];
-		result[0] = a * Math.cos(alpha) - b * Math.sin(alpha);
-		result[1] = a * Math.sin(alpha) + b * Math.cos(alpha);
-		return result;
+	private void rotatePointRadiansOrigin(double a, double b, double alpha, double output[]) {
+		output[0] = a * Math.cos(alpha) - b * Math.sin(alpha);
+		output[1] = a * Math.sin(alpha) + b * Math.cos(alpha);
 
 	}
 
@@ -190,17 +192,17 @@ public class Point3 extends Point2 {
 
 	public void rotatePointDegrees_z(double angle_degrees, Point3 origin) {
 		rotatePointRadians_z(Math.toRadians(angle_degrees), origin);
-	}
+	};
 
 	public void rotatePointRadians_z(double angle_radians, Point3 origin) {
 
 		double a = x - origin.x;
 		double b = y - origin.y;
 
-		double result[] = rotatePointRadiansOrigin(a, b, angle_radians);
+		rotatePointRadiansOrigin(a, b, angle_radians, rotateOut_z);
 
-		x = (float) (result[0] + origin.x);
-		y = (float) (result[1] + origin.y);
+		x = (float) (rotateOut_z[0] + origin.x);
+		y = (float) (rotateOut_z[1] + origin.y);
 
 	}
 
@@ -209,10 +211,10 @@ public class Point3 extends Point2 {
 		double a = y - origin.y;
 		double b = z - origin.z;
 
-		double result[] = rotatePointRadiansOrigin(a, b, angle_radians);
+		rotatePointRadiansOrigin(a, b, angle_radians, rotateOut_x);
 
-		y = (float) (result[0] + origin.y);
-		z = (float) (result[1] + origin.z);
+		y = (float) (rotateOut_x[0] + origin.y);
+		z = (float) (rotateOut_x[1] + origin.z);
 
 	}
 
@@ -220,17 +222,17 @@ public class Point3 extends Point2 {
 		double a = x - origin.x;
 		double b = z - origin.z;
 
-		double result[] = rotatePointRadiansOrigin(a, b, angle_radians);
+		rotatePointRadiansOrigin(a, b, angle_radians, rotateOut_y);
 
-		x = (float) (result[0] + origin.x);
-		z = (float) (result[1] + origin.z);
+		x = (float) (rotateOut_y[0] + origin.x);
+		z = (float) (rotateOut_y[1] + origin.z);
 
 	}
-	
-	public void copy(Point3 out){
+
+	public void copy(Point3 out) {
 		out.x = x;
 		out.y = y;
 		out.z = z;
-		
+
 	}
 }

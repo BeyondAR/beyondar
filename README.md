@@ -8,6 +8,10 @@ This framework has been designed to offer some resources to those developers wit
 ![Screenshot](http://beyondar.com/pictures/screenshots/screen_4.jpg)
 ![Screenshot](http://beyondar.com/pictures/screenshots/screen_1.jpg)
 
+BeyondAR platform also supports Google Glass
+
+![Screenshot](http://beyondar.com/pictures/glass.jpg)
+
 ##Adding BeyondAR in to your project
 
 Just download the latest version of the framework [here](https://github.com/BeyondAR/beyondar/tree/master/android/libs) and add the needed jar files in to you libs folder.
@@ -25,8 +29,12 @@ To be able to run BeyondAR we need to add the following lines on the AndroidMani
 <!-- For beyondar this is not mandatory unless you want to load something from internet (for instance images) -->
 <uses-permission android:name="android.permission.INTERNET" />
 
+<!--  BeyondAR needs the following features-->
+<uses-feature android:glEsVersion="0x00020000" android:required="true" />
 <uses-feature android:name="android.hardware.camera" />
 <uses-feature android:name="android.hardware.camera.autofocus" />
+<uses-feature android:name="android.hardware.sensor.accelerometer" />
+<uses-feature android:name="android.hardware.sensor.compass" />
 ```
 
 To create the UI it we can choose using an Android Layout XML or using java code. For both of them we can use the `BeyondarFragmentSupport` or the `BeyondarFragment` fragments.
@@ -114,7 +122,7 @@ Now we have the app ready to show the GeoObjects. But we also want to capture ev
 mBeyondarFragment.setOnClickBeyondarObjectListener(this);
 ...
 @Override
-public void onClikBeyondarObject(ArrayList<BeyondarObject> beyondarObjects) {
+public void onClickBeyondarObject(ArrayList<BeyondarObject> beyondarObjects) {
 		// The first element in the array belongs to the closest BeyondarObject
 		Toast.makeText(this, "Clicked on: " + beyondarObjects.get(0).getName(), Toast.LENGTH_LONG).show();
 	}

@@ -19,11 +19,14 @@ import java.io.IOException;
 import java.util.List;
 
 import android.content.Context;
+import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.hardware.Camera;
 import android.hardware.Camera.Size;
+import android.os.Build;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.Surface;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
@@ -33,7 +36,7 @@ import com.beyondar.android.util.DebugBitmap;
 import com.beyondar.android.util.Logger;
 
 public class CameraView extends SurfaceView implements SurfaceHolder.Callback, Camera.PictureCallback {
-	public static interface IPictureCallback {
+	public static interface BeyondarPictureCallback {
 		/**
 		 * This method is called when the snapshot of the camera is ready. If
 		 * there is an error, the image will be null
@@ -43,18 +46,24 @@ public class CameraView extends SurfaceView implements SurfaceHolder.Callback, C
 		void onPictureTaken(Bitmap picture);
 	}
 
+	private static final String CAMERA_PARAM_ORIENTATION = "orientation";
+	private static final String CAMERA_PARAM_LANDSCAPE = "landscape";
+	private static final String CAMERA_PARAM_PORTRAIT = "portrait";
+
 	private static final String TAG = "camera";
+	private static final double ASPECT_TOLERANCE = 0.25;
+	private static final int MAX_TIME_WAIT_FOR_CAMERA = 1000;
 
 	private SurfaceHolder mHolder;
 	private Camera mCamera;
-	private IPictureCallback mCameraCallback;
+	private BeyondarPictureCallback mCameraCallback;
 	private BitmapFactory.Options mOptions;
 
 	private Size mPreviewSize;
 	private List<Size> mSupportedPreviewSizes;
 	private List<String> mSupportedFlashModes;
 
-	private boolean mIsPreviewRunning;
+	private boolean mIsPreviewing;
 
 	public CameraView(Context context) {
 		super(context);
@@ -73,12 +82,13 @@ public class CameraView extends SurfaceView implements SurfaceHolder.Callback, C
 
 	@SuppressWarnings("deprecation")
 	private void init(Context context) {
+		mIsPreviewing = false;
 		mHolder = getHolder();
 		mHolder.addCallback(this);
 
 		configureCamera();
 
-		if (android.os.Build.VERSION.SDK_INT <= 10) {// Android 2.3.x or lower
+		if (Build.VERSION.SDK_INT <= 10) {// Android 2.3.x or lower
 			mHolder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
 		}
 	}
@@ -88,7 +98,8 @@ public class CameraView extends SurfaceView implements SurfaceHolder.Callback, C
 			return;
 		}
 		try {
-			mCamera = Camera.open();
+			getTheCamera();
+			// mCamera = Camera.open();
 		} catch (Exception e) {
 			Logger.e(TAG, "ERROR: Unable to open the camera", e);
 			return;
@@ -104,6 +115,10 @@ public class CameraView extends SurfaceView implements SurfaceHolder.Callback, C
 				mCamera.setParameters(parameters);
 			}
 		}
+	}
+
+	public boolean isPreviewing() {
+		return mCamera != null && mIsPreviewing;
 	}
 
 	public void setSupportedPreviewSizes(List<Size> supportedPreviewSizes) {
@@ -153,25 +168,37 @@ public class CameraView extends SurfaceView implements SurfaceHolder.Callback, C
 	}
 
 	private Size getOptimalPreviewSize(List<Size> sizes, int width, int height) {
+		double targetRatio = (double) width / height;
 
-		Size result = null;
+		if (sizes == null)
+			return null;
+
+		Camera.Size optimalSize = null;
+		double minDiff = Double.MAX_VALUE;
+
+		int targetHeight = height;
 
 		for (Camera.Size size : sizes) {
-			if (size.width <= width && size.height <= height) {
-				if (result == null) {
-					result = size;
-				} else {
-					int resultArea = result.width * result.height;
-					int newArea = size.width * size.height;
-
-					if (newArea > resultArea) {
-						result = size;
-					}
-				}
+			double ratio = (double) size.width / size.height;
+			if (Math.abs(ratio - targetRatio) > ASPECT_TOLERANCE) {
+				continue;
+			}
+			if (Math.abs(size.height - targetHeight) < minDiff) {
+				optimalSize = size;
+				minDiff = Math.abs(size.height - targetHeight);
 			}
 		}
 
-		return result;
+		if (optimalSize == null) {
+			minDiff = Double.MAX_VALUE;
+			for (Camera.Size size : sizes) {
+				if (Math.abs(size.height - targetHeight) < minDiff) {
+					optimalSize = size;
+					minDiff = Math.abs(size.height - targetHeight);
+				}
+			}
+		}
+		return optimalSize;
 	}
 
 	public void surfaceChanged(SurfaceHolder holder, int format, int w, int h) {
@@ -182,25 +209,37 @@ public class CameraView extends SurfaceView implements SurfaceHolder.Callback, C
 		if (mCamera == null || mPreviewSize == null) {
 			return;
 		}
+		stopPreviewCamera();
 
 		Camera.Parameters parameters = mCamera.getParameters();
-		int orientation = getCameraDisplayOrientation(mCamera);
+		
+		int orientation = 0;
 
-		stopPreviewCamera();
-		if (orientation == 0) {
-			mCamera.setDisplayOrientation(180);
-		} else if (orientation == 90) {
-			mCamera.setDisplayOrientation(90);
+		if (Build.VERSION.SDK_INT < 9) {
+			if (isPortrait()) {
+				parameters.set(CAMERA_PARAM_ORIENTATION, CAMERA_PARAM_PORTRAIT);
+				orientation = 90;
+			} else {
+				parameters.set(CAMERA_PARAM_ORIENTATION, CAMERA_PARAM_LANDSCAPE);
+				orientation = 0;
+			}
+		} else {
+			orientation = getCameraDisplayOrientation();
+			parameters.setRotation(orientation);
 		}
+		mCamera.setDisplayOrientation(orientation);
 
 		parameters.setPreviewSize(mPreviewSize.width, mPreviewSize.height);
+
+		// parameters.set("jpeg-quality", 70);
+		// parameters.setPictureSize(100, 100);
 
 		mCamera.setParameters(parameters);
 		startPreviewCamera();
 
 	}
 
-	private int getCameraDisplayOrientation(Camera camera) {
+	private int getCameraDisplayOrientation() {
 		int rotation = ((WindowManager) getContext().getSystemService(Context.WINDOW_SERVICE))
 				.getDefaultDisplay().getRotation();
 		int degrees = 0;
@@ -219,25 +258,37 @@ public class CameraView extends SurfaceView implements SurfaceHolder.Callback, C
 			break;
 		}
 
-		degrees = (degrees + 45) / 90 * 90;
-		rotation = (degrees + 90) % 360;
+		int result = 0;
+		android.hardware.Camera.CameraInfo info = new android.hardware.Camera.CameraInfo();
+		android.hardware.Camera.getCameraInfo(Camera.CameraInfo.CAMERA_FACING_BACK, info);
+		if (info.facing == Camera.CameraInfo.CAMERA_FACING_FRONT) {
+			result = (info.orientation + degrees) % 360;
+			result = (360 - result) % 360; // compensate the mirror
+		} else { // back-facing
+			result = (info.orientation - degrees + 360) % 360;
+		}
+		return result;
+	}
 
-		return rotation;
+	private boolean isPortrait() {
+		return (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT);
 	}
 
 	@Override
 	public void onPictureTaken(byte[] imageData, Camera camera) {
 		if (imageData != null && mCameraCallback != null) {
-			mCameraCallback.onPictureTaken(StoreByteImage(imageData));
+			Bitmap btm = convertByteImage(imageData);
+
+			mCameraCallback.onPictureTaken(btm);
 		}
 		startPreviewCamera();
 	}
 
 	public void stopPreviewCamera() {
-		if (mCamera == null || !mIsPreviewRunning) {
+		if (mCamera == null || !mIsPreviewing) {
 			return;
 		}
-		mIsPreviewRunning = false;
+		mIsPreviewing = false;
 		mCamera.stopPreview();
 
 	}
@@ -246,14 +297,16 @@ public class CameraView extends SurfaceView implements SurfaceHolder.Callback, C
 		if (mCamera == null) {
 			init(getContext());
 		}
-		if (mIsPreviewRunning || mCamera == null) {
+		if (mCamera == null || mIsPreviewing) {
 			return;
 		}
+		mIsPreviewing = true;
 		try {
 			mCamera.setPreviewDisplay(mHolder);
 			mCamera.startPreview();
 		} catch (Exception e) {
 			Logger.w(TAG, "Cannot start preview.", e);
+			mIsPreviewing = false;
 		}
 	}
 
@@ -265,7 +318,7 @@ public class CameraView extends SurfaceView implements SurfaceHolder.Callback, C
 		}
 	}
 
-	private Bitmap StoreByteImage(byte[] imageData) {
+	private Bitmap convertByteImage(byte[] imageData) {
 
 		Bitmap myImage = DebugBitmap.decodeByteArray(imageData, 0, imageData.length, mOptions);
 
@@ -275,18 +328,45 @@ public class CameraView extends SurfaceView implements SurfaceHolder.Callback, C
 		return myImage;
 	}
 
-	public void tackePicture(IPictureCallback cameraCallback) {
+	public void takePicture(BeyondarPictureCallback cameraCallback) {
 		BitmapFactory.Options options = new BitmapFactory.Options();
+		// TODO: Improve this part
 		options.inSampleSize = 4;
-		tackePicture(cameraCallback, options);
+		// options.inSampleSize = 1;
+		takePicture(cameraCallback, options);
 	}
 
-	public void tackePicture(IPictureCallback cameraCallback, BitmapFactory.Options options) {
+	public void takePicture(BeyondarPictureCallback cameraCallback, BitmapFactory.Options options) {
 		if (mCamera == null) {
 			return;
 		}
 		mCameraCallback = cameraCallback;
 		mCamera.takePicture(null, this, this);
 		mOptions = options;
+	}
+
+	private boolean getTheCamera() {
+		Log.v(TAG, "getTheCamera");
+		// keep trying to acquire the camera until "maximumWaitTimeForCamera"
+		// seconds have passed
+		boolean acquiredCam = false;
+		int timePassed = 0;
+		while (!acquiredCam && timePassed < MAX_TIME_WAIT_FOR_CAMERA) {
+			try {
+				mCamera = Camera.open();
+				Log.v(TAG, "acquired the camera");
+				acquiredCam = true;
+				return true;
+			} catch (Exception e) {
+				Logger.e(TAG, "Exception encountered opening camera:" + e.getLocalizedMessage());
+			}
+			try {
+				Thread.sleep(200);
+			} catch (InterruptedException ee) {
+				Logger.e(TAG, "Exception encountered sleeping:" + ee.getLocalizedMessage());
+			}
+			timePassed += 200;
+		}
+		return false;
 	}
 }

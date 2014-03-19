@@ -40,6 +40,9 @@ public class GoogleMapActivity extends FragmentActivity implements OnMarkerClick
 		setContentView(R.layout.map_google);
 
 		mMap = ((SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map)).getMap();
+		if (mMap == null){
+			return;
+		}
 
 		// We create the world and fill the world
 		mWorld = CustomWorldHelper.generateObjects(this);
@@ -53,12 +56,17 @@ public class GoogleMapActivity extends FragmentActivity implements OnMarkerClick
 		// NOTE: It is better to load the modules before start adding object in to the world
 		mWorld.addModule(mGoogleMapModule);
 
-		
-
 		mMap.setOnMarkerClickListener(this);
 
 		mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(mGoogleMapModule.getLatLng(), 15));
 		mMap.animateCamera(CameraUpdateFactory.zoomTo(19), 2000, null);
+		
+		// Lets add the user position
+		GeoObject user = new GeoObject(1000l);
+		user.setGeoPosition(mWorld.getLatitude(), mWorld.getLongitude());
+		user.setImageResource(R.drawable.flag);
+		user.setName("User position");
+		mWorld.addBeyondarObject(user);
 	}
 
 	@Override

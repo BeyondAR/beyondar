@@ -22,26 +22,36 @@ import com.beyondar.android.opengl.colision.MeshCollider;
 import com.beyondar.android.opengl.colision.SquareMeshCollider;
 import com.beyondar.android.opengl.renderable.Renderable;
 import com.beyondar.android.opengl.renderable.SquareRenderable;
+import com.beyondar.android.opengl.renderer.ARRenderer;
 import com.beyondar.android.opengl.texture.Texture;
 import com.beyondar.android.util.cache.BitmapCache;
 import com.beyondar.android.util.math.geom.Point3;
 import com.beyondar.android.world.module.BeyondarObjectModule;
 import com.beyondar.android.world.module.Modulable;
 
-public class BeyondarObject implements Modulable<BeyondarObjectModule>{
+public class BeyondarObject implements Modulable<BeyondarObjectModule> {
 
-	private long mId;
+	private Long mId;
 	private int mTypeList;
 
 	protected Texture texture;
 	protected String bitmapUri;
 	protected String name;
-	protected boolean visibile;
+	protected boolean visible;
 	protected Renderable renderable;
 	protected Point3 position;
 	protected Point3 angle;
 	protected boolean faceToCamera;
 	protected MeshCollider meshCollider;
+	protected double distanceFromUser;
+	/**
+	 * This pointer is made to track the {@link BeyondarObject} position on the
+	 * screen
+	 */
+	protected Point3 screenPositionTopLeft, screenPositionTopRight, screenPositionBottomLeft,
+			screenPositionBottomRight, screenPositionCenter;
+
+	protected Point3 topLeft, bottomLeft, bottomRight, topRight;
 
 	/** This fields contains all the loaded modules */
 	protected List<BeyondarObjectModule> modules;
@@ -56,16 +66,38 @@ public class BeyondarObject implements Modulable<BeyondarObjectModule>{
 	 */
 	public BeyondarObject(long id) {
 		mId = id;
+		init();
+	}
+
+	public BeyondarObject() {
+		init();
+	}
+
+	private void init() {
 		modules = new ArrayList<BeyondarObjectModule>(3);
 		position = new Point3();
 		angle = new Point3();
 		texture = new Texture();
 		faceToCamera(true);
-		setVisibile(true);
+		setVisible(true);
+
+		topLeft = new Point3();
+		bottomLeft = new Point3();
+		bottomRight = new Point3();
+		topRight = new Point3();
+
+		screenPositionTopLeft = new Point3();
+		screenPositionTopRight = new Point3();
+		screenPositionBottomLeft = new Point3();
+		screenPositionBottomRight = new Point3();
+		screenPositionCenter = new Point3();
 	}
 
 	public long getId() {
-		return mId;
+		if (mId == null) {
+			mId = (long) hashCode();
+		}
+		return mId.longValue();
 	}
 
 	public void addModule(BeyondarObjectModule module) {
@@ -77,7 +109,7 @@ public class BeyondarObject implements Modulable<BeyondarObjectModule>{
 		}
 		module.setup(this);
 	}
-	
+
 	@Override
 	public boolean removeModule(BeyondarObjectModule module) {
 		boolean removed = false;
@@ -89,7 +121,7 @@ public class BeyondarObject implements Modulable<BeyondarObjectModule>{
 		}
 		return removed;
 	}
-	
+
 	@Override
 	public void cleanModules() {
 		synchronized (lockModules) {
@@ -108,12 +140,12 @@ public class BeyondarObject implements Modulable<BeyondarObjectModule>{
 		}
 		return null;
 	}
-	
+
 	@Override
 	public boolean containsAnyModule(Class<? extends BeyondarObjectModule> moduleClass) {
 		return getFirstModule(moduleClass) != null;
 	}
-	
+
 	@Override
 	public boolean containsModule(BeyondarObjectModule module) {
 		synchronized (lockModules) {
@@ -209,6 +241,9 @@ public class BeyondarObject implements Modulable<BeyondarObjectModule>{
 	}
 
 	public void setTexturePointer(int texturePointer) {
+		if (texturePointer == texture.getTexturePointer()) {
+			return;
+		}
 		texture.setTexturePointer(texturePointer);
 		synchronized (lockModules) {
 			for (BeyondarObjectModule module : modules) {
@@ -218,6 +253,9 @@ public class BeyondarObject implements Modulable<BeyondarObjectModule>{
 	}
 
 	public void setTexture(Texture texture) {
+		if (texture == this.texture) {
+			return;
+		}
 		if (texture == null) {
 			texture = new Texture();
 		}
@@ -271,19 +309,19 @@ public class BeyondarObject implements Modulable<BeyondarObjectModule>{
 	 * Set the visibility of this object. if it is false, the engine will not
 	 * show it.
 	 * 
-	 * @param visibility
+	 * @param visible
 	 */
-	public void setVisibile(boolean visible) {
-		visibile = visible;
+	public void setVisible(boolean visible) {
+		this.visible = visible;
 		synchronized (lockModules) {
 			for (BeyondarObjectModule module : modules) {
-				module.onVisibilityChanged(visibile);
+				module.onVisibilityChanged(this.visible);
 			}
 		}
 	}
 
 	public boolean isVisible() {
-		return visibile;
+		return visible;
 	}
 
 	public void setName(String name) {
@@ -302,15 +340,19 @@ public class BeyondarObject implements Modulable<BeyondarObjectModule>{
 	/**
 	 * Set the image uri
 	 * 
-	 * @param url
+	 * @param uri
 	 */
 	public void setImageUri(String uri) {
+		if (uri == bitmapUri) {
+			return;
+		}
 		bitmapUri = uri;
 		synchronized (lockModules) {
 			for (BeyondarObjectModule module : modules) {
 				module.onImageUriChanged(bitmapUri);
 			}
 		}
+		setTexture(null);
 	}
 
 	public void setImageResource(int resID) {
@@ -331,52 +373,96 @@ public class BeyondarObject implements Modulable<BeyondarObjectModule>{
 		return mTypeList;
 	}
 
-	// /**
-	// * Get the orientation (degrees). Get null if the orientation has not set
-	// *
-	// * @return
-	// */
-	// public Float getOrientation() {
-	// return mOrientation;
-	// }
-	//
-	// /**
-	// * Set the orientation do draw this object. Set null if you want no
-	// * orientation (always face to the camera)
-	// *
-	// * @param degrees
-	// */
-	// public void setOrientation(Float degrees) {
-	// this.mOrientation = degrees;
-	// }
+	/**
+	 * Get the Distance from the user in meters
+	 * 
+	 * @return Distance in meters
+	 */
+	public double getDistanceFromUser() {
+		return distanceFromUser;
+	}
 
-	// TODO: Improve the mesh collider!!
-	public MeshCollider getMeshCollider() {
-		Point3 topLeft = new Point3(position.x + SquareRenderable.VERTICES[3], position.y
-				+ SquareRenderable.VERTICES[4], position.z + SquareRenderable.VERTICES[5]);
-		Point3 bottomLeft = new Point3(position.x + SquareRenderable.VERTICES[0], position.y
-				+ SquareRenderable.VERTICES[1], position.z + SquareRenderable.VERTICES[2]);
-		Point3 bottomRight = new Point3(position.x + SquareRenderable.VERTICES[6], position.y
-				+ SquareRenderable.VERTICES[7], position.z + SquareRenderable.VERTICES[8]);
-		Point3 topRight = new Point3(position.x + SquareRenderable.VERTICES[9], position.y
-				+ SquareRenderable.VERTICES[10], position.z + SquareRenderable.VERTICES[11]);
+	/**
+	 * Set how far is the object from the user.
+	 * 
+	 * This method is used by the {@link ARRenderer} to set this value.
+	 * 
+	 * @param distance
+	 */
+	public void setDistanceFromUser(double distance) {
+		distanceFromUser = distance;
+	}
 
-		// Rotate points
+	public Point3 getScreenPositionBottomLeft() {
+		return screenPositionBottomLeft;
+	}
+
+	public Point3 getScreenPositionTopLeft() {
+		return screenPositionTopLeft;
+	}
+
+	public Point3 getScreenPositionTopRight() {
+		return screenPositionTopRight;
+	}
+
+	public Point3 getScreenPositionBottomRight() {
+		return screenPositionBottomRight;
+	}
+
+	public Point3 getScreenPositionCenter() {
+		return screenPositionCenter;
+	}
+
+	public Point3 getTopLeft() {
+		topLeft.x = position.x + texture.getVertices()[3];
+		topLeft.y = position.y + texture.getVertices()[4];
+		topLeft.z = position.z + texture.getVertices()[5];
+
 		topLeft.rotatePointDegrees_x(angle.x, position);
 		topLeft.rotatePointDegrees_y(angle.y, position);
 		topLeft.rotatePointDegrees_z(angle.z, position);
+		return topLeft;
+	}
+
+	public Point3 getBottomLeft() {
+		bottomLeft.x = position.x + texture.getVertices()[0];
+		bottomLeft.y = position.y + texture.getVertices()[1];
+		bottomLeft.z = position.z + texture.getVertices()[2];
 
 		bottomLeft.rotatePointDegrees_x(angle.x, position);
 		bottomLeft.rotatePointDegrees_y(angle.y, position);
 		bottomLeft.rotatePointDegrees_z(angle.z, position);
+		return bottomLeft;
+	}
+
+	public Point3 getBottomRight() {
+		bottomRight.x = position.x + texture.getVertices()[6];
+		bottomRight.y = position.y + texture.getVertices()[7];
+		bottomRight.z = position.z + texture.getVertices()[8];
 
 		bottomRight.rotatePointDegrees_x(angle.x, position);
 		bottomRight.rotatePointDegrees_y(angle.y, position);
 		bottomRight.rotatePointDegrees_z(angle.z, position);
+		return bottomRight;
+	}
+
+	public Point3 getTopRight() {
+		topRight.x = position.x + texture.getVertices()[9];
+		topRight.y = position.y + texture.getVertices()[10];
+		topRight.z = position.z + texture.getVertices()[11];
 
 		topRight.rotatePointDegrees_x(angle.x, position);
 		topRight.rotatePointDegrees_y(angle.y, position);
 		topRight.rotatePointDegrees_z(angle.z, position);
+		return topRight;
+	}
+
+	// TODO: Improve the mesh collider!!
+	public MeshCollider getMeshCollider() {
+		Point3 topLeft = getTopLeft();
+		Point3 bottomLeft = getBottomLeft();
+		Point3 bottomRight = getBottomRight();
+		Point3 topRight = getTopRight();
 
 		// Generate the collision detector
 		meshCollider = new SquareMeshCollider(topLeft, bottomLeft, bottomRight, topRight);

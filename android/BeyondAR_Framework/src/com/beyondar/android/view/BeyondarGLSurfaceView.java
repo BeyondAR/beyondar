@@ -16,6 +16,7 @@
 package com.beyondar.android.view;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import javax.microedition.khronos.opengles.GL;
 
@@ -26,11 +27,13 @@ import android.opengl.GLSurfaceView;
 import android.util.AttributeSet;
 import android.view.Display;
 import android.view.MotionEvent;
+import android.view.ViewGroup;
 import android.view.WindowManager;
 
 import com.beyondar.android.opengl.renderer.ARRenderer;
 import com.beyondar.android.opengl.renderer.ARRenderer.FpsUpdatable;
 import com.beyondar.android.opengl.renderer.ARRenderer.SnapshotCallback;
+import com.beyondar.android.opengl.renderer.OnBeyondarObjectRenderedListener;
 import com.beyondar.android.opengl.util.BeyondarSensorManager;
 import com.beyondar.android.opengl.util.MatrixTrackingGL;
 import com.beyondar.android.util.CompatibilityUtil;
@@ -40,12 +43,16 @@ import com.beyondar.android.world.BeyondarObject;
 import com.beyondar.android.world.GeoObject;
 import com.beyondar.android.world.World;
 
-public class BeyondarGLSurfaceView extends GLSurfaceView {
+public class BeyondarGLSurfaceView extends GLSurfaceView implements OnBeyondarObjectRenderedListener {
 
 	protected ARRenderer mRenderer;
 	private SensorManager mSensorManager;
 	private Context mContext;
 
+	private BeyondarViewAdapter mViewAdapter;
+	private ViewGroup mParent;
+
+	@Deprecated
 	private OnTouchBeyondarViewListener mTouchListener;
 
 	private World mWorld;
@@ -79,7 +86,6 @@ public class BeyondarGLSurfaceView extends GLSurfaceView {
 		// Wrapper set so the renderer can
 		// access the gl transformation matrixes.
 		setGLWrapper(new GLSurfaceView.GLWrapper() {
-
 			@Override
 			public GL wrap(GL gl) {
 				return new MatrixTrackingGL(gl);
@@ -87,6 +93,7 @@ public class BeyondarGLSurfaceView extends GLSurfaceView {
 		});
 
 		mRenderer = createRenderer();
+		mRenderer.setOnBeyondarObjectRenderedListener(this);
 		configureRenderer(mRenderer);
 
 		setEGLConfigChooser(8, 8, 8, 8, 16, 0);
@@ -263,7 +270,7 @@ public class BeyondarGLSurfaceView extends GLSurfaceView {
 		mRenderer.getViewRay(x, y, ray);
 		mWorld.getBeyondarObjectsCollideRay(ray, beyondarObjects);
 	}
-	
+
 	/**
 	 * When a {@link GeoObject} is rendered according to its position it could
 	 * look very small if it is far away. Use this method to render far objects
@@ -290,4 +297,64 @@ public class BeyondarGLSurfaceView extends GLSurfaceView {
 		return mRenderer.getMaxDistanceSize();
 	}
 
+	/**
+	 * When a {@link GeoObject} is rendered according to its position it could
+	 * look very big if it is too close. Use this method to render near objects
+	 * as if there were farther.<br>
+	 * For instance if there is an object at 1 meters and we want to have
+	 * everything at least at 10 meters, we could use this method for that
+	 * purpose. <br>
+	 * To set it to the default behavior just set it to 0
+	 * 
+	 * @param minDistanceSize
+	 *            The top near distance (in meters) which we want to draw a
+	 *            {@link GeoObject} , 0 to set again the default behavior
+	 */
+	public void setMinDistanceSize(float minDistanceSize) {
+		mRenderer.setMinDistanceSize(minDistanceSize);
+	}
+
+	/**
+	 * Get the minimum distance which a {@link GeoObject} will be rendered.
+	 * 
+	 * @return The current minimum distance. 0 is the default behavior
+	 */
+	public float getMinDistanceSize() {
+		return mRenderer.getMinDistanceSize();
+	}
+
+	public void setBeyondarViewAdapter(BeyondarViewAdapter beyondarViewAdapter, ViewGroup parent) {
+		mViewAdapter = beyondarViewAdapter;
+		mParent = parent;
+	}
+
+	@Override
+	public void onBeyondarObjectsRendered(List<BeyondarObject> renderedBeyondarObjects) {
+		BeyondarViewAdapter tmpView = mViewAdapter;
+		if (tmpView != null) {
+			List<BeyondarObject> elements = World
+					.sortGeoObjectByDistanceFromCenter(new ArrayList<BeyondarObject>(renderedBeyondarObjects));
+			tmpView.processList(elements, mParent, this);
+		}
+	}
+
+	public void forceFillBeyondarObjectPositionsOnRendering(boolean fill) {
+		mRenderer.forceFillBeyondarObjectPositions(true);
+	}
+
+	/**
+	 * Use this method to fill all the screen positions of the
+	 * {@link BeyondarObject}. After this method is called you can use the
+	 * following:<br>
+	 * {@link BeyondarObject#getScreenPositionBottomLeft()}<br>
+	 * {@link BeyondarObject#getScreenPositionBottomRight()}<br>
+	 * {@link BeyondarObject#getScreenPositionTopLeft()}<br>
+	 * {@link BeyondarObject#getScreenPositionTopRight()}
+	 * 
+	 * @param beyondarObject
+	 *            The {@link BeyondarObject} to compute
+	 */
+	public void fillBeyondarObjectPositions(BeyondarObject beyondarObject) {
+		mRenderer.fillBeyondarObjectPositions(beyondarObject);
+	}
 }

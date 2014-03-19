@@ -15,15 +15,45 @@
  */
 package com.beyondar.android.util.location;
 
-import com.beyondar.android.world.GeoObject;
-import com.beyondar.android.world.World;
-
+import android.location.GpsStatus;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 
-import android.location.GpsStatus;
+import com.beyondar.android.world.GeoObject;
+import com.beyondar.android.world.World;
 
+/**
+ * This class provides a helper to get the best location. To do that the
+ * application needs to add the following permissions in the manifest: <br>
+ * 
+ * <pre>
+ *     android.permission.ACCESS_FINE_LOCATION
+ *     android.permission.ACCESS_COARSE_LOCATION
+ * </pre>
+ * 
+ * Remember that you also can use the Location utility in the Google Services. <br>
+ * <br>
+ * Here is a small example how to use {@link BeyondarLocationHelper}: <br>
+ * 
+ * <pre>
+ * <code>
+ * onCreate(Bundle savedInstanceState){
+ * 	BeyondarLocationHelper.setLocationManager((LocationManager) this.getSystemService(Context.LOCATION_SERVICE));
+ * 	BeyondarLocationHelper.addGeoObjectLocationUpdate(beyondarObject);
+ * 	// You also can register a World or a LocationListener
+ * 	// Don't forget to remove the object that you register
+ * }
+ * onResume(){
+ * 	BeyondarLocationHelper.enable();
+ * }
+ * 
+ * onPause(){
+ * 	BeyondarLocationHelper.disable();
+ * }
+ * </code>
+ * </pre>
+ */
 public class BeyondarLocationHelper {
 
 	public final static int MAX_TIME_GPS_FIX = 20000;
@@ -59,8 +89,7 @@ public class BeyondarLocationHelper {
 				Location lastNetworkLocation = mLocationManager
 						.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
 
-				if (LocationUtils.isBetterLocation(lastNetworkLocation,
-						lastGpsLocation)) {
+				if (LocationUtils.isBetterLocation(lastNetworkLocation, lastGpsLocation)) {
 					mLocationListener.setLastKnowLocation(lastNetworkLocation);
 				} else {
 					mLocationListener.setLastKnowLocation(lastGpsLocation);
@@ -72,18 +101,13 @@ public class BeyondarLocationHelper {
 
 		}
 
-		public void registerLocationListener(LocationListener locationListener,
-				GpsStatus.Listener gpsListener) {
-			if (mLocationManager.getAllProviders().contains(
-					LocationManager.GPS_PROVIDER)) {
-				mLocationManager.requestLocationUpdates(
-						LocationManager.GPS_PROVIDER, 0, 0, locationListener);
+		public void registerLocationListener(LocationListener locationListener, GpsStatus.Listener gpsListener) {
+			if (mLocationManager.getAllProviders().contains(LocationManager.GPS_PROVIDER)) {
+				mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
 				mLocationManager.addGpsStatusListener(gpsListener);
 			}
-			if (mLocationManager.getAllProviders().contains(
-					LocationManager.NETWORK_PROVIDER)) {
-				mLocationManager.requestLocationUpdates(
-						LocationManager.NETWORK_PROVIDER, 0, 0,
+			if (mLocationManager.getAllProviders().contains(LocationManager.NETWORK_PROVIDER)) {
+				mLocationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0,
 						locationListener);
 			}
 
@@ -110,8 +134,7 @@ public class BeyondarLocationHelper {
 				switch (event) {
 				case GpsStatus.GPS_EVENT_SATELLITE_STATUS:
 					if (mLocationListener.getLastGpsLocation() != null) {
-						if ((System.currentTimeMillis() - mLocationListener
-								.getLastGpsLocation().getTime()) < MAX_TIME_GPS_FIX) {
+						if ((System.currentTimeMillis() - mLocationListener.getLastGpsLocation().getTime()) < MAX_TIME_GPS_FIX) {
 							if (!mGpsFix)
 								mGpsFix = true;
 						} else {
@@ -135,53 +158,126 @@ public class BeyondarLocationHelper {
 		}
 	}
 
+	/**
+	 * Set the {@link LocationManager} needed by the helper to be able to take
+	 * care of the location.
+	 * 
+	 * @param locationManager
+	 */
 	public static void setLocationManager(LocationManager locationManager) {
-		BeyondarLocationManagerSingleton.INSTANCE
-				.setLocationManager(locationManager);
+		//TODO: Check what happens if an other locationManager is set
+		BeyondarLocationManagerSingleton.INSTANCE.setLocationManager(locationManager);
 	}
 
+	/**
+	 * Add a {@link GeoObject} that will be updated with the user location.
+	 * 
+	 * @param geoObject
+	 */
 	public static void addGeoObjectLocationUpdate(GeoObject geoObject) {
-		BeyondarLocationManagerSingleton.INSTANCE.mLocationListener
-				.addGeoObjectLocationUpdate(geoObject);
+		BeyondarLocationManagerSingleton.INSTANCE.mLocationListener.addGeoObjectLocationUpdate(geoObject);
 	}
 
+	/**
+	 * Remove the specified {@link GeoObject} to don't get any update about the
+	 * user location.
+	 * 
+	 * @param geoObject
+	 */
 	public static void removeGeoObjectLocationUpdate(GeoObject geoObject) {
-		BeyondarLocationManagerSingleton.INSTANCE.mLocationListener
-				.removeGeoObjectLocationUpdate(geoObject);
+		BeyondarLocationManagerSingleton.INSTANCE.mLocationListener.removeGeoObjectLocationUpdate(geoObject);
 	}
 
-	public static void removeWorldLocationUpdate(World world) {
-		BeyondarLocationManagerSingleton.INSTANCE.mLocationListener
-				.removeWorldLocationUpdate(world);
-	}
-
-	public static void addWorldLocationUpdate(World world) {
-		BeyondarLocationManagerSingleton.INSTANCE.mLocationListener
-				.addWorldLocationUpdate(world);
-	}
-
+	/**
+	 * Remove all the {@link GeoObject} to get the location updates.
+	 */
 	public static void removeAllGeoObjectsUpdates() {
-		BeyondarLocationManagerSingleton.INSTANCE.mLocationListener
-				.removeAllGeoObjectsUpdates();
+		BeyondarLocationManagerSingleton.INSTANCE.mLocationListener.removeAllGeoObjectsUpdates();
 	}
 
+	/**
+	 * Add a {@link World} object that will be updated with the user location.
+	 * 
+	 * @param world
+	 */
+	public static void addWorldLocationUpdate(World world) {
+		BeyondarLocationManagerSingleton.INSTANCE.mLocationListener.addWorldLocationUpdate(world);
+	}
+
+	/**
+	 * Remove the specified {@link World} to don't get any update about the user
+	 * location.
+	 * 
+	 * @param world
+	 */
+	public static void removeWorldLocationUpdate(World world) {
+		BeyondarLocationManagerSingleton.INSTANCE.mLocationListener.removeWorldLocationUpdate(world);
+	}
+
+	/**
+	 * Remove all the {@link World} to get the location updates.
+	 */
 	public static void removeAllWorldsUpdates() {
-		BeyondarLocationManagerSingleton.INSTANCE.mLocationListener
-				.removeAllWorldsUpdates();
+		BeyondarLocationManagerSingleton.INSTANCE.mLocationListener.removeAllWorldsUpdates();
 	}
 
+	/**
+	 * Add a {@link LocationListener} object that will be updated with the user
+	 * location.
+	 * 
+	 * @param locationListener
+	 */
+	public static void addLocationListener(LocationListener locationListener) {
+		BeyondarLocationManagerSingleton.INSTANCE.mLocationListener.addLocationListener(locationListener);
+	}
+
+	/**
+	 * Remove the specified {@link LocationListener} to don't get any update
+	 * about the user location.
+	 * 
+	 * @param locationListener
+	 */
+	public static void removeLocationListener(LocationListener locationListener) {
+		BeyondarLocationManagerSingleton.INSTANCE.mLocationListener.removeLocationListener(locationListener);
+	}
+
+	/**
+	 * Remove all the {@link LocationListener} to get the location updates.
+	 */
+	public static void removeAllLocationListener() {
+		BeyondarLocationManagerSingleton.INSTANCE.mLocationListener.removeAllLocationListener();
+	}
+
+	/**
+	 * Enable the location services for the helper. Once it will be enabled it
+	 * will start consuming battery.
+	 */
 	public static void enable() {
 		BeyondarLocationManagerSingleton.INSTANCE.enable();
 	}
 
+	/**
+	 * Disable the location services for the helper. If the location is not
+	 * needed use this method in order to save battery.
+	 */
 	public static void disable() {
 		BeyondarLocationManagerSingleton.INSTANCE.disable();
 	}
 
+	/**
+	 * Check if location is enabled or not.
+	 * 
+	 * @return
+	 */
 	public static boolean isEnabled() {
 		return BeyondarLocationManagerSingleton.INSTANCE.isEnabled();
 	}
 
+	/**
+	 * Check if the satellites are giving a correct location.
+	 * 
+	 * @return
+	 */
 	public static boolean gpsFix() {
 		return BeyondarLocationManagerSingleton.INSTANCE.gpsFix();
 	}

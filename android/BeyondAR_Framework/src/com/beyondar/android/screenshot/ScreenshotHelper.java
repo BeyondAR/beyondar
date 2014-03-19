@@ -68,7 +68,7 @@ public class ScreenshotHelper {
 			btmCamera = picture;
 			checkResults();
 		}
-
+		
 		private synchronized void checkResults() {
 			status++;
 
@@ -82,28 +82,15 @@ public class ScreenshotHelper {
 					callback.onScreenshot(btmCamera);
 					return;
 				}
-
-				float factor = ((float) btmGl.getWidth() / (float) btmCamera.getWidth());
-
-				float newWidth = factor * btmCamera.getWidth();
-				float newHeight = factor * btmCamera.getHeight();
-
-				Bitmap newBtmCamera = ImageUtils.resizeImage(btmCamera, (int) newWidth, (int) newHeight);
-				if (newBtmCamera != btmCamera) {
-					btmCamera.recycle();
-				}
-
-				Bitmap btm = ImageUtils.mergeBitmaps(newBtmCamera, btmGl);
-				newBtmCamera.recycle();
-
-				Bitmap result = Bitmap.createBitmap(btm, 0, 0, btmGl.getWidth(), btmGl.getHeight());
-
+				
+				Bitmap btm = ImageUtils.mergeBitmaps(btmCamera, btmGl);
+				btmCamera.recycle();
 				btmGl.recycle();
-				btm.recycle();
 
 				System.gc();
-				callback.onScreenshot(result);
+				callback.onScreenshot(btm);
 			}
 		}
+
 	}
 }

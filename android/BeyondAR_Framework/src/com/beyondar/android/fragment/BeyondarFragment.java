@@ -1,15 +1,20 @@
 package com.beyondar.android.fragment;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
-
 import android.annotation.SuppressLint;
 import android.app.Fragment;
 import android.content.pm.PackageManager;
+import android.hardware.Camera;
+import android.hardware.Camera.AutoFocusCallback;
+import android.hardware.Camera.Size;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -20,9 +25,7 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout.LayoutParams;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-
 import com.beyondar.android.opengl.renderer.ARRenderer.FpsUpdatable;
-import com.beyondar.android.opengl.util.LowPassFilter;
 import com.beyondar.android.screenshot.OnScreenshotListener;
 import com.beyondar.android.screenshot.ScreenshotHelper;
 import com.beyondar.android.util.math.geom.Ray;
@@ -30,18 +33,18 @@ import com.beyondar.android.view.BeyondarGLSurfaceView;
 import com.beyondar.android.view.BeyondarViewAdapter;
 import com.beyondar.android.view.CameraView;
 import com.beyondar.android.view.OnClickBeyondarObjectListener;
+import com.beyondar.android.view.OnFocusableListener;
 import com.beyondar.android.view.OnTouchBeyondarViewListener;
 import com.beyondar.android.world.BeyondarObject;
 import com.beyondar.android.world.GeoObject;
 import com.beyondar.android.world.World;
 
 @SuppressLint("NewApi")
-public class BeyondarFragment extends Fragment implements FpsUpdatable,
-		OnClickListener, OnTouchListener {
+public class BeyondarFragment extends Fragment implements FpsUpdatable, OnClickListener, OnTouchListener, OnFocusableListener {
 
 	private static final int CORE_POOL_SIZE = 1;
 	private static final int MAXIMUM_POOL_SIZE = 1;
-	private static final long KEEP_ALIVE_TIME = 1000; // 1000 ms
+	private static final long KEEP_ALIVE_TIME = 1000; // 1000 ms]
 
 	private CameraView mBeyondarCameraView;
 	private BeyondarGLSurfaceView mBeyondarGLSurface;
@@ -57,19 +60,38 @@ public class BeyondarFragment extends Fragment implements FpsUpdatable,
 
 	private ThreadPoolExecutor mThreadPool;
 	private BlockingQueue<Runnable> mBlockingQueue;
+	
+	private Camera mCamera;
+	private boolean focusableStatus = false;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		mBlockingQueue = new LinkedBlockingQueue<Runnable>();
-		mThreadPool = new ThreadPoolExecutor(CORE_POOL_SIZE, MAXIMUM_POOL_SIZE,
-				KEEP_ALIVE_TIME, TimeUnit.MILLISECONDS, mBlockingQueue);
+		mThreadPool = new ThreadPoolExecutor(CORE_POOL_SIZE, MAXIMUM_POOL_SIZE, KEEP_ALIVE_TIME,
+				TimeUnit.MILLISECONDS, mBlockingQueue);
+	}
+	
+	@Override
+	public void onActivityCreated(Bundle savedInstanceState) {
+		// TODO Auto-generated method stub
+		super.onActivityCreated(savedInstanceState);
+		
+		mMailLayout.post(new Runnable(){
+
+			@Override
+			public void run() {
+			  int width =  mMailLayout.getWidth();
+			  int height =  mMailLayout.getHeight();
+			  getBestCameraPictureSize(width, height);
+			 
+			}
+		});
 	}
 
 	private void init() {
 
-		android.view.ViewGroup.LayoutParams params = new LayoutParams(
-				ViewGroup.LayoutParams.MATCH_PARENT,
+		android.view.ViewGroup.LayoutParams params = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
 				ViewGroup.LayoutParams.MATCH_PARENT);
 
 		mMailLayout = new RelativeLayout(getActivity());
@@ -77,6 +99,9 @@ public class BeyondarFragment extends Fragment implements FpsUpdatable,
 		mBeyondarGLSurface.setOnTouchListener(this);
 
 		mBeyondarCameraView = createCameraView();
+		
+		mCamera = mBeyondarCameraView.getCamera();
+		mBeyondarCameraView.setOnFocusableListener(this);
 
 		mMailLayout.addView(mBeyondarCameraView, params);
 		mMailLayout.addView(mBeyondarGLSurface, params);
@@ -84,22 +109,77 @@ public class BeyondarFragment extends Fragment implements FpsUpdatable,
 
 	private void checkIfSensorsAvailable() {
 		PackageManager PM = getActivity().getPackageManager();
-		boolean compass = PM
-				.hasSystemFeature(PackageManager.FEATURE_SENSOR_COMPASS);
-		boolean accelerometer = PM
-				.hasSystemFeature(PackageManager.FEATURE_SENSOR_ACCELEROMETER);
+		boolean compass = PM.hasSystemFeature(PackageManager.FEATURE_SENSOR_COMPASS);
+		boolean accelerometer = PM.hasSystemFeature(PackageManager.FEATURE_SENSOR_ACCELEROMETER);
 		if (!compass && !accelerometer) {
-			throw new IllegalStateException(
-					getClass().getName()
-							+ " can not run without the compass and the acelerometer sensors.");
+			throw new IllegalStateException(getClass().getName()
+					+ " can not run without the compass and the acelerometer sensors.");
 		} else if (!compass) {
-			throw new IllegalStateException(getClass().getName()
-					+ " can not run without the compass sensor.");
+			throw new IllegalStateException(getClass().getName() + " can not run without the compass sensor.");
 		} else if (!accelerometer) {
-			throw new IllegalStateException(getClass().getName()
-					+ " can not run without the acelerometer sensor.");
+			throw new IllegalStateException(getClass().getName()+ " can not run without the acelerometer sensor.");
 		}
 
+	}
+	
+	public Camera getCamera() {
+		return mCamera;
+	}  
+	
+	public View getBeyondarLayout() {
+		return mMailLayout;
+	}
+	
+	public void getBestCameraPictureSize(int width, int height) {
+		Camera.Parameters parameters = mCamera.getParameters();
+        List<Size> sizes = parameters.getSupportedPictureSizes();
+        
+        Collections.sort(sizes, new CompareCameraSizes());
+        
+        Collections.reverse(sizes);
+        
+        Iterator<Size> iterator = sizes.iterator();
+        
+        while(iterator.hasNext()){
+        	Size size = (Size) iterator.next();
+        	int cameraWidth = (Integer) size.width;
+        	int cameraHeight = (Integer) size.height;
+
+        	double cameraRatio = (double) cameraWidth / (double) cameraHeight;
+        	
+        	double layoutRatio = (double) width / (double) height;
+        	
+        	if(Math.abs(cameraRatio - layoutRatio) < 0.1){
+        		parameters.setPictureSize(size.width, size.height);
+        		parameters.setPreviewSize(size.width, size.height);
+                mCamera.setParameters(parameters);
+        		return;
+        	}
+        	
+        }
+       
+	}
+	
+private class CompareCameraSizes implements Comparator<Size>{
+
+	@Override
+	public int compare(Size s1, Size s2) {
+	   
+		int resultInt = s1.width - s2.width;
+		
+		if(resultInt == 0){
+			
+			resultInt = s1.height - s2.height;
+			
+		}
+		
+		return resultInt;
+	}
+}
+	
+	@Override
+	public void onFocusableStatus(boolean focusStatus) {
+		focusableStatus = focusStatus;
 	}
 
 	/**
@@ -142,8 +222,7 @@ public class BeyondarFragment extends Fragment implements FpsUpdatable,
 	}
 
 	@Override
-	public View onCreateView(LayoutInflater inflater, ViewGroup container,
-			Bundle savedInstanceState) {
+	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		init();
 		startRenderingAR();
 		return mMailLayout;
@@ -153,13 +232,14 @@ public class BeyondarFragment extends Fragment implements FpsUpdatable,
 	public void onResume() {
 		super.onResume();
 		mBeyondarCameraView.startPreviewCamera();
+		mCamera = mBeyondarCameraView.getCamera();
 		mBeyondarGLSurface.onResume();
 	}
 
 	@Override
 	public void onPause() {
 		super.onPause();
-		mBeyondarCameraView.releaseCamera();
+		mBeyondarCameraView.stopPreviewCamera();
 		mBeyondarGLSurface.onPause();
 	}
 
@@ -168,13 +248,11 @@ public class BeyondarFragment extends Fragment implements FpsUpdatable,
 	 * 
 	 * @param listener
 	 */
-	public void setOnTouchBeyondarViewListener(
-			OnTouchBeyondarViewListener listener) {
+	public void setOnTouchBeyondarViewListener(OnTouchBeyondarViewListener listener) {
 		mTouchListener = listener;
 	}
 
-	public void setOnClickBeyondarObjectListener(
-			OnClickBeyondarObjectListener listener) {
+	public void setOnClickBeyondarObjectListener(OnClickBeyondarObjectListener listener) {
 		mClickListener = listener;
 		mMailLayout.setClickable(listener != null);
 		mMailLayout.setOnClickListener(this);
@@ -205,8 +283,7 @@ public class BeyondarFragment extends Fragment implements FpsUpdatable,
 				@Override
 				public void run() {
 					final ArrayList<BeyondarObject> beyondarObjects = new ArrayList<BeyondarObject>();
-					mBeyondarGLSurface.getBeyondarObjectsOnScreenCoordinates(
-							lastX, lastY, beyondarObjects);
+					mBeyondarGLSurface.getBeyondarObjectsOnScreenCoordinates(lastX, lastY, beyondarObjects);
 					if (beyondarObjects.size() == 0)
 						return;
 					mBeyondarGLSurface.post(new Runnable() {
@@ -309,11 +386,9 @@ public class BeyondarFragment extends Fragment implements FpsUpdatable,
 	 * @return A new list with the {@link BeyondarObject} that collide with the
 	 *         screen cord
 	 */
-	public List<BeyondarObject> getBeyondarObjectsOnScreenCoordinates(float x,
-			float y) {
+	public List<BeyondarObject> getBeyondarObjectsOnScreenCoordinates(float x, float y) {
 		ArrayList<BeyondarObject> beyondarObjects = new ArrayList<BeyondarObject>();
-		mBeyondarGLSurface.getBeyondarObjectsOnScreenCoordinates(x, y,
-				beyondarObjects);
+		mBeyondarGLSurface.getBeyondarObjectsOnScreenCoordinates(x, y, beyondarObjects);
 		return beyondarObjects;
 	}
 
@@ -329,8 +404,7 @@ public class BeyondarFragment extends Fragment implements FpsUpdatable,
 	 */
 	public void getBeyondarObjectsOnScreenCoordinates(float x, float y,
 			ArrayList<BeyondarObject> beyondarObjects) {
-		mBeyondarGLSurface.getBeyondarObjectsOnScreenCoordinates(x, y,
-				beyondarObjects);
+		mBeyondarGLSurface.getBeyondarObjectsOnScreenCoordinates(x, y, beyondarObjects);
 	}
 
 	/**
@@ -347,8 +421,7 @@ public class BeyondarFragment extends Fragment implements FpsUpdatable,
 	 */
 	public void getBeyondarObjectsOnScreenCoordinates(float x, float y,
 			ArrayList<BeyondarObject> beyondarObjects, Ray ray) {
-		mBeyondarGLSurface.getBeyondarObjectsOnScreenCoordinates(x, y,
-				beyondarObjects, ray);
+		mBeyondarGLSurface.getBeyondarObjectsOnScreenCoordinates(x, y, beyondarObjects, ray);
 
 	}
 
@@ -411,8 +484,11 @@ public class BeyondarFragment extends Fragment implements FpsUpdatable,
 	 * @param listener
 	 */
 	public void takeScreenshot(OnScreenshotListener listener) {
-		ScreenshotHelper.takeScreenshot(getCameraView(), getGLSurfaceView(),
-				listener);
+	    if(focusableStatus) {
+				
+			 mCamera.autoFocus(null);
+			 ScreenshotHelper.takeScreenshot(getCameraView(), getGLSurfaceView(), listener);
+	     }
 	}
 
 	/**
@@ -426,10 +502,8 @@ public class BeyondarFragment extends Fragment implements FpsUpdatable,
 			if (mFpsTextView == null) {
 				mFpsTextView = new TextView(getActivity());
 				mFpsTextView.setBackgroundResource(android.R.color.black);
-				mFpsTextView.setTextColor(getResources().getColor(
-						android.R.color.white));
-				LayoutParams params = new LayoutParams(
-						ViewGroup.LayoutParams.WRAP_CONTENT,
+				mFpsTextView.setTextColor(getResources().getColor(android.R.color.white));
+				LayoutParams params = new LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
 						ViewGroup.LayoutParams.WRAP_CONTENT);
 				mMailLayout.addView(mFpsTextView, params);
 			}
@@ -482,16 +556,4 @@ public class BeyondarFragment extends Fragment implements FpsUpdatable,
 		mBeyondarGLSurface.fillBeyondarObjectPositions(beyondarObject);
 	}
 
-	/**
-	 * Set the alpha value of the sensors low pass filter.
-	 * 
-	 * @param alpha
-	 *            A number between 0 and 1
-	 */
-	public void setSensorFilterAlpha(float alpha) {
-		if (alpha < 0 || alpha > 1) {
-			throw new IllegalArgumentException("Alpha must be between 0 and 1");
-		}
-		LowPassFilter.ALPHA = alpha;
-	}
 }

@@ -62,6 +62,8 @@ public class CameraView extends SurfaceView implements SurfaceHolder.Callback, C
 	private Size mPreviewSize;
 	private List<Size> mSupportedPreviewSizes;
 	private List<String> mSupportedFlashModes;
+	
+	private OnFocusableListener mOnFocusableListener;
 
 	private boolean mIsPreviewing;
 
@@ -79,6 +81,10 @@ public class CameraView extends SurfaceView implements SurfaceHolder.Callback, C
 		super(context, attrs);
 		init(context);
 	}
+	
+	public void setOnFocusableListener(OnFocusableListener listener) {
+		mOnFocusableListener = listener;
+	}
 
 	@SuppressWarnings("deprecation")
 	private void init(Context context) {
@@ -91,6 +97,10 @@ public class CameraView extends SurfaceView implements SurfaceHolder.Callback, C
 		if (Build.VERSION.SDK_INT <= 10) {// Android 2.3.x or lower
 			mHolder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
 		}
+	}
+	
+	public Camera getCamera() {
+		return mCamera;
 	}
 
 	private void configureCamera() {
@@ -112,6 +122,7 @@ public class CameraView extends SurfaceView implements SurfaceHolder.Callback, C
 					&& mSupportedFlashModes.contains(Camera.Parameters.FLASH_MODE_AUTO)) {
 				Camera.Parameters parameters = mCamera.getParameters();
 				parameters.setFlashMode(Camera.Parameters.FLASH_MODE_AUTO);
+				parameters.setFocusMode(Camera.Parameters.FOCUS_MODE_AUTO);
 				mCamera.setParameters(parameters);
 			}
 		}
@@ -283,32 +294,33 @@ public class CameraView extends SurfaceView implements SurfaceHolder.Callback, C
 		}
 		startPreviewCamera();
 	}
-
+	
 	public void stopPreviewCamera() {
-		if (mCamera == null || !mIsPreviewing) {
+		mIsPreviewing = false;
+		if (mCamera == null) {
 			return;
 		}
-		mIsPreviewing = false;
+		mOnFocusableListener.onFocusableStatus(false);
 		mCamera.stopPreview();
-
 	}
-
+	
 	public void startPreviewCamera() {
 		if (mCamera == null) {
 			init(getContext());
 		}
-		if (mCamera == null || mIsPreviewing) {
+		if (mCamera == null) {
 			return;
 		}
-		mIsPreviewing = true;
 		try {
 			mCamera.setPreviewDisplay(mHolder);
 			mCamera.startPreview();
+			mOnFocusableListener.onFocusableStatus(true);
+			mIsPreviewing = true;
 		} catch (Exception e) {
 			Logger.w(TAG, "Cannot start preview.", e);
-			mIsPreviewing = false;
 		}
 	}
+
 
 	public void releaseCamera() {
 		stopPreviewCamera();

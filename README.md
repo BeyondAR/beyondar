@@ -12,7 +12,7 @@ BeyondAR platform also supports Google Glass
 
 ![glass](http://beyondar.com/pictures/glass.jpg)
 
-##Adding BeyondAR in to your project
+## Adding BeyondAR in to your project
 
 Just download the latest version of the framework [here](android/libs) and add the needed jar files in to you libs folder.
 
@@ -22,6 +22,7 @@ Just download the latest version of the framework [here](android/libs) and add t
 ##How to build your first app
 
 To be able to run BeyondAR we need to add the following lines on the AndroidManifest.xml
+
 ```xml
 <!-- Minimum permissions for Beyondar -->
 <uses-permission android:name="android.permission.CAMERA" />

@@ -34,7 +34,7 @@ public interface WorldModule extends Module {
 	public boolean isAttached();
 
 	/**
-	 * Setup the module according to the world
+	 * Setup the module according to the world.
 	 * 
 	 * @param world
 	 *            The world that loads the module
@@ -44,7 +44,7 @@ public interface WorldModule extends Module {
 
 	/**
 	 * This method is invoked when a new {@link BeyondarObject} is added to the
-	 * world
+	 * world.
 	 * 
 	 * @param beyondarObject
 	 * @param beyondarObjectList
@@ -54,7 +54,7 @@ public interface WorldModule extends Module {
 
 	/**
 	 * This method is invoked when a {@link BeyondarObject} is removed from the
-	 * world
+	 * world.
 	 * 
 	 * @param beyondarObject
 	 * @param beyondarObjectList
@@ -62,17 +62,17 @@ public interface WorldModule extends Module {
 	public void onBeyondarObjectRemoved(BeyondarObject beyondarObject, BeyondarObjectList beyondarObjectList);
 
 	/**
-	 * This method is invoked when a new {@link BeyondarObjectList} is created
+	 * This method is invoked when a new {@link BeyondarObjectList} is created.
 	 */
 	public void onBeyondarObjectListCreated(BeyondarObjectList beyondarObjectList);
 
 	/**
-	 * This method is invoked when the world is cleaned
+	 * This method is invoked when the world is cleaned.
 	 */
 	public void onWorldCleaned();
 
 	/**
-	 * This method is invoked when the position is changed
+	 * This method is invoked when the position is changed.
 	 * 
 	 * @param latitude
 	 * @param longitude
@@ -82,7 +82,7 @@ public interface WorldModule extends Module {
 
 	/**
 	 * This method is invoked when the default image for all the
-	 * {@link BeyondarObject} is set
+	 * {@link BeyondarObject} is set.
 	 * 
 	 * @param uri
 	 */

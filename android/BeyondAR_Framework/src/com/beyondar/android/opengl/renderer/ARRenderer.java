@@ -39,6 +39,7 @@ import android.hardware.SensorManager;
 import android.opengl.GLSurfaceView;
 import android.opengl.GLU;
 import android.opengl.GLUtils;
+import android.view.Display;
 import android.view.Surface;
 
 import com.beyondar.android.module.GLModule;
@@ -240,30 +241,34 @@ public class ARRenderer implements GLSurfaceView.Renderer, BeyondarSensorListene
 
 		SensorManager.getInclination(sInclination);
 		SensorManager.getRotationMatrix(mRotationMatrix, sInclination, mAccelerometerValues, mMagneticValues);
-		if (mIsTablet) {
-			// SensorManager.remapCoordinateSystem(mRotationMatrix,
-			// SensorManager.AXIS_MINUS_Y,
-			// SensorManager.AXIS_X, mRotationMatrix);
-			SensorManager.remapCoordinateSystem(mRotationMatrix, SensorManager.AXIS_X, SensorManager.AXIS_Y,
-					mRotationMatrix);
-		}
 
-		// TODO: Optimize this code
-		// TODO: Fix rotation for 270
+		float rotation = 0;
 		switch (mSurfaceRotation) {
 		case Surface.ROTATION_0:
-		case Surface.ROTATION_180:
-			SensorManager.remapCoordinateSystem(mRotationMatrix, SensorManager.AXIS_MINUS_Y,
-					SensorManager.AXIS_X, mRotationMatrix);
+			rotation = 270;
 			break;
 		case Surface.ROTATION_90:
 			break;
+		case Surface.ROTATION_180:
+			rotation = 90;
+			break;
 		case Surface.ROTATION_270:
+			rotation = 180;
 			break;
 		}
+		
+		if (mIsTablet) {
+			//TODO remove this code and use the rotation variable instead
+			SensorManager.remapCoordinateSystem(mRotationMatrix, SensorManager.AXIS_X, SensorManager.AXIS_Y,
+					mRotationMatrix);
+		}
+		
+		gl.glRotatef(rotation, 0, 0, 1);
 
 		SensorManager.remapCoordinateSystem(mRotationMatrix, SensorManager.AXIS_Y,
 				SensorManager.AXIS_MINUS_X, mRemappedRotationMatrix);
+
+		
 
 		// Clear color buffer
 		gl.glClear(GL10.GL_COLOR_BUFFER_BIT | GL10.GL_DEPTH_BUFFER_BIT);
@@ -272,6 +277,7 @@ public class ARRenderer implements GLSurfaceView.Renderer, BeyondarSensorListene
 		gl.glMatrixMode(GL10.GL_MODELVIEW);
 		gl.glLoadIdentity();
 		gl.glLoadMatrixf(mRemappedRotationMatrix, 0);
+		
 
 		gl.glEnableClientState(GL10.GL_VERTEX_ARRAY);
 		// gl.glEnableClientState(GL10.GL_COLOR_ARRAY);

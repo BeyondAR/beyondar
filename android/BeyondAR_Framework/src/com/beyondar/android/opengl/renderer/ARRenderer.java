@@ -599,7 +599,7 @@ public class ARRenderer implements GLSurfaceView.Renderer, BeyondarSensorListene
 		}
 
 		boolean forceDraw = renderable.update(time, (float) dst, beyondarObject);
-
+		
 		if (forceDraw || renderObject) {
 			if (beyondarObject.isFacingToCamera()) {
 				MathUtils.calcAngleFaceToCamera(beyondarObject.getPosition(), cameraPosition,
@@ -619,9 +619,20 @@ public class ARRenderer implements GLSurfaceView.Renderer, BeyondarSensorListene
 					}
 				}
 			}
-			renderable.draw(gl, defaultTexture);
+			
 			getScreenCoordinates(beyondarObject.getPosition(), beyondarObject.getScreenPositionCenter(),
 					tmpEyeForRendering);
+			
+			try {
+				for (GLModule module : modules) {
+					module.onDrawBeyondaarObject(gl, beyondarObject, defaultTexture);
+				}
+			} catch (ConcurrentModificationException e) {
+				Logger.w("Some modules where changed while drawing a frame");
+			}
+			
+			renderable.draw(gl, defaultTexture);
+			
 
 			if (mFillPositions) {
 				fillBeyondarObjectScreenPositions(beyondarObject);

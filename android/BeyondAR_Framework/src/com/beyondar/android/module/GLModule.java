@@ -4,7 +4,9 @@ import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
 import com.beyondar.android.opengl.renderer.ARRenderer;
+import com.beyondar.android.opengl.texture.Texture;
 import com.beyondar.android.util.math.geom.Point3;
+import com.beyondar.android.world.BeyondarObject;
 import com.beyondar.android.world.World;
 
 public interface GLModule extends Module {
@@ -33,6 +35,8 @@ public interface GLModule extends Module {
 	
 	public void onCameraPositionChanged(Point3 newCameraPos);
 	
+	public void onDrawBeyondaarObject(GL10 gl, BeyondarObject beyondarObject, Texture defaultTexture);
+
 	public void onDrawFrame (GL10 gl);
 	
 	public void onMaxDistanceSizeChanged (float newMaxDistance);

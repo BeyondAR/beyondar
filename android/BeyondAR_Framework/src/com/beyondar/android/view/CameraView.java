@@ -346,7 +346,7 @@ public class CameraView extends SurfaceView implements SurfaceHolder.Callback, C
 	}
 
 	private boolean getTheCamera() {
-		Log.v(TAG, "getTheCamera");
+		Logger.v(TAG, "getTheCamera");
 		// keep trying to acquire the camera until "maximumWaitTimeForCamera"
 		// seconds have passed
 		boolean acquiredCam = false;
@@ -354,7 +354,7 @@ public class CameraView extends SurfaceView implements SurfaceHolder.Callback, C
 		while (!acquiredCam && timePassed < MAX_TIME_WAIT_FOR_CAMERA) {
 			try {
 				mCamera = Camera.open();
-				Log.v(TAG, "acquired the camera");
+				Logger.v(TAG, "acquired the camera");
 				acquiredCam = true;
 				return true;
 			} catch (Exception e) {

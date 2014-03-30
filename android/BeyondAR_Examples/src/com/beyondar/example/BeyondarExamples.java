@@ -40,6 +40,8 @@ public class BeyondarExamples extends Activity implements OnItemClickListener {
 		mLisViewt = (ListView) findViewById(R.id.examplesList);
 
 		fillList();
+		
+		openActivity(SimpleCameraWithRadarActivity.class);
 	}
 
 	private void fillList() {

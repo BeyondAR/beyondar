@@ -59,7 +59,7 @@ public class SimpleCameraWithRadarActivity extends FragmentActivity implements O
 		mRadarView = (RadarView) findViewById(R.id.radarView);
 
 		// Create the Radar module
-		mRadarModule = new RadarWorldModule();
+		mRadarModule = new RadarWorldModule(this);
 		// set the radar view in to our radar module
 		mRadarModule.setRadarView(mRadarView);
 		// Set how far (in meters) we want to display in the view

@@ -39,7 +39,6 @@ import android.hardware.SensorManager;
 import android.opengl.GLSurfaceView;
 import android.opengl.GLU;
 import android.opengl.GLUtils;
-import android.view.Display;
 import android.view.Surface;
 
 import com.beyondar.android.module.GLModule;
@@ -259,8 +258,8 @@ public class ARRenderer implements GLSurfaceView.Renderer, BeyondarSensorListene
 		
 		if (mIsTablet) {
 			//TODO remove this code and use the rotation variable instead
-			SensorManager.remapCoordinateSystem(mRotationMatrix, SensorManager.AXIS_X, SensorManager.AXIS_Y,
-					mRotationMatrix);
+//			SensorManager.remapCoordinateSystem(mRotationMatrix, SensorManager.AXIS_X, SensorManager.AXIS_Y,
+//					mRotationMatrix);
 		}
 		
 		gl.glRotatef(rotation, 0, 0, 1);
@@ -269,7 +268,6 @@ public class ARRenderer implements GLSurfaceView.Renderer, BeyondarSensorListene
 				SensorManager.AXIS_MINUS_X, mRemappedRotationMatrix);
 
 		
-
 		// Clear color buffer
 		gl.glClear(GL10.GL_COLOR_BUFFER_BIT | GL10.GL_DEPTH_BUFFER_BIT);
 

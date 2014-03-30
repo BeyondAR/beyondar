@@ -21,10 +21,14 @@ package com.beyondar.android.module.radar;
 import java.util.HashMap;
 import java.util.List;
 
+import android.content.Context;
 import android.graphics.Color;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorManager;
+import android.view.Display;
+import android.view.Surface;
+import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.RotateAnimation;
 
@@ -36,8 +40,11 @@ import com.beyondar.android.world.BeyondarObjectList;
 import com.beyondar.android.world.GeoObject;
 import com.beyondar.android.world.World;
 
-public class RadarWorldModule implements WorldModule, BeyondarSensorListener {
+public class RadarWorldModule implements WorldModule, BeyondarSensorListener{
 
+	private boolean mAttached = false;
+	private Context mContex;
+	private Display mDisplay;
 	private World mWorld;
 	private RadarView mRadarView;
 
@@ -51,10 +58,14 @@ public class RadarWorldModule implements WorldModule, BeyondarSensorListener {
 
 	private HashMap<Integer, Integer> mColorMaping;
 	private HashMap<Integer, Float> mRadiusMaping;
-
-	public RadarWorldModule() {
+	
+	public RadarWorldModule(Context context) {
 		mColorMaping = new HashMap<Integer, Integer>();
 		mRadiusMaping = new HashMap<Integer, Float>();
+		mContex = context;
+		
+		mDisplay = ((WindowManager) mContex.getSystemService(Context.WINDOW_SERVICE))
+				.getDefaultDisplay();
 	}
 
 	World getWorld() {
@@ -64,14 +75,17 @@ public class RadarWorldModule implements WorldModule, BeyondarSensorListener {
 	@Override
 	public void onDetached() {
 		BeyondarSensorManager.unregisterSensorListener(this);
+		mAttached = false;
 	}
 
 	@Override
 	public boolean isAttached() {
-		return false;
+		return mAttached;
 	}
 
 	public void setup(World world) {
+		mAttached = true;
+		
 		mWorld = world;
 		if (mMaxDistance == -1) {
 			mMaxDistance = mWorld.getArViewDistance();
@@ -80,6 +94,8 @@ public class RadarWorldModule implements WorldModule, BeyondarSensorListener {
 		addModuleToAllObjects();
 
 		BeyondarSensorManager.registerSensorListener(this);
+		
+		
 	}
 
 	/**
@@ -223,6 +239,23 @@ public class RadarWorldModule implements WorldModule, BeyondarSensorListener {
 	}
 
 	private void rotateView(float degree) {
+		int rotationOfset =0;
+		switch (mDisplay.getRotation()) {
+		case Surface.ROTATION_0:
+			rotationOfset = 0;
+			break;
+		case Surface.ROTATION_90:
+			rotationOfset = 90;
+			break;
+		case Surface.ROTATION_180:
+			rotationOfset = 0;
+			break;
+		case Surface.ROTATION_270:
+			rotationOfset = -90;
+			break;
+		}
+		degree += rotationOfset;
+		
 		// create a rotation animation (reverse turn degree degrees)
 		RotateAnimation animation = new RotateAnimation(currentDegree, -degree, Animation.RELATIVE_TO_SELF,
 				0.5f, Animation.RELATIVE_TO_SELF, 0.5f);

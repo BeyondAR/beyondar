@@ -47,7 +47,7 @@ public class BeyondarFragmentSupport extends Fragment implements FpsUpdatable, O
 	private CameraView mBeyondarCameraView;
 	private BeyondarGLSurfaceView mBeyondarGLSurface;
 	private TextView mFpsTextView;
-	private RelativeLayout mMailLayout;
+	private RelativeLayout mMainLayout;
 
 	private World mWorld;
 
@@ -79,14 +79,14 @@ public class BeyondarFragmentSupport extends Fragment implements FpsUpdatable, O
 		android.view.ViewGroup.LayoutParams params = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
 				ViewGroup.LayoutParams.MATCH_PARENT);
 
-		mMailLayout = new RelativeLayout(getActivity());
+		mMainLayout = new RelativeLayout(getActivity());
 		mBeyondarGLSurface = createBeyondarGLSurfaceView();
 		mBeyondarGLSurface.setOnTouchListener(this);
 
 		mBeyondarCameraView = createCameraView();
 
-		mMailLayout.addView(mBeyondarCameraView, params);
-		mMailLayout.addView(mBeyondarGLSurface, params);
+		mMainLayout.addView(mBeyondarCameraView, params);
+		mMainLayout.addView(mBeyondarGLSurface, params);
 	}
 
 	private void checkIfSensorsAvailable() {
@@ -127,7 +127,7 @@ public class BeyondarFragmentSupport extends Fragment implements FpsUpdatable, O
 
 	/**
 	 * 
-	 * Returns the CameraView for this class instance
+	 * Returns the CameraView for this class instance.
 	 * 
 	 * @return
 	 */
@@ -136,7 +136,7 @@ public class BeyondarFragmentSupport extends Fragment implements FpsUpdatable, O
 	}
 
 	/**
-	 * Returns the SurfaceView for this class instance
+	 * Returns the SurfaceView for this class instance.
 	 * 
 	 * @return
 	 */
@@ -148,7 +148,7 @@ public class BeyondarFragmentSupport extends Fragment implements FpsUpdatable, O
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		init();
 		startRenderingAR();
-		return mMailLayout;
+		return mMainLayout;
 	}
 
 	@Override
@@ -178,8 +178,8 @@ public class BeyondarFragmentSupport extends Fragment implements FpsUpdatable, O
 
 	public void setOnClickBeyondarObjectListener(OnClickBeyondarObjectListener listener) {
 		mClickListener = listener;
-		mMailLayout.setClickable(listener != null);
-		mMailLayout.setOnClickListener(this);
+		mMainLayout.setClickable(listener != null);
+		mMainLayout.setOnClickListener(this);
 	}
 
 	@Override
@@ -196,7 +196,7 @@ public class BeyondarFragmentSupport extends Fragment implements FpsUpdatable, O
 
 	@Override
 	public void onClick(View v) {
-		if (v == mMailLayout) {
+		if (v == mMainLayout) {
 			if (mClickListener == null) {
 				return;
 			}
@@ -425,7 +425,7 @@ public class BeyondarFragmentSupport extends Fragment implements FpsUpdatable, O
 				mFpsTextView.setTextColor(getResources().getColor(android.R.color.white));
 				LayoutParams params = new LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
 						ViewGroup.LayoutParams.WRAP_CONTENT);
-				mMailLayout.addView(mFpsTextView, params);
+				mMainLayout.addView(mFpsTextView, params);
 			}
 			mFpsTextView.setVisibility(View.VISIBLE);
 			setFpsUpdatable(this);
@@ -453,7 +453,7 @@ public class BeyondarFragmentSupport extends Fragment implements FpsUpdatable, O
 	 * @param adapter
 	 */
 	public void setBeyondarViewAdapter(BeyondarViewAdapter adapter) {
-		mBeyondarGLSurface.setBeyondarViewAdapter(adapter, mMailLayout);
+		mBeyondarGLSurface.setBeyondarViewAdapter(adapter, mMainLayout);
 	}
 
 	public void forceFillBeyondarObjectPositionsOnRendering(boolean fill) {

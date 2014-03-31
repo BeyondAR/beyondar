@@ -16,7 +16,7 @@
 /* This code is based on Yasir.Ali <ali.yasir0@gmail.com> work. More on
  *  https://github.com/yasiralijaved/GenRadar
  */
-package com.beyondar.android.module.radar;
+package com.beyondar.android.plugin.radar;
 
 import android.content.Context;
 import android.content.res.Resources;
@@ -32,7 +32,7 @@ import com.beyondar.android.world.BeyondarObjectList;
 public class RadarView extends ImageView {
 
 	private Paint mPaint;
-	private RadarWorldModule mRadarModule;
+	private RadarWorldPlugin mRadarPlugin;
 
 	public RadarView(Context context, AttributeSet attrs, int defStyleAttr) {
 		super(context, attrs, defStyleAttr);
@@ -61,48 +61,48 @@ public class RadarView extends ImageView {
 	}
 
 	private void drawRadarPoints(Canvas canvas) {
-		if (mRadarModule == null)
+		if (mRadarPlugin == null)
 			return;
-		double maxDistance = mRadarModule.getMaxDistance();
-		for (int i = 0; i < mRadarModule.getWorld().getBeyondarObjectLists().size(); i++) {
-			BeyondarObjectList list = mRadarModule.getWorld().getBeyondarObjectList(i);
+		double maxDistance = mRadarPlugin.getMaxDistance();
+		for (int i = 0; i < mRadarPlugin.getWorld().getBeyondarObjectLists().size(); i++) {
+			BeyondarObjectList list = mRadarPlugin.getWorld().getBeyondarObjectList(i);
 			for (int j = 0; j < list.size(); j++) {
 				BeyondarObject beyondarObject = list.get(j);
-				RadarPointModule radarPointModule = (RadarPointModule) beyondarObject
-						.getFirstModule(RadarPointModule.class);
-				if (radarPointModule != null) {
-					if (radarPointModule.getGeoObject().getDistanceFromUser() < mRadarModule.getMaxDistance()
-							&& radarPointModule.getGeoObject().isVisible()) {
-						updateRadarPointPosition(radarPointModule, maxDistance);
+				RadarPointPlugin radarPointPlugin = (RadarPointPlugin) beyondarObject
+						.getFirstPlugin(RadarPointPlugin.class);
+				if (radarPointPlugin != null) {
+					if (radarPointPlugin.getGeoObject().getDistanceFromUser() < mRadarPlugin.getMaxDistance()
+							&& radarPointPlugin.getGeoObject().isVisible()) {
+						updateRadarPointPosition(radarPointPlugin, maxDistance);
 
-						mPaint.setColor(radarPointModule.getColor());
+						mPaint.setColor(radarPointPlugin.getColor());
 
-						if (radarPointModule.getRaduisPixels() == -1) {
-							radarPointModule.setRaduisPixels(dpToPixels(radarPointModule.getRaduis()));
+						if (radarPointPlugin.getRaduisPixels() == -1) {
+							radarPointPlugin.setRaduisPixels(dpToPixels(radarPointPlugin.getRaduis()));
 						}
-						canvas.drawCircle(radarPointModule.getX(), radarPointModule.getY(),
-								radarPointModule.getRaduisPixels(), mPaint);
+						canvas.drawCircle(radarPointPlugin.getX(), radarPointPlugin.getY(),
+								radarPointPlugin.getRaduisPixels(), mPaint);
 					}
 				}
 			}
 		}
 	}
 
-	private void updateRadarPointPosition(RadarPointModule radarPointModule, double maxDistance) {
+	private void updateRadarPointPosition(RadarPointPlugin radarPointPlugin, double maxDistance) {
 
-		float x = (float) ((getMeasuredWidth() / 2) / maxDistance * radarPointModule.getGeoObject()
+		float x = (float) ((getMeasuredWidth() / 2) / maxDistance * radarPointPlugin.getGeoObject()
 				.getPosition().x);
-		float y = (float) ((getMeasuredHeight() / 2) / maxDistance * radarPointModule.getGeoObject()
+		float y = (float) ((getMeasuredHeight() / 2) / maxDistance * radarPointPlugin.getGeoObject()
 				.getPosition().y);
 		x = x + (getMeasuredWidth() / 2);
 		y = -y + (getMeasuredHeight() / 2);
-		radarPointModule.setX(x);
-		radarPointModule.setY(y);
+		radarPointPlugin.setX(x);
+		radarPointPlugin.setY(y);
 
 	}
 
-	void setRadarModule(RadarWorldModule radarModule) {
-		mRadarModule = radarModule;
+	void setRadarPlugin(RadarWorldPlugin radarPlugin) {
+		mRadarPlugin = radarPlugin;
 	}
 
 	private float dpToPixels(float dp) {

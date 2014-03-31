@@ -16,7 +16,7 @@
 /* This code is based on Yasir.Ali <ali.yasir0@gmail.com> work. More on
  *  https://github.com/yasiralijaved/GenRadar
  */
-package com.beyondar.android.module.radar;
+package com.beyondar.android.plugin.radar;
 
 import java.util.HashMap;
 import java.util.List;
@@ -32,7 +32,7 @@ import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.RotateAnimation;
 
-import com.beyondar.android.module.WorldModule;
+import com.beyondar.android.plugin.WorldPlugin;
 import com.beyondar.android.sensor.BeyondarSensorListener;
 import com.beyondar.android.sensor.BeyondarSensorManager;
 import com.beyondar.android.world.BeyondarObject;
@@ -40,7 +40,7 @@ import com.beyondar.android.world.BeyondarObjectList;
 import com.beyondar.android.world.GeoObject;
 import com.beyondar.android.world.World;
 
-public class RadarWorldModule implements WorldModule, BeyondarSensorListener{
+public class RadarWorldPlugin implements WorldPlugin, BeyondarSensorListener{
 
 	private boolean mAttached = false;
 	private Context mContex;
@@ -59,7 +59,7 @@ public class RadarWorldModule implements WorldModule, BeyondarSensorListener{
 	private HashMap<Integer, Integer> mColorMaping;
 	private HashMap<Integer, Float> mRadiusMaping;
 	
-	public RadarWorldModule(Context context) {
+	public RadarWorldPlugin(Context context) {
 		mColorMaping = new HashMap<Integer, Integer>();
 		mRadiusMaping = new HashMap<Integer, Float>();
 		mContex = context;
@@ -91,7 +91,7 @@ public class RadarWorldModule implements WorldModule, BeyondarSensorListener{
 			mMaxDistance = mWorld.getArViewDistance();
 		}
 
-		addModuleToAllObjects();
+		addPluginToAllObjects();
 
 		BeyondarSensorManager.registerSensorListener(this);
 		
@@ -127,53 +127,53 @@ public class RadarWorldModule implements WorldModule, BeyondarSensorListener{
 		if (mColorMaping.containsKey(listType)) {
 			return mColorMaping.get(listType);
 		}
-		return RadarPointModule.DEFAULT_COLOR;
+		return RadarPointPlugin.DEFAULT_COLOR;
 	}
 
 	public float getListDotRadius(int listType) {
 		if (mRadiusMaping.containsKey(listType)) {
 			return mRadiusMaping.get(listType);
 		}
-		return RadarPointModule.DEFAULT_RADIUS_DP;
+		return RadarPointPlugin.DEFAULT_RADIUS_DP;
 	}
 
-	private void addModuleToAllObjects() {
+	private void addPluginToAllObjects() {
 		List<BeyondarObjectList> beyondARLists = mWorld.getBeyondarObjectLists();
 		for (BeyondarObjectList list : beyondARLists) {
 			for (BeyondarObject beyondarObject : list) {
-				addRadarPointModule(beyondarObject, list.getType());
+				addRadarPointPlugin(beyondarObject, list.getType());
 			}
 		}
 	}
 
 	/**
-	 * This method adds the {@link RadarPointModule} to the {@link GeoObject}
+	 * This method adds the {@link RadarPointPlugin} to the {@link GeoObject}
 	 * 
 	 * @param beyondarObject
 	 */
-	protected void addRadarPointModule(BeyondarObject beyondarObject, int listType) {
+	protected void addRadarPointPlugin(BeyondarObject beyondarObject, int listType) {
 		if (beyondarObject instanceof GeoObject) {
-			if (!beyondarObject.containsAnyModule(RadarPointModule.class)) {
-				RadarPointModule module = new RadarPointModule(this, beyondarObject);
+			if (!beyondarObject.containsAnyPlugin(RadarPointPlugin.class)) {
+				RadarPointPlugin plugin = new RadarPointPlugin(this, beyondarObject);
 				if (mColorMaping.containsKey(listType)) {
-					module.setColor(mColorMaping.get(listType));
+					plugin.setColor(mColorMaping.get(listType));
 				}
 				if (mRadiusMaping.containsKey(listType)) {
-					module.setRaduis(mRadiusMaping.get(listType));
+					plugin.setRaduis(mRadiusMaping.get(listType));
 				}
-				beyondarObject.addModule(module);
+				beyondarObject.addPlugin(plugin);
 			}
 		}
 	}
 
 	public void setRadarView(RadarView radarView) {
 		mRadarView = radarView;
-		mRadarView.setRadarModule(this);
+		mRadarView.setRadarPlugin(this);
 	}
 
 	@Override
 	public void onBeyondarObjectAdded(BeyondarObject beyondarObject, BeyondarObjectList beyondarObjectList) {
-		addRadarPointModule(beyondarObject, beyondarObjectList.getType());
+		addRadarPointPlugin(beyondarObject, beyondarObjectList.getType());
 	}
 
 	@Override

@@ -13,38 +13,38 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.beyondar.android.module;
+package com.beyondar.android.plugin;
 
 import com.beyondar.android.world.BeyondarObject;
 import com.beyondar.android.world.BeyondarObjectList;
 import com.beyondar.android.world.World;
 
-public interface WorldModule extends Module {
+public interface WorldPlugin extends Plugin {
 
 	/**
-	 * This method is invoked when the module is removed.
+	 * This method is invoked when the plug-in is removed.
 	 */
 	public void onDetached();
 
 	/**
-	 * Check if the module is attached.
+	 * Check if the plug-in is attached.
 	 * 
 	 * @return
 	 */
 	public boolean isAttached();
 
 	/**
-	 * Setup the module according to the world.
+	 * Setup the plug-in according to the world.
 	 * 
 	 * @param world
-	 *            The world that loads the module
+	 *            The world that loads the plug-in
 	 * 
 	 */
 	public void setup(World world);
 
 	/**
 	 * This method is invoked when a new {@link BeyondarObject} is added to the
-	 * world.
+	 * world. Use this method to add specific plug-in's to the {@link BeyondarObject}.
 	 * 
 	 * @param beyondarObject
 	 * @param beyondarObjectList
@@ -54,7 +54,7 @@ public interface WorldModule extends Module {
 
 	/**
 	 * This method is invoked when a {@link BeyondarObject} is removed from the
-	 * world.
+	 * world. Use this method to remove the plug-in's that are not needed.
 	 * 
 	 * @param beyondarObject
 	 * @param beyondarObjectList

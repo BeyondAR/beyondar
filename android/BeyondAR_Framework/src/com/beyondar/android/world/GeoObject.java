@@ -17,8 +17,8 @@ package com.beyondar.android.world;
 
 import android.location.Location;
 
-import com.beyondar.android.module.BeyondarObjectModule;
-import com.beyondar.android.module.GeoObjectModule;
+import com.beyondar.android.plugin.BeyondarObjectPlugin;
+import com.beyondar.android.plugin.GeoObjectPlugin;
 import com.beyondar.android.util.math.Distance;
 
 public class GeoObject extends BeyondarObject {
@@ -51,10 +51,10 @@ public class GeoObject extends BeyondarObject {
 		mLatitude = latitude;
 		mLongitude = longitude;
 		mAltitude = altitude;
-		synchronized (lockModules) {
-			for (BeyondarObjectModule module : modules) {
-				if (module instanceof GeoObjectModule) {
-					((GeoObjectModule) module).onGeoPositionChanged(latitude, longitude, altitude);
+		synchronized (lockPlugins) {
+			for (BeyondarObjectPlugin plugin : plugins) {
+				if (plugin instanceof GeoObjectPlugin) {
+					((GeoObjectPlugin) plugin).onGeoPositionChanged(latitude, longitude, altitude);
 				}
 			}
 		}

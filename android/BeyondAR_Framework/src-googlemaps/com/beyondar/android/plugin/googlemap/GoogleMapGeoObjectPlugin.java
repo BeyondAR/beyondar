@@ -13,13 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.beyondar.android.module.googlemap;
+package com.beyondar.android.plugin.googlemap;
 
 import android.graphics.Bitmap;
 
-import com.beyondar.android.module.GeoObjectModule;
 import com.beyondar.android.opengl.renderable.Renderable;
 import com.beyondar.android.opengl.texture.Texture;
+import com.beyondar.android.plugin.GeoObjectPlugin;
 import com.beyondar.android.util.math.geom.Point3;
 import com.beyondar.android.world.BeyondarObject;
 import com.beyondar.android.world.GeoObject;
@@ -28,26 +28,26 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
-class GoogleMapGeoObjectModule implements GeoObjectModule {
+class GoogleMapGeoObjectPlugin implements GeoObjectPlugin {
 
 	private Marker mMarker;
 	private LatLng mLatLng;
 	private GeoObject mGeoObject;
 	private boolean mAttached;
-	private GoogleMapWorldModule mWorldGoogleMapModule;
+	private GoogleMapWorldPlugin mWorldGoogleMapPlugin;
 
-	public GoogleMapGeoObjectModule(GoogleMapWorldModule worldGoogleMapModule, BeyondarObject beyondarObject) {
+	public GoogleMapGeoObjectPlugin(GoogleMapWorldPlugin worldGoogleMapPlugin, BeyondarObject beyondarObject) {
 		mAttached = false;
-		mWorldGoogleMapModule = worldGoogleMapModule;
-		if (mWorldGoogleMapModule == null){
-			throw new NullPointerException("The WorldGoogleMapModule must not be null");
+		mWorldGoogleMapPlugin = worldGoogleMapPlugin;
+		if (mWorldGoogleMapPlugin == null){
+			throw new NullPointerException("The WorldGoogleMapPlugin must not be null");
 		}
 		
 		setBeyondarObject(beyondarObject);
 	}
 
 	/**
-	 * Setup the module according to the BeyondarObject
+	 * Setup the plug-in according to the BeyondarObject
 	 * 
 	 * @param BeyondarObject
 	 */
@@ -98,7 +98,7 @@ class GoogleMapGeoObjectModule implements GeoObjectModule {
 	 */
 	public void setMarker(Marker marker) {
 		mMarker = marker;
-		mWorldGoogleMapModule.registerMarker(mMarker, this);
+		mWorldGoogleMapPlugin.registerMarker(mMarker, this);
 	}
 
 	/**
@@ -166,7 +166,7 @@ class GoogleMapGeoObjectModule implements GeoObjectModule {
 
 	@Override
 	public void onImageUriChanged(String uri) {
-		mWorldGoogleMapModule.setMarkerImage(mMarker, mGeoObject);
+		mWorldGoogleMapPlugin.setMarkerImage(mMarker, mGeoObject);
 	}
 
 	@Override

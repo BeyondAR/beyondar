@@ -41,11 +41,11 @@ import android.opengl.GLU;
 import android.opengl.GLUtils;
 import android.view.Surface;
 
-import com.beyondar.android.module.GLModule;
-import com.beyondar.android.module.Modulable;
 import com.beyondar.android.opengl.renderable.Renderable;
 import com.beyondar.android.opengl.texture.Texture;
 import com.beyondar.android.opengl.util.MatrixGrabber;
+import com.beyondar.android.plugin.GLPlugin;
+import com.beyondar.android.plugin.Plugable;
 import com.beyondar.android.sensor.BeyondarSensorListener;
 import com.beyondar.android.util.Logger;
 import com.beyondar.android.util.PendingBitmapsToBeLoaded;
@@ -64,7 +64,7 @@ import com.beyondar.android.world.World;
 // http://ovcharov.me/2011/01/14/android-opengl-es-ray-picking/
 // http://magicscrollsofcode.blogspot.com/2010/10/3d-picking-in-android.html
 public class ARRenderer implements GLSurfaceView.Renderer, BeyondarSensorListener,
-		BitmapCache.OnExternalBitmapLoadedCacheListener, Modulable<GLModule> {
+		BitmapCache.OnExternalBitmapLoadedCacheListener, Plugable<GLPlugin> {
 
 	public static interface SnapshotCallback {
 		/**
@@ -106,8 +106,8 @@ public class ARRenderer implements GLSurfaceView.Renderer, BeyondarSensorListene
 
 	private World mWorld;
 
-	protected List<GLModule> modules;
-	protected Object lockModules = new Object();
+	protected List<GLPlugin> plugins;
+	protected Object lockPlugins = new Object();
 
 	private boolean mScreenshot;
 	private SnapshotCallback mSnapshotCallback;
@@ -151,7 +151,7 @@ public class ARRenderer implements GLSurfaceView.Renderer, BeyondarSensorListene
 		mIsTablet = false;
 		mFillPositions = false;
 
-		modules = new ArrayList<GLModule>();
+		plugins = new ArrayList<GLPlugin>();
 	}
 
 	/**
@@ -187,9 +187,9 @@ public class ARRenderer implements GLSurfaceView.Renderer, BeyondarSensorListene
 		mWorld = world;
 		mWorld.getBitmapCache().addOnExternalBitmapLoadedCahceListener(this);
 		reloadWorldTextures = true;
-		synchronized (lockModules) {
-			for (GLModule module : modules) {
-				module.setup(mWorld, this);
+		synchronized (lockPlugins) {
+			for (GLPlugin plugin : plugins) {
+				plugin.setup(mWorld, this);
 			}
 		}
 	}
@@ -206,9 +206,9 @@ public class ARRenderer implements GLSurfaceView.Renderer, BeyondarSensorListene
 	 */
 	public void setCameraPosition(Point3 newCameraPos) {
 		cameraPosition = newCameraPos;
-		synchronized (lockModules) {
-			for (GLModule module : modules) {
-				module.onCameraPositionChanged(newCameraPos);
+		synchronized (lockPlugins) {
+			for (GLPlugin plugin : plugins) {
+				plugin.onCameraPositionChanged(newCameraPos);
 			}
 		}
 	}
@@ -315,11 +315,11 @@ public class ARRenderer implements GLSurfaceView.Renderer, BeyondarSensorListene
 		}
 
 		try {
-			for (GLModule module : modules) {
-				module.onDrawFrame(gl);
+			for (GLPlugin plugin : plugins) {
+				plugin.onDrawFrame(gl);
 			}
 		} catch (ConcurrentModificationException e) {
-			Logger.w("Some modules where changed while drawing a frame");
+			Logger.w("Some plug-ins where changed while drawing a frame");
 		}
 
 		if (mScreenshot) {
@@ -450,9 +450,9 @@ public class ARRenderer implements GLSurfaceView.Renderer, BeyondarSensorListene
 	 */
 	public void setMaxDistanceSize(float maxDistanceSize) {
 		mMaxDistanceSizePoints = (float) (maxDistanceSize / 2);
-		synchronized (lockModules) {
-			for (GLModule module : modules) {
-				module.onMaxDistanceSizeChanged(mMaxDistanceSizePoints);
+		synchronized (lockPlugins) {
+			for (GLPlugin plugin : plugins) {
+				plugin.onMaxDistanceSizeChanged(mMaxDistanceSizePoints);
 			}
 		}
 	}
@@ -481,9 +481,9 @@ public class ARRenderer implements GLSurfaceView.Renderer, BeyondarSensorListene
 	 */
 	public void setMinDistanceSize(float minDistanceSize) {
 		mMinDistanceSizePoints = (float) (minDistanceSize / 2);
-		synchronized (lockModules) {
-			for (GLModule module : modules) {
-				module.onMaxDistanceSizeChanged(mMinDistanceSizePoints);
+		synchronized (lockPlugins) {
+			for (GLPlugin plugin : plugins) {
+				plugin.onMaxDistanceSizeChanged(mMinDistanceSizePoints);
 			}
 		}
 	}
@@ -628,11 +628,11 @@ public class ARRenderer implements GLSurfaceView.Renderer, BeyondarSensorListene
 					tmpEyeForRendering);
 			
 			try {
-				for (GLModule module : modules) {
-					module.onDrawBeyondaarObject(gl, beyondarObject, defaultTexture);
+				for (GLPlugin plugin : plugins) {
+					plugin.onDrawBeyondaarObject(gl, beyondarObject, defaultTexture);
 				}
 			} catch (ConcurrentModificationException e) {
-				Logger.w("Some modules where changed while drawing a frame");
+				Logger.w("Some plug-ins where changed while drawing a frame");
 			}
 			
 			renderable.draw(gl, defaultTexture);
@@ -766,9 +766,9 @@ public class ARRenderer implements GLSurfaceView.Renderer, BeyondarSensorListene
 	 * @param gl
 	 */
 	protected void loadAdditionalTextures(GL10 gl) {
-		synchronized (lockModules) {
-			for (GLModule module : modules) {
-				module.loadAdditionalTextures(gl);
+		synchronized (lockPlugins) {
+			for (GLPlugin plugin : plugins) {
+				plugin.loadAdditionalTextures(gl);
 			}
 		}
 	}
@@ -1098,42 +1098,42 @@ public class ARRenderer implements GLSurfaceView.Renderer, BeyondarSensorListene
 	}
 
 	@Override
-	public void addModule(GLModule module) {
-		synchronized (lockModules) {
-			if (!modules.contains(module)) {
-				modules.add(module);
+	public void addPlugin(GLPlugin plugin) {
+		synchronized (lockPlugins) {
+			if (!plugins.contains(plugin)) {
+				plugins.add(plugin);
 			}
 		}
-		module.setup(mWorld, this);
+		plugin.setup(mWorld, this);
 	}
 
 	@Override
-	public boolean removeModule(GLModule module) {
+	public boolean removePlugin(GLPlugin plugin) {
 		boolean removed = false;
-		synchronized (lockModules) {
-			removed = modules.remove(module);
+		synchronized (lockPlugins) {
+			removed = plugins.remove(plugin);
 		}
 		if (removed) {
-			module.onDetached();
+			plugin.onDetached();
 		}
 		return removed;
 	}
 
 	@Override
-	public void cleanModules() {
-		synchronized (lockModules) {
-			for (GLModule module : modules) {
-				removeModule(module);
+	public void removeAllPlugins() {
+		synchronized (lockPlugins) {
+			for (GLPlugin plugin : plugins) {
+				removePlugin(plugin);
 			}
 		}
 	}
 
 	@Override
-	public GLModule getFirstModule(Class<? extends GLModule> moduleClass) {
-		synchronized (lockModules) {
-			for (GLModule module : modules) {
-				if (moduleClass.isInstance(module)) {
-					return module;
+	public GLPlugin getFirstPlugin(Class<? extends GLPlugin> pluginClass) {
+		synchronized (lockPlugins) {
+			for (GLPlugin plugin : plugins) {
+				if (pluginClass.isInstance(plugin)) {
+					return plugin;
 				}
 			}
 		}
@@ -1141,23 +1141,23 @@ public class ARRenderer implements GLSurfaceView.Renderer, BeyondarSensorListene
 	}
 
 	@Override
-	public boolean containsAnyModule(Class<? extends GLModule> moduleClass) {
-		return getFirstModule(moduleClass) != null;
+	public boolean containsAnyPlugin(Class<? extends GLPlugin> pluginClass) {
+		return getFirstPlugin(pluginClass) != null;
 	}
 
 	@Override
-	public boolean containsModule(GLModule module) {
-		synchronized (lockModules) {
-			return modules.contains(module);
+	public boolean containsPlugin(GLPlugin plugin) {
+		synchronized (lockPlugins) {
+			return plugins.contains(plugin);
 		}
 	}
 
 	@Override
-	public List<GLModule> getAllModules(Class<? extends GLModule> moduleClass, List<GLModule> result) {
-		synchronized (lockModules) {
-			for (GLModule module : modules) {
-				if (moduleClass.isInstance(module)) {
-					result.add(module);
+	public List<GLPlugin> getAllPlugins(Class<? extends GLPlugin> pluginClass, List<GLPlugin> result) {
+		synchronized (lockPlugins) {
+			for (GLPlugin plugin : plugins) {
+				if (pluginClass.isInstance(plugin)) {
+					result.add(plugin);
 				}
 			}
 		}
@@ -1165,15 +1165,15 @@ public class ARRenderer implements GLSurfaceView.Renderer, BeyondarSensorListene
 	}
 
 	@Override
-	public List<GLModule> getAllModules(Class<? extends GLModule> moduleClass) {
-		ArrayList<GLModule> result = new ArrayList<GLModule>(5);
-		return getAllModules(moduleClass, result);
+	public List<GLPlugin> getAllPugins(Class<? extends GLPlugin> pluginClass) {
+		ArrayList<GLPlugin> result = new ArrayList<GLPlugin>(5);
+		return getAllPlugins(pluginClass, result);
 	}
 
 	@Override
-	public List<GLModule> getAllModules() {
-		synchronized (lockModules) {
-			return new ArrayList<GLModule>(modules);
+	public List<GLPlugin> getAllPlugins() {
+		synchronized (lockPlugins) {
+			return new ArrayList<GLPlugin>(plugins);
 		}
 	}
 }

@@ -13,13 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.beyondar.android.module;
+package com.beyondar.android.plugin;
 
 import com.beyondar.android.opengl.renderable.Renderable;
 import com.beyondar.android.opengl.texture.Texture;
 import com.beyondar.android.util.math.geom.Point3;
 
-public interface BeyondarObjectModule extends Module{
+public interface BeyondarObjectPlugin extends Plugin{
 
 	public void onAngleChanged(Point3 angle);
 
@@ -38,12 +38,12 @@ public interface BeyondarObjectModule extends Module{
 	public void onImageUriChanged(String uri);
 
 	/**
-	 * This method is invoked when the module is removed.
+	 * This method is invoked when the plug-in is removed.
 	 */
 	public void onDetached();
 
 	/**
-	 * Check if the module is attached.
+	 * Check if the plug-in is attached.
 	 * 
 	 * @return
 	 */

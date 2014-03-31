@@ -16,24 +16,24 @@
 /* This code is based on Yasir.Ali <ali.yasir0@gmail.com> work. More on
  *  https://github.com/yasiralijaved/GenRadar
  */
-package com.beyondar.android.module.radar;
+package com.beyondar.android.plugin.radar;
 
 import android.graphics.Color;
 import android.location.Location;
 
-import com.beyondar.android.module.GeoObjectModule;
 import com.beyondar.android.opengl.renderable.Renderable;
 import com.beyondar.android.opengl.texture.Texture;
+import com.beyondar.android.plugin.GeoObjectPlugin;
 import com.beyondar.android.util.math.geom.Point3;
 import com.beyondar.android.world.BeyondarObject;
 import com.beyondar.android.world.GeoObject;
 
-public class RadarPointModule implements GeoObjectModule {
+public class RadarPointPlugin implements GeoObjectPlugin {
 
 	public static final int DEFAULT_COLOR = Color.BLUE;
 	public static final float DEFAULT_RADIUS_DP = 1.5f;
 
-	private RadarWorldModule mRadarWorldModule;
+	private RadarWorldPlugin mRadarWorldPlugin;
 	private GeoObject mGeoObject;
 	private boolean mAttached;
 
@@ -43,8 +43,8 @@ public class RadarPointModule implements GeoObjectModule {
 	private int mColor;
 	private float[] mDistanceArray = new float[1];
 
-	public RadarPointModule(RadarWorldModule radarWorldModule, BeyondarObject beyondarObject) {
-		mRadarWorldModule = radarWorldModule;
+	public RadarPointPlugin(RadarWorldPlugin radarWorldPlugin, BeyondarObject beyondarObject) {
+		mRadarWorldPlugin = radarWorldPlugin;
 		mColor = DEFAULT_COLOR;
 		mRaduis = DEFAULT_RADIUS_DP;
 		mRaduisPixels = -1;
@@ -112,7 +112,7 @@ public class RadarPointModule implements GeoObjectModule {
 	}
 
 	private void updateDistanceWithThisLocation() {
-		Location.distanceBetween(mRadarWorldModule.getWorld().getLatitude(), mRadarWorldModule.getWorld()
+		Location.distanceBetween(mRadarWorldPlugin.getWorld().getLatitude(), mRadarWorldPlugin.getWorld()
 				.getLongitude(), mGeoObject.getLatitude(), mGeoObject.getLongitude(), mDistanceArray);
 		mDistanceArray[0] = mDistanceArray[0] * 0.05f;
 	}

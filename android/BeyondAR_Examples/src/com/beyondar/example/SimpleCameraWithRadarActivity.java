@@ -24,15 +24,15 @@ import android.widget.TextView;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 
 import com.beyondar.android.fragment.BeyondarFragmentSupport;
-import com.beyondar.android.module.radar.RadarView;
-import com.beyondar.android.module.radar.RadarWorldModule;
+import com.beyondar.android.plugin.radar.RadarView;
+import com.beyondar.android.plugin.radar.RadarWorldPlugin;
 import com.beyondar.android.world.World;
 
 public class SimpleCameraWithRadarActivity extends FragmentActivity implements OnSeekBarChangeListener {
 
 	private BeyondarFragmentSupport mBeyondarFragment;
 	private RadarView mRadarView;
-	private RadarWorldModule mRadarModule;
+	private RadarWorldPlugin mRadarPlugin;
 	private World mWorld;
 
 	private SeekBar mSeekBarMaxDistance;
@@ -58,25 +58,25 @@ public class SimpleCameraWithRadarActivity extends FragmentActivity implements O
 		mSeekBarMaxDistance = (SeekBar) findViewById(R.id.seekBarMaxDistance);
 		mRadarView = (RadarView) findViewById(R.id.radarView);
 
-		// Create the Radar module
-		mRadarModule = new RadarWorldModule(this);
-		// set the radar view in to our radar module
-		mRadarModule.setRadarView(mRadarView);
+		// Create the Radar plug-in
+		mRadarPlugin = new RadarWorldPlugin(this);
+		// set the radar view in to our radar plug-in
+		mRadarPlugin.setRadarView(mRadarView);
 		// Set how far (in meters) we want to display in the view
-		mRadarModule.setMaxDistance(100);
+		mRadarPlugin.setMaxDistance(100);
 		
 		// We can customize the color of the items
-		mRadarModule.setListColor(CustomWorldHelper.LIST_TYPE_EXAMPLE_1, Color.RED);
+		mRadarPlugin.setListColor(CustomWorldHelper.LIST_TYPE_EXAMPLE_1, Color.RED);
 		// and also the size
-		mRadarModule.setListDotRadius(CustomWorldHelper.LIST_TYPE_EXAMPLE_1, 3);
+		mRadarPlugin.setListDotRadius(CustomWorldHelper.LIST_TYPE_EXAMPLE_1, 3);
 
 		// We create the world and fill it ...
 		mWorld = CustomWorldHelper.generateObjects(this);
 		// .. and send it to the fragment
 		mBeyondarFragment.setWorld(mWorld);
 
-		// add the module
-		mWorld.addModule(mRadarModule);
+		// add the plug-in
+		mWorld.addPlugin(mRadarPlugin);
 
 		// We also can see the Frames per seconds
 		mBeyondarFragment.showFPS(true);
@@ -89,12 +89,12 @@ public class SimpleCameraWithRadarActivity extends FragmentActivity implements O
 
 	@Override
 	public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-		if (mRadarModule == null)
+		if (mRadarPlugin == null)
 			return;
 		if (seekBar == mSeekBarMaxDistance) {
 			// float value = ((float) progress/(float) 10000);
 			mTextviewMaxDistance.setText("Max distance Value: " + progress);
-			mRadarModule.setMaxDistance(progress);
+			mRadarPlugin.setMaxDistance(progress);
 		}
 	}
 

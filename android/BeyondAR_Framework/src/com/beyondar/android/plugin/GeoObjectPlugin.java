@@ -13,11 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.beyondar.android.module;
+package com.beyondar.android.plugin;
 
 import com.beyondar.android.world.GeoObject;
 
-public interface GeoObjectModule extends BeyondarObjectModule {
+public interface GeoObjectPlugin extends BeyondarObjectPlugin {
 
 	/**
 	 * Notified when the geo position changes
@@ -25,7 +25,7 @@ public interface GeoObjectModule extends BeyondarObjectModule {
 	public void onGeoPositionChanged(double latitude, double longitude, double altitude);
 
 	/**
-	 * Get the {@link GeoObject} where the module is attached
+	 * Get the {@link GeoObject} where the plug-in is attached
 	 * 
 	 * @return
 	 */

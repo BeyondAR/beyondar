@@ -87,5 +87,15 @@ public interface WorldPlugin extends Plugin {
 	 * @param uri
 	 */
 	public void onDefaultImageChanged(String uri);
+	
+	/** 
+	 * Called when the activity has been paused.
+	 */
+	public void onPause();
+	
+	/**
+	 * Called when the activity has been resumed.
+	 */
+	public void onResume();
 
 }

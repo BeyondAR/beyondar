@@ -157,6 +157,9 @@ public class BeyondarFragmentSupport extends Fragment implements FpsUpdatable, O
 		mBeyondarCameraView.startPreviewCamera();
 		mBeyondarGLSurface.onResume();
 		BeyondarSensorManager.resume(mSensorManager);
+		if (mWorld != null) {
+			mWorld.onResume();
+		}
 	}
 
 	@Override
@@ -165,6 +168,9 @@ public class BeyondarFragmentSupport extends Fragment implements FpsUpdatable, O
 		mBeyondarCameraView.releaseCamera();
 		mBeyondarGLSurface.onPause();
 		BeyondarSensorManager.pause(mSensorManager);
+		if (mWorld != null) {
+			mWorld.onPause();
+		}
 	}
 
 	/**

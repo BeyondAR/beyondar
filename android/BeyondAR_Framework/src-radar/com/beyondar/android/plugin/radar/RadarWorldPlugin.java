@@ -53,6 +53,7 @@ public class RadarWorldPlugin implements WorldPlugin, BeyondarSensorListener{
 	private float[] mR = new float[9];
 	private float[] mOrientation = new float[3];
 	private float currentDegree = 0;
+	private int mRotation;
 
 	private double mMaxDistance = -1;
 
@@ -94,6 +95,8 @@ public class RadarWorldPlugin implements WorldPlugin, BeyondarSensorListener{
 		addPluginToAllObjects();
 
 		BeyondarSensorManager.registerSensorListener(this);
+		
+		mRotation = mDisplay.getRotation();
 		
 		
 	}
@@ -239,22 +242,8 @@ public class RadarWorldPlugin implements WorldPlugin, BeyondarSensorListener{
 	}
 
 	private void rotateView(float degree) {
-		int rotationOfset =0;
-		switch (mDisplay.getRotation()) {
-		case Surface.ROTATION_0:
-			rotationOfset = 0;
-			break;
-		case Surface.ROTATION_90:
-			rotationOfset = 90;
-			break;
-		case Surface.ROTATION_180:
-			rotationOfset = 0;
-			break;
-		case Surface.ROTATION_270:
-			rotationOfset = -90;
-			break;
-		}
-		degree += rotationOfset;
+		
+		degree += mRotation;
 		
 		// create a rotation animation (reverse turn degree degrees)
 		RotateAnimation animation = new RotateAnimation(currentDegree, -degree, Animation.RELATIVE_TO_SELF,
@@ -269,6 +258,28 @@ public class RadarWorldPlugin implements WorldPlugin, BeyondarSensorListener{
 		// Start the animation
 		mRadarView.startAnimation(animation);
 		currentDegree = -degree;
+	}
+
+	@Override
+	public void onPause() {
+	}
+
+	@Override
+	public void onResume() {
+		switch (mDisplay.getRotation()) {
+		case Surface.ROTATION_0:
+			mRotation = 0;
+			break;
+		case Surface.ROTATION_90:
+			mRotation = 90;
+			break;
+		case Surface.ROTATION_180:
+			mRotation = 0;
+			break;
+		case Surface.ROTATION_270:
+			mRotation = -90;
+			break;
+		}		
 	}
 
 }

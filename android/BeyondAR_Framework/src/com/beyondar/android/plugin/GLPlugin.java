@@ -48,5 +48,15 @@ public interface GLPlugin extends Plugin {
 	public void onSurfaceCreated(GL10 gl, EGLConfig config);
 	
 	public void loadAdditionalTextures (GL10 gl);
+	
+	/** 
+	 * Called when the activity has been paused.
+	 */
+	public void onPause();
+	
+	/**
+	 * Called when the activity has been resumed.
+	 */
+	public void onResume();
 
 }

@@ -67,6 +67,22 @@ public class World implements Plugable<WorldPlugin> {
 		mArViewDistance = MAX_AR_VIEW_DISTANCE;
 		plugins = new ArrayList<WorldPlugin>(DEFAULT_PLUGINS_CAPACITY);
 	}
+	
+	public void onResume() {
+		synchronized (lockplugins) {
+			for (WorldPlugin plugin : plugins) {
+				plugin.onResume();
+			}
+		}
+	}
+	
+	public void onPause(){
+		synchronized (lockplugins) {
+			for (WorldPlugin plugin : plugins) {
+				plugin.onPause();
+			}
+		}
+	}
 
 	protected Context getContext() {
 		return mContext;

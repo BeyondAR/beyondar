@@ -350,4 +350,12 @@ public class GoogleMapWorldPlugin implements WorldPlugin, BitmapCache.OnExternal
 	@Override
 	public void onDefaultImageChanged(String uri) {
 	}
+
+	@Override
+	public void onPause() {
+	}
+
+	@Override
+	public void onResume() {
+	}
 }

@@ -26,7 +26,6 @@ import android.hardware.Camera;
 import android.hardware.Camera.Size;
 import android.os.Build;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.Surface;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
@@ -92,13 +91,17 @@ public class CameraView extends SurfaceView implements SurfaceHolder.Callback, C
 			mHolder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
 		}
 	}
+	
+	public Camera getCamera(){
+		return mCamera;
+	}
 
 	private void configureCamera() {
 		if (mCamera != null) {
 			return;
 		}
 		try {
-			getTheCamera();
+			openCamera();
 			// mCamera = Camera.open();
 		} catch (Exception e) {
 			Logger.e(TAG, "ERROR: Unable to open the camera", e);
@@ -345,8 +348,8 @@ public class CameraView extends SurfaceView implements SurfaceHolder.Callback, C
 		mOptions = options;
 	}
 
-	private boolean getTheCamera() {
-		Log.v(TAG, "getTheCamera");
+	private boolean openCamera() {
+		Logger.v(TAG, "getTheCamera");
 		// keep trying to acquire the camera until "maximumWaitTimeForCamera"
 		// seconds have passed
 		boolean acquiredCam = false;
@@ -354,7 +357,7 @@ public class CameraView extends SurfaceView implements SurfaceHolder.Callback, C
 		while (!acquiredCam && timePassed < MAX_TIME_WAIT_FOR_CAMERA) {
 			try {
 				mCamera = Camera.open();
-				Log.v(TAG, "acquired the camera");
+				Logger.v(TAG, "acquired the camera");
 				acquiredCam = true;
 				return true;
 			} catch (Exception e) {

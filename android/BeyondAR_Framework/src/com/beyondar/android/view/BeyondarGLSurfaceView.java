@@ -34,8 +34,8 @@ import com.beyondar.android.opengl.renderer.ARRenderer;
 import com.beyondar.android.opengl.renderer.ARRenderer.FpsUpdatable;
 import com.beyondar.android.opengl.renderer.ARRenderer.SnapshotCallback;
 import com.beyondar.android.opengl.renderer.OnBeyondarObjectRenderedListener;
-import com.beyondar.android.opengl.util.BeyondarSensorManager;
 import com.beyondar.android.opengl.util.MatrixTrackingGL;
+import com.beyondar.android.sensor.BeyondarSensorManager;
 import com.beyondar.android.util.CompatibilityUtil;
 import com.beyondar.android.util.Logger;
 import com.beyondar.android.util.math.geom.Ray;
@@ -46,7 +46,6 @@ import com.beyondar.android.world.World;
 public class BeyondarGLSurfaceView extends GLSurfaceView implements OnBeyondarObjectRenderedListener {
 
 	protected ARRenderer mRenderer;
-	private SensorManager mSensorManager;
 	private Context mContext;
 
 	private BeyondarViewAdapter mViewAdapter;
@@ -189,16 +188,10 @@ public class BeyondarGLSurfaceView extends GLSurfaceView implements OnBeyondarOb
 	}
 
 	private void unregisterSensorListener() {
-		mSensorManager = (SensorManager) mContext.getSystemService(Context.SENSOR_SERVICE);
-
-		BeyondarSensorManager.initializeSensors(mSensorManager);
 		BeyondarSensorManager.unregisterSensorListener(mRenderer);
 	}
 
 	private void registerSensorListener(int sensorDealy) {
-		mSensorManager = (SensorManager) mContext.getSystemService(Context.SENSOR_SERVICE);
-
-		BeyondarSensorManager.initializeSensors(mSensorManager);
 		BeyondarSensorManager.registerSensorListener(mRenderer);
 
 	}
@@ -207,6 +200,7 @@ public class BeyondarGLSurfaceView extends GLSurfaceView implements OnBeyondarOb
 	public void onPause() {
 		unregisterSensorListener();
 		super.onPause();
+		mRenderer.onPause();
 	}
 
 	@Override
@@ -217,6 +211,7 @@ public class BeyondarGLSurfaceView extends GLSurfaceView implements OnBeyondarOb
 			Display display = ((WindowManager) getContext().getSystemService(Context.WINDOW_SERVICE))
 					.getDefaultDisplay();
 			mRenderer.rotateView(display.getRotation());
+			mRenderer.onResume();
 		}
 	}
 
@@ -355,6 +350,6 @@ public class BeyondarGLSurfaceView extends GLSurfaceView implements OnBeyondarOb
 	 *            The {@link BeyondarObject} to compute
 	 */
 	public void fillBeyondarObjectPositions(BeyondarObject beyondarObject) {
-		mRenderer.fillBeyondarObjectPositions(beyondarObject);
+		mRenderer.fillBeyondarObjectScreenPositions(beyondarObject);
 	}
 }

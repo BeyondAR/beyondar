@@ -23,16 +23,16 @@ import android.content.Context;
 import android.location.Location;
 
 import com.beyondar.android.opengl.colision.MeshCollider;
+import com.beyondar.android.plugin.Plugable;
+import com.beyondar.android.plugin.WorldPlugin;
 import com.beyondar.android.util.cache.BitmapCache;
 import com.beyondar.android.util.math.Distance;
 import com.beyondar.android.util.math.geom.Plane;
 import com.beyondar.android.util.math.geom.Point3;
 import com.beyondar.android.util.math.geom.Ray;
 import com.beyondar.android.util.math.geom.Vector3;
-import com.beyondar.android.world.module.Modulable;
-import com.beyondar.android.world.module.WorldModule;
 
-public class World implements Modulable<WorldModule> {
+public class World implements Plugable<WorldPlugin> {
 
 	protected static final String TAG = "world";
 
@@ -48,22 +48,40 @@ public class World implements Modulable<WorldModule> {
 
 	private float ZERO = 1e-8f;
 	private Object mLock = new Object();
-	protected ArrayList<BeyondarObjectList> mBeyondarObjectLists;
-	protected double mLongitude, mLatitude, mAltitude;
+	
+	protected List<BeyondarObjectList> beyondarObjectLists;
+	protected double longitude, latitude, altitude;
+	
 	private Context mContext;
 	private double mArViewDistance;
 	private BitmapCache mBitmapHolder;
 	private String mDefaultBitmap;
 
-	private List<WorldModule> mModules;
-	private Object mLockModules = new Object();
+	protected List<WorldPlugin> plugins;
+	protected Object lockplugins = new Object();
 
 	public World(Context context) {
 		mContext = context;
 		mBitmapHolder = BitmapCache.initialize(mContext.getResources(), getClass().getName(), true);
 		createBeyondarObjectListArray();
 		mArViewDistance = MAX_AR_VIEW_DISTANCE;
-		mModules = new ArrayList<WorldModule>(5);
+		plugins = new ArrayList<WorldPlugin>(DEFAULT_PLUGINS_CAPACITY);
+	}
+	
+	public void onResume() {
+		synchronized (lockplugins) {
+			for (WorldPlugin plugin : plugins) {
+				plugin.onResume();
+			}
+		}
+	}
+	
+	public void onPause(){
+		synchronized (lockplugins) {
+			for (WorldPlugin plugin : plugins) {
+				plugin.onPause();
+			}
+		}
 	}
 
 	protected Context getContext() {
@@ -75,58 +93,58 @@ public class World implements Modulable<WorldModule> {
 	}
 
 	private void createBeyondarObjectListArray() {
-		mBeyondarObjectLists = new ArrayList<BeyondarObjectList>();
-		mBeyondarObjectLists.add(new BeyondarObjectList(LIST_TYPE_DEFAULT, this));
+		beyondarObjectLists = new ArrayList<BeyondarObjectList>();
+		beyondarObjectLists.add(new BeyondarObjectList(LIST_TYPE_DEFAULT, this));
 
 	}
 
 	/**
-	 * Add a {@link WorldModule} to the {@link World}. If the module exist it
+	 * Add a {@link WorldPlugin} to the {@link World}. If the plug-in exist it
 	 * will not be added again.
 	 */
-	public void addModule(WorldModule module) {
-		synchronized (mLockModules) {
-			if (!mModules.contains(module)) {
-				mModules.add(module);
+	public void addPlugin(WorldPlugin plugin) {
+		synchronized (lockplugins) {
+			if (!plugins.contains(plugin)) {
+				plugins.add(plugin);
 			}
 		}
-		module.setup(this, mContext);
+		plugin.setup(this);
 	}
 
 	/**
-	 * Remove existing module
+	 * Remove existing plug-in.
 	 * 
-	 * @param module
-	 *            module to be removed
-	 * @return True if the module has been removed, false otherwise
+	 * @param plugin
+	 *            plug-in to be removed
+	 * @return True if the plug-in has been removed, false otherwise
 	 */
 	@Override
-	public boolean removeModule(WorldModule module) {
+	public boolean removePlugin(WorldPlugin plugin) {
 		boolean removed = false;
-		synchronized (mLockModules) {
-			removed = mModules.remove(module);
+		synchronized (lockplugins) {
+			removed = plugins.remove(plugin);
 		}
 		if (removed) {
-			module.onDetached();
+			plugin.onDetached();
 		}
 		return removed;
 	}
 
 	@Override
-	public void cleanModules() {
-		synchronized (mLockModules) {
-			for (WorldModule module : mModules) {
-				removeModule(module);
+	public void removeAllPlugins() {
+		synchronized (lockplugins) {
+			for (WorldPlugin plugin : plugins) {
+				removePlugin(plugin);
 			}
 		}
 	}
 
 	@Override
-	public WorldModule getFirstModule(Class<? extends WorldModule> moduleClass) {
-		synchronized (mLockModules) {
-			for (WorldModule module : mModules) {
-				if (moduleClass.isInstance(module)) {
-					return module;
+	public WorldPlugin getFirstPlugin(Class<? extends WorldPlugin> pluginClass) {
+		synchronized (lockplugins) {
+			for (WorldPlugin plugin : plugins) {
+				if (pluginClass.isInstance(plugin)) {
+					return plugin;
 				}
 			}
 		}
@@ -134,29 +152,30 @@ public class World implements Modulable<WorldModule> {
 	}
 
 	@Override
-	public boolean containsAnyModule(Class<? extends WorldModule> moduleClass) {
-		return getFirstModule(moduleClass) != null;
+	public boolean containsAnyPlugin(Class<? extends WorldPlugin> pluginClass) {
+		return getFirstPlugin(pluginClass) != null;
 	}
 
 	@Override
-	public boolean containsModule(WorldModule module) {
-		synchronized (mLockModules) {
-			return mModules.contains(module);
+	public boolean containsPlugin(WorldPlugin plugin) {
+		synchronized (lockplugins) {
+			return plugins.contains(plugin);
 		}
 	}
 
 	@Override
-	public List<WorldModule> getAllModules(Class<? extends WorldModule> moduleClass) {
-		ArrayList<WorldModule> result = new ArrayList<WorldModule>(5);
-		return getAllModules(moduleClass, result);
+	public List<WorldPlugin> getAllPugins(Class<? extends WorldPlugin> pluginClass) {
+		ArrayList<WorldPlugin> result = new ArrayList<WorldPlugin>(5);
+		return getAllPlugins(pluginClass, result);
 	}
 
 	@Override
-	public List<WorldModule> getAllModules(Class<? extends WorldModule> moduleClass, List<WorldModule> result) {
-		synchronized (mLockModules) {
-			for (WorldModule module : mModules) {
-				if (moduleClass.isInstance(module)) {
-					result.add(module);
+	public List<WorldPlugin> getAllPlugins(Class<? extends WorldPlugin> pluginClass,
+			List<WorldPlugin> result) {
+		synchronized (lockplugins) {
+			for (WorldPlugin plugin : plugins) {
+				if (pluginClass.isInstance(plugin)) {
+					result.add(plugin);
 				}
 			}
 		}
@@ -164,9 +183,9 @@ public class World implements Modulable<WorldModule> {
 	}
 
 	@Override
-	public List<WorldModule> getAllModules() {
-		synchronized (mLockModules) {
-			return new ArrayList<WorldModule>(mModules);
+	public List<WorldPlugin> getAllPlugins() {
+		synchronized (lockplugins) {
+			return new ArrayList<WorldPlugin>(plugins);
 		}
 	}
 
@@ -192,18 +211,18 @@ public class World implements Modulable<WorldModule> {
 			BeyondarObjectList listTmp = getBeyondarObjectList(worldListType);
 			if (listTmp == null) {
 				listTmp = new BeyondarObjectList(worldListType, this);
-				mBeyondarObjectLists.add(listTmp);
-				synchronized (mLockModules) {
-					for (WorldModule module : mModules) {
-						module.onBeyondarObjectListCreated(listTmp);
+				beyondarObjectLists.add(listTmp);
+				synchronized (lockplugins) {
+					for (WorldPlugin plugin : plugins) {
+						plugin.onBeyondarObjectListCreated(listTmp);
 					}
 				}
 			}
 			beyondarObject.setWorldListType(worldListType);
 			listTmp.add(beyondarObject);
-			synchronized (mLockModules) {
-				for (WorldModule module : mModules) {
-					module.onBeyondarObjectAdded(beyondarObject, listTmp);
+			synchronized (lockplugins) {
+				for (WorldPlugin plugin : plugins) {
+					plugin.onBeyondarObjectAdded(beyondarObject, listTmp);
 				}
 			}
 		}
@@ -221,9 +240,9 @@ public class World implements Modulable<WorldModule> {
 			BeyondarObjectList listTmp = getBeyondarObjectList(beyondarObject.getWorldListType());
 			if (listTmp != null) {
 				listTmp.remove(beyondarObject);
-				synchronized (mLockModules) {
-					for (WorldModule module : mModules) {
-						module.onBeyondarObjectRemoved(beyondarObject, listTmp);
+				synchronized (lockplugins) {
+					for (WorldPlugin plugin : plugins) {
+						plugin.onBeyondarObjectRemoved(beyondarObject, listTmp);
 					}
 				}
 				beyondarObject.onRemoved();
@@ -234,10 +253,10 @@ public class World implements Modulable<WorldModule> {
 	}
 
 	public synchronized void forceProcessRemoveQueue() {
-		if (mBeyondarObjectLists.size() > 0) {
+		if (beyondarObjectLists.size() > 0) {
 			synchronized (mLock) {
-				for (int i = 0; i < mBeyondarObjectLists.size(); i++) {
-					mBeyondarObjectLists.get(i).forceRemoveObjectsInQueue();
+				for (int i = 0; i < beyondarObjectLists.size(); i++) {
+					beyondarObjectLists.get(i).forceRemoveObjectsInQueue();
 				}
 			}
 		}
@@ -248,7 +267,7 @@ public class World implements Modulable<WorldModule> {
 	 */
 	public synchronized void clearWorld() {
 		synchronized (mLock) {
-			mBeyondarObjectLists.clear();
+			beyondarObjectLists.clear();
 			mBitmapHolder.clean();
 		}
 	}
@@ -259,7 +278,7 @@ public class World implements Modulable<WorldModule> {
 	 * @return
 	 */
 	public double getLongitude() {
-		return mLongitude;
+		return longitude;
 	}
 
 	/**
@@ -268,7 +287,7 @@ public class World implements Modulable<WorldModule> {
 	 * @return
 	 */
 	public double getAltitude() {
-		return mAltitude;
+		return altitude;
 	}
 
 	/**
@@ -277,22 +296,22 @@ public class World implements Modulable<WorldModule> {
 	 * @return
 	 */
 	public double getLatitude() {
-		return mLatitude;
+		return latitude;
 	}
 
 	public void setGeoPosition(double latitude, double longitude, double altitude) {
-		mLatitude = latitude;
-		mLongitude = longitude;
-		mAltitude = altitude;
-		synchronized (mLockModules) {
-			for (WorldModule module : mModules) {
-				module.onGeoPositionChanged(latitude, longitude, altitude);
+		this.latitude = latitude;
+		this.longitude = longitude;
+		this.altitude = altitude;
+		synchronized (lockplugins) {
+			for (WorldPlugin plugin : plugins) {
+				plugin.onGeoPositionChanged(latitude, longitude, altitude);
 			}
 		}
 	}
 
 	public final void setGeoPosition(double latitude, double longitude) {
-		setGeoPosition(latitude, longitude, mAltitude);
+		setGeoPosition(latitude, longitude, altitude);
 	}
 
 	public void setLocation(Location location) {
@@ -312,9 +331,9 @@ public class World implements Modulable<WorldModule> {
 
 	public synchronized void setDefaultBitmap(String uri) {
 		mDefaultBitmap = uri;
-		synchronized (mLockModules) {
-			for (WorldModule module : mModules) {
-				module.onDefaultImageChanged(uri);
+		synchronized (lockplugins) {
+			for (WorldPlugin plugin : plugins) {
+				plugin.onDefaultImageChanged(uri);
 			}
 		}
 	}
@@ -406,8 +425,8 @@ public class World implements Modulable<WorldModule> {
 	 */
 	public BeyondarObjectList getBeyondarObjectList(int type) {
 		BeyondarObjectList list = null;
-		for (int i = 0; i < mBeyondarObjectLists.size(); i++) {
-			list = mBeyondarObjectLists.get(i);
+		for (int i = 0; i < beyondarObjectLists.size(); i++) {
+			list = beyondarObjectLists.get(i);
 			if (list.getType() == type) {
 				return list;
 			}
@@ -422,8 +441,8 @@ public class World implements Modulable<WorldModule> {
 	 * 
 	 * @return The list of the lists
 	 */
-	public ArrayList<BeyondarObjectList> getBeyondarObjectLists() {
-		return mBeyondarObjectLists;
+	public List<BeyondarObjectList> getBeyondarObjectLists() {
+		return beyondarObjectLists;
 	}
 
 	/**
@@ -446,8 +465,8 @@ public class World implements Modulable<WorldModule> {
 		BeyondarObjectList beyondarList = null;
 
 		try {
-			for (int i = 0; i < mBeyondarObjectLists.size(); i++) {
-				beyondarList = mBeyondarObjectLists.get(i);
+			for (int i = 0; i < beyondarObjectLists.size(); i++) {
+				beyondarList = beyondarObjectLists.get(i);
 				if (beyondarList != null) {
 					for (int j = 0; j < beyondarList.size(); j++) {
 

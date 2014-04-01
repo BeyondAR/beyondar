@@ -15,24 +15,28 @@
  */
 package com.beyondar.example;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.view.Window;
 import android.widget.SeekBar;
-import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.TextView;
+import android.widget.SeekBar.OnSeekBarChangeListener;
 
 import com.beyondar.android.fragment.BeyondarFragmentSupport;
-import com.beyondar.android.opengl.util.LowPassFilter;
+import com.beyondar.android.plugin.radar.RadarView;
+import com.beyondar.android.plugin.radar.RadarWorldPlugin;
 import com.beyondar.android.world.World;
 
-public class SimpleCameraWithCustomFilterActivity extends FragmentActivity implements OnSeekBarChangeListener {
+public class SimpleCameraWithRadarActivity extends FragmentActivity implements OnSeekBarChangeListener {
 
 	private BeyondarFragmentSupport mBeyondarFragment;
+	private RadarView mRadarView;
+	private RadarWorldPlugin mRadarPlugin;
 	private World mWorld;
 
-	private SeekBar mSeekBarFilter;
-	private TextView mTextviewFilterValue;
+	private SeekBar mSeekBarMaxDistance;
+	private TextView mTextviewMaxDistance;
 
 	/** Called when the activity is first created. */
 	@Override
@@ -42,37 +46,56 @@ public class SimpleCameraWithCustomFilterActivity extends FragmentActivity imple
 		// Hide the window title.
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 
-		setContentView(R.layout.simple_camera_with_filter_controler);
-		
+		setContentView(R.layout.simple_camera_with_radar);
+
 		mBeyondarFragment = (BeyondarFragmentSupport) getSupportFragmentManager().findFragmentById(
 				R.id.beyondarFragment);
+
+		mBeyondarFragment = (BeyondarFragmentSupport) getSupportFragmentManager().findFragmentById(
+				R.id.beyondarFragment);
+
+		mTextviewMaxDistance = (TextView) findViewById(R.id.textMaxDistance);
+		mSeekBarMaxDistance = (SeekBar) findViewById(R.id.seekBarMaxDistance);
+		mRadarView = (RadarView) findViewById(R.id.radarView);
+
+		// Create the Radar plug-in
+		mRadarPlugin = new RadarWorldPlugin(this);
+		// set the radar view in to our radar plug-in
+		mRadarPlugin.setRadarView(mRadarView);
+		// Set how far (in meters) we want to display in the view
+		mRadarPlugin.setMaxDistance(100);
 		
-		mTextviewFilterValue = (TextView) findViewById(R.id.textFilterValue);
-		
-		mSeekBarFilter = (SeekBar) findViewById(R.id.seekBarFilter);
-		mSeekBarFilter.setOnSeekBarChangeListener(this);
-		mSeekBarFilter.setMax(600);
-		mSeekBarFilter.setProgress(500);
+		// We can customize the color of the items
+		mRadarPlugin.setListColor(CustomWorldHelper.LIST_TYPE_EXAMPLE_1, Color.RED);
+		// and also the size
+		mRadarPlugin.setListDotRadius(CustomWorldHelper.LIST_TYPE_EXAMPLE_1, 3);
 
 		// We create the world and fill it ...
 		mWorld = CustomWorldHelper.generateObjects(this);
 		// .. and send it to the fragment
 		mBeyondarFragment.setWorld(mWorld);
 
+		// add the plug-in
+		mWorld.addPlugin(mRadarPlugin);
+
 		// We also can see the Frames per seconds
 		mBeyondarFragment.showFPS(true);
 		
+		mSeekBarMaxDistance.setOnSeekBarChangeListener(this);
+		mSeekBarMaxDistance.setMax(300);
+		mSeekBarMaxDistance.setProgress(23);
 
 	}
 
 	@Override
 	public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-		if (mBeyondarFragment == null) return;
-		if (seekBar == mSeekBarFilter) {
-			float value = ((float) progress/(float) 10000);
-			mTextviewFilterValue.setText("Filter value: " + value);
-			LowPassFilter.ALPHA = value;
-		} 
+		if (mRadarPlugin == null)
+			return;
+		if (seekBar == mSeekBarMaxDistance) {
+			// float value = ((float) progress/(float) 10000);
+			mTextviewMaxDistance.setText("Max distance Value: " + progress);
+			mRadarPlugin.setMaxDistance(progress);
+		}
 	}
 
 	@Override

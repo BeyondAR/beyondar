@@ -24,12 +24,12 @@ import com.beyondar.android.opengl.renderable.Renderable;
 import com.beyondar.android.opengl.renderable.SquareRenderable;
 import com.beyondar.android.opengl.renderer.ARRenderer;
 import com.beyondar.android.opengl.texture.Texture;
+import com.beyondar.android.plugin.BeyondarObjectPlugin;
+import com.beyondar.android.plugin.Plugable;
 import com.beyondar.android.util.cache.BitmapCache;
 import com.beyondar.android.util.math.geom.Point3;
-import com.beyondar.android.world.module.BeyondarObjectModule;
-import com.beyondar.android.world.module.Modulable;
 
-public class BeyondarObject implements Modulable<BeyondarObjectModule> {
+public class BeyondarObject implements Plugable<BeyondarObjectPlugin> {
 
 	private Long mId;
 	private int mTypeList;
@@ -53,10 +53,10 @@ public class BeyondarObject implements Modulable<BeyondarObjectModule> {
 
 	protected Point3 topLeft, bottomLeft, bottomRight, topRight;
 
-	/** This fields contains all the loaded modules */
-	protected List<BeyondarObjectModule> modules;
-	/** Use this lock to access the modules field */
-	protected Object lockModules = new Object();
+	/** This fields contains all the loaded plug-ins */
+	protected List<BeyondarObjectPlugin> plugins;
+	/** Use this lock to access the plug-ins field */
+	protected Object lockPlugins = new Object();
 
 	/**
 	 * Create an instance of a {@link BeyondarObject} with an unique ID
@@ -74,7 +74,7 @@ public class BeyondarObject implements Modulable<BeyondarObjectModule> {
 	}
 
 	private void init() {
-		modules = new ArrayList<BeyondarObjectModule>(3);
+		plugins = new ArrayList<BeyondarObjectPlugin>(DEFAULT_PLUGINS_CAPACITY);
 		position = new Point3();
 		angle = new Point3();
 		texture = new Texture();
@@ -100,41 +100,40 @@ public class BeyondarObject implements Modulable<BeyondarObjectModule> {
 		return mId.longValue();
 	}
 
-	public void addModule(BeyondarObjectModule module) {
-		synchronized (lockModules) {
-			if (modules.contains(module)) {
+	public void addPlugin(BeyondarObjectPlugin plugin) {
+		synchronized (lockPlugins) {
+			if (plugins.contains(plugin)) {
 				return;
 			}
-			modules.add(module);
+			plugins.add(plugin);
 		}
-		module.setup(this);
 	}
 
 	@Override
-	public boolean removeModule(BeyondarObjectModule module) {
+	public boolean removePlugin(BeyondarObjectPlugin plugin) {
 		boolean removed = false;
-		synchronized (lockModules) {
-			removed = modules.remove(module);
+		synchronized (lockPlugins) {
+			removed = plugins.remove(plugin);
 		}
 		if (removed) {
-			module.onDetached();
+			plugin.onDetached();
 		}
 		return removed;
 	}
 
 	@Override
-	public void cleanModules() {
-		synchronized (lockModules) {
-			modules.clear();
+	public void removeAllPlugins() {
+		synchronized (lockPlugins) {
+			plugins.clear();
 		}
 	}
 
 	@Override
-	public BeyondarObjectModule getFirstModule(Class<? extends BeyondarObjectModule> moduleClass) {
-		synchronized (lockModules) {
-			for (BeyondarObjectModule module : modules) {
-				if (moduleClass.isInstance(module)) {
-					return module;
+	public BeyondarObjectPlugin getFirstPlugin(Class<? extends BeyondarObjectPlugin> pluginClass) {
+		synchronized (lockPlugins) {
+			for (BeyondarObjectPlugin plugin : plugins) {
+				if (pluginClass.isInstance(plugin)) {
+					return plugin;
 				}
 			}
 		}
@@ -142,30 +141,30 @@ public class BeyondarObject implements Modulable<BeyondarObjectModule> {
 	}
 
 	@Override
-	public boolean containsAnyModule(Class<? extends BeyondarObjectModule> moduleClass) {
-		return getFirstModule(moduleClass) != null;
+	public boolean containsAnyPlugin(Class<? extends BeyondarObjectPlugin> pluginClass) {
+		return getFirstPlugin(pluginClass) != null;
 	}
 
 	@Override
-	public boolean containsModule(BeyondarObjectModule module) {
-		synchronized (lockModules) {
-			return modules.contains(module);
+	public boolean containsPlugin(BeyondarObjectPlugin plugin) {
+		synchronized (lockPlugins) {
+			return plugins.contains(plugin);
 		}
 	}
 
 	@Override
-	public List<BeyondarObjectModule> getAllModules(Class<? extends BeyondarObjectModule> moduleClass) {
-		ArrayList<BeyondarObjectModule> result = new ArrayList<BeyondarObjectModule>(5);
-		return getAllModules(moduleClass, result);
+	public List<BeyondarObjectPlugin> getAllPugins(Class<? extends BeyondarObjectPlugin> pluginClass) {
+		ArrayList<BeyondarObjectPlugin> result = new ArrayList<BeyondarObjectPlugin>(5);
+		return getAllPlugins(pluginClass, result);
 	}
 
 	@Override
-	public List<BeyondarObjectModule> getAllModules(Class<? extends BeyondarObjectModule> moduleClass,
-			List<BeyondarObjectModule> result) {
-		synchronized (lockModules) {
-			for (BeyondarObjectModule module : modules) {
-				if (moduleClass.isInstance(module)) {
-					result.add(module);
+	public List<BeyondarObjectPlugin> getAllPlugins(Class<? extends BeyondarObjectPlugin> pluginClass,
+			List<BeyondarObjectPlugin> result) {
+		synchronized (lockPlugins) {
+			for (BeyondarObjectPlugin plugin : plugins) {
+				if (pluginClass.isInstance(plugin)) {
+					result.add(plugin);
 				}
 			}
 		}
@@ -173,22 +172,22 @@ public class BeyondarObject implements Modulable<BeyondarObjectModule> {
 	}
 
 	/**
-	 * Get a {@link List} copy of the added modules. Adding/removing modules to
-	 * this list will not affect the added modules
+	 * Get a {@link List} copy of the added plug-ins. Adding/removing plug-ins to
+	 * this list will not affect the added plug-ins
 	 * 
 	 * @return
 	 */
 	@Override
-	public List<BeyondarObjectModule> getAllModules() {
-		synchronized (lockModules) {
-			return new ArrayList<BeyondarObjectModule>(modules);
+	public List<BeyondarObjectPlugin> getAllPlugins() {
+		synchronized (lockPlugins) {
+			return new ArrayList<BeyondarObjectPlugin>(plugins);
 		}
 	}
 
 	void onRemoved() {
-		synchronized (lockModules) {
-			for (BeyondarObjectModule module : modules) {
-				module.onDetached();
+		synchronized (lockPlugins) {
+			for (BeyondarObjectPlugin plugin : plugins) {
+				plugin.onDetached();
 			}
 		}
 	}
@@ -201,9 +200,9 @@ public class BeyondarObject implements Modulable<BeyondarObjectModule> {
 		angle.x = x;
 		angle.y = y;
 		angle.z = z;
-		synchronized (lockModules) {
-			for (BeyondarObjectModule module : modules) {
-				module.onAngleChanged(angle);
+		synchronized (lockPlugins) {
+			for (BeyondarObjectPlugin plugin : plugins) {
+				plugin.onAngleChanged(angle);
 			}
 		}
 	}
@@ -214,9 +213,9 @@ public class BeyondarObject implements Modulable<BeyondarObjectModule> {
 
 	public void setPosition(Point3 newVect) {
 		position = newVect;
-		synchronized (lockModules) {
-			for (BeyondarObjectModule module : modules) {
-				module.onPositionChanged(position);
+		synchronized (lockPlugins) {
+			for (BeyondarObjectPlugin plugin : plugins) {
+				plugin.onPositionChanged(position);
 			}
 		}
 	}
@@ -225,9 +224,9 @@ public class BeyondarObject implements Modulable<BeyondarObjectModule> {
 		position.x = x;
 		position.y = y;
 		position.z = z;
-		synchronized (lockModules) {
-			for (BeyondarObjectModule module : modules) {
-				module.onPositionChanged(position);
+		synchronized (lockPlugins) {
+			for (BeyondarObjectPlugin plugin : plugins) {
+				plugin.onPositionChanged(position);
 			}
 		}
 	}
@@ -245,9 +244,9 @@ public class BeyondarObject implements Modulable<BeyondarObjectModule> {
 			return;
 		}
 		texture.setTexturePointer(texturePointer);
-		synchronized (lockModules) {
-			for (BeyondarObjectModule module : modules) {
-				module.onTextureChanged(texture);
+		synchronized (lockPlugins) {
+			for (BeyondarObjectPlugin plugin : plugins) {
+				plugin.onTextureChanged(texture);
 			}
 		}
 	}
@@ -260,9 +259,9 @@ public class BeyondarObject implements Modulable<BeyondarObjectModule> {
 			texture = new Texture();
 		}
 		this.texture = texture;
-		synchronized (lockModules) {
-			for (BeyondarObjectModule module : modules) {
-				module.onTextureChanged(this.texture);
+		synchronized (lockPlugins) {
+			for (BeyondarObjectPlugin plugin : plugins) {
+				plugin.onTextureChanged(this.texture);
 			}
 		}
 	}
@@ -281,9 +280,9 @@ public class BeyondarObject implements Modulable<BeyondarObjectModule> {
 
 	public void setRenderable(Renderable renderable) {
 		this.renderable = renderable;
-		synchronized (lockModules) {
-			for (BeyondarObjectModule module : modules) {
-				module.onRenderableChanged(this.renderable);
+		synchronized (lockPlugins) {
+			for (BeyondarObjectPlugin plugin : plugins) {
+				plugin.onRenderableChanged(this.renderable);
 			}
 		}
 	}
@@ -294,9 +293,9 @@ public class BeyondarObject implements Modulable<BeyondarObjectModule> {
 
 	public void faceToCamera(boolean faceToCamera) {
 		this.faceToCamera = faceToCamera;
-		synchronized (lockModules) {
-			for (BeyondarObjectModule module : modules) {
-				module.onFaceToCameraChanged(this.faceToCamera);
+		synchronized (lockPlugins) {
+			for (BeyondarObjectPlugin plugin : plugins) {
+				plugin.onFaceToCameraChanged(this.faceToCamera);
 			}
 		}
 	}
@@ -313,9 +312,9 @@ public class BeyondarObject implements Modulable<BeyondarObjectModule> {
 	 */
 	public void setVisible(boolean visible) {
 		this.visible = visible;
-		synchronized (lockModules) {
-			for (BeyondarObjectModule module : modules) {
-				module.onVisibilityChanged(this.visible);
+		synchronized (lockPlugins) {
+			for (BeyondarObjectPlugin plugin : plugins) {
+				plugin.onVisibilityChanged(this.visible);
 			}
 		}
 	}
@@ -326,9 +325,9 @@ public class BeyondarObject implements Modulable<BeyondarObjectModule> {
 
 	public void setName(String name) {
 		this.name = name;
-		synchronized (lockModules) {
-			for (BeyondarObjectModule module : modules) {
-				module.onNameChanged(this.name);
+		synchronized (lockPlugins) {
+			for (BeyondarObjectPlugin plugin : plugins) {
+				plugin.onNameChanged(this.name);
 			}
 		}
 	}
@@ -347,9 +346,9 @@ public class BeyondarObject implements Modulable<BeyondarObjectModule> {
 			return;
 		}
 		bitmapUri = uri;
-		synchronized (lockModules) {
-			for (BeyondarObjectModule module : modules) {
-				module.onImageUriChanged(bitmapUri);
+		synchronized (lockPlugins) {
+			for (BeyondarObjectPlugin plugin : plugins) {
+				plugin.onImageUriChanged(bitmapUri);
 			}
 		}
 		setTexture(null);
@@ -383,7 +382,7 @@ public class BeyondarObject implements Modulable<BeyondarObjectModule> {
 	}
 
 	/**
-	 * Set how far is the object from the user.
+	 * Set how far is the object from the user (meters).
 	 * 
 	 * This method is used by the {@link ARRenderer} to set this value.
 	 * 

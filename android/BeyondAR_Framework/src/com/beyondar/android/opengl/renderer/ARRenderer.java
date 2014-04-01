@@ -35,7 +35,6 @@ import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
-import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.opengl.GLSurfaceView;
 import android.opengl.GLU;
@@ -44,8 +43,10 @@ import android.view.Surface;
 
 import com.beyondar.android.opengl.renderable.Renderable;
 import com.beyondar.android.opengl.texture.Texture;
-import com.beyondar.android.opengl.util.LowPassFilter;
 import com.beyondar.android.opengl.util.MatrixGrabber;
+import com.beyondar.android.plugin.GLPlugin;
+import com.beyondar.android.plugin.Plugable;
+import com.beyondar.android.sensor.BeyondarSensorListener;
 import com.beyondar.android.util.Logger;
 import com.beyondar.android.util.PendingBitmapsToBeLoaded;
 import com.beyondar.android.util.Utils;
@@ -62,8 +63,8 @@ import com.beyondar.android.world.World;
 // Some references:
 // http://ovcharov.me/2011/01/14/android-opengl-es-ray-picking/
 // http://magicscrollsofcode.blogspot.com/2010/10/3d-picking-in-android.html
-public class ARRenderer implements GLSurfaceView.Renderer, SensorEventListener,
-		BitmapCache.OnExternalBitmapLoadedCacheListener {
+public class ARRenderer implements GLSurfaceView.Renderer, BeyondarSensorListener,
+		BitmapCache.OnExternalBitmapLoadedCacheListener, Plugable<GLPlugin> {
 
 	public static interface SnapshotCallback {
 		/**
@@ -105,9 +106,11 @@ public class ARRenderer implements GLSurfaceView.Renderer, SensorEventListener,
 
 	private World mWorld;
 
+	protected List<GLPlugin> plugins;
+	protected Object lockPlugins = new Object();
+
 	private boolean mScreenshot;
 	private SnapshotCallback mSnapshotCallback;
-	private SensorEventListener mExternalSensorListener;
 
 	private boolean mIsTablet;
 	private int mSurfaceRotation;
@@ -147,6 +150,8 @@ public class ARRenderer implements GLSurfaceView.Renderer, SensorEventListener,
 
 		mIsTablet = false;
 		mFillPositions = false;
+
+		plugins = new ArrayList<GLPlugin>();
 	}
 
 	/**
@@ -182,6 +187,11 @@ public class ARRenderer implements GLSurfaceView.Renderer, SensorEventListener,
 		mWorld = world;
 		mWorld.getBitmapCache().addOnExternalBitmapLoadedCahceListener(this);
 		reloadWorldTextures = true;
+		synchronized (lockPlugins) {
+			for (GLPlugin plugin : plugins) {
+				plugin.setup(mWorld, this);
+			}
+		}
 	}
 
 	public World getWorld() {
@@ -196,6 +206,11 @@ public class ARRenderer implements GLSurfaceView.Renderer, SensorEventListener,
 	 */
 	public void setCameraPosition(Point3 newCameraPos) {
 		cameraPosition = newCameraPos;
+		synchronized (lockPlugins) {
+			for (GLPlugin plugin : plugins) {
+				plugin.onCameraPositionChanged(newCameraPos);
+			}
+		}
 	}
 
 	/**
@@ -205,6 +220,7 @@ public class ARRenderer implements GLSurfaceView.Renderer, SensorEventListener,
 		cameraPosition.x = 0;
 		cameraPosition.y = 0;
 		cameraPosition.z = 0;
+		setCameraPosition(cameraPosition);
 	}
 
 	/**
@@ -223,33 +239,35 @@ public class ARRenderer implements GLSurfaceView.Renderer, SensorEventListener,
 		long time = System.currentTimeMillis();
 
 		SensorManager.getInclination(sInclination);
-		SensorManager.getRotationMatrix(mRotationMatrix, sInclination, mAccelerometerValues,
-				mMagneticValues);
-		if (mIsTablet) {
-			// SensorManager.remapCoordinateSystem(mRotationMatrix,
-			// SensorManager.AXIS_MINUS_Y,
-			// SensorManager.AXIS_X, mRotationMatrix);
-			SensorManager.remapCoordinateSystem(mRotationMatrix, SensorManager.AXIS_X,
-					SensorManager.AXIS_Y, mRotationMatrix);
-		}
+		SensorManager.getRotationMatrix(mRotationMatrix, sInclination, mAccelerometerValues, mMagneticValues);
 
-		// TODO: Optimize this code
-		// TODO: Fix rotation for 270
+		float rotation = 0;
 		switch (mSurfaceRotation) {
 		case Surface.ROTATION_0:
-		case Surface.ROTATION_180:
-			SensorManager.remapCoordinateSystem(mRotationMatrix, SensorManager.AXIS_MINUS_Y,
-					SensorManager.AXIS_X, mRotationMatrix);
+			rotation = 270;
 			break;
 		case Surface.ROTATION_90:
 			break;
+		case Surface.ROTATION_180:
+			rotation = 90;
+			break;
 		case Surface.ROTATION_270:
+			rotation = 180;
 			break;
 		}
+		
+		if (mIsTablet) {
+			//TODO remove this code and use the rotation variable instead
+//			SensorManager.remapCoordinateSystem(mRotationMatrix, SensorManager.AXIS_X, SensorManager.AXIS_Y,
+//					mRotationMatrix);
+		}
+		
+		gl.glRotatef(rotation, 0, 0, 1);
 
 		SensorManager.remapCoordinateSystem(mRotationMatrix, SensorManager.AXIS_Y,
 				SensorManager.AXIS_MINUS_X, mRemappedRotationMatrix);
 
+		
 		// Clear color buffer
 		gl.glClear(GL10.GL_COLOR_BUFFER_BIT | GL10.GL_DEPTH_BUFFER_BIT);
 
@@ -257,6 +275,7 @@ public class ARRenderer implements GLSurfaceView.Renderer, SensorEventListener,
 		gl.glMatrixMode(GL10.GL_MODELVIEW);
 		gl.glLoadIdentity();
 		gl.glLoadMatrixf(mRemappedRotationMatrix, 0);
+		
 
 		gl.glEnableClientState(GL10.GL_VERTEX_ARRAY);
 		// gl.glEnableClientState(GL10.GL_COLOR_ARRAY);
@@ -293,6 +312,14 @@ public class ARRenderer implements GLSurfaceView.Renderer, SensorEventListener,
 			if (tmpTraker != null) {
 				tmpTraker.onBeyondarObjectsRendered(mRenderedObjects);
 			}
+		}
+
+		try {
+			for (GLPlugin plugin : plugins) {
+				plugin.onDrawFrame(gl);
+			}
+		} catch (ConcurrentModificationException e) {
+			Logger.w("Some plug-ins where changed while drawing a frame");
 		}
 
 		if (mScreenshot) {
@@ -368,8 +395,8 @@ public class ARRenderer implements GLSurfaceView.Renderer, SensorEventListener,
 										// flip
 
 		// new bitmap, using the flipping matrix
-		Bitmap result = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(),
-				matrix, true);
+		Bitmap result = Bitmap
+				.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
 
 		bitmap.recycle();
 		System.gc();
@@ -382,17 +409,14 @@ public class ARRenderer implements GLSurfaceView.Renderer, SensorEventListener,
 		float x, z, y;
 		x = (float) (Distance.fastConversionGeopointsToMeters(geoObject.getLongitude()
 				- mWorld.getLongitude()) / 2);
-		z = (float) (Distance.fastConversionGeopointsToMeters(geoObject.getAltitude()
-				- mWorld.getAltitude()) / 2);
-		y = (float) (Distance.fastConversionGeopointsToMeters(geoObject.getLatitude()
-				- mWorld.getLatitude()) / 2);
+		z = (float) (Distance.fastConversionGeopointsToMeters(geoObject.getAltitude() - mWorld.getAltitude()) / 2);
+		y = (float) (Distance.fastConversionGeopointsToMeters(geoObject.getLatitude() - mWorld.getLatitude()) / 2);
 
 		if (mMaxDistanceSizePoints > 0 || mMinDistanceSizePoints > 0) {
 			double totalDst = Distance.calculateDistance(x, y, 0, 0);
 
 			if (mMaxDistanceSizePoints > 0 && totalDst > mMaxDistanceSizePoints) {
-				MathUtils.linearInterpolate(0, 0, 0, x, y, 0, mMaxDistanceSizePoints, totalDst,
-						sOut);
+				MathUtils.linearInterpolate(0, 0, 0, x, y, 0, mMaxDistanceSizePoints, totalDst, sOut);
 				x = (float) sOut[0];
 				y = (float) sOut[1];
 				if (mMinDistanceSizePoints > 0) {
@@ -400,8 +424,7 @@ public class ARRenderer implements GLSurfaceView.Renderer, SensorEventListener,
 				}
 			}
 			if (mMinDistanceSizePoints > 0 && totalDst < mMinDistanceSizePoints) {
-				MathUtils.linearInterpolate(0, 0, 0, x, y, 0, mMinDistanceSizePoints, totalDst,
-						sOut);
+				MathUtils.linearInterpolate(0, 0, 0, x, y, 0, mMinDistanceSizePoints, totalDst, sOut);
 				x = (float) sOut[0];
 				y = (float) sOut[1];
 			}
@@ -427,6 +450,11 @@ public class ARRenderer implements GLSurfaceView.Renderer, SensorEventListener,
 	 */
 	public void setMaxDistanceSize(float maxDistanceSize) {
 		mMaxDistanceSizePoints = (float) (maxDistanceSize / 2);
+		synchronized (lockPlugins) {
+			for (GLPlugin plugin : plugins) {
+				plugin.onMaxDistanceSizeChanged(mMaxDistanceSizePoints);
+			}
+		}
 	}
 
 	/**
@@ -453,6 +481,11 @@ public class ARRenderer implements GLSurfaceView.Renderer, SensorEventListener,
 	 */
 	public void setMinDistanceSize(float minDistanceSize) {
 		mMinDistanceSizePoints = (float) (minDistanceSize / 2);
+		synchronized (lockPlugins) {
+			for (GLPlugin plugin : plugins) {
+				plugin.onMaxDistanceSizeChanged(mMinDistanceSizePoints);
+			}
+		}
 	}
 
 	/**
@@ -544,8 +577,8 @@ public class ARRenderer implements GLSurfaceView.Renderer, SensorEventListener,
 	 * @param beyondarObject
 	 * @param defaultTexture
 	 */
-	protected void renderBeyondarObject(GL10 gl, BeyondarObject beyondarObject,
-			Texture defaultTexture, long time) {
+	protected void renderBeyondarObject(GL10 gl, BeyondarObject beyondarObject, Texture defaultTexture,
+			long time) {
 		boolean renderObject = false;
 		Renderable renderable = beyondarObject.getOpenGLObject();
 
@@ -570,7 +603,7 @@ public class ARRenderer implements GLSurfaceView.Renderer, SensorEventListener,
 		}
 
 		boolean forceDraw = renderable.update(time, (float) dst, beyondarObject);
-
+		
 		if (forceDraw || renderObject) {
 			if (beyondarObject.isFacingToCamera()) {
 				MathUtils.calcAngleFaceToCamera(beyondarObject.getPosition(), cameraPosition,
@@ -590,12 +623,23 @@ public class ARRenderer implements GLSurfaceView.Renderer, SensorEventListener,
 					}
 				}
 			}
+			
+			getScreenCoordinates(beyondarObject.getPosition(), beyondarObject.getScreenPositionCenter(),
+					tmpEyeForRendering);
+			
+			try {
+				for (GLPlugin plugin : plugins) {
+					plugin.onDrawBeyondaarObject(gl, beyondarObject, defaultTexture);
+				}
+			} catch (ConcurrentModificationException e) {
+				Logger.w("Some plug-ins where changed while drawing a frame");
+			}
+			
 			renderable.draw(gl, defaultTexture);
-			getScreenCoordinates(beyondarObject.getPosition(),
-					beyondarObject.getScreenPositionCenter(), tmpEyeForRendering);
+			
 
 			if (mFillPositions) {
-				fillBeyondarObjectPositions(beyondarObject);
+				fillBeyondarObjectScreenPositions(beyondarObject);
 			}
 			mRenderedObjects.add(beyondarObject);
 		} else {
@@ -615,14 +659,11 @@ public class ARRenderer implements GLSurfaceView.Renderer, SensorEventListener,
 	 * @param beyondarObject
 	 *            The {@link BeyondarObject} to compute
 	 */
-	public void fillBeyondarObjectPositions(BeyondarObject beyondarObject) {
-		getScreenCoordinates(beyondarObject.getBottomLeft(),
-				beyondarObject.getScreenPositionBottomLeft());
-		getScreenCoordinates(beyondarObject.getBottomRight(),
-				beyondarObject.getScreenPositionBottomRight());
+	public void fillBeyondarObjectScreenPositions(BeyondarObject beyondarObject) {
+		getScreenCoordinates(beyondarObject.getBottomLeft(), beyondarObject.getScreenPositionBottomLeft());
+		getScreenCoordinates(beyondarObject.getBottomRight(), beyondarObject.getScreenPositionBottomRight());
 		getScreenCoordinates(beyondarObject.getTopLeft(), beyondarObject.getScreenPositionTopLeft());
-		getScreenCoordinates(beyondarObject.getTopRight(),
-				beyondarObject.getScreenPositionTopRight());
+		getScreenCoordinates(beyondarObject.getTopRight(), beyondarObject.getScreenPositionTopRight());
 	}
 
 	/**
@@ -725,6 +766,11 @@ public class ARRenderer implements GLSurfaceView.Renderer, SensorEventListener,
 	 * @param gl
 	 */
 	protected void loadAdditionalTextures(GL10 gl) {
+		synchronized (lockPlugins) {
+			for (GLPlugin plugin : plugins) {
+				plugin.loadAdditionalTextures(gl);
+			}
+		}
 	}
 
 	/**
@@ -739,8 +785,7 @@ public class ARRenderer implements GLSurfaceView.Renderer, SensorEventListener,
 				for (int i = 0; i < mWorld.getBeyondarObjectLists().size(); i++) {
 					list = mWorld.getBeyondarObjectLists().get(i);
 					if (null != list) {
-						Bitmap defaultBtm = mWorld.getBitmapCache().getBitmap(
-								list.getDefaultBitmapURI());
+						Bitmap defaultBtm = mWorld.getBitmapCache().getBitmap(list.getDefaultBitmapURI());
 						Texture texture = load2DTexture(gl, defaultBtm);
 						list.setTexture(texture);
 
@@ -765,7 +810,7 @@ public class ARRenderer implements GLSurfaceView.Renderer, SensorEventListener,
 	 * @param geoObject
 	 *            The object to load the textures
 	 */
-	protected void loadBeyondarObjectTexture(GL10 gl, BeyondarObject geoObject) {
+	public void loadBeyondarObjectTexture(GL10 gl, BeyondarObject geoObject) {
 
 		Texture texture = getTexture(geoObject.getBitmapUri());
 
@@ -798,7 +843,7 @@ public class ARRenderer implements GLSurfaceView.Renderer, SensorEventListener,
 	 *            The unique id of the bitmap
 	 * @return The {@link Texture} object
 	 */
-	protected Texture loadBitmapTexture(GL10 gl, Bitmap btm, String uri) {
+	public Texture loadBitmapTexture(GL10 gl, Bitmap btm, String uri) {
 
 		if (null == btm) {
 			return null;
@@ -822,7 +867,7 @@ public class ARRenderer implements GLSurfaceView.Renderer, SensorEventListener,
 	 * @param bitmap
 	 * @return true if it is already loaded, false otherwise.
 	 */
-	protected boolean isTextureLoaded(Bitmap bitmap) {
+	public boolean isTextureLoaded(Bitmap bitmap) {
 		return sTextureHolder.containsValue(bitmap);
 	}
 
@@ -833,7 +878,7 @@ public class ARRenderer implements GLSurfaceView.Renderer, SensorEventListener,
 	 * @param uri
 	 * @return true if it is already loaded, false otherwise.
 	 */
-	protected boolean isTextureObjectLoaded(String uri) {
+	public boolean isTextureObjectLoaded(String uri) {
 		return sTextureHolder.get(uri) != null;
 	}
 
@@ -843,7 +888,7 @@ public class ARRenderer implements GLSurfaceView.Renderer, SensorEventListener,
 	 * @param uri
 	 * @return
 	 */
-	protected Texture getTexture(String uri) {
+	public Texture getTexture(String uri) {
 		if (uri == null) {
 			return null;
 		}
@@ -862,7 +907,7 @@ public class ARRenderer implements GLSurfaceView.Renderer, SensorEventListener,
 	 * @param bitmap
 	 * @return
 	 */
-	protected Texture load2DTexture(GL10 gl, Bitmap bitmap) {
+	public Texture load2DTexture(GL10 gl, Bitmap bitmap) {
 		// see
 		// http://stackoverflow.com/questions/3921685/issues-with-glutils-teximage2d-and-alpha-in-textures
 		int[] tmpTexture = new int[1];
@@ -903,31 +948,21 @@ public class ARRenderer implements GLSurfaceView.Renderer, SensorEventListener,
 	}
 
 	@Override
-	public void onAccuracyChanged(Sensor sensor, int accuracy) {
-		if (mExternalSensorListener != null) {
-			mExternalSensorListener.onAccuracyChanged(sensor, accuracy);
-		}
-	}
-
-	@Override
-	public void onSensorChanged(SensorEvent event) {
+	public void onSensorChanged(float[] filteredValues, SensorEvent event) {
 		if (!mRender) {
 			return;
 		}
 		switch (event.sensor.getType()) {
 		case Sensor.TYPE_ACCELEROMETER:
-			LowPassFilter.filter(event.values, mAccelerometerValues);
+			mAccelerometerValues = filteredValues;
 			break;
 		case Sensor.TYPE_MAGNETIC_FIELD:
-			LowPassFilter.filter(event.values, mMagneticValues);
+			mMagneticValues = filteredValues;
 			break;
 		default:
 			break;
 		}
 
-		if (mExternalSensorListener != null) {
-			mExternalSensorListener.onSensorChanged(event);
-		}
 	}
 
 	// view port
@@ -947,8 +982,8 @@ public class ARRenderer implements GLSurfaceView.Renderer, SensorEventListener,
 		} else {
 			eye[0] = eye[1] = eye[2] = eye[3] = 0;
 		}
-		GLU.gluUnProject(x, mHeight - y, 0.9f, mMatrixGrabber.mModelView, 0,
-				mMatrixGrabber.mProjection, 0, viewport, 0, eye, 0);
+		GLU.gluUnProject(x, mHeight - y, 0.9f, mMatrixGrabber.mModelView, 0, mMatrixGrabber.mProjection, 0,
+				viewport, 0, eye, 0);
 
 		// fix
 		if (eye[3] != 0) {
@@ -958,8 +993,7 @@ public class ARRenderer implements GLSurfaceView.Renderer, SensorEventListener,
 		}
 
 		// ray vector
-		ray.setVector((eye[0] - cameraPosition.x), (eye[1] - cameraPosition.y),
-				(eye[2] - cameraPosition.z));
+		ray.setVector((eye[0] - cameraPosition.x), (eye[1] - cameraPosition.y), (eye[2] - cameraPosition.z));
 		mFloat4ArrayPool.add(eye);
 	}
 
@@ -984,8 +1018,8 @@ public class ARRenderer implements GLSurfaceView.Renderer, SensorEventListener,
 			eye[0] = eye[1] = eye[2] = eye[3] = 0;
 		}
 
-		GLU.gluProject(x, y, z, mMatrixGrabber.mModelView, 0, mMatrixGrabber.mProjection, 0,
-				viewport, 0, eye, 0);
+		GLU.gluProject(x, y, z, mMatrixGrabber.mModelView, 0, mMatrixGrabber.mProjection, 0, viewport, 0,
+				eye, 0);
 
 		// fix
 		if (eye[3] != 0) {
@@ -1061,5 +1095,101 @@ public class ARRenderer implements GLSurfaceView.Renderer, SensorEventListener,
 		 *            The Frames per second rendered
 		 */
 		public void onFpsUpdate(float fps);
+	}
+
+	@Override
+	public void addPlugin(GLPlugin plugin) {
+		synchronized (lockPlugins) {
+			if (!plugins.contains(plugin)) {
+				plugins.add(plugin);
+			}
+		}
+		plugin.setup(mWorld, this);
+	}
+
+	@Override
+	public boolean removePlugin(GLPlugin plugin) {
+		boolean removed = false;
+		synchronized (lockPlugins) {
+			removed = plugins.remove(plugin);
+		}
+		if (removed) {
+			plugin.onDetached();
+		}
+		return removed;
+	}
+
+	@Override
+	public void removeAllPlugins() {
+		synchronized (lockPlugins) {
+			for (GLPlugin plugin : plugins) {
+				removePlugin(plugin);
+			}
+		}
+	}
+
+	@Override
+	public GLPlugin getFirstPlugin(Class<? extends GLPlugin> pluginClass) {
+		synchronized (lockPlugins) {
+			for (GLPlugin plugin : plugins) {
+				if (pluginClass.isInstance(plugin)) {
+					return plugin;
+				}
+			}
+		}
+		return null;
+	}
+
+	@Override
+	public boolean containsAnyPlugin(Class<? extends GLPlugin> pluginClass) {
+		return getFirstPlugin(pluginClass) != null;
+	}
+
+	@Override
+	public boolean containsPlugin(GLPlugin plugin) {
+		synchronized (lockPlugins) {
+			return plugins.contains(plugin);
+		}
+	}
+
+	@Override
+	public List<GLPlugin> getAllPlugins(Class<? extends GLPlugin> pluginClass, List<GLPlugin> result) {
+		synchronized (lockPlugins) {
+			for (GLPlugin plugin : plugins) {
+				if (pluginClass.isInstance(plugin)) {
+					result.add(plugin);
+				}
+			}
+		}
+		return result;
+	}
+
+	@Override
+	public List<GLPlugin> getAllPugins(Class<? extends GLPlugin> pluginClass) {
+		ArrayList<GLPlugin> result = new ArrayList<GLPlugin>(5);
+		return getAllPlugins(pluginClass, result);
+	}
+
+	@Override
+	public List<GLPlugin> getAllPlugins() {
+		synchronized (lockPlugins) {
+			return new ArrayList<GLPlugin>(plugins);
+		}
+	}
+
+	public void onPause() {
+		synchronized (lockPlugins) {
+			for (GLPlugin plugin : plugins) {
+				plugin.onPause();
+			}
+		}
+	}
+
+	public void onResume() {
+		synchronized (lockPlugins) {
+			for (GLPlugin plugin : plugins) {
+				plugin.onResume();
+			}
+		}
 	}
 }

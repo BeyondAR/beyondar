@@ -33,5 +33,6 @@ proguard/
 .idea/
 
 #Ignore linked source folder used for testing/development
-src-framework/
-src-googlemaps/
+android/BeyondAR_Examples/src-framework/
+android/BeyondAR_Examples/src-googlemaps/
+android/BeyondAR_Examples/src-radar/

@@ -13,30 +13,39 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.beyondar.android.world.module;
+package com.beyondar.android.plugin;
 
 import com.beyondar.android.opengl.renderable.Renderable;
 import com.beyondar.android.opengl.texture.Texture;
 import com.beyondar.android.util.math.geom.Point3;
-import com.beyondar.android.world.BeyondarObject;
 
-public interface BeyondarObjectModule extends BeyondarModule {
-	
-	public void setup(BeyondarObject beyondarObject);
-	
+public interface BeyondarObjectPlugin extends Plugin{
+
 	public void onAngleChanged(Point3 angle);
-	
+
 	public void onPositionChanged(Point3 position);
-	
+
 	public void onTextureChanged(Texture texture);
-	
+
 	public void onRenderableChanged(Renderable openglObject);
-	
+
 	public void onFaceToCameraChanged(boolean faceToCamera);
-	
+
 	public void onVisibilityChanged(boolean visible);
-	
+
 	public void onNameChanged(String name);
-	
+
 	public void onImageUriChanged(String uri);
+
+	/**
+	 * This method is invoked when the plug-in is removed.
+	 */
+	public void onDetached();
+
+	/**
+	 * Check if the plug-in is attached.
+	 * 
+	 * @return
+	 */
+	public boolean isAttached();
 }

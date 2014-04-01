@@ -23,7 +23,7 @@ Just download the latest version of the framework [here](android/libs) and add t
 
 To be able to run BeyondAR we need to add the following lines on the AndroidManifest.xml
 
-```xml
+~~~xml
 <!-- Minimum permissions for Beyondar -->
 <uses-permission android:name="android.permission.CAMERA" />
     
@@ -35,11 +35,11 @@ To be able to run BeyondAR we need to add the following lines on the AndroidMani
 <uses-feature android:name="android.hardware.camera.autofocus" />
 <uses-feature android:name="android.hardware.sensor.accelerometer" />
 <uses-feature android:name="android.hardware.sensor.compass" />
-```
+~~~
 
 To create the UI it we can choose using an Android Layout XML or using Java code. For both of them we can use the `BeyondarFragmentSupport ` or the `BeyondarFragment ` fragments.
 
-```xml
+~~~xml
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
@@ -53,12 +53,12 @@ To create the UI it we can choose using an Android Layout XML or using Java code
 
 </FrameLayout>
 
-```
+~~~
 Once we have the layout ready it is time to load it.
 
-```java
+~~~java
 private BeyondarFragmentSupport mBeyondarFragment;
-...
+// ...
 @Override
 public void onCreate(Bundle savedInstanceState) {
      super.onCreate(savedInstanceState);
@@ -66,14 +66,14 @@ public void onCreate(Bundle savedInstanceState) {
      setContentView(R.layout.simple_camera);
      mBeyondarFragment = (BeyondarFragmentSupport)
      getSupportFragmentManager().findFragmentById(R.id.beyondarFragment);
-     ...
+     // ...
 }
 
-```
+~~~
 
 The next step is to create the `World ` that holds the information related to the objects that need to be displayed in the app using augmented reality.
 
-```java
+~~~java
 World world = new World(context);
 
 // The user can set the default bitmap. This is useful if you are
@@ -116,21 +116,23 @@ world.addBeyondarObject(go4);
 
 //Finally we add the Wold data in to the fragment
 mBeyondarFragment.setWorld(mWorld);
-```
+~~~
 Now we have the app ready to show the GeoObjects. But we also want to capture events, for instance, when the user clicks on a GeoObject. For that we need to implement `OnClikBeyondarObjectListener `
-```java
-...
+~~~java
+// ...
 mBeyondarFragment.setOnClickBeyondarObjectListener(this);
-...
+// ...
 @Override
 public void onClickBeyondarObject(ArrayList<BeyondarObject> beyondarObjects) {
 		// The first element in the array belongs to the closest BeyondarObject
 		Toast.makeText(this, "Clicked on: " + beyondarObjects.get(0).getName(), Toast.LENGTH_LONG).show();
 	}
-```
+~~~
+
 We also can capture the touch events using the `OnTouchBeyondarViewListener `:
-```java
-...
+
+~~~java
+// ...
 @Override
 public void onTouchBeyondarView(MotionEvent event, BeyondarGLSurfaceView beyondarView) {
 
@@ -161,29 +163,26 @@ public void onTouchBeyondarView(MotionEvent event, BeyondarGLSurfaceView beyonda
 	Iterator<BeyondarObject> iterator = geoObjects.iterator();
 	while (iterator.hasNext()) {
 		BeyondarObject geoObject = iterator.next();
-		...
 		// Do something
-		...
-
 	}
 }
-...
-```
+// ...
+~~~
 
 ## Adding GoogleMaps module
 BeyondAR Framework uses modules to be able to add multiple features to the world engine. Google Maps Module is one example ([jar](https://github.com/BeyondAR/beyondar/tree/master/android/libs/modules) & [src](android/BeyondAR_Framework/src-googlemaps)).
 
 To draw the all the `World ` elements in the Google Map framework we just need a few lines of code:
 
-```java
-...
+~~~java
+// ...
 private GoogleMap mMap;
 private GoogleMapWorldModule mGoogleMapModule;
-...
+// ...
 
 @Override
 protected void onCreate(Bundle savedInstanceState) {
-     ...
+     // ...
      mMap = ((SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map)).getMap();
 
      // We create the world...
@@ -197,17 +196,17 @@ protected void onCreate(Bundle savedInstanceState) {
      mWorld.addModule(mGoogleMapModule);
      
      // Now we fill the world
-     ...
+     // ...
 }
-```
+~~~
 The `GoogleMapWorldModule ` will take care of drawing all the `GeoObjects ` in the `GoogleMap ` object. So we also can add the a listener to the map to get notify when a `Marker ` is click and then we can check which `GeoObject ` is the owner of that `Marker `:
 
-```java
+~~~java
 @Override
 protected void onCreate(Bundle savedInstanceState) {
-     ...
+     // ...
      mMap.setOnMarkerClickListener(this);
-     ...
+     // ...
 }
 
 @Override
@@ -220,7 +219,7 @@ public boolean onMarkerClick(Marker marker) {
      }
      return false;
 }
-```	
+~~~	
 ## Add radar view module
 
 If you want to add a radar view you could use the Radar module ([jar](android/libs/modules) & [src](android/BeyondAR_Framework/src-radar)).
@@ -229,7 +228,7 @@ If you want to add a radar view you could use the Radar module ([jar](android/li
 
 To do that let's add the view in our layout file:
 
-```xml
+~~~xml
 <FrameLayout
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
@@ -242,13 +241,13 @@ To do that let's add the view in our layout file:
         android:layout_height="wrap_content"
         android:src="@drawable/radar_north_small" />
 </FrameLayout>
-```
+~~~
 
 Now it is time to get the view in our `Activity ` and play with it
 
-```java
+~~~java
 public void onCreate(Bundle savedInstanceState) {
-    ...
+    // ...
     radarView = (RadarView) findViewById(R.id.radarView);
     // Create the Radar module
     mRadarModule = new RadarWorldModule();
@@ -258,10 +257,10 @@ public void onCreate(Bundle savedInstanceState) {
     mRadarModule.setMaxDistance(100);
     // and finally let's add the module
     mWorld.addModule(mRadarModule);
-    ...
+    // ...
 }
 
-```
+~~~
 
 ## Creating your own module
 
@@ -275,7 +274,7 @@ The first thing that we need to do is understand what do we need to implement in
 
 One of the main goals of `WorldModule ` is to add `BeyondarObjectModule `/`GeoObjectModule ` to all the `BeyondarObject `/`GeoObject ` in the `World ` object. To do that make sure to add you own module in when `setup(World world) ` is called and when a new `BeyondarObject ` is added:
 
-```java
+~~~java
 @Override
 public void onBeyondarObjectAdded(BeyondarObject beyondarObject, BeyondarObjectList beyondarObjectList) {
      if (beyondarObject instanceof GeoObject) { // Check if it is a GeoObject
@@ -287,15 +286,15 @@ public void onBeyondarObjectAdded(BeyondarObject beyondarObject, BeyondarObjectL
         }
     }
 }
-```
+~~~
 
 Once we have created the module we need to add it to the `World ` class, for that we just use the method `myWorld.addModule(myModule) `.
 
-```java
+~~~java
 World myWorld = new World(context);
 // add the module
 myWorld.addModule(myModule);
-```
+~~~
 
 
 

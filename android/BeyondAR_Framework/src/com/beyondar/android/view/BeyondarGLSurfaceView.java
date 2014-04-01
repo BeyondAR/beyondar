@@ -200,6 +200,7 @@ public class BeyondarGLSurfaceView extends GLSurfaceView implements OnBeyondarOb
 	public void onPause() {
 		unregisterSensorListener();
 		super.onPause();
+		mRenderer.onPause();
 	}
 
 	@Override
@@ -210,6 +211,7 @@ public class BeyondarGLSurfaceView extends GLSurfaceView implements OnBeyondarOb
 			Display display = ((WindowManager) getContext().getSystemService(Context.WINDOW_SERVICE))
 					.getDefaultDisplay();
 			mRenderer.rotateView(display.getRotation());
+			mRenderer.onResume();
 		}
 	}
 

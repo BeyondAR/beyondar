@@ -41,7 +41,7 @@ public class BeyondarExamples extends Activity implements OnItemClickListener {
 
 		fillList();
 		
-		openActivity(SimpleCameraWithRadarActivity.class);
+		//openActivity(SimpleCameraWithRadarActivity.class);
 	}
 
 	private void fillList() {

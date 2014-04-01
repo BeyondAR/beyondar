@@ -1176,4 +1176,20 @@ public class ARRenderer implements GLSurfaceView.Renderer, BeyondarSensorListene
 			return new ArrayList<GLPlugin>(plugins);
 		}
 	}
+
+	public void onPause() {
+		synchronized (lockPlugins) {
+			for (GLPlugin plugin : plugins) {
+				plugin.onPause();
+			}
+		}
+	}
+
+	public void onResume() {
+		synchronized (lockPlugins) {
+			for (GLPlugin plugin : plugins) {
+				plugin.onResume();
+			}
+		}
+	}
 }

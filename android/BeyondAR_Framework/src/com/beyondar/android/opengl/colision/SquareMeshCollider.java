@@ -20,7 +20,10 @@ import com.beyondar.android.util.math.geom.Point3;
 import com.beyondar.android.util.math.geom.Ray;
 import com.beyondar.android.util.math.geom.Triangle;
 
-
+/**
+ * A square mesh collider. It's created from four points.
+ * 
+ */
 public class SquareMeshCollider implements MeshCollider {
 
 	private Triangle t1, t2;
@@ -28,7 +31,7 @@ public class SquareMeshCollider implements MeshCollider {
 	private Plane p;
 
 	/**
-	 * Constructs a square armature from 4 points. This 4 points must be
+	 * Constructs a square mesh collider from 4 points. This 4 points must be
 	 * contained for the same plane. If not, weird behavior will happen
 	 * 
 	 * @param topLeft
@@ -40,7 +43,7 @@ public class SquareMeshCollider implements MeshCollider {
 		t1 = new Triangle(topLeft, bottomLeft, bottomRight);
 		t2 = new Triangle(topLeft, topRight, bottomRight);
 		p = t1.getPlane();
-	} 
+	}
 
 	@Override
 	public boolean contains(Point3 p) {

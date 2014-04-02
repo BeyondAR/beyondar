@@ -117,7 +117,7 @@ public class BeyondarGLSurfaceView extends GLSurfaceView implements OnBeyondarOb
 	}
 
 	/**
-	 * Override this method to personalize the configuration of the ARRenderer
+	 * Override this method to personalize the configuration of the ARRenderer.
 	 * 
 	 * @param renderer
 	 */

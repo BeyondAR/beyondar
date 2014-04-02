@@ -15,6 +15,9 @@ b * Copyright (C) 2013 BeyondAR
  */
 package com.beyondar.android.opengl.renderer;
 
+/**
+ * Renderer for drawing the {@link com.beyondar.android.world.World World} with OpenGL.
+ */
 import java.nio.IntBuffer;
 import java.util.ArrayList;
 import java.util.ConcurrentModificationException;
@@ -66,6 +69,9 @@ import com.beyondar.android.world.World;
 public class ARRenderer implements GLSurfaceView.Renderer, BeyondarSensorListener,
 		BitmapCache.OnExternalBitmapLoadedCacheListener, Plugable<GLPlugin> {
 
+	/**
+	 * Callback to get notified when the snapshot is taken.
+	 */
 	public static interface SnapshotCallback {
 		/**
 		 * This method is called when the snapshot of the GL Surface is ready.
@@ -106,7 +112,12 @@ public class ARRenderer implements GLSurfaceView.Renderer, BeyondarSensorListene
 
 	private World mWorld;
 
+	/** List of loaded plugins. */
 	protected List<GLPlugin> plugins;
+	/**
+	 * Lock to synchronize the access to the plugins. Use it to modify the
+	 * loaded plugins.
+	 */
 	protected Object lockPlugins = new Object();
 
 	private boolean mScreenshot;
@@ -115,8 +126,9 @@ public class ARRenderer implements GLSurfaceView.Renderer, BeyondarSensorListene
 	private boolean mIsTablet;
 	private int mSurfaceRotation;
 
-	protected Point3 cameraPosition;
-	protected boolean reloadWorldTextures;
+	private Point3 mCameraPosition;
+
+	private boolean mReloadWorldTextures;
 
 	private boolean mRender;
 
@@ -140,10 +152,13 @@ public class ARRenderer implements GLSurfaceView.Renderer, BeyondarSensorListene
 	// This GL extension allow us to load non square textures.
 	private boolean isGL_OES_texture_npot;
 
+	/**
+	 * {@link ARRenderer} constructor.
+	 */
 	public ARRenderer() {
-		reloadWorldTextures = false;
+		mReloadWorldTextures = false;
 		setRendering(true);
-		cameraPosition = new Point3(0, 0, 0);
+		mCameraPosition = new Point3(0, 0, 0);
 		mFloat4ArrayPool = new ConcurrentLinkedQueue<float[]>();
 
 		mRenderedObjects = new ArrayList<BeyondarObject>();
@@ -186,7 +201,7 @@ public class ARRenderer implements GLSurfaceView.Renderer, BeyondarSensorListene
 	public void setWorld(World world) {
 		mWorld = world;
 		mWorld.getBitmapCache().addOnExternalBitmapLoadedCahceListener(this);
-		reloadWorldTextures = true;
+		mReloadWorldTextures = true;
 		synchronized (lockPlugins) {
 			for (GLPlugin plugin : plugins) {
 				plugin.setup(mWorld, this);
@@ -205,7 +220,7 @@ public class ARRenderer implements GLSurfaceView.Renderer, BeyondarSensorListene
 	 *            The new camera position
 	 */
 	public void setCameraPosition(Point3 newCameraPos) {
-		cameraPosition = newCameraPos;
+		mCameraPosition = newCameraPos;
 		synchronized (lockPlugins) {
 			for (GLPlugin plugin : plugins) {
 				plugin.onCameraPositionChanged(newCameraPos);
@@ -217,10 +232,10 @@ public class ARRenderer implements GLSurfaceView.Renderer, BeyondarSensorListene
 	 * Restore the camera position
 	 */
 	public void restoreCameraPosition() {
-		cameraPosition.x = 0;
-		cameraPosition.y = 0;
-		cameraPosition.z = 0;
-		setCameraPosition(cameraPosition);
+		mCameraPosition.x = 0;
+		mCameraPosition.y = 0;
+		mCameraPosition.z = 0;
+		setCameraPosition(mCameraPosition);
 	}
 
 	/**
@@ -229,7 +244,7 @@ public class ARRenderer implements GLSurfaceView.Renderer, BeyondarSensorListene
 	 * @return
 	 */
 	public Point3 getCameraPosition() {
-		return cameraPosition;
+		return mCameraPosition;
 	}
 
 	public void onDrawFrame(GL10 gl) {
@@ -255,19 +270,19 @@ public class ARRenderer implements GLSurfaceView.Renderer, BeyondarSensorListene
 			rotation = 180;
 			break;
 		}
-		
+
 		if (mIsTablet) {
-			//TODO remove this code and use the rotation variable instead
-//			SensorManager.remapCoordinateSystem(mRotationMatrix, SensorManager.AXIS_X, SensorManager.AXIS_Y,
-//					mRotationMatrix);
+			// TODO remove this code and use the rotation variable instead
+			// SensorManager.remapCoordinateSystem(mRotationMatrix,
+			// SensorManager.AXIS_X, SensorManager.AXIS_Y,
+			// mRotationMatrix);
 		}
-		
+
 		gl.glRotatef(rotation, 0, 0, 1);
 
 		SensorManager.remapCoordinateSystem(mRotationMatrix, SensorManager.AXIS_Y,
 				SensorManager.AXIS_MINUS_X, mRemappedRotationMatrix);
 
-		
 		// Clear color buffer
 		gl.glClear(GL10.GL_COLOR_BUFFER_BIT | GL10.GL_DEPTH_BUFFER_BIT);
 
@@ -275,7 +290,6 @@ public class ARRenderer implements GLSurfaceView.Renderer, BeyondarSensorListene
 		gl.glMatrixMode(GL10.GL_MODELVIEW);
 		gl.glLoadIdentity();
 		gl.glLoadMatrixf(mRemappedRotationMatrix, 0);
-		
 
 		gl.glEnableClientState(GL10.GL_VERTEX_ARRAY);
 		// gl.glEnableClientState(GL10.GL_COLOR_ARRAY);
@@ -301,9 +315,9 @@ public class ARRenderer implements GLSurfaceView.Renderer, BeyondarSensorListene
 		mMatrixGrabber.getCurrentState(gl);
 
 		if (mWorld != null) {
-			if (reloadWorldTextures) {
+			if (mReloadWorldTextures) {
 				loadWorldTextures(gl);
-				reloadWorldTextures = false;
+				mReloadWorldTextures = false;
 			}
 			mRenderedObjects.clear();
 			renderWorld(gl, time);
@@ -603,10 +617,10 @@ public class ARRenderer implements GLSurfaceView.Renderer, BeyondarSensorListene
 		}
 
 		boolean forceDraw = renderable.update(time, (float) dst, beyondarObject);
-		
+
 		if (forceDraw || renderObject) {
 			if (beyondarObject.isFacingToCamera()) {
-				MathUtils.calcAngleFaceToCamera(beyondarObject.getPosition(), cameraPosition,
+				MathUtils.calcAngleFaceToCamera(beyondarObject.getPosition(), mCameraPosition,
 						beyondarObject.getAngle());
 			}
 
@@ -623,10 +637,10 @@ public class ARRenderer implements GLSurfaceView.Renderer, BeyondarSensorListene
 					}
 				}
 			}
-			
+
 			getScreenCoordinates(beyondarObject.getPosition(), beyondarObject.getScreenPositionCenter(),
 					tmpEyeForRendering);
-			
+
 			try {
 				for (GLPlugin plugin : plugins) {
 					plugin.onDrawBeyondaarObject(gl, beyondarObject, defaultTexture);
@@ -634,9 +648,8 @@ public class ARRenderer implements GLSurfaceView.Renderer, BeyondarSensorListene
 			} catch (ConcurrentModificationException e) {
 				Logger.w("Some plug-ins where changed while drawing a frame");
 			}
-			
+
 			renderable.draw(gl, defaultTexture);
-			
 
 			if (mFillPositions) {
 				fillBeyondarObjectScreenPositions(beyondarObject);
@@ -993,7 +1006,8 @@ public class ARRenderer implements GLSurfaceView.Renderer, BeyondarSensorListene
 		}
 
 		// ray vector
-		ray.setVector((eye[0] - cameraPosition.x), (eye[1] - cameraPosition.y), (eye[2] - cameraPosition.z));
+		ray.setVector((eye[0] - mCameraPosition.x), (eye[1] - mCameraPosition.y),
+				(eye[2] - mCameraPosition.z));
 		mFloat4ArrayPool.add(eye);
 	}
 

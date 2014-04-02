@@ -45,8 +45,9 @@ public class BeyondarObject implements Plugable<BeyondarObjectPlugin> {
 	protected MeshCollider meshCollider;
 	protected double distanceFromUser;
 	/**
-	 * This pointer is made to track the {@link BeyondarObject} position on the
-	 * screen
+	 * This pointer is made to track the
+	 * {@link com.beyondar.android.world.BeyondarObject BeyondarObject} position
+	 * on the screen
 	 */
 	protected Point3 screenPositionTopLeft, screenPositionTopRight, screenPositionBottomLeft,
 			screenPositionBottomRight, screenPositionCenter;
@@ -172,8 +173,8 @@ public class BeyondarObject implements Plugable<BeyondarObjectPlugin> {
 	}
 
 	/**
-	 * Get a {@link List} copy of the added plug-ins. Adding/removing plug-ins to
-	 * this list will not affect the added plug-ins
+	 * Get a {@link List} copy of the added plug-ins. Adding/removing plug-ins
+	 * to this list will not affect the added plug-ins
 	 * 
 	 * @return
 	 */

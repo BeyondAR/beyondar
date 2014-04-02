@@ -36,7 +36,6 @@ import com.beyondar.android.opengl.renderer.ARRenderer.SnapshotCallback;
 import com.beyondar.android.opengl.renderer.OnBeyondarObjectRenderedListener;
 import com.beyondar.android.opengl.util.MatrixTrackingGL;
 import com.beyondar.android.sensor.BeyondarSensorManager;
-import com.beyondar.android.util.CompatibilityUtil;
 import com.beyondar.android.util.Logger;
 import com.beyondar.android.util.math.geom.Ray;
 import com.beyondar.android.world.BeyondarObject;
@@ -46,7 +45,7 @@ import com.beyondar.android.world.World;
 public class BeyondarGLSurfaceView extends GLSurfaceView implements OnBeyondarObjectRenderedListener {
 
 	protected ARRenderer mRenderer;
-	private Context mContext;
+	//private Context mContext;
 
 	private BeyondarViewAdapter mViewAdapter;
 	private ViewGroup mParent;
@@ -75,7 +74,7 @@ public class BeyondarGLSurfaceView extends GLSurfaceView implements OnBeyondarOb
 	}
 
 	private void init(Context context) {
-		mContext = context;
+		//mContext = context;
 		mSensorDelay = SensorManager.SENSOR_DELAY_UI;
 
 		if (Logger.DEBUG_OPENGL) {
@@ -122,8 +121,6 @@ public class BeyondarGLSurfaceView extends GLSurfaceView implements OnBeyondarOb
 	 * @param renderer
 	 */
 	protected void configureRenderer(ARRenderer renderer) {
-		renderer.rotateViewForTablet(CompatibilityUtil.isTablet(mContext)
-				&& !CompatibilityUtil.is7InchTablet(getContext()));
 	}
 
 	public void setFpsUpdatable(FpsUpdatable fpsUpdatable) {

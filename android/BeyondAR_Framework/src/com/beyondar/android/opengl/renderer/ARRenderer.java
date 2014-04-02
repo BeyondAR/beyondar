@@ -123,7 +123,6 @@ public class ARRenderer implements GLSurfaceView.Renderer, BeyondarSensorListene
 	private boolean mScreenshot;
 	private SnapshotCallback mSnapshotCallback;
 
-	private boolean mIsTablet;
 	private int mSurfaceRotation;
 
 	private Point3 mCameraPosition;
@@ -163,21 +162,9 @@ public class ARRenderer implements GLSurfaceView.Renderer, BeyondarSensorListene
 
 		mRenderedObjects = new ArrayList<BeyondarObject>();
 
-		mIsTablet = false;
 		mFillPositions = false;
 
 		plugins = new ArrayList<GLPlugin>();
-	}
-
-	/**
-	 * Use this method to specify the renderer that is running on a tablet. If
-	 * so the renderer will rotate the view to be able to be displayed on
-	 * tablets
-	 * 
-	 * @param isTablet
-	 */
-	public void rotateViewForTablet(boolean isTablet) {
-		mIsTablet = isTablet;
 	}
 
 	/**
@@ -209,6 +196,12 @@ public class ARRenderer implements GLSurfaceView.Renderer, BeyondarSensorListene
 		}
 	}
 
+	/**
+	 * Get the {@link com.beyondar.android.world.World World} used for by the
+	 * {@link ARRenderer}.
+	 * 
+	 * @return
+	 */
 	public World getWorld() {
 		return mWorld;
 	}
@@ -269,13 +262,6 @@ public class ARRenderer implements GLSurfaceView.Renderer, BeyondarSensorListene
 		case Surface.ROTATION_270:
 			rotation = 180;
 			break;
-		}
-
-		if (mIsTablet) {
-			// TODO remove this code and use the rotation variable instead
-			// SensorManager.remapCoordinateSystem(mRotationMatrix,
-			// SensorManager.AXIS_X, SensorManager.AXIS_Y,
-			// mRotationMatrix);
 		}
 
 		gl.glRotatef(rotation, 0, 0, 1);

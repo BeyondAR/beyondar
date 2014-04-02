@@ -17,18 +17,28 @@ package com.beyondar.android.plugin;
 
 import java.util.List;
 
+/**
+ * Interface to define which Classes can be extended using plugins.
+ * 
+ * @param <T>
+ *            The type of plugin that the class can handle.
+ */
 public interface Plugable<T extends Plugin> {
 
-	public static int DEFAULT_PLUGINS_CAPACITY = 3;
 	/**
-	 * Add a new plug-in. This plug-in's will be initialize ones is added
+	 * Recommended initial size of the list that contains all the loade plugins.
+	 */
+	public static int DEFAULT_PLUGINS_CAPACITY = 3;
+
+	/**
+	 * Add a new plugin. This plugin's will be initialize ones is added
 	 * 
 	 * @param plugin
 	 */
 	public void addPlugin(T plugin);
 
 	/**
-	 * Remove an specific plug-in.
+	 * Remove an specific plugin.
 	 * 
 	 * @param pluginClass
 	 * @return true if it has been removed
@@ -36,30 +46,30 @@ public interface Plugable<T extends Plugin> {
 	public boolean removePlugin(T pluginClass);
 
 	/**
-	 * Clean all the plug-in's
+	 * Clean all the plugin's
 	 */
 	public void removeAllPlugins();
 
 	public T getFirstPlugin(Class<? extends T> pluginClass);
 
 	/**
-	 * Test whether any plug-in class exist.
+	 * Test whether any plugin class exist.
 	 * 
 	 * @param pluginClass
-	 * @return true if there is any plug-in, false otherwise
+	 * @return true if there is any plugin, false otherwise
 	 */
 	public boolean containsAnyPlugin(Class<? extends T> pluginClass);
 
 	/**
-	 * Test whether the plug-in exist
+	 * Test whether the plugin exist
 	 * 
 	 * @param plugin
-	 * @return true if there is any plug-in, false otherwise
+	 * @return true if there is any plugin, false otherwise
 	 */
 	public boolean containsPlugin(T plugin);
 
 	/**
-	 * Get all plug-in's which implemented a specific class.
+	 * Get all plugin's which implemented a specific class.
 	 * 
 	 * @param pluginClass
 	 *            The specific class that we want to retrieve
@@ -71,7 +81,7 @@ public interface Plugable<T extends Plugin> {
 	public List<T> getAllPlugins(Class<? extends T> pluginClass, List<T> result);
 
 	/**
-	 * Get all plug-in's which implement an specific class
+	 * Get all plugin's which implement an specific class
 	 * 
 	 * @param pluginClass
 	 *            The specific class that we want to retrieve
@@ -80,8 +90,8 @@ public interface Plugable<T extends Plugin> {
 	public List<T> getAllPugins(Class<? extends T> pluginClass);
 
 	/**
-	 * Get a {@link List} copy of the added plug-in's. Adding/removing plug-in's to
-	 * this list will not affect the added plug-in's
+	 * Get a {@link List} copy of the added plugin's. Adding/removing plugin's
+	 * to this list will not affect the added plugin's
 	 * 
 	 * @return
 	 */

@@ -18,38 +18,111 @@ package com.beyondar.android.plugin;
 import com.beyondar.android.opengl.renderable.Renderable;
 import com.beyondar.android.opengl.texture.Texture;
 import com.beyondar.android.util.math.geom.Point3;
+import com.beyondar.android.world.BeyondarObject;
 
 /**
- * Basic interface to create a plugin for BeyondAR.
- *
+ * Basic interface to create a plugin for a
+ * {@link com.beyondar.android.world.BeyondarObject BeyondarObject}.
+ * 
  */
-public interface BeyondarObjectPlugin extends Plugin{
+public interface BeyondarObjectPlugin extends Plugin {
 
+	/**
+	 * Called when the angle of the
+	 * {@link com.beyondar.android.world.BeyondarObject BeyondarObject} is
+	 * changed.
+	 * 
+	 * @param angle
+	 *            New angle.
+	 */
 	public void onAngleChanged(Point3 angle);
 
+	/**
+	 * Called when the position of the
+	 * {@link com.beyondar.android.world.BeyondarObject BeyondarObject} has
+	 * changed.
+	 * 
+	 * @param position
+	 *            New position.
+	 */
 	public void onPositionChanged(Point3 position);
 
+	/**
+	 * Called when the {@link com.beyondar.android.opengl.texture.Texture
+	 * Texture}1 of the {@link com.beyondar.android.world.BeyondarObject
+	 * BeyondarObject} has been changed.
+	 * 
+	 * @param texture
+	 *            New texture.
+	 */
 	public void onTextureChanged(Texture texture);
 
-	public void onRenderableChanged(Renderable openglObject);
+	/**
+	 * Called when the {@link com.beyondar.android.opengl.renderable.Renderable
+	 * Renderable} of the {@link com.beyondar.android.world.BeyondarObject
+	 * BeyondarObject} has been changed.
+	 * 
+	 * @param renderable
+	 *            New Renderable.
+	 */
+	public void onRenderableChanged(Renderable renderable);
 
+	/**
+	 * Called when the {@link com.beyondar.android.world.BeyondarObject
+	 * BeyondarObject} changes the value for facing the camera.
+	 * 
+	 * @param faceToCamera
+	 *            True if it is facing to the camera, false otherwise.
+	 */
 	public void onFaceToCameraChanged(boolean faceToCamera);
 
+	/**
+	 * Called when the visibility of the
+	 * {@link com.beyondar.android.world.BeyondarObject BeyondarObject} has been
+	 * changed.
+	 * 
+	 * @param visible
+	 *            True if it is visible, false otherwise.
+	 */
 	public void onVisibilityChanged(boolean visible);
 
+	/**
+	 * Called when the name of the
+	 * {@link com.beyondar.android.world.BeyondarObject BeyondarObject} has been
+	 * changed.
+	 * 
+	 * @param name
+	 *            New name.
+	 */
 	public void onNameChanged(String name);
 
+	/**
+	 * Called when the image uri of the
+	 * {@link com.beyondar.android.world.BeyondarObject BeyondarObject} has been
+	 * changed.
+	 * 
+	 * @param uri
+	 *            New image uri.
+	 */
 	public void onImageUriChanged(String uri);
 
 	/**
-	 * This method is invoked when the plug-in is removed.
+	 * This method is invoked when the plugin is removed.
 	 */
 	public void onDetached();
 
 	/**
-	 * Check if the plug-in is attached.
+	 * Check if the plugin is attached.
 	 * 
 	 * @return
 	 */
 	public boolean isAttached();
+
+	/**
+	 * Get the {@link com.beyondar.android.world.BeyondarObject BeyondarObject}
+	 * where the plugin is attached.
+	 * 
+	 * @return
+	 */
+	public BeyondarObject getbeyondarObject();
 }

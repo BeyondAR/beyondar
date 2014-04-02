@@ -54,9 +54,9 @@ public class BeyondarObject implements Plugable<BeyondarObjectPlugin> {
 
 	protected Point3 topLeft, bottomLeft, bottomRight, topRight;
 
-	/** This fields contains all the loaded plug-ins */
+	/** This fields contains all the loaded plugins */
 	protected List<BeyondarObjectPlugin> plugins;
-	/** Use this lock to access the plug-ins field */
+	/** Use this lock to access the plugins field */
 	protected Object lockPlugins = new Object();
 
 	/**
@@ -173,8 +173,8 @@ public class BeyondarObject implements Plugable<BeyondarObjectPlugin> {
 	}
 
 	/**
-	 * Get a {@link List} copy of the added plug-ins. Adding/removing plug-ins
-	 * to this list will not affect the added plug-ins
+	 * Get a {@link List} copy of the added plugins. Adding/removing plugins
+	 * to this list will not affect the added plugins
 	 * 
 	 * @return
 	 */
@@ -198,6 +198,8 @@ public class BeyondarObject implements Plugable<BeyondarObjectPlugin> {
 	}
 
 	public void setAngle(float x, float y, float z) {
+		if (angle.x == x && angle.y == y && angle.z == z)
+			return;
 		angle.x = x;
 		angle.y = y;
 		angle.z = z;
@@ -213,6 +215,7 @@ public class BeyondarObject implements Plugable<BeyondarObjectPlugin> {
 	}
 
 	public void setPosition(Point3 newVect) {
+		if (newVect == position) return;
 		position = newVect;
 		synchronized (lockPlugins) {
 			for (BeyondarObjectPlugin plugin : plugins) {
@@ -222,6 +225,8 @@ public class BeyondarObject implements Plugable<BeyondarObjectPlugin> {
 	}
 
 	public void setPosition(float x, float y, float z) {
+		if (position.x == x && position.y == y && position.z == z)
+			return;
 		position.x = x;
 		position.y = y;
 		position.z = z;
@@ -241,9 +246,8 @@ public class BeyondarObject implements Plugable<BeyondarObjectPlugin> {
 	}
 
 	public void setTexturePointer(int texturePointer) {
-		if (texturePointer == texture.getTexturePointer()) {
+		if (texturePointer == texture.getTexturePointer())
 			return;
-		}
 		texture.setTexturePointer(texturePointer);
 		synchronized (lockPlugins) {
 			for (BeyondarObjectPlugin plugin : plugins) {
@@ -280,6 +284,8 @@ public class BeyondarObject implements Plugable<BeyondarObjectPlugin> {
 	}
 
 	public void setRenderable(Renderable renderable) {
+		if (renderable == this.renderable)
+			return;
 		this.renderable = renderable;
 		synchronized (lockPlugins) {
 			for (BeyondarObjectPlugin plugin : plugins) {
@@ -293,6 +299,8 @@ public class BeyondarObject implements Plugable<BeyondarObjectPlugin> {
 	}
 
 	public void faceToCamera(boolean faceToCamera) {
+		if (faceToCamera == this.faceToCamera)
+			return;
 		this.faceToCamera = faceToCamera;
 		synchronized (lockPlugins) {
 			for (BeyondarObjectPlugin plugin : plugins) {
@@ -312,6 +320,8 @@ public class BeyondarObject implements Plugable<BeyondarObjectPlugin> {
 	 * @param visible
 	 */
 	public void setVisible(boolean visible) {
+		if (visible == this.visible)
+			return;
 		this.visible = visible;
 		synchronized (lockPlugins) {
 			for (BeyondarObjectPlugin plugin : plugins) {
@@ -325,6 +335,8 @@ public class BeyondarObject implements Plugable<BeyondarObjectPlugin> {
 	}
 
 	public void setName(String name) {
+		if (name == this.name)
+			return;
 		this.name = name;
 		synchronized (lockPlugins) {
 			for (BeyondarObjectPlugin plugin : plugins) {
@@ -343,9 +355,8 @@ public class BeyondarObject implements Plugable<BeyondarObjectPlugin> {
 	 * @param uri
 	 */
 	public void setImageUri(String uri) {
-		if (uri == bitmapUri) {
+		if (uri == bitmapUri)
 			return;
-		}
 		bitmapUri = uri;
 		synchronized (lockPlugins) {
 			for (BeyondarObjectPlugin plugin : plugins) {

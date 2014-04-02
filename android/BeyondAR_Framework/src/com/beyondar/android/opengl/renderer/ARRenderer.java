@@ -318,10 +318,10 @@ public class ARRenderer implements GLSurfaceView.Renderer, BeyondarSensorListene
 
 		try {
 			for (GLPlugin plugin : plugins) {
-				plugin.onDrawFrame(gl);
+				plugin.onFrameRendered(gl);
 			}
 		} catch (ConcurrentModificationException e) {
-			Logger.w("Some plug-ins where changed while drawing a frame");
+			Logger.w("Some plugins where changed while drawing a frame");
 		}
 
 		if (mScreenshot) {
@@ -676,7 +676,7 @@ public class ARRenderer implements GLSurfaceView.Renderer, BeyondarSensorListene
 					plugin.onDrawBeyondaarObject(gl, beyondarObject, defaultTexture);
 				}
 			} catch (ConcurrentModificationException e) {
-				Logger.w("Some plug-ins where changed while drawing a frame");
+				Logger.w("Some plugins where changed while drawing a frame");
 			}
 
 			renderable.draw(gl, defaultTexture);

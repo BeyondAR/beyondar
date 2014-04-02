@@ -99,7 +99,7 @@ public class World implements Plugable<WorldPlugin> {
 	}
 
 	/**
-	 * Add a {@link WorldPlugin} to the {@link World}. If the plug-in exist it
+	 * Add a {@link WorldPlugin} to the {@link World}. If the plugin exist it
 	 * will not be added again.
 	 */
 	public void addPlugin(WorldPlugin plugin) {
@@ -112,11 +112,11 @@ public class World implements Plugable<WorldPlugin> {
 	}
 
 	/**
-	 * Remove existing plug-in.
+	 * Remove existing plugin.
 	 * 
 	 * @param plugin
-	 *            plug-in to be removed
-	 * @return True if the plug-in has been removed, false otherwise
+	 *            plugin to be removed
+	 * @return True if the plugin has been removed, false otherwise
 	 */
 	@Override
 	public boolean removePlugin(WorldPlugin plugin) {

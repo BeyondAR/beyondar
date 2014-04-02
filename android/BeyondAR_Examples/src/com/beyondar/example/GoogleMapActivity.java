@@ -47,13 +47,13 @@ public class GoogleMapActivity extends FragmentActivity implements OnMarkerClick
 		// We create the world and fill the world
 		mWorld = CustomWorldHelper.generateObjects(this);
 
-		// As we want to use GoogleMaps, we are going to create the plug-in and
+		// As we want to use GoogleMaps, we are going to create the plugin and
 		// attach it to the World
 		mGoogleMapPlugin = new GoogleMapWorldPlugin(this);
 		// Then we need to set the map in to the GoogleMapPlugin
 		mGoogleMapPlugin.setGoogleMap(mMap);
-		// Now that we have the plug-in created let's add it to our world.
-		// NOTE: It is better to load the plug-ins before start adding object in to the world.
+		// Now that we have the plugin created let's add it to our world.
+		// NOTE: It is better to load the plugins before start adding object in to the world.
 		mWorld.addPlugin(mGoogleMapPlugin);
 
 		mMap.setOnMarkerClickListener(this);

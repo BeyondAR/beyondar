@@ -17,15 +17,20 @@ package com.beyondar.android.plugin;
 
 import com.beyondar.android.world.GeoObject;
 
+/**
+ * Extension of the {@link com.beyondar.android.plugin.BeyondarObjectPlugin
+ * BeyondarObjectPlugin} for {@link com.beyondar.android.world.GeoObject
+ * GeoObject}.
+ */
 public interface GeoObjectPlugin extends BeyondarObjectPlugin {
 
 	/**
-	 * Notified when the geo position changes
+	 * Notified when the geo position changes.
 	 */
 	public void onGeoPositionChanged(double latitude, double longitude, double altitude);
 
 	/**
-	 * Get the {@link GeoObject} where the plug-in is attached
+	 * Get the {@link GeoObject} where the plugin is attached.
 	 * 
 	 * @return
 	 */

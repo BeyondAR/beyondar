@@ -157,4 +157,9 @@ public class RadarPointPlugin implements GeoObjectPlugin {
 	void setRaduisPixels(float raduis) {
 		mRaduisPixels = raduis;
 	}
+
+	@Override
+	public BeyondarObject getbeyondarObject() {
+		return getGeoObject();
+	}
 }

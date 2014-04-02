@@ -19,42 +19,46 @@ import com.beyondar.android.world.BeyondarObject;
 import com.beyondar.android.world.BeyondarObjectList;
 import com.beyondar.android.world.World;
 
+/**
+ * Base interface to create a plugin for a
+ * {@link com.beyondar.android.world.World World}.
+ */
 public interface WorldPlugin extends Plugin {
 
 	/**
-	 * This method is invoked when the plug-in is removed.
+	 * This method is invoked when the plugin is removed.
 	 */
 	public void onDetached();
 
 	/**
-	 * Check if the plug-in is attached.
+	 * Check if the plugin is attached.
 	 * 
 	 * @return
 	 */
 	public boolean isAttached();
 
 	/**
-	 * Setup the plug-in according to the world.
+	 * Setup the plugin according to the world.
 	 * 
 	 * @param world
-	 *            The world that loads the plug-in
+	 *            The world that loads the plugin
 	 * 
 	 */
 	public void setup(World world);
 
 	/**
 	 * This method is invoked when a new {@link BeyondarObject} is added to the
-	 * world. Use this method to add specific plug-in's to the {@link BeyondarObject}.
+	 * world. Use this method to add specific plugin's to the
+	 * {@link BeyondarObject}.
 	 * 
 	 * @param beyondarObject
 	 * @param beyondarObjectList
-	 * @return
 	 */
 	public void onBeyondarObjectAdded(BeyondarObject beyondarObject, BeyondarObjectList beyondarObjectList);
 
 	/**
 	 * This method is invoked when a {@link BeyondarObject} is removed from the
-	 * world. Use this method to remove the plug-in's that are not needed.
+	 * world. Use this method to remove the plugin's that are not needed.
 	 * 
 	 * @param beyondarObject
 	 * @param beyondarObjectList
@@ -87,12 +91,12 @@ public interface WorldPlugin extends Plugin {
 	 * @param uri
 	 */
 	public void onDefaultImageChanged(String uri);
-	
-	/** 
+
+	/**
 	 * Called when the activity has been paused.
 	 */
 	public void onPause();
-	
+
 	/**
 	 * Called when the activity has been resumed.
 	 */

@@ -39,25 +39,26 @@ class GoogleMapGeoObjectPlugin implements GeoObjectPlugin {
 	public GoogleMapGeoObjectPlugin(GoogleMapWorldPlugin worldGoogleMapPlugin, BeyondarObject beyondarObject) {
 		mAttached = false;
 		mWorldGoogleMapPlugin = worldGoogleMapPlugin;
-		if (mWorldGoogleMapPlugin == null){
+		if (mWorldGoogleMapPlugin == null) {
 			throw new NullPointerException("The WorldGoogleMapPlugin must not be null");
 		}
-		
+
 		setBeyondarObject(beyondarObject);
 	}
 
 	/**
-	 * Setup the plug-in according to the BeyondarObject
+	 * Setup the plugin according to the BeyondarObject
 	 * 
 	 * @param BeyondarObject
 	 */
 	private void setBeyondarObject(BeyondarObject beyondarObject) {
 		if (beyondarObject instanceof GeoObject) {
 			mGeoObject = (GeoObject) beyondarObject;
-		}else{
-			//throw new IllegalArgumentException("beyondarObject must be a GeoObject");
+		} else {
+			// throw new
+			// IllegalArgumentException("beyondarObject must be a GeoObject");
 		}
-		if (mGeoObject == null){
+		if (mGeoObject == null) {
 			throw new NullPointerException("The BeyondarObject must not be null");
 		}
 		mAttached = true;
@@ -109,16 +110,17 @@ class GoogleMapGeoObjectPlugin implements GeoObjectPlugin {
 	public Marker getMarker() {
 		return mMarker;
 	}
-	
+
 	@Override
 	public GeoObject getGeoObject() {
 		return mGeoObject;
 	}
-	
+
 	/**
 	 * Create the marker options in order to create the Marker.
 	 * 
-	 * @param bitmap The bitmap to use for representing the {@link Marker}
+	 * @param bitmap
+	 *            The bitmap to use for representing the {@link Marker}
 	 * @return
 	 */
 	public MarkerOptions createMarkerOptions(Bitmap bitmap) {
@@ -131,7 +133,7 @@ class GoogleMapGeoObjectPlugin implements GeoObjectPlugin {
 		}
 		return markerOptions;
 	}
-	
+
 	@Override
 	public void onAngleChanged(Point3 angle) {
 	}
@@ -177,9 +179,14 @@ class GoogleMapGeoObjectPlugin implements GeoObjectPlugin {
 		}
 		mMarker.remove();
 	}
-	
+
 	@Override
 	public boolean isAttached() {
 		return mAttached;
+	}
+
+	@Override
+	public BeyondarObject getbeyondarObject() {
+		return getGeoObject();
 	}
 }

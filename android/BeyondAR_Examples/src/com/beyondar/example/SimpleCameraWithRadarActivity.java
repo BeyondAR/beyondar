@@ -58,9 +58,9 @@ public class SimpleCameraWithRadarActivity extends FragmentActivity implements O
 		mSeekBarMaxDistance = (SeekBar) findViewById(R.id.seekBarMaxDistance);
 		mRadarView = (RadarView) findViewById(R.id.radarView);
 
-		// Create the Radar plug-in
+		// Create the Radar plugin
 		mRadarPlugin = new RadarWorldPlugin(this);
-		// set the radar view in to our radar plug-in
+		// set the radar view in to our radar plugin
 		mRadarPlugin.setRadarView(mRadarView);
 		// Set how far (in meters) we want to display in the view
 		mRadarPlugin.setMaxDistance(100);
@@ -75,7 +75,7 @@ public class SimpleCameraWithRadarActivity extends FragmentActivity implements O
 		// .. and send it to the fragment
 		mBeyondarFragment.setWorld(mWorld);
 
-		// add the plug-in
+		// add the plugin
 		mWorld.addPlugin(mRadarPlugin);
 
 		// We also can see the Frames per seconds

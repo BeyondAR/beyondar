@@ -38,6 +38,12 @@ import com.beyondar.android.world.BeyondarObject;
 import com.beyondar.android.world.GeoObject;
 import com.beyondar.android.world.World;
 
+/**
+ * Fragment class that displays and control the {@link CameraView} and the
+ * {@link BeyondarGLSurfaceView}. It also provide a set of utilities to control
+ * the usage of the augmented reality world.
+ * 
+ */
 @SuppressLint("NewApi")
 public class BeyondarFragment extends Fragment implements FpsUpdatable, OnClickListener, OnTouchListener {
 
@@ -62,6 +68,9 @@ public class BeyondarFragment extends Fragment implements FpsUpdatable, OnClickL
 
 	private SensorManager mSensorManager;
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -70,6 +79,9 @@ public class BeyondarFragment extends Fragment implements FpsUpdatable, OnClickL
 				TimeUnit.MILLISECONDS, mBlockingQueue);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void onAttach(Activity activity) {
 		super.onAttach(activity);
@@ -108,7 +120,7 @@ public class BeyondarFragment extends Fragment implements FpsUpdatable, OnClickL
 
 	/**
 	 * Override this method to personalize the {@link BeyondarGLSurfaceView}
-	 * that will be instantiated
+	 * that will be instantiated.
 	 * 
 	 * @return
 	 */
@@ -118,7 +130,7 @@ public class BeyondarFragment extends Fragment implements FpsUpdatable, OnClickL
 
 	/**
 	 * Override this method to personalize the {@link CameraView} that will be
-	 * instantiated
+	 * instantiated.
 	 * 
 	 * @return
 	 */
@@ -145,6 +157,9 @@ public class BeyondarFragment extends Fragment implements FpsUpdatable, OnClickL
 		return mBeyondarGLSurface;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		init();
@@ -152,24 +167,36 @@ public class BeyondarFragment extends Fragment implements FpsUpdatable, OnClickL
 		return mMainLayout;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void onResume() {
 		super.onResume();
 		mBeyondarCameraView.startPreviewCamera();
 		mBeyondarGLSurface.onResume();
 		BeyondarSensorManager.resume(mSensorManager);
+		if (mWorld != null) {
+			mWorld.onResume();
+		}
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void onPause() {
 		super.onPause();
 		mBeyondarCameraView.releaseCamera();
 		mBeyondarGLSurface.onPause();
 		BeyondarSensorManager.pause(mSensorManager);
+		if (mWorld != null) {
+			mWorld.onPause();
+		}
 	}
 
 	/**
-	 * Set the listener to get notified when the user touch the AR view
+	 * Set the listener to get notified when the user touch the AR view.
 	 * 
 	 * @param listener
 	 */
@@ -177,12 +204,21 @@ public class BeyondarFragment extends Fragment implements FpsUpdatable, OnClickL
 		mTouchListener = listener;
 	}
 
+	/**
+	 * Set the {@link OnClickBeyondarObjectListener} to get notified when the
+	 * user click on a {@link BeyondarObject}
+	 * 
+	 * @param listener
+	 */
 	public void setOnClickBeyondarObjectListener(OnClickBeyondarObjectListener listener) {
 		mClickListener = listener;
 		mMainLayout.setClickable(listener != null);
 		mMainLayout.setOnClickListener(this);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public boolean onTouch(View v, final MotionEvent event) {
 		mLastScreenTouchX = event.getX();
@@ -195,6 +231,9 @@ public class BeyondarFragment extends Fragment implements FpsUpdatable, OnClickL
 		return false;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void onClick(View v) {
 		if (v == mMainLayout) {
@@ -226,7 +265,7 @@ public class BeyondarFragment extends Fragment implements FpsUpdatable, OnClickL
 	}
 
 	/**
-	 * Get the world in use by the fragment
+	 * Get the {@link World} in use by the fragment.
 	 * 
 	 * @return
 	 */
@@ -235,12 +274,15 @@ public class BeyondarFragment extends Fragment implements FpsUpdatable, OnClickL
 	}
 
 	/**
-	 * Set the world to be shown
+	 * Set the {@link World} that contains all the {@link BeyondarObject} that
+	 * will be displayed.
 	 * 
 	 * @param world
+	 *            The {@link World} that holds the information of all the
+	 *            elements.
 	 * 
 	 * @throws IllegalStateException
-	 *             If the device do not have the required sensors available
+	 *             If the device do not have the required sensors available.
 	 */
 	public void setWorld(World world) {
 		try {
@@ -263,39 +305,48 @@ public class BeyondarFragment extends Fragment implements FpsUpdatable, OnClickL
 	 * SensorManager.SENSOR_DELAY_GAME <br>
 	 * SensorManager.SENSOR_DELAY_FASTEST <br>
 	 * <br>
-	 * You can find more information in the
-	 * {@link android.hardware.SensorManager} class
 	 * 
+	 * @see {@link android.hardware.SensorManager}
 	 * 
 	 * @param delay
+	 *            Sensor delay.
 	 */
 	public void setSensorDelay(int delay) {
 		mBeyondarGLSurface.setSensorDelay(delay);
 	}
 
 	/**
-	 * Get the current sensor delay. See {@link android.hardware.SensorManager}
-	 * for more information
+	 * Get the current sensor delay.
 	 * 
-	 * @return sensor delay
+	 * @see {@link android.hardware.SensorManager}
+	 * 
+	 * @return Current sensor delay.
 	 */
 	public int getSensorDelay() {
 		return mBeyondarGLSurface.getSensorDelay();
 	}
 
+	/**
+	 * Use this method to check the frames per second.
+	 * 
+	 * @param fpsUpdatable
+	 *            Listener that will be notified with current fps.
+	 * 
+	 * @see FpsUpdatable
+	 */
 	public void setFpsUpdatable(FpsUpdatable fpsUpdatable) {
 		mBeyondarGLSurface.setFpsUpdatable(fpsUpdatable);
 	}
 
 	/**
-	 * Force the GLSurface to stop rendering the AR world
+	 * Disable the GLSurface to stop rendering the AR world.
 	 */
 	public void stopRenderingAR() {
 		mBeyondarGLSurface.setVisibility(View.INVISIBLE);
 	}
 
 	/**
-	 * Force the GLSurface to start rendering the AR world
+	 * Enable the GLSurface to start rendering the AR world
 	 */
 	public void startRenderingAR() {
 		mBeyondarGLSurface.setVisibility(View.VISIBLE);
@@ -303,7 +354,7 @@ public class BeyondarFragment extends Fragment implements FpsUpdatable, OnClickL
 
 	/**
 	 * Get the GeoObject that intersect with the coordinates x, y on the screen.<br>
-	 * NOTE: When this method is called a new {@link List} is created.
+	 * __Important__ When this method is called a new {@link List} is created.
 	 * 
 	 * @param x
 	 * @param y
@@ -318,14 +369,16 @@ public class BeyondarFragment extends Fragment implements FpsUpdatable, OnClickL
 	}
 
 	/**
-	 * Get the GeoObject that intersect with the coordinates x, y on the screen
+	 * Get the GeoObject that intersect with the coordinates x, y on the screen.
 	 * 
 	 * @param x
+	 *            X screen position.
 	 * @param y
+	 *            Y screen position.
 	 * @param beyondarObjects
-	 *            The output list to place all the {@link BeyondarObject} that
-	 *            collide with the screen cord
-	 * @return
+	 *            The output list where all the {@link BeyondarObject} that
+	 *            collide with the screen cord will be stored.
+	 * 
 	 */
 	public void getBeyondarObjectsOnScreenCoordinates(float x, float y,
 			ArrayList<BeyondarObject> beyondarObjects) {
@@ -333,16 +386,18 @@ public class BeyondarFragment extends Fragment implements FpsUpdatable, OnClickL
 	}
 
 	/**
-	 * Get the GeoObject that intersect with the coordinates x, y on the screen
+	 * Get the GeoObject that intersect with the coordinates x, y on the screen.
 	 * 
 	 * @param x
+	 *            screen position.
 	 * @param y
+	 *            screen position.
 	 * @param beyondarObjects
-	 *            The output list to place all the {@link BeyondarObject} that
-	 *            collide with the screen cord
+	 *            The output list where all the {@link BeyondarObject} that
+	 *            collide with the screen cord will be stored.
 	 * @param ray
-	 *            The ray that will hold the direction of the screen coordinate
-	 * @return
+	 *            The ray that will hold the direction of the screen coordinate.
+	 * 
 	 */
 	public void getBeyondarObjectsOnScreenCoordinates(float x, float y,
 			ArrayList<BeyondarObject> beyondarObjects, Ray ray) {
@@ -370,7 +425,7 @@ public class BeyondarFragment extends Fragment implements FpsUpdatable, OnClickL
 	/**
 	 * Get the max distance which a {@link GeoObject} will be rendered.
 	 * 
-	 * @return The current max distance. 0 is the default behavior
+	 * @return The current max distance. 0 is the default behavior.
 	 */
 	public float getMaxDistanceSize() {
 		return mBeyondarGLSurface.getMaxDistanceSize();
@@ -383,11 +438,12 @@ public class BeyondarFragment extends Fragment implements FpsUpdatable, OnClickL
 	 * For instance if there is an object at 1 meters and we want to have
 	 * everything at least at 10 meters, we could use this method for that
 	 * purpose. <br>
-	 * To set it to the default behavior just set it to 0
+	 * To set it to the default behavior just set it to 0.
 	 * 
 	 * @param minDistanceSize
 	 *            The top near distance (in meters) which we want to draw a
-	 *            {@link GeoObject} , 0 to set again the default behavior
+	 *            {@link GeoObject} , 0 to set again the default behavior.
+	 * 
 	 */
 	public void setMinFarDistanceSize(float minDistanceSize) {
 		mBeyondarGLSurface.setMinDistanceSize(minDistanceSize);
@@ -396,7 +452,7 @@ public class BeyondarFragment extends Fragment implements FpsUpdatable, OnClickL
 	/**
 	 * Get the minimum distance which a {@link GeoObject} will be rendered.
 	 * 
-	 * @return The current minimum distance. 0 is the default behavior
+	 * @return The current minimum distance. 0 is the default behavior.
 	 */
 	public float getMinDistanceSize() {
 		return mBeyondarGLSurface.getMinDistanceSize();
@@ -404,19 +460,22 @@ public class BeyondarFragment extends Fragment implements FpsUpdatable, OnClickL
 
 	/**
 	 * Take a screenshot of the beyondar fragment. The screenshot will contain
-	 * the camera + the AR world
+	 * the camera and the AR world overlapped.
 	 * 
 	 * @param listener
+	 *            {@link OnScreenshotListener} That will be notified when the
+	 *            screenshot is ready.
 	 */
 	public void takeScreenshot(OnScreenshotListener listener) {
 		ScreenshotHelper.takeScreenshot(getCameraView(), getGLSurfaceView(), listener);
 	}
 
 	/**
-	 * Show the number of frames per second. False by default
+	 * Show the number of frames per second in the left upper corner. False by
+	 * default.
 	 * 
 	 * @param show
-	 *            True to show the FPS, false otherwise
+	 *            True to show the FPS, false otherwise.
 	 */
 	public void showFPS(boolean show) {
 		if (show) {
@@ -436,6 +495,9 @@ public class BeyondarFragment extends Fragment implements FpsUpdatable, OnClickL
 		}
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
 	@Override
 	public void onFpsUpdate(final float fps) {
 		if (mFpsTextView != null) {
@@ -457,6 +519,23 @@ public class BeyondarFragment extends Fragment implements FpsUpdatable, OnClickL
 		mBeyondarGLSurface.setBeyondarViewAdapter(adapter, mMainLayout);
 	}
 
+	/**
+	 * Use this method to fill all the screen positions of the
+	 * {@link BeyondarObject} when a object is rendered. Remember that the
+	 * information is filled when the object is rendered, so it is asynchronous.<br>
+	 * 
+	 * After this method is called you can use the following:<br>
+	 * {@link BeyondarObject#getScreenPositionBottomLeft()}<br>
+	 * {@link BeyondarObject#getScreenPositionBottomRight()}<br>
+	 * {@link BeyondarObject#getScreenPositionTopLeft()}<br>
+	 * {@link BeyondarObject#getScreenPositionTopRight()}
+	 * 
+	 * __Important__ Enabling this feature will reduce the FPS, use only when is
+	 * needed.
+	 * 
+	 * @param fill
+	 *            Enable or disable this feature.
+	 */
 	public void forceFillBeyondarObjectPositionsOnRendering(boolean fill) {
 		mBeyondarGLSurface.forceFillBeyondarObjectPositionsOnRendering(fill);
 	}

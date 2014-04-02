@@ -543,10 +543,14 @@ public class BeyondarFragmentSupport extends Fragment implements FpsUpdatable, O
 	 * object is rendered, so it is asynchronous.<br>
 	 * 
 	 * After this method is called you can use the following:<br>
-	 * {@link BeyondarObject#getScreenPositionBottomLeft()}<br>
-	 * {@link BeyondarObject#getScreenPositionBottomRight()}<br>
-	 * {@link BeyondarObject#getScreenPositionTopLeft()}<br>
-	 * {@link BeyondarObject#getScreenPositionTopRight()}
+	 * {@link com.beyondar.android.world.BeyondarObject
+	 * BeyondarObject.getScreenPositionBottomLeft()}<br>
+	 * {@link com.beyondar.android.world.BeyondarObject
+	 * BeyondarObject.getScreenPositionBottomRight()}<br>
+	 * {@link com.beyondar.android.world.BeyondarObject
+	 * BeyondarObject.getScreenPositionTopLeft()}<br>
+	 * {@link com.beyondar.android.world.BeyondarObject
+	 * BeyondarObject.getScreenPositionTopRight()}
 	 * 
 	 * __Important__ Enabling this feature will reduce the FPS, use only when is
 	 * needed.
@@ -562,10 +566,14 @@ public class BeyondarFragmentSupport extends Fragment implements FpsUpdatable, O
 	 * Use this method to fill all the screen positions of the
 	 * {@link com.beyondar.android.world.BeyondarObject BeyondarObject}. After
 	 * this method is called you can use the following:<br>
-	 * {@link BeyondarObject#getScreenPositionBottomLeft()}<br>
-	 * {@link BeyondarObject#getScreenPositionBottomRight()}<br>
-	 * {@link BeyondarObject#getScreenPositionTopLeft()}<br>
-	 * {@link BeyondarObject#getScreenPositionTopRight()}
+	 * {@link com.beyondar.android.world.BeyondarObject
+	 * BeyondarObject.getScreenPositionBottomLeft()}<br>
+	 * {@link com.beyondar.android.world.BeyondarObject
+	 * BeyondarObject.getScreenPositionBottomRight()}<br>
+	 * {@link com.beyondar.android.world.BeyondarObject
+	 * BeyondarObject.getScreenPositionTopLeft()}<br>
+	 * {@link com.beyondar.android.world.BeyondarObject
+	 * BeyondarObject.getScreenPositionTopRight()}
 	 * 
 	 * @param beyondarObject
 	 *            The {@link com.beyondar.android.world.BeyondarObject

@@ -15,12 +15,18 @@
  */
 package com.beyondar.android.opengl.util;
 
+/**
+ * Low pass filter class to filter the sensors noise.
+ */
 public class LowPassFilter {
 
-	/*
+	/**
 	 * Time smoothing constant for low-pass filter 0 - 1 ; a smaller value
-	 * basically means more smoothing See:
-	 * http://en.wikipedia.org/wiki/Low-pass_filter#Discrete-time_realization
+	 * basically means more smoothing.
+	 * 
+	 * @see <a href="http://en.wikipedia.org/wiki/Low-pass_filter
+	 *      #Discrete-time_realization">Discrete time
+	 *      relization</a>
 	 */
 	public static float ALPHA = 0.03f;
 
@@ -35,7 +41,6 @@ public class LowPassFilter {
 	 * @return float array smoothed with a low-pass filter.
 	 */
 	public static float[] filter(float[] input, float[] prev) {
-
 		return filter(input, prev, ALPHA);
 	}
 
@@ -48,8 +53,8 @@ public class LowPassFilter {
 	 * @param prev
 	 *            float array representing the previous values.
 	 * @param alpha
-	 *            Time smoothing constant for low-pass filter 0 - 1 ; a
-	 *            smaller value basically means more smoothing
+	 *            Time smoothing constant for low-pass filter 0 - 1 ; a smaller
+	 *            value basically means more smoothing
 	 * @return float array smoothed with a low-pass filter.
 	 */
 	public static float[] filter(float[] input, float[] prev, float alpha) {

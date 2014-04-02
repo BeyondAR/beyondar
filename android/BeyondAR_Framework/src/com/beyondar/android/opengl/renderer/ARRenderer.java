@@ -15,9 +15,6 @@ b * Copyright (C) 2013 BeyondAR
  */
 package com.beyondar.android.opengl.renderer;
 
-/**
- * Renderer for drawing the {@link com.beyondar.android.world.World World} with OpenGL.
- */
 import java.nio.IntBuffer;
 import java.util.ArrayList;
 import java.util.ConcurrentModificationException;
@@ -66,6 +63,11 @@ import com.beyondar.android.world.World;
 // Some references:
 // http://ovcharov.me/2011/01/14/android-opengl-es-ray-picking/
 // http://magicscrollsofcode.blogspot.com/2010/10/3d-picking-in-android.html
+
+/**
+ * Renderer for drawing the {@link com.beyondar.android.world.World World} with
+ * OpenGL.
+ */
 public class ARRenderer implements GLSurfaceView.Renderer, BeyondarSensorListener,
 		BitmapCache.OnExternalBitmapLoadedCacheListener, Plugable<GLPlugin> {
 
@@ -331,6 +333,12 @@ public class ARRenderer implements GLSurfaceView.Renderer, BeyondarSensorListene
 
 	}
 
+	/**
+	 * Generate a new bitmap from the gl.
+	 * 
+	 * @param gl
+	 * @return A new Bitmap of the last frame.
+	 */
 	protected Bitmap savePixels(GL10 gl) {
 		// http://stackoverflow.com/questions/3310990/taking-screenshot-of-android-opengl
 		// http://www.anddev.org/how_to_get_opengl_screenshot__useful_programing_hint-t829.html
@@ -405,6 +413,15 @@ public class ARRenderer implements GLSurfaceView.Renderer, BeyondarSensorListene
 
 	private static final double[] sOut = new double[3];
 
+	/**
+	 * Convert the geolocation to gl points representation.
+	 * 
+	 * @param geoObject
+	 *            The {@link com.beyondar.android.world.GeoObject GeoObject} to
+	 *            be processed.
+	 * @param out
+	 *            Where the results be stored.
+	 */
 	protected void convertGPStoPoint3(GeoObject geoObject, Point3 out) {
 		float x, z, y;
 		x = (float) (Distance.fastConversionGeopointsToMeters(geoObject.getLongitude()
@@ -436,9 +453,9 @@ public class ARRenderer implements GLSurfaceView.Renderer, BeyondarSensorListene
 	}
 
 	/**
-	 * When a {@link GeoObject} is rendered according to its position it could
-	 * look very small if it is far away. Use this method to render far objects
-	 * as if there were closer.<br>
+	 * When a {@link com.beyondar.android.world.GeoObject GeoObject} is rendered
+	 * according to its position it could look very small if it is far away. Use
+	 * this method to render far objects as if there were closer.<br>
 	 * For instance if there is an object at 100 meters and we want to have
 	 * everything at least at 25 meters, we could use this method for that
 	 * purpose. <br>
@@ -446,7 +463,8 @@ public class ARRenderer implements GLSurfaceView.Renderer, BeyondarSensorListene
 	 * 
 	 * @param maxDistanceSize
 	 *            The top far distance (in meters) which we want to draw a
-	 *            {@link GeoObject} , 0 to set again the default behavior
+	 *            {@link com.beyondar.android.world.GeoObject GeoObject} , 0 to
+	 *            set again the default behavior
 	 */
 	public void setMaxDistanceSize(float maxDistanceSize) {
 		mMaxDistanceSizePoints = (float) (maxDistanceSize / 2);
@@ -458,7 +476,8 @@ public class ARRenderer implements GLSurfaceView.Renderer, BeyondarSensorListene
 	}
 
 	/**
-	 * Get the max distance which a {@link GeoObject} will be rendered.
+	 * Get the max distance which a {@link com.beyondar.android.world.GeoObject
+	 * GeoObject} will be rendered.
 	 * 
 	 * @return The current max distance. 0 is the default behavior
 	 */
@@ -467,9 +486,9 @@ public class ARRenderer implements GLSurfaceView.Renderer, BeyondarSensorListene
 	}
 
 	/**
-	 * When a {@link GeoObject} is rendered according to its position it could
-	 * look very big if it is too close. Use this method to render near objects
-	 * as if there were farther.<br>
+	 * When a {@link com.beyondar.android.world.GeoObject GeoObject} is rendered
+	 * according to its position it could look very big if it is too close. Use
+	 * this method to render near objects as if there were farther.<br>
 	 * For instance if there is an object at 1 meters and we want to have
 	 * everything at least at 10 meters, we could use this method for that
 	 * purpose. <br>
@@ -477,7 +496,8 @@ public class ARRenderer implements GLSurfaceView.Renderer, BeyondarSensorListene
 	 * 
 	 * @param minDistanceSize
 	 *            The top near distance (in meters) which we want to draw a
-	 *            {@link GeoObject} , 0 to set again the default behavior
+	 *            {@link com.beyondar.android.world.GeoObject GeoObject} , 0 to
+	 *            set again the default behavior
 	 */
 	public void setMinDistanceSize(float minDistanceSize) {
 		mMinDistanceSizePoints = (float) (minDistanceSize / 2);
@@ -489,7 +509,8 @@ public class ARRenderer implements GLSurfaceView.Renderer, BeyondarSensorListene
 	}
 
 	/**
-	 * Get the minimum distance which a {@link GeoObject} will be rendered.
+	 * Get the minimum distance which a
+	 * {@link com.beyondar.android.world.GeoObject GeoObject} will be rendered.
 	 * 
 	 * @return The current minimum distance. 0 is the default behavior
 	 */
@@ -514,7 +535,14 @@ public class ARRenderer implements GLSurfaceView.Renderer, BeyondarSensorListene
 	public void setOnBeyondarObjectRenderedListener(OnBeyondarObjectRenderedListener rendererTracker) {
 		mOnBeyondarObjectRenderedListener = rendererTracker;
 	}
-
+	
+	/**
+	 * Render the {@link com.beyondar.android.world.World World}.
+	 * 
+	 * @param gl
+	 * @param time
+	 *            Time mark to be used for drawing the frame.
+	 */
 	protected void renderWorld(GL10 gl, long time) {
 		BeyondarObjectList list = null;
 		try {
@@ -544,6 +572,15 @@ public class ARRenderer implements GLSurfaceView.Renderer, BeyondarSensorListene
 		}
 	}
 
+	/**
+	 * Render a specific list.
+	 * 
+	 * @param gl
+	 * @param list
+	 *            List to render.
+	 * @param time
+	 *            Time mark to be used for drawing the frame.
+	 */
 	protected void renderList(GL10 gl, BeyondarObjectList list, long time) {
 
 		Texture listTexture = list.getTexture();
@@ -571,11 +608,18 @@ public class ARRenderer implements GLSurfaceView.Renderer, BeyondarSensorListene
 	private float[] tmpEyeForRendering = new float[4];
 
 	/**
-	 * Override this method to customize the way to render the objects
+	 * Render a specific {@link com.beyondar.android.world.BeyondarObject
+	 * BeyondarObject}.
 	 * 
 	 * @param gl
 	 * @param beyondarObject
+	 *            {@link com.beyondar.android.world.BeyondarObject
+	 *            BeyondarObject} to render.
 	 * @param defaultTexture
+	 *            If the texture from the
+	 *            {@link com.beyondar.android.world.BeyondarObject
+	 *            BeyondarObject} is not available the defaultTexure will be
+	 *            used.
 	 */
 	protected void renderBeyondarObject(GL10 gl, BeyondarObject beyondarObject, Texture defaultTexture,
 			long time) {
@@ -648,15 +692,20 @@ public class ARRenderer implements GLSurfaceView.Renderer, BeyondarSensorListene
 
 	/**
 	 * Use this method to fill all the screen positions of the
-	 * {@link BeyondarObject}. After this method is called you can use the
-	 * following:<br>
-	 * {@link BeyondarObject#getScreenPositionBottomLeft()}<br>
-	 * {@link BeyondarObject#getScreenPositionBottomRight()}<br>
-	 * {@link BeyondarObject#getScreenPositionTopLeft()}<br>
-	 * {@link BeyondarObject#getScreenPositionTopRight()}
+	 * {@link com.beyondar.android.world.BeyondarObject BeyondarObject}. After
+	 * this method is called you can use the following:<br>
+	 * {@link com.beyondar.android.world.BeyondarObject
+	 * BeyondarObject.getScreenPositionBottomLeft()}<br>
+	 * {@link com.beyondar.android.world.BeyondarObject
+	 * BeyondarObject.getScreenPositionBottomRight()}<br>
+	 * {@link com.beyondar.android.world.BeyondarObject
+	 * BeyondarObject.getScreenPositionTopLeft()}<br>
+	 * {@link com.beyondar.android.world.BeyondarObject
+	 * BeyondarObject.getScreenPositionTopRight()}
 	 * 
 	 * @param beyondarObject
-	 *            The {@link BeyondarObject} to compute
+	 *            The {@link com.beyondar.android.world.BeyondarObject
+	 *            BeyondarObject} to compute
 	 */
 	public void fillBeyondarObjectScreenPositions(BeyondarObject beyondarObject) {
 		getScreenCoordinates(beyondarObject.getBottomLeft(), beyondarObject.getScreenPositionBottomLeft());
@@ -773,7 +822,7 @@ public class ARRenderer implements GLSurfaceView.Renderer, BeyondarSensorListene
 	}
 
 	/**
-	 * Load the world textures
+	 * Load the world textures.
 	 * 
 	 * @param gl
 	 */
@@ -803,11 +852,11 @@ public class ARRenderer implements GLSurfaceView.Renderer, BeyondarSensorListene
 	}
 
 	/**
-	 * Load the textures of the specified geoObject
+	 * Load the textures of the specified geoObject.
 	 * 
 	 * @param gl
 	 * @param geoObject
-	 *            The object to load the textures
+	 *            The object to load the textures.
 	 */
 	public void loadBeyondarObjectTexture(GL10 gl, BeyondarObject geoObject) {
 
@@ -833,14 +882,16 @@ public class ARRenderer implements GLSurfaceView.Renderer, BeyondarSensorListene
 	}
 
 	/**
-	 * Load the {@link Texture} from a {@link Bitmap}
+	 * Load the {@link com.beyondar.android.opengl.texture.Texture Texture} from
+	 * a Bitmap.
 	 * 
 	 * @param gl
 	 * @param btm
-	 *            The {@link Bitmap} to load
+	 *            The Bitmap to load.
 	 * @param uri
-	 *            The unique id of the bitmap
-	 * @return The {@link Texture} object
+	 *            The unique id of the bitmap.
+	 * @return The {@link com.beyondar.android.opengl.texture.Texture Texture}
+	 *         object.
 	 */
 	public Texture loadBitmapTexture(GL10 gl, Bitmap btm, String uri) {
 
@@ -860,8 +911,9 @@ public class ARRenderer implements GLSurfaceView.Renderer, BeyondarSensorListene
 
 	/**
 	 * Check if the bitmap texture object is loaded. To check if the
-	 * {@link Texture} has been loaded with a pointer, use
-	 * {@link Texture#isLoaded()}
+	 * {@link com.beyondar.android.opengl.texture.Texture Texture} has been
+	 * loaded with a pointer, use
+	 * {@link com.beyondar.android.opengl.texture.Texture Texture.isLoaded()}
 	 * 
 	 * @param bitmap
 	 * @return true if it is already loaded, false otherwise.
@@ -872,7 +924,9 @@ public class ARRenderer implements GLSurfaceView.Renderer, BeyondarSensorListene
 
 	/**
 	 * Check if the image URI has been loaded as a texture. To check if the
-	 * {@link Texture} has any GL texture pointer use {@link Texture#isLoaded()}
+	 * {@link com.beyondar.android.opengl.texture.Texture Texture} has any GL
+	 * texture pointer use {@link com.beyondar.android.opengl.texture.Texture
+	 * Texture.isLoaded()}
 	 * 
 	 * @param uri
 	 * @return true if it is already loaded, false otherwise.
@@ -882,7 +936,7 @@ public class ARRenderer implements GLSurfaceView.Renderer, BeyondarSensorListene
 	}
 
 	/**
-	 * get a copy of the texture pointer for the specified URI
+	 * Get a copy of the texture pointer for the specified URI.
 	 * 
 	 * @param uri
 	 * @return
@@ -899,12 +953,12 @@ public class ARRenderer implements GLSurfaceView.Renderer, BeyondarSensorListene
 	}
 
 	/**
-	 * Create the texture for the specified {@link Bitmap}.<br>
-	 * <b>NOTE:</b> The method will recycle the bitmap after being used
+	 * Create the texture for the specified Bitmap.<br>
+	 * __Important__ The method will recycle the bitmap after being used.
 	 * 
 	 * @param gl
 	 * @param bitmap
-	 * @return
+	 * @return A new texture for the bitmap.
 	 */
 	public Texture load2DTexture(GL10 gl, Bitmap bitmap) {
 		// see
@@ -972,6 +1026,15 @@ public class ARRenderer implements GLSurfaceView.Renderer, BeyondarSensorListene
 		viewport[3] = mHeight;
 	}
 
+	/**
+	 * Get a view {@link com.beyondar.android.util.math.geom.Ray Ray} for the
+	 * screen position (x,y). Use this to object to check if there are any
+	 * {@link com.beyondar.android.world.GeoObject GeoObject} that collide.
+	 * 
+	 * @param x
+	 * @param y
+	 * @param ray
+	 */
 	public void getViewRay(float x, float y, Ray ray) {
 
 		// far eye point
@@ -997,20 +1060,57 @@ public class ARRenderer implements GLSurfaceView.Renderer, BeyondarSensorListene
 		mFloat4ArrayPool.add(eye);
 	}
 
-	public void getScreenCoordinates(Point3 position, Point3 point) {
+	/**
+	 * Get the screen position of a given
+	 * {@link com.beyondar.android.util.math.geom.Point3 Point3}.
+	 * 
+	 * @param position
+	 *            The 3D position to transform to a screen coordinates.
+	 * @param outPoint
+	 *            The object where the result will be stored.
+	 */
+	public void getScreenCoordinates(Point3 position, Point3 outPoint) {
 		float[] eye = mFloat4ArrayPool.poll();
 		if (eye == null) {
 			eye = new float[4];
 		}
-		getScreenCoordinates(position.x, position.y, position.z, point, mFloat4ArrayPool.poll());
+		getScreenCoordinates(position.x, position.y, position.z, outPoint, mFloat4ArrayPool.poll());
 		mFloat4ArrayPool.add(eye);
 	}
 
-	public void getScreenCoordinates(Point3 position, Point3 point, float[] eye) {
-		getScreenCoordinates(position.x, position.y, position.z, point, eye);
+	/**
+	 * Get the screen position of a given
+	 * {@link com.beyondar.android.util.math.geom.Point3 Point3}.
+	 * 
+	 * @param position
+	 *            The 3D position to transform to a screen coordinates.
+	 * @param outPoint
+	 *            The object where the result will be stored.
+	 * @param eye
+	 *            Array where the eye position will be stored to do the
+	 *            calculations.
+	 */
+	public void getScreenCoordinates(Point3 position, Point3 outPoint, float[] eye) {
+		getScreenCoordinates(position.x, position.y, position.z, outPoint, eye);
 	}
 
-	public void getScreenCoordinates(float x, float y, float z, Point3 point, float[] eye) {
+	/**
+	 * Get the screen position of a given
+	 * {@link com.beyondar.android.util.math.geom.Point3 Point3}.
+	 * 
+	 * @param x
+	 *            The 3D position (x) to transform to a screen coordinates.
+	 * @param y
+	 *            The 3D position (y) to transform to a screen coordinates.
+	 * @param z
+	 *            The 3D position (z) to transform to a screen coordinates.
+	 * @param outPoint
+	 *            The object where the result will be stored.
+	 * @param eye
+	 *            Array where the eye position will be stored to do the
+	 *            calculations.
+	 */
+	public void getScreenCoordinates(float x, float y, float z, Point3 outPoint, float[] eye) {
 		// far eye point
 		if (eye == null) {
 			eye = new float[4];
@@ -1029,9 +1129,9 @@ public class ARRenderer implements GLSurfaceView.Renderer, BeyondarSensorListene
 		}
 
 		// Screen coordinates
-		point.x = eye[0];
-		point.y = mHeight - eye[1];
-		point.z = eye[2];
+		outPoint.x = eye[0];
+		outPoint.y = mHeight - eye[1];
+		outPoint.z = eye[2];
 	}
 
 	/**
@@ -1060,7 +1160,7 @@ public class ARRenderer implements GLSurfaceView.Renderer, BeyondarSensorListene
 		sNewBitmapsLoaded.add(uriAndBitmap);
 	}
 
-	public synchronized void setAllTextures(GL10 gl, String uri, Bitmap btm,
+	private synchronized void setAllTextures(GL10 gl, String uri, Bitmap btm,
 			PendingBitmapsToBeLoaded<BeyondarObject> pendingList) {
 		if (uri == null) {
 			return;
@@ -1079,13 +1179,33 @@ public class ARRenderer implements GLSurfaceView.Renderer, BeyondarSensorListene
 		pendingList.removePendingList(uri);
 	}
 
+	/**
+	 * Use this method to fill all the screen positions of the
+	 * {@link com.beyondar.android.world.BeyondarObject BeyondarObject} when a
+	 * object is rendered. Remember that the information is filled when the
+	 * object is rendered, so it is asynchronous.<br>
+	 * 
+	 * After this method is called you can use the following:<br>
+	 * {@link com.beyondar.android.world.BeyondarObject
+	 * BeyondarObject.getScreenPositionBottomLeft()}<br>
+	 * {@link com.beyondar.android.world.BeyondarObject
+	 * BeyondarObject.getScreenPositionBottomRight()}<br>
+	 * {@link com.beyondar.android.world.BeyondarObject
+	 * BeyondarObject.getScreenPositionTopLeft()}<br>
+	 * {@link com.beyondar.android.world.BeyondarObject
+	 * BeyondarObject.getScreenPositionTopRight()}
+	 * 
+	 * __Important__ Enabling this feature will reduce the FPS, use only when is
+	 * needed.
+	 * 
+	 * @param fill
+	 *            Enable or disable this feature.
+	 */
 	public void forceFillBeyondarObjectPositions(boolean fill) {
 		mFillPositions = fill;
 	}
 
 	public static interface FpsUpdatable {
-
-		static final String __ON_FPS_UPDATE_METHOD_NAME__ = "onFpsUpdate";
 
 		/**
 		 * This method will get the frames per second rendered by the
@@ -1177,6 +1297,9 @@ public class ARRenderer implements GLSurfaceView.Renderer, BeyondarSensorListene
 		}
 	}
 
+	/**
+	 * Called when the application is paused.
+	 */
 	public void onPause() {
 		synchronized (lockPlugins) {
 			for (GLPlugin plugin : plugins) {
@@ -1185,6 +1308,9 @@ public class ARRenderer implements GLSurfaceView.Renderer, BeyondarSensorListene
 		}
 	}
 
+	/**
+	 * Called when the application is resumed.
+	 */
 	public void onResume() {
 		synchronized (lockPlugins) {
 			for (GLPlugin plugin : plugins) {

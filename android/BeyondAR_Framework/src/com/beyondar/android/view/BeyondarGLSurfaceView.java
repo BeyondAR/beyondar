@@ -330,21 +330,44 @@ public class BeyondarGLSurfaceView extends GLSurfaceView implements OnBeyondarOb
 		}
 	}
 
+	/**
+	 * Use this method to fill all the screen positions of the
+	 * {@link com.beyondar.android.world.BeyondarObject BeyondarObject} when a
+	 * object is rendered. Remember that the information is filled when the
+	 * object is rendered, so it is asynchronous.<br>
+	 * 
+	 * After this method is called you can use the following:<br>
+	 * {@link com.beyondar.android.world.BeyondarObject BeyondarObject.getScreenPositionBottomLeft()}<br>
+	 * {@link com.beyondar.android.world.BeyondarObject BeyondarObject.getScreenPositionBottomRight()}<br>
+	 * {@link com.beyondar.android.world.BeyondarObject BeyondarObject.getScreenPositionTopLeft()}<br>
+	 * {@link com.beyondar.android.world.BeyondarObject BeyondarObject.getScreenPositionTopRight()}
+	 * 
+	 * __Important__ Enabling this feature will reduce the FPS, use only when is
+	 * needed.
+	 * 
+	 * @param fill
+	 *            Enable or disable this feature.
+	 */
 	public void forceFillBeyondarObjectPositionsOnRendering(boolean fill) {
 		mRenderer.forceFillBeyondarObjectPositions(fill);
 	}
 
 	/**
 	 * Use this method to fill all the screen positions of the
-	 * {@link BeyondarObject}. After this method is called you can use the
-	 * following:<br>
-	 * {@link BeyondarObject#getScreenPositionBottomLeft()}<br>
-	 * {@link BeyondarObject#getScreenPositionBottomRight()}<br>
-	 * {@link BeyondarObject#getScreenPositionTopLeft()}<br>
-	 * {@link BeyondarObject#getScreenPositionTopRight()}
+	 * {@link com.beyondar.android.world.BeyondarObject BeyondarObject}. After
+	 * this method is called you can use the following:<br>
+	 * {@link com.beyondar.android.world.BeyondarObject
+	 * BeyondarObject.getScreenPositionBottomLeft()}<br>
+	 * {@link com.beyondar.android.world.BeyondarObject
+	 * BeyondarObject.getScreenPositionBottomRight()}<br>
+	 * {@link com.beyondar.android.world.BeyondarObject
+	 * BeyondarObject.getScreenPositionTopLeft()}<br>
+	 * {@link com.beyondar.android.world.BeyondarObject
+	 * BeyondarObject.getScreenPositionTopRight()}
 	 * 
 	 * @param beyondarObject
-	 *            The {@link BeyondarObject} to compute
+	 *            The {@link com.beyondar.android.world.BeyondarObject
+	 *            BeyondarObject} to compute
 	 */
 	public void fillBeyondarObjectPositions(BeyondarObject beyondarObject) {
 		mRenderer.fillBeyondarObjectScreenPositions(beyondarObject);

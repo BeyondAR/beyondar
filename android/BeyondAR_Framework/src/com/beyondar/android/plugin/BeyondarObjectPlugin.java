@@ -19,6 +19,10 @@ import com.beyondar.android.opengl.renderable.Renderable;
 import com.beyondar.android.opengl.texture.Texture;
 import com.beyondar.android.util.math.geom.Point3;
 
+/**
+ * Basic interface to create a plugin for BeyondAR.
+ *
+ */
 public interface BeyondarObjectPlugin extends Plugin{
 
 	public void onAngleChanged(Point3 angle);

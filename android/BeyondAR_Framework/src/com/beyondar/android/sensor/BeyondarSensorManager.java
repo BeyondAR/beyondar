@@ -25,8 +25,15 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 
+/**
+ * This class controls and filter the sensor data provided by the magnetic and
+ * the accelerometer sensors.
+ */
 public class BeyondarSensorManager {
 
+	/**
+	 * Default sensor delay.
+	 */
 	public static final int SENSOR_DELAY = SensorManager.SENSOR_DELAY_GAME;
 
 	static enum BeyondarSensorManagerSingleton implements SensorEventListener {

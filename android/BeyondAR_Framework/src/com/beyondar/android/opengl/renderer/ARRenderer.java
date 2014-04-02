@@ -72,7 +72,7 @@ public class ARRenderer implements GLSurfaceView.Renderer, BeyondarSensorListene
 		BitmapCache.OnExternalBitmapLoadedCacheListener, Plugable<GLPlugin> {
 
 	/**
-	 * Callback to get notified when the snapshot is taken.
+	 * Callback to get notified when the snapshot of the OpenGL view is taken.
 	 */
 	public static interface SnapshotCallback {
 		/**
@@ -535,7 +535,7 @@ public class ARRenderer implements GLSurfaceView.Renderer, BeyondarSensorListene
 	public void setOnBeyondarObjectRenderedListener(OnBeyondarObjectRenderedListener rendererTracker) {
 		mOnBeyondarObjectRenderedListener = rendererTracker;
 	}
-	
+
 	/**
 	 * Render the {@link com.beyondar.android.world.World World}.
 	 * 

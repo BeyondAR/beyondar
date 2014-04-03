@@ -23,6 +23,10 @@ import com.beyondar.android.view.BeyondarGLSurfaceView;
 import com.beyondar.android.view.CameraView;
 import com.beyondar.android.view.CameraView.BeyondarPictureCallback;
 
+/**
+ * Helper for taking a full screenshot (AR view + camera).
+ * 
+ */
 public class ScreenshotHelper {
 
 	/**

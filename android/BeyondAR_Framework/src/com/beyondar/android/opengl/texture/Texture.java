@@ -19,6 +19,10 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
 
+/**
+ * Texture object for rendering using OpenGL.
+ * 
+ */
 public class Texture {
 
 	public static final float TEMPLATE_VERTICES[] = {
@@ -51,22 +55,37 @@ public class Texture {
 	private float[] mTextureMap;
 	private float[] mVertices;
 
+	/**
+	 * Constructor of a texture with a defined texture reference.
+	 * 
+	 * @param textureReference
+	 *            Loaded texture reference.
+	 */
 	public Texture(int textureReference) {
-		mTexture = textureReference;
-		mIsLoaded = true;
-		mCounterLoaded = 0;
+		setTexturePointer(textureReference);
+
 		mVertices = new float[TEMPLATE_VERTICES.length];
 		System.arraycopy(TEMPLATE_VERTICES, 0, mVertices, 0, TEMPLATE_VERTICES.length);
-		
+
 		mTextureMap = new float[TEMPLATE_TEXTURE.length];
 		System.arraycopy(TEMPLATE_TEXTURE, 0, mTextureMap, 0, TEMPLATE_TEXTURE.length);
 	}
 
+	/**
+	 * Constructor of a texture with a no texture reference.
+	 */
 	public Texture() {
 		this(0);
-		mIsLoaded = false;
 	}
 
+	/**
+	 * Set the image size in pixels. This method is used to support non power of
+	 * two images.
+	 * 
+	 * @param width
+	 * @param height
+	 * @return
+	 */
 	public Texture setImageSize(int width, int height) {
 		mWidth = width;
 		mHeight = height;
@@ -84,7 +103,7 @@ public class Texture {
 		}
 
 		for (int i = 0; i < mVertices.length; i++) {
-			if ((i+1) % 3 == 0) {
+			if ((i + 1) % 3 == 0) {
 				mVertices[i] = mVertices[i] * mHeightRate;
 			} else {
 				mVertices[i] = mVertices[i] * mWidthRate;
@@ -112,7 +131,7 @@ public class Texture {
 	public FloatBuffer getTextureBuffer() {
 		return mTextureBuffer;
 	}
-	
+
 	public FloatBuffer getVerticesBuffer() {
 		return mVertexBuffer;
 	}
@@ -147,7 +166,11 @@ public class Texture {
 
 	public Texture setTexturePointer(int texture) {
 		mTexture = texture;
-		mIsLoaded = true;
+		if (mTexture == 0) {
+			mIsLoaded = false;
+		} else {
+			mIsLoaded = true;
+		}
 		mCounterLoaded = 0;
 		return this;
 	}

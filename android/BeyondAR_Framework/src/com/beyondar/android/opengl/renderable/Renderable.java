@@ -23,6 +23,11 @@ import com.beyondar.android.util.math.geom.Plane;
 import com.beyondar.android.util.math.geom.Point3;
 import com.beyondar.android.world.BeyondarObject;
 
+/**
+ * Interface that provides the needed methods that are called from the
+ * {@link com.beyondar.android.opengl.renderer.ARRenderer ARRenderer}.
+ * 
+ */
 public interface Renderable {
 
 	/** The draw method to be used by OpenGL */
@@ -35,32 +40,72 @@ public interface Renderable {
 	 *            The time mark.
 	 * @param distance
 	 *            The distance form the camera in meters.
+	 * @param beyondarObject
+	 *            The {@link com.beyondar.android.world.BeyondarObject
+	 *            BeyondarObject} represented by the Renderable.
 	 * @return True to force to paint the object, false otherwise. If false, the
 	 *         {@link ARRenderer} will draw it if it close enough to the camera
 	 */
-	public boolean update(long time, double distance,
-			BeyondarObject beyondarObject);
+	public boolean update(long time, double distance, BeyondarObject beyondarObject);
 
 	/**
-	 * This method is called when the renderable is not painted because is too
-	 * far
+	 * This method is called when the {@link Renderable} is not rendered, for
+	 * example because is too far
 	 */
 	public void onNotRendered(double dst);
 
+	/**
+	 * Get the texture object for the {@link Renderable}
+	 * 
+	 * @return
+	 */
 	public Texture getTexture();
 
+	/**
+	 * Get the plane that represents the {@link Renderable}. Used for collision
+	 * detection.
+	 * 
+	 * @return
+	 */
 	public Plane getPlane();
 
+	/**
+	 * Set the position where the {@link Renderable} needs to be rendered.
+	 * 
+	 * @param x
+	 * @param y
+	 * @param z
+	 */
 	public void setPosition(float x, float y, float z);
 
+	/**
+	 * Get the position where the {@link Renderable} will be rendered.
+	 * 
+	 * @return
+	 */
 	public Point3 getPosition();
 
+	/**
+	 * Set the angle of the {@link Renderable}.
+	 * 
+	 * @param x
+	 * @param y
+	 * @param z
+	 */
 	public void setAngle(float x, float y, float z);
 
+	/**
+	 * Get the angle of the {@link Renderable}.
+	 * 
+	 * @return
+	 */
 	public Point3 getAngle();
 
-	public long getTimeFlag();
-
-	// public void setGeoObject(GeoObject object);
+	/**
+	 * Get the time mark.
+	 * 
+	 * @return
+	 */
+	public long getTimeMark();
 
 }

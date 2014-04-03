@@ -21,9 +21,8 @@ import com.beyondar.android.util.math.geom.Ray;
 import com.beyondar.android.util.math.geom.Vector3;
 
 /**
- * A Spherical Armature. It's created from a point (sphere's center) and a
+ * A spherical mesh collider. It's created from a point (sphere's center) and a
  * radius (sphere's radius)
- * 
  * 
  */
 public class SphericalMeshCollider implements MeshCollider {

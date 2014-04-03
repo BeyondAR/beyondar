@@ -19,15 +19,15 @@ import com.beyondar.android.util.math.geom.Point3;
 import com.beyondar.android.util.math.geom.Ray;
 
 /**
- * An armature is a container for 3D objects. It will be used for collision
- * tests. Armature are usually less complicated than the actual 3D object. They
- * are usually cubes or spheres, to simplify calculations.
+ * A mesh collider is a container for 3D objects used for collision tests. mesh colliders
+ * are usually less complicated than the actual 3D object. They are usually
+ * cubes or spheres to simplify calculations.
  * 
  */
 public interface MeshCollider {
 
 	/**
-	 * Returns <b>true</b> if the given point is contained by the armature.
+	 * Returns <b>true</b> if the given point is contained by the mesh collider.
 	 * <b>false</b> otherwise
 	 * 
 	 * @param p
@@ -38,7 +38,7 @@ public interface MeshCollider {
 	public boolean contains(Point3 p);
 
 	/**
-	 * Test whether a ray intersects with the armature. If it does, returns the
+	 * Test whether a ray intersects with the mesh collider. If it does, returns the
 	 * intersection point. If it doesn't, returns <b>null</b>
 	 * 
 	 * @param r
@@ -48,7 +48,7 @@ public interface MeshCollider {
 	public Point3 getIntersectionPoint(Ray r);
 
 	/**
-	 * Return if the given ray intersects with the armature
+	 * Return if the given ray intersects with the mesh collider
 	 * 
 	 * @param r
 	 *            the ray

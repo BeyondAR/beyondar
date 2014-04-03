@@ -34,27 +34,27 @@ import com.beyondar.android.world.World;
  * 
  * Remember that you also can use the Location utility in the Google Services. <br>
  * <br>
- * Here is a small example how to use {@link BeyondarLocationHelper}: <br>
+ * Here is a small example how to use {@link BeyondarLocationManager}: <br>
  * 
  * <pre>
  * <code>
- * onCreate(Bundle savedInstanceState){
- * 	BeyondarLocationHelper.setLocationManager((LocationManager) this.getSystemService(Context.LOCATION_SERVICE));
- * 	BeyondarLocationHelper.addGeoObjectLocationUpdate(beyondarObject);
+ * void onCreate(Bundle savedInstanceState){
+ * 	BeyondarLocationManager.setLocationManager((LocationManager) this.getSystemService(Context.LOCATION_SERVICE));
+ * 	BeyondarLocationManager.addGeoObjectLocationUpdate(beyondarObject);
  * 	// You also can register a World or a LocationListener
  * 	// Don't forget to remove the object that you register
  * }
- * onResume(){
- * 	BeyondarLocationHelper.enable();
+ * void onResume(){
+ * 	BeyondarLocationManager.enable();
  * }
  * 
- * onPause(){
- * 	BeyondarLocationHelper.disable();
+ * void onPause(){
+ * 	BeyondarLocationManager.disable();
  * }
  * </code>
  * </pre>
  */
-public class BeyondarLocationHelper {
+public class BeyondarLocationManager {
 
 	public final static int MAX_TIME_GPS_FIX = 20000;
 

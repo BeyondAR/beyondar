@@ -23,6 +23,10 @@ import com.beyondar.android.util.math.geom.Point3;
 import com.beyondar.android.util.math.geom.Vector3;
 import com.beyondar.android.world.BeyondarObject;
 
+/**
+ * Basic {@link com.beyondar.android.opengl.renderable.Renderable Renderable}
+ * for rendering simple 2D images.
+ */
 public class SquareRenderable implements Renderable {
 
 	private static SquareRenderable mThis;
@@ -40,7 +44,12 @@ public class SquareRenderable implements Renderable {
 		mTexture = new Texture();
 	}
 
-	public static Renderable getInstance() {
+	/**
+	 * Get unique instance of the {@link SquareRenderable}.
+	 * 
+	 * @return
+	 */
+	public synchronized static Renderable getInstance() {
 		if (mThis == null) {
 			mThis = new SquareRenderable();
 		}
@@ -77,7 +86,6 @@ public class SquareRenderable implements Renderable {
 		gl.glRotatef((float) mAngle.x, 1, 0, 0);
 		gl.glRotatef((float) mAngle.y, 0, 1, 0);
 		gl.glRotatef((float) mAngle.z, 0, 0, 1);
-		
 
 		// bind the previously generated texture
 		if (!mTexture.isLoaded()) {
@@ -141,7 +149,7 @@ public class SquareRenderable implements Renderable {
 	}
 
 	@Override
-	public long getTimeFlag() {
+	public long getTimeMark() {
 		return mTimeMark;
 	}
 

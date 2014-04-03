@@ -73,7 +73,7 @@ class GoogleMapGeoObjectPlugin implements GeoObjectPlugin {
 	}
 
 	/**
-	 * Get the {@link LatLng} instance that represents the {@link GeoObject}. It
+	 * Get the {@link LatLng} instance that represents the {@link com.beyondar.android.world.GeoObject GeoObject}. It
 	 * will try to recycle the {@link LatLng} object if it is possible
 	 * 
 	 * @return
@@ -93,7 +93,7 @@ class GoogleMapGeoObjectPlugin implements GeoObjectPlugin {
 	}
 
 	/**
-	 * Set the {@link Marker} that belongs to the {@link GeoObject}
+	 * Set the {@link Marker} that belongs to the {@link com.beyondar.android.world.GeoObject GeoObject}
 	 * 
 	 * @param marker
 	 */
@@ -103,7 +103,7 @@ class GoogleMapGeoObjectPlugin implements GeoObjectPlugin {
 	}
 
 	/**
-	 * Get the marker that belongs to the {@link GeoObject}
+	 * Get the marker that belongs to the {@link com.beyondar.android.world.GeoObject GeoObject}
 	 * 
 	 * @return
 	 */

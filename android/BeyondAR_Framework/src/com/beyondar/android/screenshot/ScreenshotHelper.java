@@ -17,7 +17,7 @@ package com.beyondar.android.screenshot;
 
 import android.graphics.Bitmap;
 
-import com.beyondar.android.opengl.renderer.ARRenderer.SnapshotCallback;
+import com.beyondar.android.opengl.renderer.ARRenderer.GLSnapshotCallback;
 import com.beyondar.android.util.ImageUtils;
 import com.beyondar.android.view.BeyondarGLSurfaceView;
 import com.beyondar.android.view.CameraView;
@@ -50,7 +50,7 @@ public class ScreenshotHelper {
 		bgls.tackePicture(callbackProcessing);
 	}
 
-	private static class ScreenShootCallback implements BeyondarPictureCallback, SnapshotCallback {
+	private static class ScreenShootCallback implements BeyondarPictureCallback, GLSnapshotCallback {
 
 		Bitmap btmCamera;
 		Bitmap btmGl;

@@ -91,7 +91,7 @@ public class GoogleMapWorldPlugin implements WorldPlugin, BitmapCache.OnExternal
 
 	/**
 	 * This method adds the {@link GoogleMapGeoObjectPlugin} to the
-	 * {@link GeoObject}
+	 * {@link com.beyondar.android.world.GeoObject GeoObject}
 	 * 
 	 * @param beyondarObject
 	 */
@@ -323,11 +323,11 @@ public class GoogleMapWorldPlugin implements WorldPlugin, BitmapCache.OnExternal
 	}
 
 	/**
-	 * Retrieve the {@link GeoObject} that owns an specific {@link Marker}
+	 * Retrieve the {@link com.beyondar.android.world.GeoObject GeoObject} that owns an specific {@link Marker}
 	 * 
 	 * @param marker
 	 *            The Marker that whant's to be checked
-	 * @return The {@link GeoObject} owner or null if there is no owner
+	 * @return The {@link com.beyondar.android.world.GeoObject GeoObject} owner or null if there is no owner
 	 */
 	public GeoObject getGeoObjectOwner(Marker marker) {
 		GeoObjectPlugin geoObjectPlugin = mMarkerHashMap.get(marker);

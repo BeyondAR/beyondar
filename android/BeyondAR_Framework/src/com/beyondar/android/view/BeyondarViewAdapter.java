@@ -8,19 +8,66 @@ import android.content.Context;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
+import android.widget.ListAdapter;
 
 import com.beyondar.android.util.math.geom.Point2;
 import com.beyondar.android.world.BeyondarObject;
 
+/**
+ * Adapter to attach views to the
+ * {@link com.beyondar.android.world.BeyondarObject BeyondarObject}. This is an
+ * example of how to use the adapter:
+ * 
+ * <pre>
+ * <code>
+ * private class CustomBeyondarViewAdapter extends BeyondarViewAdapter {
+ * 
+ * 		LayoutInflater inflater;
+ * 
+ * 		public CustomBeyondarViewAdapter(Context context) {
+ * 			super(context);
+ * 			inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+ * 		}
+ * 
+ * 		@Override
+ * 		public View getView(BeyondarObject beyondarObject, View recycledView, ViewGroup parent) {
+ * 			if (!showViewOn.contains(beyondarObject)) {
+ * 				return null;
+ * 			}
+ * 			if (recycledView == null) {
+ * 				recycledView = inflater.inflate(R.layout.beyondar_object_view, null);
+ * 			}
+ * 
+ * 			TextView textView = (TextView) recycledView.findViewById(R.id.titleTextView);
+ * 			textView.setText(beyondarObject.getName());
+ * 			Button button = (Button) recycledView.findViewById(R.id.button);
+ * 			button.setOnClickListener(AttachViewToGeoObjectActivity.this);
+ * 
+ *          // Once the view is ready we specify the position
+ * 			setPosition(beyondarObject.getScreenPositionTopRight());
+ * 
+ * 			return recycledView;
+ * 		}
+ * 	}
+ * </code>
+ * </pre>
+ * 
+ * Then when the adapter is ready we can set it in the
+ * {@link com.beyondar.android.fragment.BeyondarFragment BeyondarFragment}:
+ * 
+ * <code>
+ * <pre>
+ * CustomBeyondarViewAdapter customBeyondarViewAdapter = new CustomBeyondarViewAdapter(this); 
+ * mBeyondarFragment.setBeyondarViewAdapter(customBeyondarViewAdapter);
+ * </code> </pre>
+ */
 public abstract class BeyondarViewAdapter {
 
 	Queue<ViewGroup> mReusedViews;
 	Queue<ViewGroup> mNewViews;
 
 	ViewGroup mParentView;
-
 	Point2 mNewPosition;
-
 	Context mContext;
 
 	final LayoutParams mLayoutParams;
@@ -88,19 +135,78 @@ public abstract class BeyondarViewAdapter {
 				mNewPosition = null;
 			}
 		});
-
 	}
 
+	/**
+	 * Get {@link Context}.
+	 * 
+	 * @return
+	 */
+	protected Context getContext() {
+		return mContext;
+	}
+
+	/**
+	 * Set the screen position of the view. When the view is ready use this
+	 * method to specify the position on the screen.
+	 * 
+	 * 
+	 * @param position
+	 */
 	protected void setPosition(Point2 position) {
 		mNewPosition = position;
 	}
 
-	protected void removeUnusedViews() {
+	private void removeUnusedViews() {
 		while (!mReusedViews.isEmpty()) {
 			View view = mReusedViews.poll();
 			mParentView.removeView(view);
 		}
 	}
 
+	/**
+	 * Override this method to create your own views from the
+	 * {@link com.beyondar.android.world.BeyondarObject BeyondarObject}. The
+	 * usage of this adapter is very similar to the {@link ListAdapter}.
+	 * 
+	 * <pre>
+	 * <code>
+	 * private class CustomBeyondarViewAdapter extends BeyondarViewAdapter {
+	 * 
+	 * 		LayoutInflater inflater;
+	 * 
+	 * 		public CustomBeyondarViewAdapter(Context context) {
+	 * 			super(context);
+	 * 			inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+	 * 		}
+	 * 
+	 * 		@Override
+	 * 		public View getView(BeyondarObject beyondarObject, View recycledView, ViewGroup parent) {
+	 * 			if (!showViewOn.contains(beyondarObject)) {
+	 * 				return null;
+	 * 			}
+	 * 			if (recycledView == null) {
+	 * 				recycledView = inflater.inflate(R.layout.beyondar_object_view, null);
+	 * 			}
+	 * 
+	 * 			TextView textView = (TextView) recycledView.findViewById(R.id.titleTextView);
+	 * 			textView.setText(beyondarObject.getName());
+	 * 			Button button = (Button) recycledView.findViewById(R.id.button);
+	 * 			button.setOnClickListener(AttachViewToGeoObjectActivity.this);
+	 * 
+	 *          // Once the view is ready we specify the position
+	 * 			setPosition(beyondarObject.getScreenPositionTopRight());
+	 * 
+	 * 			return recycledView;
+	 * 		}
+	 * 	}
+	 * </code>
+	 * </pre>
+	 * 
+	 * @param beyondarObject
+	 * @param recycledView
+	 * @param parent
+	 * @return
+	 */
 	public abstract View getView(BeyondarObject beyondarObject, View recycledView, ViewGroup parent);
 }

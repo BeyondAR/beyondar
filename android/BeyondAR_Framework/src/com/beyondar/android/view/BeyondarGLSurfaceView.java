@@ -32,34 +32,28 @@ import android.view.WindowManager;
 
 import com.beyondar.android.opengl.renderer.ARRenderer;
 import com.beyondar.android.opengl.renderer.ARRenderer.FpsUpdatable;
-import com.beyondar.android.opengl.renderer.ARRenderer.SnapshotCallback;
+import com.beyondar.android.opengl.renderer.ARRenderer.GLSnapshotCallback;
 import com.beyondar.android.opengl.renderer.OnBeyondarObjectRenderedListener;
 import com.beyondar.android.opengl.util.MatrixTrackingGL;
 import com.beyondar.android.sensor.BeyondarSensorManager;
 import com.beyondar.android.util.Logger;
 import com.beyondar.android.util.math.geom.Ray;
 import com.beyondar.android.world.BeyondarObject;
-import com.beyondar.android.world.GeoObject;
 import com.beyondar.android.world.World;
 
+/**
+ * GL View to draw the {@link com.beyondar.android.world.World World} using the
+ * {@link com.beyondar.android.opengl.renderer.ARRenderer ARRenderer}
+ */
 public class BeyondarGLSurfaceView extends GLSurfaceView implements OnBeyondarObjectRenderedListener {
 
 	protected ARRenderer mRenderer;
-	//private Context mContext;
 
 	private BeyondarViewAdapter mViewAdapter;
 	private ViewGroup mParent;
 
-	@Deprecated
-	private OnTouchBeyondarViewListener mTouchListener;
-
 	private World mWorld;
-
 	private int mSensorDelay;
-
-	public void tackePicture(SnapshotCallback callBack) {
-		mRenderer.tackePicture(callBack);
-	}
 
 	public BeyondarGLSurfaceView(Context context) {
 		super(context);
@@ -70,11 +64,9 @@ public class BeyondarGLSurfaceView extends GLSurfaceView implements OnBeyondarOb
 	public BeyondarGLSurfaceView(Context context, AttributeSet attrs) {
 		super(context, attrs);
 		init(context);
-
 	}
 
 	private void init(Context context) {
-		//mContext = context;
 		mSensorDelay = SensorManager.SENSOR_DELAY_UI;
 
 		if (Logger.DEBUG_OPENGL) {
@@ -92,7 +84,6 @@ public class BeyondarGLSurfaceView extends GLSurfaceView implements OnBeyondarOb
 
 		mRenderer = createRenderer();
 		mRenderer.setOnBeyondarObjectRenderedListener(this);
-		configureRenderer(mRenderer);
 
 		setEGLConfigChooser(8, 8, 8, 8, 16, 0);
 		getHolder().setFormat(PixelFormat.TRANSLUCENT);
@@ -107,6 +98,18 @@ public class BeyondarGLSurfaceView extends GLSurfaceView implements OnBeyondarOb
 	}
 
 	/**
+	 * Take an snapshot of the view. The callback will be notified when the
+	 * picture is ready.
+	 * 
+	 * @param callBack
+	 *            {@link com.beyondar.android.opengl.renderer.GLSnapshotCallback
+	 *            GLSnapshotCallback}
+	 */
+	public void tackePicture(GLSnapshotCallback callBack) {
+		mRenderer.tackePicture(callBack);
+	}
+
+	/**
 	 * Override this method to change the renderer. For instance:<br>
 	 * <code>return new CustomARRenderer();</code><br>
 	 * 
@@ -116,13 +119,15 @@ public class BeyondarGLSurfaceView extends GLSurfaceView implements OnBeyondarOb
 	}
 
 	/**
-	 * Override this method to personalize the configuration of the ARRenderer.
+	 * Set the
+	 * {@link com.beyondar.android.opengl.renderer.ARRenderer.FpsUpdatable
+	 * FpsUpdatable} to get notified about the frames per seconds.
 	 * 
-	 * @param renderer
+	 * @param fpsUpdatable
+	 *            The event listener. Use null to remove the
+	 *            {@link com.beyondar.android.opengl.renderer.ARRenderer.FpsUpdatable
+	 *            FpsUpdatable}
 	 */
-	protected void configureRenderer(ARRenderer renderer) {
-	}
-
 	public void setFpsUpdatable(FpsUpdatable fpsUpdatable) {
 		mRenderer.setFpsUpdatable(fpsUpdatable);
 	}
@@ -214,17 +219,11 @@ public class BeyondarGLSurfaceView extends GLSurfaceView implements OnBeyondarOb
 
 	@Override
 	public boolean onTouchEvent(final MotionEvent event) {
-		if (mWorld == null || mTouchListener == null || event == null) {
+		if (mWorld == null || event == null) {
 			return false;
 		}
 
-		mTouchListener.onTouchBeyondarView(event, this);
 		return false;
-	}
-
-	@Deprecated
-	public void setOnTouchBeyondarViewListener(OnTouchBeyondarViewListener listener) {
-		mTouchListener = listener;
 	}
 
 	private static final Ray sRay = new Ray(0, 0, 0);
@@ -235,8 +234,9 @@ public class BeyondarGLSurfaceView extends GLSurfaceView implements OnBeyondarOb
 	 * @param x
 	 * @param y
 	 * @param beyondarObjects
-	 *            The output list to place all the {@link BeyondarObject} that
-	 *            collide with the screen cord
+	 *            The output list to place all the
+	 *            {@link com.beyondar.android.world.BeyondarObject
+	 *            BeyondarObject} that collide with the screen cord
 	 * @return
 	 */
 	public synchronized void getBeyondarObjectsOnScreenCoordinates(float x, float y,
@@ -251,8 +251,9 @@ public class BeyondarGLSurfaceView extends GLSurfaceView implements OnBeyondarOb
 	 * @param x
 	 * @param y
 	 * @param beyondarObjects
-	 *            The output list to place all the {@link BeyondarObject} that
-	 *            collide with the screen cord
+	 *            The output list to place all the
+	 *            {@link com.beyondar.android.world.BeyondarObject
+	 *            BeyondarObject} that collide with the screen cord
 	 * @param ray
 	 *            The ray that will hold the direction of the screen coordinate
 	 * @return
@@ -264,9 +265,9 @@ public class BeyondarGLSurfaceView extends GLSurfaceView implements OnBeyondarOb
 	}
 
 	/**
-	 * When a {@link GeoObject} is rendered according to its position it could
-	 * look very small if it is far away. Use this method to render far objects
-	 * as if there were closer.<br>
+	 * When a {@link com.beyondar.android.world.GeoObject GeoObject} is rendered
+	 * according to its position it could look very small if it is far away. Use
+	 * this method to render far objects as if there were closer.<br>
 	 * For instance if there is an object at 100 meters and we want to have
 	 * everything at least at 25 meters, we could use this method for that
 	 * purpose. <br>
@@ -274,14 +275,16 @@ public class BeyondarGLSurfaceView extends GLSurfaceView implements OnBeyondarOb
 	 * 
 	 * @param maxDistanceSize
 	 *            The top far distance (in meters) which we want to draw a
-	 *            {@link GeoObject} , 0 to set again the default behavior
+	 *            {@link com.beyondar.android.world.GeoObject GeoObject} , 0 to
+	 *            set again the default behavior
 	 */
 	public void setMaxDistanceSize(float maxDistanceSize) {
 		mRenderer.setMaxDistanceSize(maxDistanceSize);
 	}
 
 	/**
-	 * Get the max distance which a {@link GeoObject} will be rendered.
+	 * Get the max distance which a {@link com.beyondar.android.world.GeoObject
+	 * GeoObject} will be rendered.
 	 * 
 	 * @return The current max distance. 0 is the default behavior
 	 */
@@ -290,9 +293,9 @@ public class BeyondarGLSurfaceView extends GLSurfaceView implements OnBeyondarOb
 	}
 
 	/**
-	 * When a {@link GeoObject} is rendered according to its position it could
-	 * look very big if it is too close. Use this method to render near objects
-	 * as if there were farther.<br>
+	 * When a {@link com.beyondar.android.world.GeoObject GeoObject} is rendered
+	 * according to its position it could look very big if it is too close. Use
+	 * this method to render near objects as if there were farther.<br>
 	 * For instance if there is an object at 1 meters and we want to have
 	 * everything at least at 10 meters, we could use this method for that
 	 * purpose. <br>
@@ -300,14 +303,16 @@ public class BeyondarGLSurfaceView extends GLSurfaceView implements OnBeyondarOb
 	 * 
 	 * @param minDistanceSize
 	 *            The top near distance (in meters) which we want to draw a
-	 *            {@link GeoObject} , 0 to set again the default behavior
+	 *            {@link com.beyondar.android.world.GeoObject GeoObject} , 0 to
+	 *            set again the default behavior
 	 */
 	public void setMinDistanceSize(float minDistanceSize) {
 		mRenderer.setMinDistanceSize(minDistanceSize);
 	}
 
 	/**
-	 * Get the minimum distance which a {@link GeoObject} will be rendered.
+	 * Get the minimum distance which a
+	 * {@link com.beyondar.android.world.GeoObject GeoObject} will be rendered.
 	 * 
 	 * @return The current minimum distance. 0 is the default behavior
 	 */
@@ -337,10 +342,14 @@ public class BeyondarGLSurfaceView extends GLSurfaceView implements OnBeyondarOb
 	 * object is rendered, so it is asynchronous.<br>
 	 * 
 	 * After this method is called you can use the following:<br>
-	 * {@link com.beyondar.android.world.BeyondarObject BeyondarObject.getScreenPositionBottomLeft()}<br>
-	 * {@link com.beyondar.android.world.BeyondarObject BeyondarObject.getScreenPositionBottomRight()}<br>
-	 * {@link com.beyondar.android.world.BeyondarObject BeyondarObject.getScreenPositionTopLeft()}<br>
-	 * {@link com.beyondar.android.world.BeyondarObject BeyondarObject.getScreenPositionTopRight()}
+	 * {@link com.beyondar.android.world.BeyondarObject
+	 * BeyondarObject.getScreenPositionBottomLeft()}<br>
+	 * {@link com.beyondar.android.world.BeyondarObject
+	 * BeyondarObject.getScreenPositionBottomRight()}<br>
+	 * {@link com.beyondar.android.world.BeyondarObject
+	 * BeyondarObject.getScreenPositionTopLeft()}<br>
+	 * {@link com.beyondar.android.world.BeyondarObject
+	 * BeyondarObject.getScreenPositionTopRight()}
 	 * 
 	 * __Important__ Enabling this feature will reduce the FPS, use only when is
 	 * needed.

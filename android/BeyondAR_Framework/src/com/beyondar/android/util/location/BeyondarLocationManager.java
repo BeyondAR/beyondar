@@ -170,7 +170,7 @@ public class BeyondarLocationManager {
 	}
 
 	/**
-	 * Add a {@link GeoObject} that will be updated with the user location.
+	 * Add a {@link com.beyondar.android.world.GeoObject GeoObject} that will be updated with the user location.
 	 * 
 	 * @param geoObject
 	 */
@@ -179,7 +179,7 @@ public class BeyondarLocationManager {
 	}
 
 	/**
-	 * Remove the specified {@link GeoObject} to don't get any update about the
+	 * Remove the specified {@link com.beyondar.android.world.GeoObject GeoObject} to don't get any update about the
 	 * user location.
 	 * 
 	 * @param geoObject
@@ -189,7 +189,7 @@ public class BeyondarLocationManager {
 	}
 
 	/**
-	 * Remove all the {@link GeoObject} to get the location updates.
+	 * Remove all the {@link com.beyondar.android.world.GeoObject GeoObject} to get the location updates.
 	 */
 	public static void removeAllGeoObjectsUpdates() {
 		BeyondarLocationManagerSingleton.INSTANCE.mLocationListener.removeAllGeoObjectsUpdates();

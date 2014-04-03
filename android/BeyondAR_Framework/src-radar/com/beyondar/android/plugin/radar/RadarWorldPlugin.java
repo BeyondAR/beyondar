@@ -150,7 +150,7 @@ public class RadarWorldPlugin implements WorldPlugin, BeyondarSensorListener{
 	}
 
 	/**
-	 * This method adds the {@link RadarPointPlugin} to the {@link GeoObject}
+	 * This method adds the {@link RadarPointPlugin} to the {@link com.beyondar.android.world.GeoObject GeoObject}
 	 * 
 	 * @param beyondarObject
 	 */
@@ -235,7 +235,7 @@ public class RadarWorldPlugin implements WorldPlugin, BeyondarSensorListener{
 	/**
 	 * Get the max distance rendered by the view in meters
 	 * 
-	 * @return max distance to render the {@link GeoObject}s
+	 * @return max distance to render the {@link com.beyondar.android.world.GeoObject GeoObject}s
 	 */
 	public double getMaxDistance() {
 		return mMaxDistance;

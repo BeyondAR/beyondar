@@ -74,7 +74,7 @@ public class ARRenderer implements GLSurfaceView.Renderer, BeyondarSensorListene
 	/**
 	 * Callback to get notified when the snapshot of the OpenGL view is taken.
 	 */
-	public static interface SnapshotCallback {
+	public static interface GLSnapshotCallback {
 		/**
 		 * This method is called when the snapshot of the GL Surface is ready.
 		 * If there is an error, the image will be null
@@ -123,7 +123,7 @@ public class ARRenderer implements GLSurfaceView.Renderer, BeyondarSensorListene
 	protected Object lockPlugins = new Object();
 
 	private boolean mScreenshot;
-	private SnapshotCallback mSnapshotCallback;
+	private GLSnapshotCallback mSnapshotCallback;
 
 	private int mSurfaceRotation;
 
@@ -519,12 +519,14 @@ public class ARRenderer implements GLSurfaceView.Renderer, BeyondarSensorListene
 	}
 
 	/**
-	 * Set the {@link FpsUpdatable} to get notified about the frames per
-	 * seconds.
+	 * Set the
+	 * {@link com.beyondar.android.opengl.renderer.ARRenderer.FpsUpdatable
+	 * FpsUpdatable} to get notified about the frames per seconds.
 	 * 
 	 * @param fpsUpdatable
 	 *            The event listener. Use null to remove the
-	 *            {@link FpsUpdatable}
+	 *            {@link com.beyondar.android.opengl.renderer.ARRenderer.FpsUpdatable
+	 *            FpsUpdatable}
 	 */
 	public void setFpsUpdatable(FpsUpdatable fpsUpdatable) {
 		mCurrentTime = System.currentTimeMillis();
@@ -715,11 +717,12 @@ public class ARRenderer implements GLSurfaceView.Renderer, BeyondarSensorListene
 	}
 
 	/**
-	 * Take an snapshot of the view.
+	 * Take an snapshot of the view. The callback will be notified when the
+	 * picture is ready.
 	 * 
 	 * @param callBack
 	 */
-	public void tackePicture(SnapshotCallback callBack) {
+	public void tackePicture(GLSnapshotCallback callBack) {
 		mSnapshotCallback = callBack;
 		mScreenshot = true;
 	}

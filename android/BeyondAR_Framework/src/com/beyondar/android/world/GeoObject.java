@@ -28,7 +28,7 @@ public class GeoObject extends BeyondarObject {
 	private double mAltitude;
 
 	/**
-	 * Create an instance of a {@link GeoObject} with an unique ID
+	 * Create an instance of a {@link com.beyondar.android.world.GeoObject GeoObject} with an unique ID
 	 * 
 	 * @param id
 	 *            Unique ID

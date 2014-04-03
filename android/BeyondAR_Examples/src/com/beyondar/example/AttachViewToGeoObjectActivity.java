@@ -122,6 +122,7 @@ public class AttachViewToGeoObjectActivity extends FragmentActivity implements O
 			Button button = (Button) recycledView.findViewById(R.id.button);
 			button.setOnClickListener(AttachViewToGeoObjectActivity.this);
 
+			// Once the view is ready we specify the position
 			setPosition(beyondarObject.getScreenPositionTopRight());
 
 			return recycledView;

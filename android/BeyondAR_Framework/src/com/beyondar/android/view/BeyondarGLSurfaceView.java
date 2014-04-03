@@ -34,9 +34,8 @@ import com.beyondar.android.opengl.renderer.ARRenderer;
 import com.beyondar.android.opengl.renderer.ARRenderer.FpsUpdatable;
 import com.beyondar.android.opengl.renderer.ARRenderer.SnapshotCallback;
 import com.beyondar.android.opengl.renderer.OnBeyondarObjectRenderedListener;
-import com.beyondar.android.opengl.util.BeyondarSensorManager;
 import com.beyondar.android.opengl.util.MatrixTrackingGL;
-import com.beyondar.android.util.CompatibilityUtil;
+import com.beyondar.android.sensor.BeyondarSensorManager;
 import com.beyondar.android.util.Logger;
 import com.beyondar.android.util.math.geom.Ray;
 import com.beyondar.android.world.BeyondarObject;
@@ -46,8 +45,7 @@ import com.beyondar.android.world.World;
 public class BeyondarGLSurfaceView extends GLSurfaceView implements OnBeyondarObjectRenderedListener {
 
 	protected ARRenderer mRenderer;
-	private SensorManager mSensorManager;
-	private Context mContext;
+	//private Context mContext;
 
 	private BeyondarViewAdapter mViewAdapter;
 	private ViewGroup mParent;
@@ -76,7 +74,7 @@ public class BeyondarGLSurfaceView extends GLSurfaceView implements OnBeyondarOb
 	}
 
 	private void init(Context context) {
-		mContext = context;
+		//mContext = context;
 		mSensorDelay = SensorManager.SENSOR_DELAY_UI;
 
 		if (Logger.DEBUG_OPENGL) {
@@ -118,13 +116,11 @@ public class BeyondarGLSurfaceView extends GLSurfaceView implements OnBeyondarOb
 	}
 
 	/**
-	 * Override this method to personalize the configuration of the ARRenderer
+	 * Override this method to personalize the configuration of the ARRenderer.
 	 * 
 	 * @param renderer
 	 */
 	protected void configureRenderer(ARRenderer renderer) {
-		renderer.rotateViewForTablet(CompatibilityUtil.isTablet(mContext)
-				&& !CompatibilityUtil.is7InchTablet(getContext()));
 	}
 
 	public void setFpsUpdatable(FpsUpdatable fpsUpdatable) {
@@ -189,16 +185,10 @@ public class BeyondarGLSurfaceView extends GLSurfaceView implements OnBeyondarOb
 	}
 
 	private void unregisterSensorListener() {
-		mSensorManager = (SensorManager) mContext.getSystemService(Context.SENSOR_SERVICE);
-
-		BeyondarSensorManager.initializeSensors(mSensorManager);
 		BeyondarSensorManager.unregisterSensorListener(mRenderer);
 	}
 
 	private void registerSensorListener(int sensorDealy) {
-		mSensorManager = (SensorManager) mContext.getSystemService(Context.SENSOR_SERVICE);
-
-		BeyondarSensorManager.initializeSensors(mSensorManager);
 		BeyondarSensorManager.registerSensorListener(mRenderer);
 
 	}
@@ -207,6 +197,7 @@ public class BeyondarGLSurfaceView extends GLSurfaceView implements OnBeyondarOb
 	public void onPause() {
 		unregisterSensorListener();
 		super.onPause();
+		mRenderer.onPause();
 	}
 
 	@Override
@@ -217,6 +208,7 @@ public class BeyondarGLSurfaceView extends GLSurfaceView implements OnBeyondarOb
 			Display display = ((WindowManager) getContext().getSystemService(Context.WINDOW_SERVICE))
 					.getDefaultDisplay();
 			mRenderer.rotateView(display.getRotation());
+			mRenderer.onResume();
 		}
 	}
 
@@ -338,23 +330,46 @@ public class BeyondarGLSurfaceView extends GLSurfaceView implements OnBeyondarOb
 		}
 	}
 
+	/**
+	 * Use this method to fill all the screen positions of the
+	 * {@link com.beyondar.android.world.BeyondarObject BeyondarObject} when a
+	 * object is rendered. Remember that the information is filled when the
+	 * object is rendered, so it is asynchronous.<br>
+	 * 
+	 * After this method is called you can use the following:<br>
+	 * {@link com.beyondar.android.world.BeyondarObject BeyondarObject.getScreenPositionBottomLeft()}<br>
+	 * {@link com.beyondar.android.world.BeyondarObject BeyondarObject.getScreenPositionBottomRight()}<br>
+	 * {@link com.beyondar.android.world.BeyondarObject BeyondarObject.getScreenPositionTopLeft()}<br>
+	 * {@link com.beyondar.android.world.BeyondarObject BeyondarObject.getScreenPositionTopRight()}
+	 * 
+	 * __Important__ Enabling this feature will reduce the FPS, use only when is
+	 * needed.
+	 * 
+	 * @param fill
+	 *            Enable or disable this feature.
+	 */
 	public void forceFillBeyondarObjectPositionsOnRendering(boolean fill) {
-		mRenderer.forceFillBeyondarObjectPositions(true);
+		mRenderer.forceFillBeyondarObjectPositions(fill);
 	}
 
 	/**
 	 * Use this method to fill all the screen positions of the
-	 * {@link BeyondarObject}. After this method is called you can use the
-	 * following:<br>
-	 * {@link BeyondarObject#getScreenPositionBottomLeft()}<br>
-	 * {@link BeyondarObject#getScreenPositionBottomRight()}<br>
-	 * {@link BeyondarObject#getScreenPositionTopLeft()}<br>
-	 * {@link BeyondarObject#getScreenPositionTopRight()}
+	 * {@link com.beyondar.android.world.BeyondarObject BeyondarObject}. After
+	 * this method is called you can use the following:<br>
+	 * {@link com.beyondar.android.world.BeyondarObject
+	 * BeyondarObject.getScreenPositionBottomLeft()}<br>
+	 * {@link com.beyondar.android.world.BeyondarObject
+	 * BeyondarObject.getScreenPositionBottomRight()}<br>
+	 * {@link com.beyondar.android.world.BeyondarObject
+	 * BeyondarObject.getScreenPositionTopLeft()}<br>
+	 * {@link com.beyondar.android.world.BeyondarObject
+	 * BeyondarObject.getScreenPositionTopRight()}
 	 * 
 	 * @param beyondarObject
-	 *            The {@link BeyondarObject} to compute
+	 *            The {@link com.beyondar.android.world.BeyondarObject
+	 *            BeyondarObject} to compute
 	 */
 	public void fillBeyondarObjectPositions(BeyondarObject beyondarObject) {
-		mRenderer.fillBeyondarObjectPositions(beyondarObject);
+		mRenderer.fillBeyondarObjectScreenPositions(beyondarObject);
 	}
 }

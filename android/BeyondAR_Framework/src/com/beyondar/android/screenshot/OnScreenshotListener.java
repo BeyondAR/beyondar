@@ -17,7 +17,14 @@ package com.beyondar.android.screenshot;
 
 import android.graphics.Bitmap;
 
+/**
+ * Listener to get notified when a picture is taken (AR view + camera).
+ */
 public interface OnScreenshotListener {
 
+	/**
+	 * 
+	 * @param screenshot
+	 */
 	void onScreenshot(Bitmap screenshot);
 }

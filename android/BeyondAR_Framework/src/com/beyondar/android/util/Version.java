@@ -17,7 +17,14 @@ package com.beyondar.android.util;
 
 public class Version {
 
+	/**
+	 * Version number of BeyondAR framework. 
+	 */
 	public static final int VERSION_NUMBER = 000502;
+	
+	/**
+	 * Version name of BeyondAR framework. 
+	 */
 	public static final String VERSION_NAME= "0.5.2";
 
 }

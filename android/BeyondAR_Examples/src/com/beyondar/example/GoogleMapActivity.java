@@ -19,8 +19,8 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.widget.Toast;
 
+import com.beyondar.android.plugin.googlemap.GoogleMapWorldPlugin;
 import com.beyondar.android.world.GeoObject;
-import com.beyondar.android.world.GoogleMapWorldModule;
 import com.beyondar.android.world.World;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -31,7 +31,7 @@ import com.google.android.gms.maps.model.Marker;
 public class GoogleMapActivity extends FragmentActivity implements OnMarkerClickListener {
 
 	private GoogleMap mMap;
-	private GoogleMapWorldModule mGoogleMapModule;
+	private GoogleMapWorldPlugin mGoogleMapPlugin;
 	private World mWorld;
 
 	@Override
@@ -47,18 +47,18 @@ public class GoogleMapActivity extends FragmentActivity implements OnMarkerClick
 		// We create the world and fill the world
 		mWorld = CustomWorldHelper.generateObjects(this);
 
-		// As we want to use GoogleMaps, we are going to create the module and
+		// As we want to use GoogleMaps, we are going to create the plugin and
 		// attach it to the World
-		mGoogleMapModule = new GoogleMapWorldModule();
-		// Then we need to set the map in to the GoogleMapModule
-		mGoogleMapModule.setGoogleMap(mMap);
-		// Now that we have the module created let's add it in to our world
-		// NOTE: It is better to load the modules before start adding object in to the world
-		mWorld.addModule(mGoogleMapModule);
+		mGoogleMapPlugin = new GoogleMapWorldPlugin(this);
+		// Then we need to set the map in to the GoogleMapPlugin
+		mGoogleMapPlugin.setGoogleMap(mMap);
+		// Now that we have the plugin created let's add it to our world.
+		// NOTE: It is better to load the plugins before start adding object in to the world.
+		mWorld.addPlugin(mGoogleMapPlugin);
 
 		mMap.setOnMarkerClickListener(this);
 
-		mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(mGoogleMapModule.getLatLng(), 15));
+		mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(mGoogleMapPlugin.getLatLng(), 15));
 		mMap.animateCamera(CameraUpdateFactory.zoomTo(19), 2000, null);
 		
 		// Lets add the user position
@@ -73,7 +73,7 @@ public class GoogleMapActivity extends FragmentActivity implements OnMarkerClick
 	public boolean onMarkerClick(Marker marker) {
 		// To get the GeoObject that owns the marker we use the following
 		// method:
-		GeoObject geoObject = mGoogleMapModule.getGeoObjectOwner(marker);
+		GeoObject geoObject = mGoogleMapPlugin.getGeoObjectOwner(marker);
 		if (geoObject != null) {
 			Toast.makeText(this,
 					"Click on a marker owned by a GeoOject with the name: " + geoObject.getName(),

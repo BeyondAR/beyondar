@@ -36,6 +36,9 @@ public class BeyondarSensorManager {
 	 */
 	public static final int SENSOR_DELAY = SensorManager.SENSOR_DELAY_GAME;
 
+	private BeyondarSensorManager() {
+	}
+
 	static enum BeyondarSensorManagerSingleton implements SensorEventListener {
 		INSTANCE;
 

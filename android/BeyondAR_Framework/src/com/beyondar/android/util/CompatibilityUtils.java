@@ -20,12 +20,9 @@ import android.content.res.Configuration;
 import android.os.Build;
 import android.util.DisplayMetrics;
 
-public class CompatibilityUtil {
+public class CompatibilityUtils {
 
-	/**
-	 * This class can't be instantiated.
-	 */
-	private CompatibilityUtil() {
+	private CompatibilityUtils() {
 	}
 
 	/**

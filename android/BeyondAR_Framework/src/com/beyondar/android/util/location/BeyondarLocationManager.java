@@ -58,6 +58,9 @@ public class BeyondarLocationManager {
 
 	public final static int MAX_TIME_GPS_FIX = 20000;
 
+	private BeyondarLocationManager() {
+	}
+
 	private static enum BeyondarLocationManagerSingleton {
 		INSTANCE;
 
@@ -165,12 +168,13 @@ public class BeyondarLocationManager {
 	 * @param locationManager
 	 */
 	public static void setLocationManager(LocationManager locationManager) {
-		//TODO: Check what happens if an other locationManager is set
+		// TODO: Check what happens if an other locationManager is set
 		BeyondarLocationManagerSingleton.INSTANCE.setLocationManager(locationManager);
 	}
 
 	/**
-	 * Add a {@link com.beyondar.android.world.GeoObject GeoObject} that will be updated with the user location.
+	 * Add a {@link com.beyondar.android.world.GeoObject GeoObject} that will be
+	 * updated with the user location.
 	 * 
 	 * @param geoObject
 	 */
@@ -179,8 +183,8 @@ public class BeyondarLocationManager {
 	}
 
 	/**
-	 * Remove the specified {@link com.beyondar.android.world.GeoObject GeoObject} to don't get any update about the
-	 * user location.
+	 * Remove the specified {@link com.beyondar.android.world.GeoObject
+	 * GeoObject} to don't get any update about the user location.
 	 * 
 	 * @param geoObject
 	 */
@@ -189,7 +193,8 @@ public class BeyondarLocationManager {
 	}
 
 	/**
-	 * Remove all the {@link com.beyondar.android.world.GeoObject GeoObject} to get the location updates.
+	 * Remove all the {@link com.beyondar.android.world.GeoObject GeoObject} to
+	 * get the location updates.
 	 */
 	public static void removeAllGeoObjectsUpdates() {
 		BeyondarLocationManagerSingleton.INSTANCE.mLocationListener.removeAllGeoObjectsUpdates();

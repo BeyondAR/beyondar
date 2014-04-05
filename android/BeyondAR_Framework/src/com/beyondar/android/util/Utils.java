@@ -15,23 +15,14 @@
  */
 package com.beyondar.android.util;
 
+import com.beyondar.android.util.math.MathUtils;
+
 import android.graphics.Bitmap;
 import android.graphics.Matrix;
 
 public class Utils {
 
 	public static final int MAX_SIZE = 512;
-
-	/**
-	 * Check a number if it is a power of two
-	 * 
-	 * @param n
-	 *            The number to check
-	 * @return
-	 */
-	public static boolean isPowerOfTwo(int n) {
-		return ((n != 0) && (n & (n - 1)) == 0);
-	}
 
 	/**
 	 * Check if the bitmap is compatible to use it with OpenGL, if not, use
@@ -42,7 +33,7 @@ public class Utils {
 	 * @return True if there are no problems, false otherwise
 	 */
 	public static boolean isCompatibleWithOpenGL(Bitmap bitmap) {
-		return (Utils.isPowerOfTwo(bitmap.getHeight()) && Utils.isPowerOfTwo(bitmap.getWidth()));
+		return (MathUtils.isPowerOfTwo(bitmap.getHeight()) && MathUtils.isPowerOfTwo(bitmap.getWidth()));
 	}
 
 	/**
@@ -81,9 +72,5 @@ public class Utils {
 
 		// recreate the new Bitmap
 		return Bitmap.createBitmap(bitmap, 0, 0, width, height, matrix, true);
-
 	}
-
-	
-
 }

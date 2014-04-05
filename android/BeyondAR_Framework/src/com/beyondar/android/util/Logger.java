@@ -2,6 +2,9 @@ package com.beyondar.android.util;
 
 import android.util.Log;
 
+/**
+ * Logger class for BeyondAR framework
+ */
 public class Logger {
 
 	/** All the BeyondAR logs output have this tag */

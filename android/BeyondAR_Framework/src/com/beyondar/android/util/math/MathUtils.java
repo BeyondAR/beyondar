@@ -17,9 +17,12 @@ package com.beyondar.android.util.math;
 
 import com.beyondar.android.util.math.geom.Point3;
 
+/**
+ * Util class for math operations.
+ */
 public class MathUtils {
 
-	//TODO: Improve calculate the angle for Y
+	// TODO: Improve calculate the angle for Y
 	public static void calcAngleFaceToCamera(Point3 p1, Point3 p2, Point3 out) {
 
 		float x = (float) Math.toDegrees(Math.atan2(p1.y - p2.y, p1.z - p2.z));
@@ -62,16 +65,12 @@ public class MathUtils {
 	 * @param totalDistanceToMove
 	 * @param dstPoint
 	 */
-	public static void linearInterpolate(float x_start, float y_start,
-			float z_start, float x_end, float y_end, float z_end,
-			float newDistance, float totalDistanceToMove, Point3 dstPoint) {
+	public static void linearInterpolate(float x_start, float y_start, float z_start, float x_end,
+			float y_end, float z_end, float newDistance, float totalDistanceToMove, Point3 dstPoint) {
 
-		float x = (x_start + newDistance * (x_end - x_start)
-				/ (float) totalDistanceToMove);
-		float y = (y_start + newDistance * (y_end - y_start)
-				/ (float) totalDistanceToMove);
-		float z = (z_start + newDistance * (z_end)
-				/ (float) totalDistanceToMove);
+		float x = (x_start + newDistance * (x_end - x_start) / (float) totalDistanceToMove);
+		float y = (y_start + newDistance * (y_end - y_start) / (float) totalDistanceToMove);
+		float z = (z_start + newDistance * (z_end) / (float) totalDistanceToMove);
 
 		dstPoint.x = x;
 		dstPoint.y = y;
@@ -93,19 +92,27 @@ public class MathUtils {
 	 * @param dstPoint
 	 *            Array that will store the result of the calculus. [x, y, z]
 	 */
-	public static void linearInterpolate(double x_start, double y_start,
-			double z_start, double x_end, double y_end, double z_end,
-			double newDistance, double totalDistanceToMove, double[] dstPoint) {
+	public static void linearInterpolate(double x_start, double y_start, double z_start, double x_end,
+			double y_end, double z_end, double newDistance, double totalDistanceToMove, double[] dstPoint) {
 
-		double x = (x_start + newDistance * (x_end - x_start)
-				/ totalDistanceToMove);
-		double y = (y_start + newDistance * (y_end - y_start)
-				/ totalDistanceToMove);
+		double x = (x_start + newDistance * (x_end - x_start) / totalDistanceToMove);
+		double y = (y_start + newDistance * (y_end - y_start) / totalDistanceToMove);
 		double z = (z_start + newDistance * (z_end) / totalDistanceToMove);
 
 		dstPoint[0] = x;
 		dstPoint[1] = y;
 		dstPoint[2] = z;
+	}
+
+	/**
+	 * Check a number if it is a power of two
+	 * 
+	 * @param n
+	 *            The number to check
+	 * @return
+	 */
+	public static boolean isPowerOfTwo(int n) {
+		return ((n != 0) && (n & (n - 1)) == 0);
 	}
 
 }

@@ -32,6 +32,10 @@ import android.view.View.MeasureSpec;
 
 import com.beyondar.android.world.BeyondarObject;
 
+/**
+ * Util class for manipulating images.
+ * 
+ */
 public class ImageUtils {
 
 	/**
@@ -139,6 +143,13 @@ public class ImageUtils {
 		return DebugBitmap.decodeStream(is, uri);
 	}
 
+	/**
+	 * Merge two bitmas in to one.
+	 * 
+	 * @param bmp1
+	 * @param bmp2
+	 * @return
+	 */
 	public static Bitmap mergeBitmaps(Bitmap bmp1, Bitmap bmp2) {
 
 		int width = Math.max(bmp1.getWidth(), bmp2.getWidth());
@@ -160,11 +171,6 @@ public class ImageUtils {
 		return bmOverlay;
 
 	}
-
-	// Matrix matrix = new Matrix();
-	// matrix.postRotate(90);
-	// Bitmap pictureRotated = Bitmap.createBitmap(picture, 0, 0,
-	// picture.getWidth(), picture.getHeight(), matrix, true);
 
 	/**
 	 * 

@@ -22,7 +22,7 @@ import com.beyondar.android.plugin.GeoObjectPlugin;
 import com.beyondar.android.util.math.Distance;
 
 /**
- * Extension of the {@link BeyondarObject} to make easier the usage of geo
+ * Extension of the {@link com.beyondar.android.world.BeyondarObject BeyondarObject} to make easier the usage of geo
  * cordinates.
  * 
  */
@@ -55,7 +55,7 @@ public class GeoObject extends BeyondarObject {
 	}
 
 	/**
-	 * Set the position of the {@link GeoObject}.
+	 * Set the position of the {@link com.beyondar.android.world.GeoObject GeoObject}.
 	 * 
 	 * @param latitude
 	 * @param longitude
@@ -65,7 +65,7 @@ public class GeoObject extends BeyondarObject {
 	}
 
 	/**
-	 * Set the position of the {@link GeoObject}.
+	 * Set the position of the {@link com.beyondar.android.world.GeoObject GeoObject}.
 	 * 
 	 * @param latitude
 	 * @param longitude
@@ -125,11 +125,11 @@ public class GeoObject extends BeyondarObject {
 	}
 
 	/**
-	 * Calculate the distance of this {@link GeoObject} from an other
-	 * {@link GeoObject}.
+	 * Calculate the distance of this {@link com.beyondar.android.world.GeoObject GeoObject} from an other
+	 * {@link com.beyondar.android.world.GeoObject GeoObject}.
 	 * 
 	 * @param geo
-	 *            The other {@link GeoObject} to calculate the distance.
+	 *            The other {@link com.beyondar.android.world.GeoObject GeoObject} to calculate the distance.
 	 * @return The distance in meters.
 	 */
 	public double calculateDistanceMeters(GeoObject geo) {
@@ -137,14 +137,14 @@ public class GeoObject extends BeyondarObject {
 	}
 
 	/**
-	 * Calculate the distance of this {@link GeoObject} from an other
-	 * {@link GeoObject}.
+	 * Calculate the distance of this {@link com.beyondar.android.world.GeoObject GeoObject} from an other
+	 * {@link com.beyondar.android.world.GeoObject GeoObject}.
 	 * 
 	 * @param longitude
-	 *            The other {@link GeoObject} longitude to calculate the
+	 *            The other {@link com.beyondar.android.world.GeoObject GeoObject} longitude to calculate the
 	 *            distance.
 	 * @param latitude
-	 *            The other {@link GeoObject} latitude to calculate the
+	 *            The other {@link com.beyondar.android.world.GeoObject GeoObject} latitude to calculate the
 	 *            distance.
 	 * @return The distance in meters.
 	 */

@@ -30,8 +30,6 @@ import android.graphics.Matrix;
 import android.view.View;
 import android.view.View.MeasureSpec;
 
-import com.beyondar.android.world.BeyondarObject;
-
 /**
  * Util class for manipulating images.
  * 
@@ -211,7 +209,7 @@ public class ImageUtils {
 
 	/**
 	 * Save the view in the the storage. This can be used to set a static view
-	 * to a {@link BeyondarObject}. Remember that in order to use this feature
+	 * to a {@link com.beyondar.android.world.BeyondarObject BeyondarObject}. Remember that in order to use this feature
 	 * you may need to set {@link Manifest.permission#WRITE_EXTERNAL_STORAGE}
 	 * permission in your application manifest.<br>
 	 * 

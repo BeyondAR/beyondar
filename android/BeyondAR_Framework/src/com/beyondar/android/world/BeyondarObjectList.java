@@ -61,8 +61,8 @@ public class BeyondarObjectList implements Iterable<BeyondarObject> {
 	}
 
 	/**
-	 * Set the visibility of the {@link BeyondarObjectList}. If invisible all
-	 * the {@link BeyondarObject}s will not be rendered.
+	 * Set the visibility of the {@link com.beyondar.android.world.BeyondarObjectList BeyondarObjectList}. If invisible all
+	 * the {@link com.beyondar.android.world.BeyondarObject BeyondarObject}s will not be rendered.
 	 * 
 	 * @param visibility
 	 */
@@ -143,7 +143,7 @@ public class BeyondarObjectList implements Iterable<BeyondarObject> {
 
 	/**
 	 * Set the default image of the list. This default image is used when the
-	 * {@link BeyondarObject} image is not available.
+	 * {@link com.beyondar.android.world.BeyondarObject BeyondarObject} image is not available.
 	 * 
 	 * @param uri
 	 *            Default image.
@@ -156,7 +156,7 @@ public class BeyondarObjectList implements Iterable<BeyondarObject> {
 	/**
 	 * Get the default bitmap. <br>
 	 * __Importatn__ Do not use this method directly form the
-	 * {@link BeyondarObjectList} instance, the best way to get the default
+	 * {@link com.beyondar.android.world.BeyondarObjectList BeyondarObjectList} instance, the best way to get the default
 	 * image is using the getDefaultBitmap(int) method in the {@link World}
 	 * instance.
 	 * 
@@ -172,11 +172,11 @@ public class BeyondarObjectList implements Iterable<BeyondarObject> {
 	}
 
 	/**
-	 * Set the default {@link Texture} of the list. This {@link Texture} is used
-	 * when the {@link BeyondarObject} texture is not loaded.
+	 * Set the default {@link com.beyondar.android.opengl.texture.Texture Texture} of the list. This {@link com.beyondar.android.opengl.texture.Texture Texture} is used
+	 * when the {@link com.beyondar.android.world.BeyondarObject BeyondarObject} texture is not loaded.
 	 * 
 	 * @param texture
-	 *            Default {@link Texture}.
+	 *            Default {@link com.beyondar.android.opengl.texture.Texture Texture}.
 	 */
 	public void setDefaultTexture(Texture texture) {
 		if (texture == null) {
@@ -186,10 +186,10 @@ public class BeyondarObjectList implements Iterable<BeyondarObject> {
 	}
 
 	/**
-	 * Get the default {@link Texture} of the list. This {@link Texture} is used
-	 * when the {@link BeyondarObject} texture is not loaded.
+	 * Get the default {@link com.beyondar.android.opengl.texture.Texture Texture} of the list. This {@link com.beyondar.android.opengl.texture.Texture Texture} is used
+	 * when the {@link com.beyondar.android.world.BeyondarObject BeyondarObject} texture is not loaded.
 	 * 
-	 * @return texture Default {@link Texture}.
+	 * @return texture Default {@link com.beyondar.android.opengl.texture.Texture Texture}.
 	 */
 	public Texture getDefaultTexture() {
 		return mTexture;

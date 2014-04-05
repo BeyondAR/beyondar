@@ -47,9 +47,10 @@ public interface WorldPlugin extends Plugin {
 	public void setup(World world);
 
 	/**
-	 * This method is invoked when a new {@link BeyondarObject} is added to the
-	 * world. Use this method to add specific plugin's to the
-	 * {@link BeyondarObject}.
+	 * This method is invoked when a new
+	 * {@link com.beyondar.android.world.BeyondarObject BeyondarObject} is added
+	 * to the world. Use this method to add specific plugin's to the
+	 * {@link com.beyondar.android.world.BeyondarObject BeyondarObject}.
 	 * 
 	 * @param beyondarObject
 	 * @param beyondarObjectList
@@ -57,8 +58,10 @@ public interface WorldPlugin extends Plugin {
 	public void onBeyondarObjectAdded(BeyondarObject beyondarObject, BeyondarObjectList beyondarObjectList);
 
 	/**
-	 * This method is invoked when a {@link BeyondarObject} is removed from the
-	 * world. Use this method to remove the plugin's that are not needed.
+	 * This method is invoked when a
+	 * {@link com.beyondar.android.world.BeyondarObject BeyondarObject} is
+	 * removed from the world. Use this method to remove the plugin's that are
+	 * not needed.
 	 * 
 	 * @param beyondarObject
 	 * @param beyondarObjectList
@@ -66,7 +69,9 @@ public interface WorldPlugin extends Plugin {
 	public void onBeyondarObjectRemoved(BeyondarObject beyondarObject, BeyondarObjectList beyondarObjectList);
 
 	/**
-	 * This method is invoked when a new {@link BeyondarObjectList} is created.
+	 * This method is invoked when a new
+	 * {@link com.beyondar.android.world.BeyondarObjectList BeyondarObjectList}
+	 * is created.
 	 */
 	public void onBeyondarObjectListCreated(BeyondarObjectList beyondarObjectList);
 
@@ -86,7 +91,7 @@ public interface WorldPlugin extends Plugin {
 
 	/**
 	 * This method is invoked when the default image for all the
-	 * {@link BeyondarObject} is set.
+	 * {@link com.beyondar.android.world.BeyondarObject BeyondarObject} is set.
 	 * 
 	 * @param uri
 	 */

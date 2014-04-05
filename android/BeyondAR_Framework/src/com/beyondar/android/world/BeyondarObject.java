@@ -57,7 +57,8 @@ public class BeyondarObject implements Plugable<BeyondarObjectPlugin> {
 	protected Object lockPlugins = new Object();
 
 	/**
-	 * Create an instance of a {@link BeyondarObject} with an unique ID
+	 * Create an instance of a {@link com.beyondar.android.world.BeyondarObject
+	 * BeyondarObject} with an unique ID
 	 * 
 	 * @param id
 	 *            Unique ID
@@ -68,8 +69,10 @@ public class BeyondarObject implements Plugable<BeyondarObjectPlugin> {
 	}
 
 	/**
-	 * Create an instance of a {@link BeyondarObject} with an unique ID. The hash
-	 * of the object will be used as the {@link BeyondarObject} unique id.
+	 * Create an instance of a {@link com.beyondar.android.world.BeyondarObject
+	 * BeyondarObject} with an unique ID. The hash of the object will be used as
+	 * the {@link com.beyondar.android.world.BeyondarObject BeyondarObject}
+	 * unique id.
 	 */
 	public BeyondarObject() {
 		init();
@@ -96,7 +99,8 @@ public class BeyondarObject implements Plugable<BeyondarObjectPlugin> {
 	}
 
 	/**
-	 * Get the unique id of the {@link BeyondarObject}.
+	 * Get the unique id of the
+	 * {@link com.beyondar.android.world.BeyondarObject BeyondarObject}.
 	 */
 	public long getId() {
 		if (mId == null) {
@@ -198,7 +202,8 @@ public class BeyondarObject implements Plugable<BeyondarObjectPlugin> {
 	}
 
 	/**
-	 * Get the used angle for rendering the {@link BeyondarObject}.
+	 * Get the used angle for rendering the
+	 * {@link com.beyondar.android.world.BeyondarObject BeyondarObject}.
 	 * 
 	 * @return The angle in degrees.
 	 */
@@ -207,7 +212,8 @@ public class BeyondarObject implements Plugable<BeyondarObjectPlugin> {
 	}
 
 	/**
-	 * Set the used angle for rendering the {@link BeyondarObject}.
+	 * Set the used angle for rendering the
+	 * {@link com.beyondar.android.world.BeyondarObject BeyondarObject}.
 	 * 
 	 * @param x
 	 *            The angle in degrees for x.
@@ -231,7 +237,8 @@ public class BeyondarObject implements Plugable<BeyondarObjectPlugin> {
 	}
 
 	/**
-	 * Set the used angle for rendering the {@link BeyondarObject}.
+	 * Set the used angle for rendering the
+	 * {@link com.beyondar.android.world.BeyondarObject BeyondarObject}.
 	 * 
 	 * @param newAngle
 	 *            The angle in degrees.
@@ -248,7 +255,9 @@ public class BeyondarObject implements Plugable<BeyondarObjectPlugin> {
 	}
 
 	/**
-	 * Get the position where the {@link BeyondarObject} is being rendered.
+	 * Get the position where the
+	 * {@link com.beyondar.android.world.BeyondarObject BeyondarObject} is being
+	 * rendered.
 	 * 
 	 * @return The 3D position.
 	 */
@@ -257,7 +266,9 @@ public class BeyondarObject implements Plugable<BeyondarObjectPlugin> {
 	}
 
 	/**
-	 * Get the position where the {@link BeyondarObject} is being rendered.
+	 * Get the position where the
+	 * {@link com.beyondar.android.world.BeyondarObject BeyondarObject} is being
+	 * rendered.
 	 * 
 	 * @param newPos
 	 *            New position.
@@ -274,7 +285,9 @@ public class BeyondarObject implements Plugable<BeyondarObjectPlugin> {
 	}
 
 	/**
-	 * Set the position where the {@link BeyondarObject} is being rendered.
+	 * Set the position where the
+	 * {@link com.beyondar.android.world.BeyondarObject BeyondarObject} is being
+	 * rendered.
 	 * 
 	 * @param newPos
 	 *            New position.
@@ -304,16 +317,20 @@ public class BeyondarObject implements Plugable<BeyondarObjectPlugin> {
 	}
 
 	/**
-	 * Get the {@link Texture} used to render the {@link BeyondarObject}.
+	 * Get the {@link com.beyondar.android.opengl.texture.Texture Texture} used
+	 * to render the {@link com.beyondar.android.world.BeyondarObject
+	 * BeyondarObject}.
 	 * 
-	 * @return {@link Texture} object in use.
+	 * @return {@link com.beyondar.android.opengl.texture.Texture Texture}
+	 *         object in use.
 	 */
 	public Texture getTexture() {
 		return mTexture;
 	}
 
 	/**
-	 * Set the texture pointer of the {@link BeyondarObject}.
+	 * Set the texture pointer of the
+	 * {@link com.beyondar.android.world.BeyondarObject BeyondarObject}.
 	 * 
 	 * @param texturePointer
 	 *            The new texture pointer.
@@ -330,7 +347,9 @@ public class BeyondarObject implements Plugable<BeyondarObjectPlugin> {
 	}
 
 	/**
-	 * Set the {@link Texture} used to render the {@link BeyondarObject}.
+	 * Set the {@link com.beyondar.android.opengl.texture.Texture Texture} used
+	 * to render the {@link com.beyondar.android.world.BeyondarObject
+	 * BeyondarObject}.
 	 * 
 	 */
 	public void setTexture(Texture texture) {
@@ -349,9 +368,12 @@ public class BeyondarObject implements Plugable<BeyondarObjectPlugin> {
 	}
 
 	/**
-	 * Get {@link Renderable} that renders the {@link BeyondarObject}
+	 * Get {@link com.beyondar.android.opengl.renderable.Renderable Renderable}
+	 * that renders the {@link com.beyondar.android.world.BeyondarObject
+	 * BeyondarObject}
 	 * 
-	 * @return The {@link Renderable} used for rendering.
+	 * @return The {@link com.beyondar.android.opengl.renderable.Renderable
+	 *         Renderable} used for rendering.
 	 */
 	public Renderable getOpenGLObject() {
 		if (null == mRenderable) {
@@ -361,7 +383,9 @@ public class BeyondarObject implements Plugable<BeyondarObjectPlugin> {
 	}
 
 	/**
-	 * Set a custom {@link Renderable} for the {@link BeyondarObject}
+	 * Set a custom {@link com.beyondar.android.opengl.renderable.Renderable
+	 * Renderable} for the {@link com.beyondar.android.world.BeyondarObject
+	 * BeyondarObject}
 	 * 
 	 * @param renderable
 	 */
@@ -377,7 +401,8 @@ public class BeyondarObject implements Plugable<BeyondarObjectPlugin> {
 	}
 
 	/**
-	 * The the image uri used to represent the {@link BeyondarObject}
+	 * The the image uri used to represent the
+	 * {@link com.beyondar.android.world.BeyondarObject BeyondarObject}
 	 * 
 	 * @return
 	 */
@@ -386,7 +411,8 @@ public class BeyondarObject implements Plugable<BeyondarObjectPlugin> {
 	}
 
 	/**
-	 * Define if the {@link BeyondarObject} should face the camera.
+	 * Define if the {@link com.beyondar.android.world.BeyondarObject
+	 * BeyondarObject} should face the camera.
 	 * 
 	 * @param faceToCamera
 	 *            true if it should face the camera, false otherwise.
@@ -403,7 +429,8 @@ public class BeyondarObject implements Plugable<BeyondarObjectPlugin> {
 	}
 
 	/**
-	 * Check if the {@link BeyondarObject} is facing the camera.
+	 * Check if the {@link com.beyondar.android.world.BeyondarObject
+	 * BeyondarObject} is facing the camera.
 	 * 
 	 * @return True if it is facing.
 	 */
@@ -430,7 +457,8 @@ public class BeyondarObject implements Plugable<BeyondarObjectPlugin> {
 	}
 
 	/**
-	 * Check the visibility of the {@link BeyondarObject}.
+	 * Check the visibility of the
+	 * {@link com.beyondar.android.world.BeyondarObject BeyondarObject}.
 	 * 
 	 * @return True if it is visible, false otherwise.
 	 */
@@ -439,10 +467,12 @@ public class BeyondarObject implements Plugable<BeyondarObjectPlugin> {
 	}
 
 	/**
-	 * Set the name of the {@link BeyondarObject}.
+	 * Set the name of the {@link com.beyondar.android.world.BeyondarObject
+	 * BeyondarObject}.
 	 * 
 	 * @param name
-	 *            Name of the {@link BeyondarObject}.
+	 *            Name of the {@link com.beyondar.android.world.BeyondarObject
+	 *            BeyondarObject}.
 	 */
 	public void setName(String name) {
 		if (name == this.mName)
@@ -456,9 +486,11 @@ public class BeyondarObject implements Plugable<BeyondarObjectPlugin> {
 	}
 
 	/**
-	 * Get the name of the {@link BeyondarObject}.
+	 * Get the name of the {@link com.beyondar.android.world.BeyondarObject
+	 * BeyondarObject}.
 	 * 
-	 * @return The name of the {@link BeyondarObject}.
+	 * @return The name of the {@link com.beyondar.android.world.BeyondarObject
+	 *         BeyondarObject}.
 	 */
 	public String getName() {
 		return mName;
@@ -468,7 +500,9 @@ public class BeyondarObject implements Plugable<BeyondarObjectPlugin> {
 	 * Set the image uri.
 	 * 
 	 * @param uri
-	 *            The image uri that represents the {@link BeyondarObject}.
+	 *            The image uri that represents the
+	 *            {@link com.beyondar.android.world.BeyondarObject
+	 *            BeyondarObject}.
 	 */
 	public void setImageUri(String uri) {
 		if (uri == mImageUri)
@@ -483,7 +517,8 @@ public class BeyondarObject implements Plugable<BeyondarObjectPlugin> {
 	}
 
 	/**
-	 * Set an image resource for the {@link BeyondarObject}.
+	 * Set an image resource for the
+	 * {@link com.beyondar.android.world.BeyondarObject BeyondarObject}.
 	 * 
 	 * @param resId
 	 *            The resource id.
@@ -503,7 +538,8 @@ public class BeyondarObject implements Plugable<BeyondarObjectPlugin> {
 	}
 
 	/**
-	 * Get the list type of the {@link BeyondarObject}.
+	 * Get the list type of the
+	 * {@link com.beyondar.android.world.BeyondarObject BeyondarObject}.
 	 * 
 	 * @return The list type.
 	 */
@@ -533,7 +569,8 @@ public class BeyondarObject implements Plugable<BeyondarObjectPlugin> {
 	}
 
 	/**
-	 * Get the bottom left screen position of the {@link BeyondarObject} on the
+	 * Get the bottom left screen position of the
+	 * {@link com.beyondar.android.world.BeyondarObject BeyondarObject} on the
 	 * screen. use the Z axis to check if the object is in front (z<1) or behind
 	 * (z>1) the screen.
 	 * 
@@ -544,7 +581,8 @@ public class BeyondarObject implements Plugable<BeyondarObjectPlugin> {
 	}
 
 	/**
-	 * Get the top left screen position of the {@link BeyondarObject} on the
+	 * Get the top left screen position of the
+	 * {@link com.beyondar.android.world.BeyondarObject BeyondarObject} on the
 	 * screen. use the Z axis to check if the object is in front (z<1) or behind
 	 * (z>1) the screen.
 	 * 
@@ -555,7 +593,8 @@ public class BeyondarObject implements Plugable<BeyondarObjectPlugin> {
 	}
 
 	/**
-	 * Get the top right screen position of the {@link BeyondarObject} on the
+	 * Get the top right screen position of the
+	 * {@link com.beyondar.android.world.BeyondarObject BeyondarObject} on the
 	 * screen. use the Z axis to check if the object is in front (z<1) or behind
 	 * (z>1) the screen.
 	 * 
@@ -566,7 +605,8 @@ public class BeyondarObject implements Plugable<BeyondarObjectPlugin> {
 	}
 
 	/**
-	 * Get the bottom right screen position of the {@link BeyondarObject} on the
+	 * Get the bottom right screen position of the
+	 * {@link com.beyondar.android.world.BeyondarObject BeyondarObject} on the
 	 * screen. use the Z axis to check if the object is in front (z<1) or behind
 	 * (z>1) the screen.
 	 * 
@@ -577,7 +617,8 @@ public class BeyondarObject implements Plugable<BeyondarObjectPlugin> {
 	}
 
 	/**
-	 * Get the center screen position of the {@link BeyondarObject} on the
+	 * Get the center screen position of the
+	 * {@link com.beyondar.android.world.BeyondarObject BeyondarObject} on the
 	 * screen. use the Z axis to check if the object is in front (z<1) or behind
 	 * (z>1) the screen.
 	 * 
@@ -588,7 +629,8 @@ public class BeyondarObject implements Plugable<BeyondarObjectPlugin> {
 	}
 
 	/**
-	 * Get the top left of the {@link BeyondarObject} on the 3D world.
+	 * Get the top left of the {@link com.beyondar.android.world.BeyondarObject
+	 * BeyondarObject} on the 3D world.
 	 * 
 	 * @return Top left 3D.
 	 */
@@ -604,7 +646,9 @@ public class BeyondarObject implements Plugable<BeyondarObjectPlugin> {
 	}
 
 	/**
-	 * Get the bottom left of the {@link BeyondarObject} on the 3D world.
+	 * Get the bottom left of the
+	 * {@link com.beyondar.android.world.BeyondarObject BeyondarObject} on the
+	 * 3D world.
 	 * 
 	 * @return bottom left 3D.
 	 */
@@ -620,7 +664,9 @@ public class BeyondarObject implements Plugable<BeyondarObjectPlugin> {
 	}
 
 	/**
-	 * Get the bottom right of the {@link BeyondarObject} on the 3D world.
+	 * Get the bottom right of the
+	 * {@link com.beyondar.android.world.BeyondarObject BeyondarObject} on the
+	 * 3D world.
 	 * 
 	 * @return Bottom right 3D.
 	 */
@@ -636,7 +682,9 @@ public class BeyondarObject implements Plugable<BeyondarObjectPlugin> {
 	}
 
 	/**
-	 * Get the top right of the {@link BeyondarObject} on the 3D world.
+	 * Get the top right of the
+	 * {@link com.beyondar.android.world.BeyondarObject BeyondarObject} on the
+	 * 3D world.
 	 * 
 	 * @return Top right 3D.
 	 */
@@ -652,7 +700,8 @@ public class BeyondarObject implements Plugable<BeyondarObjectPlugin> {
 	}
 
 	/**
-	 * Get the {@link MeshCollider} of the {@link GeoObject}.
+	 * Get the {@link com.beyondar.android.opengl.colision.MeshCollider
+	 * MeshCollider} of the {@link com.beyondar.android.world.GeoObject GeoObject}.
 	 * 
 	 * @return Mesh collider.
 	 */

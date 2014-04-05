@@ -33,7 +33,7 @@ import com.beyondar.android.util.math.geom.Ray;
 import com.beyondar.android.util.math.geom.Vector3;
 
 /**
- * Container that holds all the {@link BeyondarObject} to be rendered in the
+ * Container that holds all the {@link com.beyondar.android.world.BeyondarObject BeyondarObject} to be rendered in the
  * augmented reality world.
  */
 public class World implements Plugable<WorldPlugin> {
@@ -211,7 +211,7 @@ public class World implements Plugable<WorldPlugin> {
 	}
 
 	/**
-	 * Add a {@link BeyondarObject} to the default list in the world.
+	 * Add a {@link com.beyondar.android.world.BeyondarObject BeyondarObject} to the default list in the world.
 	 * 
 	 * @param beyondarObject
 	 */
@@ -220,7 +220,7 @@ public class World implements Plugable<WorldPlugin> {
 	}
 
 	/**
-	 * Add a {@link BeyondarObject} to the specified list in the world.
+	 * Add a {@link com.beyondar.android.world.BeyondarObject BeyondarObject} to the specified list in the world.
 	 * 
 	 * @param beyondarObject
 	 */
@@ -250,7 +250,7 @@ public class World implements Plugable<WorldPlugin> {
 	}
 
 	/**
-	 * Remove a {@link BeyondarObject} form the World. To do this, the function
+	 * Remove a {@link com.beyondar.android.world.BeyondarObject BeyondarObject} form the World. To do this, the function
 	 * <code>getWorldListType</code> is used.
 	 * 
 	 * @param beyondarObject
@@ -274,7 +274,7 @@ public class World implements Plugable<WorldPlugin> {
 	}
 
 	/**
-	 * Force the world to remove all the removed {@link BeyondarObject}.
+	 * Force the world to remove all the removed {@link com.beyondar.android.world.BeyondarObject BeyondarObject}.
 	 */
 	public synchronized void forceProcessRemoveQueue() {
 		if (mBeyondarObjectLists.size() > 0) {
@@ -370,7 +370,7 @@ public class World implements Plugable<WorldPlugin> {
 
 	/**
 	 * Set the default image of the world. This default image is used when the
-	 * {@link BeyondarObject} image is not available.
+	 * {@link com.beyondar.android.world.BeyondarObject BeyondarObject} image is not available.
 	 * 
 	 * @param imageResId
 	 *            Default image.
@@ -381,7 +381,7 @@ public class World implements Plugable<WorldPlugin> {
 
 	/**
 	 * Set the default image of the world. This default image is used when the
-	 * {@link BeyondarObject} image is not available.
+	 * {@link com.beyondar.android.world.BeyondarObject BeyondarObject} image is not available.
 	 * 
 	 * @param uri
 	 *            Default image.
@@ -397,7 +397,7 @@ public class World implements Plugable<WorldPlugin> {
 
 	/**
 	 * Set the default image for the specified list type. This image is used
-	 * when there are not any image loaded for a {@link BeyondarObject}.
+	 * when there are not any image loaded for a {@link com.beyondar.android.world.BeyondarObject BeyondarObject}.
 	 * 
 	 * @param uri
 	 *            The default image
@@ -417,7 +417,7 @@ public class World implements Plugable<WorldPlugin> {
 
 	/**
 	 * Set the default image for the specified list type. This image is used
-	 * when there are no images loaded for a {@link BeyondarObject}.
+	 * when there are no images loaded for a {@link com.beyondar.android.world.BeyondarObject BeyondarObject}.
 	 * 
 	 * @param imageResource
 	 *            The default image reference.
@@ -476,7 +476,7 @@ public class World implements Plugable<WorldPlugin> {
 	}
 
 	/**
-	 * Get the {@link BeyondarObjectList} for the specified type.
+	 * Get the {@link com.beyondar.android.world.BeyondarObjectList BeyondarObjectList} for the specified type.
 	 * 
 	 * @return
 	 */
@@ -493,7 +493,7 @@ public class World implements Plugable<WorldPlugin> {
 	}
 
 	/**
-	 * Get the container that holds all the {@link BeyondarObjectList} in the
+	 * Get the container that holds all the {@link com.beyondar.android.world.BeyondarObjectList BeyondarObjectList} in the
 	 * {@link World}
 	 * 
 	 * @return The list of the lists
@@ -503,7 +503,7 @@ public class World implements Plugable<WorldPlugin> {
 	}
 
 	/**
-	 * Get all the {@link BeyondarObject} that collide with the {@link Ray}.
+	 * Get all the {@link com.beyondar.android.world.BeyondarObject BeyondarObject} that collide with the {@link Ray}.
 	 * 
 	 * @param ray
 	 *            The ray to use for the collision calculus

@@ -1,0 +1,6 @@
+<map id="com.beyondar.android.world.World.getBeyondarObjectsCollideRay" name="com.beyondar.android.world.World.getBeyondarObjectsCollideRay">
+<area shape="rect" id="node2" href="$d2/d79/classcom_1_1beyondar_1_1android_1_1world_1_1_geo_object.html#a12f7a67a993d1b3f86cab99b7e2579fc" title="Get the latitude. " alt="" coords="298,5,491,49"/>
+<area shape="rect" id="node3" href="$d8/d04/classcom_1_1beyondar_1_1android_1_1world_1_1_world.html#a5112628045120dad6af608c5b9829f1f" title="Get the user&#39;s longitude. " alt="" coords="298,73,491,117"/>
+<area shape="rect" id="node4" href="$d8/d04/classcom_1_1beyondar_1_1android_1_1world_1_1_world.html#abe053251edcb9ced5874010cea4362e6" title="Get the user&#39;s latitude. " alt="" coords="298,141,491,185"/>
+<area shape="rect" id="node5" href="$d8/d04/classcom_1_1beyondar_1_1android_1_1world_1_1_world.html#a3837c4a7843c57b3e562907c751663f8" title="Get the distance (in meters) which the AR view will draw the objects. " alt="" coords="298,209,491,253"/>
+</map>

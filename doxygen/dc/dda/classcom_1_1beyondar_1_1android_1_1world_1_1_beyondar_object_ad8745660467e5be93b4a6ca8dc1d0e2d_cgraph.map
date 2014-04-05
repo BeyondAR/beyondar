@@ -1,0 +1,6 @@
+<map id="com.beyondar.android.world.BeyondarObject.getMeshCollider" name="com.beyondar.android.world.BeyondarObject.getMeshCollider">
+<area shape="rect" id="node2" href="$dc/dda/classcom_1_1beyondar_1_1android_1_1world_1_1_beyondar_object.html#aa9c06114c0e355688711a1be2d6b8d6c" title="Get the top left of the BeyondarObject on the 3D world. " alt="" coords="282,5,475,49"/>
+<area shape="rect" id="node3" href="$dc/dda/classcom_1_1beyondar_1_1android_1_1world_1_1_beyondar_object.html#a30ad9a87be07d6e100af1e330086e407" title="Get the bottom left of the BeyondarObject on the 3D world. " alt="" coords="277,73,480,117"/>
+<area shape="rect" id="node4" href="$dc/dda/classcom_1_1beyondar_1_1android_1_1world_1_1_beyondar_object.html#a244812b1d0b4c17902547386877433d5" title="Get the bottom right of the BeyondarObject on the 3D world. " alt="" coords="272,141,485,185"/>
+<area shape="rect" id="node5" href="$dc/dda/classcom_1_1beyondar_1_1android_1_1world_1_1_beyondar_object.html#abefc2dff9a284f03cc05772dd09601ed" title="Get the top right of the BeyondarObject on the 3D world. " alt="" coords="282,209,475,253"/>
+</map>

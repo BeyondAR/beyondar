@@ -1,0 +1,6 @@
+<map id="com.beyondar.android.opengl.renderer.ARRenderer.convertGPStoPoint3" name="com.beyondar.android.opengl.renderer.ARRenderer.convertGPStoPoint3">
+<area shape="rect" id="node2" href="$de/dcc/classcom_1_1beyondar_1_1android_1_1util_1_1math_1_1_distance.html#a7abd9eec96e0e0c1b5b2f158ea5dd521" title="This method do an approximation form geopoints to meters. " alt="" coords="310,5,591,49"/>
+<area shape="rect" id="node3" href="$d2/d79/classcom_1_1beyondar_1_1android_1_1world_1_1_geo_object.html#a1e09e36e34466e653d53e379e9b82998" title="Get the longitude. " alt="" coords="354,73,547,117"/>
+<area shape="rect" id="node4" href="$d2/d79/classcom_1_1beyondar_1_1android_1_1world_1_1_geo_object.html#ac87128dcef242a46454af06cc8f49827" title="Get the altitude. " alt="" coords="354,141,547,185"/>
+<area shape="rect" id="node5" href="$d2/d79/classcom_1_1beyondar_1_1android_1_1world_1_1_geo_object.html#a12f7a67a993d1b3f86cab99b7e2579fc" title="Get the latitude. " alt="" coords="354,209,547,253"/>
+</map>

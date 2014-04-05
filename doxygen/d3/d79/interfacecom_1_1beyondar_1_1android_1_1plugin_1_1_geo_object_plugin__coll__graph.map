@@ -1,0 +1,4 @@
+<map id="com.beyondar.android.plugin.GeoObjectPlugin" name="com.beyondar.android.plugin.GeoObjectPlugin">
+<area shape="rect" id="node2" href="$d0/d56/interfacecom_1_1beyondar_1_1android_1_1plugin_1_1_beyondar_object_plugin.html" title="Basic interface to create a plugin for a BeyondarObject. " alt="" coords="5,99,200,143"/>
+<area shape="rect" id="node3" href="$d1/d0f/interfacecom_1_1beyondar_1_1android_1_1plugin_1_1_plugin.html" title="Basic interface for all the plugins. " alt="" coords="5,6,200,50"/>
+</map>

@@ -1,0 +1,7 @@
+<map id="Graphical Class Hierarchy" name="Graphical Class Hierarchy">
+<area shape="rect" id="node1" href="$d1/d0f/interfacecom_1_1beyondar_1_1android_1_1plugin_1_1_plugin.html" title="Basic interface for all the plugins. " alt="" coords="6,73,202,117"/>
+<area shape="rect" id="node2" href="$d0/d56/interfacecom_1_1beyondar_1_1android_1_1plugin_1_1_beyondar_object_plugin.html" title="Basic interface to create a plugin for a BeyondarObject. " alt="" coords="251,5,447,49"/>
+<area shape="rect" id="node4" href="$df/d53/interfacecom_1_1beyondar_1_1android_1_1plugin_1_1_g_l_plugin.html" title="Basic interface to create a plugin to extend the OpenGL layer. " alt="" coords="251,73,447,117"/>
+<area shape="rect" id="node5" href="$d3/d3d/interfacecom_1_1beyondar_1_1android_1_1plugin_1_1_world_plugin.html" title="Base interface to create a plugin for a World. " alt="" coords="251,141,447,185"/>
+<area shape="rect" id="node3" href="$db/d8c/interfacecom_1_1beyondar_1_1android_1_1plugin_1_1_geo_object_plugin.html" title="Extension of the BeyondarObjectPlugin for GeoObject. " alt="" coords="497,5,693,49"/>
+</map>

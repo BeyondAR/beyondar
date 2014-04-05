@@ -1,0 +1,5 @@
+<map id="com.beyondar.android.fragment.BeyondarFragmentSupport.takeScreenshot" name="com.beyondar.android.fragment.BeyondarFragmentSupport.takeScreenshot">
+<area shape="rect" id="node2" href="$de/d6e/classcom_1_1beyondar_1_1android_1_1fragment_1_1_beyondar_fragment_support.html#ad36b25b3f19c477f8bdfd476be85a458" title="Take a screenshot of the beyondar fragment. " alt="" coords="334,39,613,83"/>
+<area shape="rect" id="node3" href="$de/d6e/classcom_1_1beyondar_1_1android_1_1fragment_1_1_beyondar_fragment_support.html#a53c1f48ec58f9d6b9a97a59af0ad7656" title="Returns the CameraView for this class instance. " alt="" coords="670,5,951,49"/>
+<area shape="rect" id="node4" href="$de/d6e/classcom_1_1beyondar_1_1android_1_1fragment_1_1_beyondar_fragment_support.html#a64cee366c42fcdf71fcc20d7cb5cce0f" title="Returns the SurfaceView for this class instance. " alt="" coords="662,73,959,117"/>
+</map>

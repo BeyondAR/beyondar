@@ -1,0 +1,4 @@
+<map id="com.beyondar.android.world.World.setGeoPosition" name="com.beyondar.android.world.World.setGeoPosition">
+<area shape="rect" id="node2" href="$d8/d04/classcom_1_1beyondar_1_1android_1_1world_1_1_world.html#a660e7a48f6acd62f1b505c2fb19afabc" title="Set user geo position. " alt="" coords="245,5,438,49"/>
+<area shape="rect" id="node3" href="$d8/d04/classcom_1_1beyondar_1_1android_1_1world_1_1_world.html#abfe99d1e3bf32b9bfe770f1a76580eeb" title="Set user geo position using the Location object. " alt="" coords="245,73,438,117"/>
+</map>

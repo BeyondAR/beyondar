@@ -1,0 +1,4 @@
+<map id="com.beyondar.android.world.World.addBeyondarObject" name="com.beyondar.android.world.World.addBeyondarObject">
+<area shape="rect" id="node2" href="$d8/d04/classcom_1_1beyondar_1_1android_1_1world_1_1_world.html#ac5fb0384aec00679b67ccb269125ce1d" title="Get the BeyondarObjectList for the specified type. " alt="" coords="245,5,440,49"/>
+<area shape="rect" id="node3" href="$d2/d91/classcom_1_1beyondar_1_1android_1_1world_1_1_beyondar_object_list.html#a8126027c52c67588e8c4276c0ef8ca56" title="Get the type of this list. " alt="" coords="488,5,680,49"/>
+</map>

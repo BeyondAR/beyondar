@@ -1,0 +1,5 @@
+<map id="com.beyondar.android.util.CompatibilityUtils.isHoneycombTablet" name="com.beyondar.android.util.CompatibilityUtils.isHoneycombTablet">
+<area shape="rect" id="node2" href="$df/de9/classcom_1_1beyondar_1_1android_1_1util_1_1_compatibility_utils.html#a840887aa7f1293af10b557154a62edda" title="Determine if the device is running API level 11 or higher. " alt="" coords="261,5,469,49"/>
+<area shape="rect" id="node4" href="$df/de9/classcom_1_1beyondar_1_1android_1_1util_1_1_compatibility_utils.html#a1d05449861ae37bcd88cb4879dddea3a" title="Determine if the device is a tablet (i.e. " alt="" coords="276,73,454,117"/>
+<area shape="rect" id="node3" href="$df/de9/classcom_1_1beyondar_1_1android_1_1util_1_1_compatibility_utils.html#a3fc85830ab0d8d58b1f6e8fcdbedeceb" title="Get the current Android API level. " alt="" coords="517,5,731,49"/>
+</map>

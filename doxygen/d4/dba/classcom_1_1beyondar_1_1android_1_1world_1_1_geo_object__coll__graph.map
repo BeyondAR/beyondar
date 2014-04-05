@@ -1,0 +1,5 @@
+<map id="com.beyondar.android.world.GeoObject" name="com.beyondar.android.world.GeoObject">
+<area shape="rect" id="node2" href="$dc/dda/classcom_1_1beyondar_1_1android_1_1world_1_1_beyondar_object.html" title="Basic object to be used with augmented reality. " alt="" coords="776,145,968,189"/>
+<area shape="rect" id="node4" href="$d9/dc5/classcom_1_1beyondar_1_1android_1_1util_1_1math_1_1geom_1_1_point3.html" title="Represents a 3D point. " alt="" coords="304,134,552,178"/>
+<area shape="rect" id="node5" href="$d6/d67/classcom_1_1beyondar_1_1android_1_1util_1_1math_1_1geom_1_1_point2.html" title="Represents a 2D point. " alt="" coords="5,134,253,178"/>
+</map>

@@ -1,0 +1,5 @@
+<map id="com.beyondar.android.util.math.geom.Vector3.module" name="com.beyondar.android.util.math.geom.Vector3.module">
+<area shape="rect" id="node2" href="$dd/d18/classcom_1_1beyondar_1_1android_1_1util_1_1math_1_1geom_1_1_vector3.html#ae6e7f5c267ecb6aa1a91b98855603f03" title="Returns the formed angle with the given vector. " alt="" coords="301,5,549,49"/>
+<area shape="rect" id="node3" href="$dd/d18/classcom_1_1beyondar_1_1android_1_1util_1_1math_1_1geom_1_1_vector3.html#a988e760f9ab608dd5016f5c85121e690" title="Normalize the vector. " alt="" coords="301,73,549,117"/>
+<area shape="rect" id="node4" href="$dd/d18/classcom_1_1beyondar_1_1android_1_1util_1_1math_1_1geom_1_1_vector3.html#aa9b04c2dea3b88f73a1d873af0998ce3" title="Adds a vector and then, if normalize is true normalize the vector. " alt="" coords="597,73,845,117"/>
+</map>

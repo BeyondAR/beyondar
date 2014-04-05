@@ -1,0 +1,5 @@
+<map id="com.beyondar.android.util.math.geom.Matrix3.postMultiply" name="com.beyondar.android.util.math.geom.Matrix3.postMultiply">
+<area shape="rect" id="node2" href="$df/d01/classcom_1_1beyondar_1_1android_1_1util_1_1math_1_1geom_1_1_matrix3.html#aa46c5d3397030e87d4247fc772a1d46d" title="Translates with the given parameters. " alt="" coords="301,5,549,49"/>
+<area shape="rect" id="node3" href="$df/d01/classcom_1_1beyondar_1_1android_1_1util_1_1math_1_1geom_1_1_matrix3.html#a39bdd3b0eb843e39e217c7370a2ebc8f" title="Scales the matrix with the given factors. " alt="" coords="301,73,549,117"/>
+<area shape="rect" id="node4" href="$df/d01/classcom_1_1beyondar_1_1android_1_1util_1_1math_1_1geom_1_1_matrix3.html#aeafc8b1fdc318eccaca00b711a9551d6" title="Rotates the matrix with the given rotations (in radians) " alt="" coords="301,141,549,185"/>
+</map>

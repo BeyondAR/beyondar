@@ -1,0 +1,4 @@
+<map id="com.beyondar.android.world.World.setDefaultBitmap" name="com.beyondar.android.world.World.setDefaultBitmap">
+<area shape="rect" id="node2" href="$d8/d04/classcom_1_1beyondar_1_1android_1_1world_1_1_world.html#a389c1b74576e86b4ac6863d675d8a262" title="Set the default image of the world. " alt="" coords="245,5,438,49"/>
+<area shape="rect" id="node3" href="$df/d5f/classcom_1_1beyondar_1_1android_1_1util_1_1cache_1_1_bitmap_cache.html#acc1400a0d50f16cb2e867dab29557e88" title="Normalize the resource int to a valid URI for the BitmapCache. " alt="" coords="486,35,703,79"/>
+</map>

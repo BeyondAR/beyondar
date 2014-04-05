@@ -1,0 +1,6 @@
+<map id="com.beyondar.android.world.World.getBeyondarObjectList" name="com.beyondar.android.world.World.getBeyondarObjectList">
+<area shape="rect" id="node2" href="$d8/d04/classcom_1_1beyondar_1_1android_1_1world_1_1_world.html#aabb557028e15e27c6eeebd26b85cd385" title="Add a BeyondarObject to the specified list in the world. " alt="" coords="248,5,440,49"/>
+<area shape="rect" id="node3" href="$d8/d04/classcom_1_1beyondar_1_1android_1_1world_1_1_world.html#aed6430bd226f08778f57ae69636edc0a" title="Remove a BeyondarObject form the World. " alt="" coords="248,73,440,117"/>
+<area shape="rect" id="node4" href="$d8/d04/classcom_1_1beyondar_1_1android_1_1world_1_1_world.html#a40e0eb939b1f6d1bd9063bcc9b0c8ca3" title="Set the default image for the specified list type. " alt="" coords="248,141,440,185"/>
+<area shape="rect" id="node5" href="$d8/d04/classcom_1_1beyondar_1_1android_1_1world_1_1_world.html#a223c174cd8ba573cc7ef1bc1440e81f0" title="Get the default image URI of the specified list. " alt="" coords="248,209,440,253"/>
+</map>

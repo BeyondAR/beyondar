@@ -1,0 +1,4 @@
+<map id="com.beyondar.android.opengl.renderer.ARRenderer.load2DTexture" name="com.beyondar.android.opengl.renderer.ARRenderer.load2DTexture">
+<area shape="rect" id="node2" href="$de/df5/classcom_1_1beyondar_1_1android_1_1util_1_1_utils.html#a1e5e5b3fc9ee80d01c8c5382c4ca88ce" title="Check if the bitmap is compatible to use it with OpenGL, if not, use resizeImageToPowerOfTwo(bitmap) ..." alt="" coords="309,5,515,49"/>
+<area shape="rect" id="node3" href="$da/d19/classcom_1_1beyondar_1_1android_1_1util_1_1math_1_1_math_utils.html#af48d9c9fc6c383ff2e948a80106641fb" title="Check a number if it is a power of two. " alt="" coords="562,5,774,49"/>
+</map>

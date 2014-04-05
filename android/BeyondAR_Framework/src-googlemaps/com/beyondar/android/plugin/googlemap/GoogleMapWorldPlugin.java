@@ -195,23 +195,23 @@ public class GoogleMapWorldPlugin implements WorldPlugin, BitmapCache.OnExternal
 	}
 
 	private Bitmap getBitmapFromGeoObject(GeoObject geoObject) {
-		if (geoObject.getBitmapUri() == null) {
+		if (geoObject.getImageUri() == null) {
 			return null;
 		}
-		boolean canRemove = !mPendingBitmaps.existPendingList(geoObject.getBitmapUri());
-		if (!mCache.isImageLoaded(geoObject.getBitmapUri())) {
-			mPendingBitmaps.addObject(geoObject.getBitmapUri(), geoObject);
+		boolean canRemove = !mPendingBitmaps.existPendingList(geoObject.getImageUri());
+		if (!mCache.isImageLoaded(geoObject.getImageUri())) {
+			mPendingBitmaps.addObject(geoObject.getImageUri(), geoObject);
 		}
-		Bitmap btm = mCache.getBitmap(geoObject.getBitmapUri());
+		Bitmap btm = mCache.getBitmap(geoObject.getImageUri());
 
 		if (btm == null) {
-			String uri = mWorld.getDefaultBitmap(geoObject.getWorldListType());
+			String uri = mWorld.getDefaultImage(geoObject.getWorldListType());
 			btm = mCache.getBitmap(uri);
 		} else if (canRemove) {
-			mPendingBitmaps.removePendingList(geoObject.getBitmapUri());
+			mPendingBitmaps.removePendingList(geoObject.getImageUri());
 		}
 
-		return resizeBitmap(geoObject.getBitmapUri(), btm);
+		return resizeBitmap(geoObject.getImageUri(), btm);
 	}
 
 	public void setMarkerImage(Marker marker, GeoObject geoObject) {
@@ -323,11 +323,13 @@ public class GoogleMapWorldPlugin implements WorldPlugin, BitmapCache.OnExternal
 	}
 
 	/**
-	 * Retrieve the {@link com.beyondar.android.world.GeoObject GeoObject} that owns an specific {@link Marker}
+	 * Retrieve the {@link com.beyondar.android.world.GeoObject GeoObject} that
+	 * owns an specific {@link Marker}
 	 * 
 	 * @param marker
 	 *            The Marker that whant's to be checked
-	 * @return The {@link com.beyondar.android.world.GeoObject GeoObject} owner or null if there is no owner
+	 * @return The {@link com.beyondar.android.world.GeoObject GeoObject} owner
+	 *         or null if there is no owner
 	 */
 	public GeoObject getGeoObjectOwner(Marker marker) {
 		GeoObjectPlugin geoObjectPlugin = mMarkerHashMap.get(marker);

@@ -12,6 +12,7 @@ import android.app.Activity;
 import android.app.Fragment;
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.graphics.BitmapFactory;
 import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -69,9 +70,6 @@ public class BeyondarFragment extends Fragment implements FpsUpdatable, OnClickL
 
 	private SensorManager mSensorManager;
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -80,9 +78,6 @@ public class BeyondarFragment extends Fragment implements FpsUpdatable, OnClickL
 				TimeUnit.MILLISECONDS, mBlockingQueue);
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public void onAttach(Activity activity) {
 		super.onAttach(activity);
@@ -160,9 +155,6 @@ public class BeyondarFragment extends Fragment implements FpsUpdatable, OnClickL
 		return mBeyondarGLSurface;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		init();
@@ -170,9 +162,6 @@ public class BeyondarFragment extends Fragment implements FpsUpdatable, OnClickL
 		return mMainLayout;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public void onResume() {
 		super.onResume();
@@ -184,9 +173,6 @@ public class BeyondarFragment extends Fragment implements FpsUpdatable, OnClickL
 		}
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public void onPause() {
 		super.onPause();
@@ -220,9 +206,6 @@ public class BeyondarFragment extends Fragment implements FpsUpdatable, OnClickL
 		mMainLayout.setOnClickListener(this);
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public boolean onTouch(View v, final MotionEvent event) {
 		mLastScreenTouchX = event.getX();
@@ -235,9 +218,6 @@ public class BeyondarFragment extends Fragment implements FpsUpdatable, OnClickL
 		return false;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public void onClick(View v) {
 		if (v == mMainLayout) {
@@ -483,9 +463,28 @@ public class BeyondarFragment extends Fragment implements FpsUpdatable, OnClickL
 	 *            {@link com.beyondar.android.screenshot.OnScreenshotListener
 	 *            OnScreenshotListener} That will be notified when the
 	 *            screenshot is ready.
+	 * @param options
+	 *            Bitmap options.
+	 */
+	public void takeScreenshot(OnScreenshotListener listener, BitmapFactory.Options options) {
+		ScreenshotHelper.takeScreenshot(getCameraView(), getGLSurfaceView(), listener, options);
+	}
+
+	/**
+	 * Take a screenshot of the beyondar fragment. The screenshot will contain
+	 * the camera and the AR world overlapped.
+	 * 
+	 * @param listener
+	 *            {@link com.beyondar.android.screenshot.OnScreenshotListener
+	 *            OnScreenshotListener} That will be notified when the
+	 *            screenshot is ready.
 	 */
 	public void takeScreenshot(OnScreenshotListener listener) {
-		ScreenshotHelper.takeScreenshot(getCameraView(), getGLSurfaceView(), listener);
+		BitmapFactory.Options options = new BitmapFactory.Options();
+		// TODO: Improve this part
+		options.inSampleSize = 4;
+		// options.inSampleSize = 1;
+		takeScreenshot(listener, options);
 	}
 
 	/**
@@ -513,9 +512,6 @@ public class BeyondarFragment extends Fragment implements FpsUpdatable, OnClickL
 		}
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public void onFpsUpdate(final float fps) {
 		if (mFpsTextView != null) {

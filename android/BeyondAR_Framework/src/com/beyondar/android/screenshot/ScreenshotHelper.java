@@ -16,6 +16,7 @@
 package com.beyondar.android.screenshot;
 
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 
 import com.beyondar.android.opengl.renderer.ARRenderer.GLSnapshotCallback;
 import com.beyondar.android.util.ImageUtils;
@@ -38,12 +39,12 @@ public class ScreenshotHelper {
 	 * @param callback
 	 */
 	public static void takeScreenshot(CameraView cameraView, BeyondarGLSurfaceView bgls,
-			OnScreenshotListener callback) {
+			OnScreenshotListener callback, BitmapFactory.Options options) {
 		ScreenShootCallback callbackProcessing = new ScreenShootCallback(callback);
 
 		if (cameraView != null && cameraView.isPreviewing()) {
 			// CacheManager.getInventoryCache().purge();
-			cameraView.takePicture(callbackProcessing);
+			cameraView.takePicture(callbackProcessing, options);
 		} else {
 			callbackProcessing.onPictureTaken(null);
 		}

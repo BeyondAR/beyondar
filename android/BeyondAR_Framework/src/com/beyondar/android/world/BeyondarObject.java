@@ -29,34 +29,31 @@ import com.beyondar.android.plugin.Plugable;
 import com.beyondar.android.util.cache.BitmapCache;
 import com.beyondar.android.util.math.geom.Point3;
 
+/**
+ * Basic object to be used with augmented reality. This class contains all the
+ * needed information to be used in the AR {@link World}.
+ */
 public class BeyondarObject implements Plugable<BeyondarObjectPlugin> {
 
 	private Long mId;
 	private int mTypeList;
+	private Texture mTexture;
+	private String mImageUri;
+	private String mName;
+	private boolean mVisible;
+	private Renderable mRenderable;
+	private Point3 mPosition;
+	private Point3 mAngle;
+	private boolean mFaceToCamera;
+	private MeshCollider mMeshCollider;
+	private double mDistanceFromUser;
+	private Point3 mScreenPositionTopLeft, mScreenPositionTopRight, mScreenPositionBottomLeft,
+			mScreenPositionBottomRight, mScreenPositionCenter;
+	private Point3 mTopLeft, mBottomLeft, mBottomRight, mTopRight;
 
-	protected Texture texture;
-	protected String bitmapUri;
-	protected String name;
-	protected boolean visible;
-	protected Renderable renderable;
-	protected Point3 position;
-	protected Point3 angle;
-	protected boolean faceToCamera;
-	protected MeshCollider meshCollider;
-	protected double distanceFromUser;
-	/**
-	 * This pointer is made to track the
-	 * {@link com.beyondar.android.world.BeyondarObject BeyondarObject} position
-	 * on the screen
-	 */
-	protected Point3 screenPositionTopLeft, screenPositionTopRight, screenPositionBottomLeft,
-			screenPositionBottomRight, screenPositionCenter;
-
-	protected Point3 topLeft, bottomLeft, bottomRight, topRight;
-
-	/** This fields contains all the loaded plugins */
+	/** This fields contains all the loaded plugins. */
 	protected List<BeyondarObjectPlugin> plugins;
-	/** Use this lock to access the plugins field */
+	/** Use this lock to access the plugins field. */
 	protected Object lockPlugins = new Object();
 
 	/**
@@ -70,30 +67,37 @@ public class BeyondarObject implements Plugable<BeyondarObjectPlugin> {
 		init();
 	}
 
+	/**
+	 * Create an instance of a {@link BeyondarObject} with an unique ID. The hash
+	 * of the object will be used as the {@link BeyondarObject} unique id.
+	 */
 	public BeyondarObject() {
 		init();
 	}
 
 	private void init() {
 		plugins = new ArrayList<BeyondarObjectPlugin>(DEFAULT_PLUGINS_CAPACITY);
-		position = new Point3();
-		angle = new Point3();
-		texture = new Texture();
+		mPosition = new Point3();
+		mAngle = new Point3();
+		mTexture = new Texture();
 		faceToCamera(true);
 		setVisible(true);
 
-		topLeft = new Point3();
-		bottomLeft = new Point3();
-		bottomRight = new Point3();
-		topRight = new Point3();
+		mTopLeft = new Point3();
+		mBottomLeft = new Point3();
+		mBottomRight = new Point3();
+		mTopRight = new Point3();
 
-		screenPositionTopLeft = new Point3();
-		screenPositionTopRight = new Point3();
-		screenPositionBottomLeft = new Point3();
-		screenPositionBottomRight = new Point3();
-		screenPositionCenter = new Point3();
+		mScreenPositionTopLeft = new Point3();
+		mScreenPositionTopRight = new Point3();
+		mScreenPositionBottomLeft = new Point3();
+		mScreenPositionBottomRight = new Point3();
+		mScreenPositionCenter = new Point3();
 	}
 
+	/**
+	 * Get the unique id of the {@link BeyondarObject}.
+	 */
 	public long getId() {
 		if (mId == null) {
 			mId = (long) hashCode();
@@ -173,8 +177,8 @@ public class BeyondarObject implements Plugable<BeyondarObjectPlugin> {
 	}
 
 	/**
-	 * Get a {@link List} copy of the added plugins. Adding/removing plugins
-	 * to this list will not affect the added plugins
+	 * Get a {@link List} copy of the added plugins. Adding/removing plugins to
+	 * this list will not affect the added plugins
 	 * 
 	 * @return
 	 */
@@ -193,181 +197,299 @@ public class BeyondarObject implements Plugable<BeyondarObjectPlugin> {
 		}
 	}
 
+	/**
+	 * Get the used angle for rendering the {@link BeyondarObject}.
+	 * 
+	 * @return The angle in degrees.
+	 */
 	public Point3 getAngle() {
-		return angle;
+		return mAngle;
 	}
 
+	/**
+	 * Set the used angle for rendering the {@link BeyondarObject}.
+	 * 
+	 * @param x
+	 *            The angle in degrees for x.
+	 * 
+	 * @param y
+	 *            The angle in degrees for y.
+	 * @param z
+	 *            The angle in degrees for z.
+	 */
 	public void setAngle(float x, float y, float z) {
-		if (angle.x == x && angle.y == y && angle.z == z)
+		if (mAngle.x == x && mAngle.y == y && mAngle.z == z)
 			return;
-		angle.x = x;
-		angle.y = y;
-		angle.z = z;
+		mAngle.x = x;
+		mAngle.y = y;
+		mAngle.z = z;
 		synchronized (lockPlugins) {
 			for (BeyondarObjectPlugin plugin : plugins) {
-				plugin.onAngleChanged(angle);
+				plugin.onAngleChanged(mAngle);
 			}
 		}
 	}
 
+	/**
+	 * Set the used angle for rendering the {@link BeyondarObject}.
+	 * 
+	 * @param newAngle
+	 *            The angle in degrees.
+	 */
+	public void setAngle(Point3 newAngle) {
+		if (newAngle == mAngle)
+			return;
+		mAngle = newAngle;
+		synchronized (lockPlugins) {
+			for (BeyondarObjectPlugin plugin : plugins) {
+				plugin.onAngleChanged(mAngle);
+			}
+		}
+	}
+
+	/**
+	 * Get the position where the {@link BeyondarObject} is being rendered.
+	 * 
+	 * @return The 3D position.
+	 */
 	public Point3 getPosition() {
-		return position;
+		return mPosition;
 	}
 
-	public void setPosition(Point3 newVect) {
-		if (newVect == position) return;
-		position = newVect;
-		synchronized (lockPlugins) {
-			for (BeyondarObjectPlugin plugin : plugins) {
-				plugin.onPositionChanged(position);
-			}
-		}
-	}
-
-	public void setPosition(float x, float y, float z) {
-		if (position.x == x && position.y == y && position.z == z)
+	/**
+	 * Get the position where the {@link BeyondarObject} is being rendered.
+	 * 
+	 * @param newPos
+	 *            New position.
+	 */
+	public void setPosition(Point3 newPos) {
+		if (newPos == mPosition)
 			return;
-		position.x = x;
-		position.y = y;
-		position.z = z;
+		mPosition = newPos;
 		synchronized (lockPlugins) {
 			for (BeyondarObjectPlugin plugin : plugins) {
-				plugin.onPositionChanged(position);
+				plugin.onPositionChanged(mPosition);
 			}
 		}
 	}
 
+	/**
+	 * Set the position where the {@link BeyondarObject} is being rendered.
+	 * 
+	 * @param newPos
+	 *            New position.
+	 */
+	public void setPosition(float x, float y, float z) {
+		if (mPosition.x == x && mPosition.y == y && mPosition.z == z)
+			return;
+		mPosition.x = x;
+		mPosition.y = y;
+		mPosition.z = z;
+		synchronized (lockPlugins) {
+			for (BeyondarObjectPlugin plugin : plugins) {
+				plugin.onPositionChanged(mPosition);
+			}
+		}
+	}
+
+	/**
+	 * Override this method to change the default
+	 * {@link com.beyondar.android.opengl.renderable.Renderable Renderable}.
+	 * 
+	 * @return The new {@link com.beyondar.android.opengl.renderable.Renderable
+	 *         Renderable}.
+	 */
 	protected Renderable createRenderable() {
 		return SquareRenderable.getInstance();
 	}
 
+	/**
+	 * Get the {@link Texture} used to render the {@link BeyondarObject}.
+	 * 
+	 * @return {@link Texture} object in use.
+	 */
 	public Texture getTexture() {
-		return texture;
+		return mTexture;
 	}
 
+	/**
+	 * Set the texture pointer of the {@link BeyondarObject}.
+	 * 
+	 * @param texturePointer
+	 *            The new texture pointer.
+	 */
 	public void setTexturePointer(int texturePointer) {
-		if (texturePointer == texture.getTexturePointer())
+		if (texturePointer == mTexture.getTexturePointer())
 			return;
-		texture.setTexturePointer(texturePointer);
+		mTexture.setTexturePointer(texturePointer);
 		synchronized (lockPlugins) {
 			for (BeyondarObjectPlugin plugin : plugins) {
-				plugin.onTextureChanged(texture);
+				plugin.onTextureChanged(mTexture);
 			}
 		}
 	}
 
+	/**
+	 * Set the {@link Texture} used to render the {@link BeyondarObject}.
+	 * 
+	 */
 	public void setTexture(Texture texture) {
-		if (texture == this.texture) {
+		if (texture == this.mTexture) {
 			return;
 		}
 		if (texture == null) {
 			texture = new Texture();
 		}
-		this.texture = texture;
+		this.mTexture = texture;
 		synchronized (lockPlugins) {
 			for (BeyondarObjectPlugin plugin : plugins) {
-				plugin.onTextureChanged(this.texture);
+				plugin.onTextureChanged(this.mTexture);
 			}
 		}
 	}
 
 	/**
-	 * get the GL Object
+	 * Get {@link Renderable} that renders the {@link BeyondarObject}
+	 * 
+	 * @return The {@link Renderable} used for rendering.
+	 */
+	public Renderable getOpenGLObject() {
+		if (null == mRenderable) {
+			mRenderable = createRenderable();
+		}
+		return mRenderable;
+	}
+
+	/**
+	 * Set a custom {@link Renderable} for the {@link BeyondarObject}
+	 * 
+	 * @param renderable
+	 */
+	public void setRenderable(Renderable renderable) {
+		if (renderable == this.mRenderable)
+			return;
+		this.mRenderable = renderable;
+		synchronized (lockPlugins) {
+			for (BeyondarObjectPlugin plugin : plugins) {
+				plugin.onRenderableChanged(this.mRenderable);
+			}
+		}
+	}
+
+	/**
+	 * The the image uri used to represent the {@link BeyondarObject}
 	 * 
 	 * @return
 	 */
-	public Renderable getOpenGLObject() {
-		if (null == renderable) {
-			renderable = createRenderable();
-		}
-		return renderable;
+	public String getImageUri() {
+		return mImageUri;
 	}
 
-	public void setRenderable(Renderable renderable) {
-		if (renderable == this.renderable)
-			return;
-		this.renderable = renderable;
-		synchronized (lockPlugins) {
-			for (BeyondarObjectPlugin plugin : plugins) {
-				plugin.onRenderableChanged(this.renderable);
-			}
-		}
-	}
-
-	public String getBitmapUri() {
-		return bitmapUri;
-	}
-
+	/**
+	 * Define if the {@link BeyondarObject} should face the camera.
+	 * 
+	 * @param faceToCamera
+	 *            true if it should face the camera, false otherwise.
+	 */
 	public void faceToCamera(boolean faceToCamera) {
-		if (faceToCamera == this.faceToCamera)
+		if (faceToCamera == this.mFaceToCamera)
 			return;
-		this.faceToCamera = faceToCamera;
+		this.mFaceToCamera = faceToCamera;
 		synchronized (lockPlugins) {
 			for (BeyondarObjectPlugin plugin : plugins) {
-				plugin.onFaceToCameraChanged(this.faceToCamera);
+				plugin.onFaceToCameraChanged(this.mFaceToCamera);
 			}
 		}
 	}
 
+	/**
+	 * Check if the {@link BeyondarObject} is facing the camera.
+	 * 
+	 * @return True if it is facing.
+	 */
 	public boolean isFacingToCamera() {
-		return faceToCamera;
+		return mFaceToCamera;
 	}
 
 	/**
 	 * Set the visibility of this object. if it is false, the engine will not
-	 * show it.
+	 * render it.
 	 * 
 	 * @param visible
+	 *            True to set it visible, false to don't render it.
 	 */
 	public void setVisible(boolean visible) {
-		if (visible == this.visible)
+		if (visible == this.mVisible)
 			return;
-		this.visible = visible;
+		this.mVisible = visible;
 		synchronized (lockPlugins) {
 			for (BeyondarObjectPlugin plugin : plugins) {
-				plugin.onVisibilityChanged(this.visible);
+				plugin.onVisibilityChanged(this.mVisible);
 			}
 		}
-	}
-
-	public boolean isVisible() {
-		return visible;
-	}
-
-	public void setName(String name) {
-		if (name == this.name)
-			return;
-		this.name = name;
-		synchronized (lockPlugins) {
-			for (BeyondarObjectPlugin plugin : plugins) {
-				plugin.onNameChanged(this.name);
-			}
-		}
-	}
-
-	public String getName() {
-		return name;
 	}
 
 	/**
-	 * Set the image uri
+	 * Check the visibility of the {@link BeyondarObject}.
 	 * 
-	 * @param uri
+	 * @return True if it is visible, false otherwise.
 	 */
-	public void setImageUri(String uri) {
-		if (uri == bitmapUri)
+	public boolean isVisible() {
+		return mVisible;
+	}
+
+	/**
+	 * Set the name of the {@link BeyondarObject}.
+	 * 
+	 * @param name
+	 *            Name of the {@link BeyondarObject}.
+	 */
+	public void setName(String name) {
+		if (name == this.mName)
 			return;
-		bitmapUri = uri;
+		this.mName = name;
 		synchronized (lockPlugins) {
 			for (BeyondarObjectPlugin plugin : plugins) {
-				plugin.onImageUriChanged(bitmapUri);
+				plugin.onNameChanged(this.mName);
+			}
+		}
+	}
+
+	/**
+	 * Get the name of the {@link BeyondarObject}.
+	 * 
+	 * @return The name of the {@link BeyondarObject}.
+	 */
+	public String getName() {
+		return mName;
+	}
+
+	/**
+	 * Set the image uri.
+	 * 
+	 * @param uri
+	 *            The image uri that represents the {@link BeyondarObject}.
+	 */
+	public void setImageUri(String uri) {
+		if (uri == mImageUri)
+			return;
+		mImageUri = uri;
+		synchronized (lockPlugins) {
+			for (BeyondarObjectPlugin plugin : plugins) {
+				plugin.onImageUriChanged(mImageUri);
 			}
 		}
 		setTexture(null);
 	}
 
-	public void setImageResource(int resID) {
-		setImageUri(BitmapCache.generateUri(resID));
+	/**
+	 * Set an image resource for the {@link BeyondarObject}.
+	 * 
+	 * @param resId
+	 *            The resource id.
+	 */
+	public void setImageResource(int resId) {
+		setImageUri(BitmapCache.generateUri(resId));
 	}
 
 	/**
@@ -380,17 +502,22 @@ public class BeyondarObject implements Plugable<BeyondarObjectPlugin> {
 		mTypeList = worldListType;
 	}
 
+	/**
+	 * Get the list type of the {@link BeyondarObject}.
+	 * 
+	 * @return The list type.
+	 */
 	public int getWorldListType() {
 		return mTypeList;
 	}
 
 	/**
-	 * Get the Distance from the user in meters
+	 * Get the Distance from the user in meters.
 	 * 
-	 * @return Distance in meters
+	 * @return Distance in meters.
 	 */
 	public double getDistanceFromUser() {
-		return distanceFromUser;
+		return mDistanceFromUser;
 	}
 
 	/**
@@ -399,84 +526,145 @@ public class BeyondarObject implements Plugable<BeyondarObjectPlugin> {
 	 * This method is used by the {@link ARRenderer} to set this value.
 	 * 
 	 * @param distance
+	 *            Distance in meters.
 	 */
 	public void setDistanceFromUser(double distance) {
-		distanceFromUser = distance;
+		mDistanceFromUser = distance;
 	}
 
+	/**
+	 * Get the bottom left screen position of the {@link BeyondarObject} on the
+	 * screen. use the Z axis to check if the object is in front (z<1) or behind
+	 * (z>1) the screen.
+	 * 
+	 * @return Bottom left screen position.
+	 */
 	public Point3 getScreenPositionBottomLeft() {
-		return screenPositionBottomLeft;
+		return mScreenPositionBottomLeft;
 	}
 
+	/**
+	 * Get the top left screen position of the {@link BeyondarObject} on the
+	 * screen. use the Z axis to check if the object is in front (z<1) or behind
+	 * (z>1) the screen.
+	 * 
+	 * @return top left screen position.
+	 */
 	public Point3 getScreenPositionTopLeft() {
-		return screenPositionTopLeft;
+		return mScreenPositionTopLeft;
 	}
 
+	/**
+	 * Get the top right screen position of the {@link BeyondarObject} on the
+	 * screen. use the Z axis to check if the object is in front (z<1) or behind
+	 * (z>1) the screen.
+	 * 
+	 * @return Top right screen position.
+	 */
 	public Point3 getScreenPositionTopRight() {
-		return screenPositionTopRight;
+		return mScreenPositionTopRight;
 	}
 
+	/**
+	 * Get the bottom right screen position of the {@link BeyondarObject} on the
+	 * screen. use the Z axis to check if the object is in front (z<1) or behind
+	 * (z>1) the screen.
+	 * 
+	 * @return Bottom right screen position.
+	 */
 	public Point3 getScreenPositionBottomRight() {
-		return screenPositionBottomRight;
+		return mScreenPositionBottomRight;
 	}
 
+	/**
+	 * Get the center screen position of the {@link BeyondarObject} on the
+	 * screen. use the Z axis to check if the object is in front (z<1) or behind
+	 * (z>1) the screen.
+	 * 
+	 * @return Center screen position.
+	 */
 	public Point3 getScreenPositionCenter() {
-		return screenPositionCenter;
+		return mScreenPositionCenter;
 	}
 
+	/**
+	 * Get the top left of the {@link BeyondarObject} on the 3D world.
+	 * 
+	 * @return Top left 3D.
+	 */
 	public Point3 getTopLeft() {
-		topLeft.x = position.x + texture.getVertices()[3];
-		topLeft.y = position.y + texture.getVertices()[4];
-		topLeft.z = position.z + texture.getVertices()[5];
+		mTopLeft.x = mPosition.x + mTexture.getVertices()[3];
+		mTopLeft.y = mPosition.y + mTexture.getVertices()[4];
+		mTopLeft.z = mPosition.z + mTexture.getVertices()[5];
 
-		topLeft.rotatePointDegrees_x(angle.x, position);
-		topLeft.rotatePointDegrees_y(angle.y, position);
-		topLeft.rotatePointDegrees_z(angle.z, position);
-		return topLeft;
+		mTopLeft.rotatePointDegrees_x(mAngle.x, mPosition);
+		mTopLeft.rotatePointDegrees_y(mAngle.y, mPosition);
+		mTopLeft.rotatePointDegrees_z(mAngle.z, mPosition);
+		return mTopLeft;
 	}
 
+	/**
+	 * Get the bottom left of the {@link BeyondarObject} on the 3D world.
+	 * 
+	 * @return bottom left 3D.
+	 */
 	public Point3 getBottomLeft() {
-		bottomLeft.x = position.x + texture.getVertices()[0];
-		bottomLeft.y = position.y + texture.getVertices()[1];
-		bottomLeft.z = position.z + texture.getVertices()[2];
+		mBottomLeft.x = mPosition.x + mTexture.getVertices()[0];
+		mBottomLeft.y = mPosition.y + mTexture.getVertices()[1];
+		mBottomLeft.z = mPosition.z + mTexture.getVertices()[2];
 
-		bottomLeft.rotatePointDegrees_x(angle.x, position);
-		bottomLeft.rotatePointDegrees_y(angle.y, position);
-		bottomLeft.rotatePointDegrees_z(angle.z, position);
-		return bottomLeft;
+		mBottomLeft.rotatePointDegrees_x(mAngle.x, mPosition);
+		mBottomLeft.rotatePointDegrees_y(mAngle.y, mPosition);
+		mBottomLeft.rotatePointDegrees_z(mAngle.z, mPosition);
+		return mBottomLeft;
 	}
 
+	/**
+	 * Get the bottom right of the {@link BeyondarObject} on the 3D world.
+	 * 
+	 * @return Bottom right 3D.
+	 */
 	public Point3 getBottomRight() {
-		bottomRight.x = position.x + texture.getVertices()[6];
-		bottomRight.y = position.y + texture.getVertices()[7];
-		bottomRight.z = position.z + texture.getVertices()[8];
+		mBottomRight.x = mPosition.x + mTexture.getVertices()[6];
+		mBottomRight.y = mPosition.y + mTexture.getVertices()[7];
+		mBottomRight.z = mPosition.z + mTexture.getVertices()[8];
 
-		bottomRight.rotatePointDegrees_x(angle.x, position);
-		bottomRight.rotatePointDegrees_y(angle.y, position);
-		bottomRight.rotatePointDegrees_z(angle.z, position);
-		return bottomRight;
+		mBottomRight.rotatePointDegrees_x(mAngle.x, mPosition);
+		mBottomRight.rotatePointDegrees_y(mAngle.y, mPosition);
+		mBottomRight.rotatePointDegrees_z(mAngle.z, mPosition);
+		return mBottomRight;
 	}
 
+	/**
+	 * Get the top right of the {@link BeyondarObject} on the 3D world.
+	 * 
+	 * @return Top right 3D.
+	 */
 	public Point3 getTopRight() {
-		topRight.x = position.x + texture.getVertices()[9];
-		topRight.y = position.y + texture.getVertices()[10];
-		topRight.z = position.z + texture.getVertices()[11];
+		mTopRight.x = mPosition.x + mTexture.getVertices()[9];
+		mTopRight.y = mPosition.y + mTexture.getVertices()[10];
+		mTopRight.z = mPosition.z + mTexture.getVertices()[11];
 
-		topRight.rotatePointDegrees_x(angle.x, position);
-		topRight.rotatePointDegrees_y(angle.y, position);
-		topRight.rotatePointDegrees_z(angle.z, position);
-		return topRight;
+		mTopRight.rotatePointDegrees_x(mAngle.x, mPosition);
+		mTopRight.rotatePointDegrees_y(mAngle.y, mPosition);
+		mTopRight.rotatePointDegrees_z(mAngle.z, mPosition);
+		return mTopRight;
 	}
 
-	// TODO: Improve the mesh collider!!
+	/**
+	 * Get the {@link MeshCollider} of the {@link GeoObject}.
+	 * 
+	 * @return Mesh collider.
+	 */
 	public MeshCollider getMeshCollider() {
+		// TODO: Improve the mesh collider!!
 		Point3 topLeft = getTopLeft();
 		Point3 bottomLeft = getBottomLeft();
 		Point3 bottomRight = getBottomRight();
 		Point3 topRight = getTopRight();
 
 		// Generate the collision detector
-		meshCollider = new SquareMeshCollider(topLeft, bottomLeft, bottomRight, topRight);
-		return meshCollider;
+		mMeshCollider = new SquareMeshCollider(topLeft, bottomLeft, bottomRight, topRight);
+		return mMeshCollider;
 	}
 }

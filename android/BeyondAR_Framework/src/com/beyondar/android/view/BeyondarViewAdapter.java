@@ -147,7 +147,7 @@ public abstract class BeyondarViewAdapter {
 	}
 
 	/**
-	 * Set the screen position of the view. When the view is ready use this
+	 * Set the screen position of the view. When the view is created use this
 	 * method to specify the position on the screen.
 	 * 
 	 * 

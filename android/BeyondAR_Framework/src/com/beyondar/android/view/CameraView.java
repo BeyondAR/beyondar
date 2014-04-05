@@ -17,7 +17,7 @@ package com.beyondar.android.view;
 
 import java.io.IOException;
 import java.util.List;
-
+import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
@@ -30,11 +30,20 @@ import android.view.Surface;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.WindowManager;
-
 import com.beyondar.android.util.DebugBitmap;
 import com.beyondar.android.util.Logger;
 
+/**
+ * This class has the responsibility of rotating the camera, taking picture and
+ * acquiring/releasing the camera.
+ * 
+ */
 public class CameraView extends SurfaceView implements SurfaceHolder.Callback, Camera.PictureCallback {
+
+	/**
+	 * Callback to get notify when a picture from the camera has been taken.
+	 * 
+	 */
 	public static interface BeyondarPictureCallback {
 		/**
 		 * This method is called when the snapshot of the camera is ready. If
@@ -91,8 +100,13 @@ public class CameraView extends SurfaceView implements SurfaceHolder.Callback, C
 			mHolder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
 		}
 	}
-	
-	public Camera getCamera(){
+
+	/**
+	 * Get the Camera instance in use.
+	 * 
+	 * @return The Camera object, null if it has not been acquired.
+	 */
+	public Camera getCamera() {
 		return mCamera;
 	}
 
@@ -120,12 +134,14 @@ public class CameraView extends SurfaceView implements SurfaceHolder.Callback, C
 		}
 	}
 
+	/**
+	 * Check if the camera is previewing, if so the user should see what the
+	 * Camera is pointing at.
+	 * 
+	 * @return true if is previeweing, false otherwise.
+	 */
 	public boolean isPreviewing() {
 		return mCamera != null && mIsPreviewing;
-	}
-
-	public void setSupportedPreviewSizes(List<Size> supportedPreviewSizes) {
-		mSupportedPreviewSizes = supportedPreviewSizes;
 	}
 
 	public void surfaceCreated(SurfaceHolder holder) {
@@ -170,6 +186,15 @@ public class CameraView extends SurfaceView implements SurfaceHolder.Callback, C
 		super.onMeasure(widthMeasureSpec, heightMeasureSpec);
 	}
 
+	/**
+	 * This method try to find out what is the best size for previewing the
+	 * camera.
+	 * 
+	 * @param sizes
+	 * @param width
+	 * @param height
+	 * @return
+	 */
 	private Size getOptimalPreviewSize(List<Size> sizes, int width, int height) {
 		double targetRatio = (double) width / height;
 
@@ -215,7 +240,7 @@ public class CameraView extends SurfaceView implements SurfaceHolder.Callback, C
 		stopPreviewCamera();
 
 		Camera.Parameters parameters = mCamera.getParameters();
-		
+
 		int orientation = 0;
 
 		if (Build.VERSION.SDK_INT < 9) {
@@ -242,6 +267,7 @@ public class CameraView extends SurfaceView implements SurfaceHolder.Callback, C
 
 	}
 
+	@TargetApi(Build.VERSION_CODES.GINGERBREAD)
 	private int getCameraDisplayOrientation() {
 		int rotation = ((WindowManager) getContext().getSystemService(Context.WINDOW_SERVICE))
 				.getDefaultDisplay().getRotation();
@@ -287,6 +313,9 @@ public class CameraView extends SurfaceView implements SurfaceHolder.Callback, C
 		startPreviewCamera();
 	}
 
+	/**
+	 * Stop the previewing of the camera.
+	 */
 	public void stopPreviewCamera() {
 		if (mCamera == null || !mIsPreviewing) {
 			return;
@@ -296,6 +325,9 @@ public class CameraView extends SurfaceView implements SurfaceHolder.Callback, C
 
 	}
 
+	/**
+	 * Start the previewing of the camera if possible.
+	 */
 	public void startPreviewCamera() {
 		if (mCamera == null) {
 			init(getContext());
@@ -313,6 +345,9 @@ public class CameraView extends SurfaceView implements SurfaceHolder.Callback, C
 		}
 	}
 
+	/**
+	 * Release camera.
+	 */
 	public void releaseCamera() {
 		stopPreviewCamera();
 		if (mCamera != null) {
@@ -331,14 +366,16 @@ public class CameraView extends SurfaceView implements SurfaceHolder.Callback, C
 		return myImage;
 	}
 
-	public void takePicture(BeyondarPictureCallback cameraCallback) {
-		BitmapFactory.Options options = new BitmapFactory.Options();
-		// TODO: Improve this part
-		options.inSampleSize = 4;
-		// options.inSampleSize = 1;
-		takePicture(cameraCallback, options);
-	}
-
+	/**
+	 * Take a picture using the camera. Use the
+	 * {@link com.beyondar.android.view.BeyondarGLSurfaceView.BeyondarPictureCallback
+	 * BeyondarPictureCallback} to get notify when the picture is ready.
+	 * 
+	 * @param cameraCallback
+	 *            Camera callback.
+	 * @param options
+	 *            Bitmap options.
+	 */
 	public void takePicture(BeyondarPictureCallback cameraCallback, BitmapFactory.Options options) {
 		if (mCamera == null) {
 			return;

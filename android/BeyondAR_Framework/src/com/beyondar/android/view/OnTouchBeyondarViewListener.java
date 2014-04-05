@@ -2,13 +2,17 @@ package com.beyondar.android.view;
 
 import android.view.MotionEvent;
 
+/**
+ * On touch listener to detect when a
+ * {@link com.beyondar.android.world.BeyondarObject BeyondarObject} has been
+ * touched on the {@link com.beyondar.android.view.BeyondarGLSurfaceView
+ * BeyondarGLSurfaceView}.
+ */
 public interface OnTouchBeyondarViewListener {
-
-	static final String __ON_AR_TOUCH_METHOD_NAME__ = "onTouchBeyondarView";
 
 	/**
 	 * Use
-	 * {@link BeyondarGLSurfaceView#getBeyondarObjectsOnScreenCoordinates(float, float, java.util.ArrayList)}}
+	 * {@link BeyondarGLSurfaceView#getBeyondarObjectsOnScreenCoordinates(float, float, java.util.ArrayList)}
 	 * to get the object touched:<br>
 	 * 
 	 * <pre>

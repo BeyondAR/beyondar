@@ -62,13 +62,13 @@ public class BeyondarLocationManager {
 		INSTANCE;
 
 		private LocationManager mLocationManager;
-		private BeyondarLocationListener mLocationListener;
+		private BeyondarLocation mLocationListener;
 		private BeyondarGpsListener mGpsListener;
 		private boolean mIsEnabled;
 		private boolean mGpsFix;
 
 		private BeyondarLocationManagerSingleton() {
-			mLocationListener = new BeyondarLocationListener();
+			mLocationListener = new BeyondarLocation();
 			mGpsListener = new BeyondarGpsListener();
 			mIsEnabled = false;
 			mGpsFix = false;

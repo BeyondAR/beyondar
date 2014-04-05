@@ -15,6 +15,7 @@
  */
 package com.beyondar.android.view;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Rect;
 import android.os.Build;
@@ -23,6 +24,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RemoteViews.RemoteView;
 
+/**
+ * Custom layout for to be able to attach a View to a
+ * {@link com.beyondar.android.world.BeyondarObject BeyondarObject}
+ * 
+ * @author jpuig
+ * 
+ */
+@SuppressLint("NewApi")
 @RemoteView
 class CustomLayout extends ViewGroup {
 	/** The amount of space used by children in the left gutter. */
@@ -56,7 +65,7 @@ class CustomLayout extends ViewGroup {
 			setTranslationY(y);
 			return;
 		}
-		
+
 		if (xPos == x && yPos == y) {
 			return;
 		}
@@ -106,11 +115,11 @@ class CustomLayout extends ViewGroup {
 					maxWidth = Math.max(maxWidth, child.getMeasuredWidth() + lp.leftMargin + lp.rightMargin);
 				}
 				maxHeight = Math.max(maxHeight, child.getMeasuredHeight() + lp.topMargin + lp.bottomMargin);
-				 if (Build.VERSION.SDK_INT >= 11) {
-					 childState = combineMeasuredStates(childState, child.getMeasuredState());
-				 } else {
-					 supportCombineMeasuredStates(childState, 0);
-				 }
+				if (Build.VERSION.SDK_INT >= 11) {
+					childState = combineMeasuredStates(childState, child.getMeasuredState());
+				} else {
+					supportCombineMeasuredStates(childState, 0);
+				}
 			}
 		}
 
@@ -125,40 +134,42 @@ class CustomLayout extends ViewGroup {
 		// maxWidth += 50;
 
 		// Report our final dimensions.
-		 if (Build.VERSION.SDK_INT >= 11) {
-			 setMeasuredDimension(resolveSizeAndState(maxWidth, widthMeasureSpec, childState) + xPos,
-						resolveSizeAndState(maxHeight, heightMeasureSpec, childState << MEASURED_HEIGHT_STATE_SHIFT)
-								+ yPos);
-		 }else {
-			 setMeasuredDimension(resolveSizeAndStateSupport(maxWidth, widthMeasureSpec, childState) + xPos,
-					 resolveSizeAndStateSupport(maxHeight, heightMeasureSpec, childState << MEASURED_HEIGHT_STATE_SHIFT)
-								+ yPos);
-		 }
-		
+		if (Build.VERSION.SDK_INT >= 11) {
+			setMeasuredDimension(
+					resolveSizeAndState(maxWidth, widthMeasureSpec, childState) + xPos,
+					resolveSizeAndState(maxHeight, heightMeasureSpec,
+							childState << MEASURED_HEIGHT_STATE_SHIFT) + yPos);
+		} else {
+			setMeasuredDimension(
+					resolveSizeAndStateSupport(maxWidth, widthMeasureSpec, childState) + xPos,
+					resolveSizeAndStateSupport(maxHeight, heightMeasureSpec,
+							childState << MEASURED_HEIGHT_STATE_SHIFT) + yPos);
+		}
+
 	}
-	
-	 public static int resolveSizeAndStateSupport(int size, int measureSpec, int childMeasuredState) {
-	        int result = size;
-	        int specMode = MeasureSpec.getMode(measureSpec);
-	        int specSize =  MeasureSpec.getSize(measureSpec);
-	        switch (specMode) {
-	        case MeasureSpec.UNSPECIFIED:
-	            result = size;
-	            break;
-	        case MeasureSpec.AT_MOST:
-	            if (specSize < size) {
-	                result = specSize | MEASURED_STATE_TOO_SMALL;
-	            } else {
-	                result = size;
-	            }
-	            break;
-	        case MeasureSpec.EXACTLY:
-	            result = specSize;
-	            break;
-	        }
-	        return result | (childMeasuredState&MEASURED_STATE_MASK);
-	    }
-	
+
+	public static int resolveSizeAndStateSupport(int size, int measureSpec, int childMeasuredState) {
+		int result = size;
+		int specMode = MeasureSpec.getMode(measureSpec);
+		int specSize = MeasureSpec.getSize(measureSpec);
+		switch (specMode) {
+		case MeasureSpec.UNSPECIFIED:
+			result = size;
+			break;
+		case MeasureSpec.AT_MOST:
+			if (specSize < size) {
+				result = specSize | MEASURED_STATE_TOO_SMALL;
+			} else {
+				result = size;
+			}
+			break;
+		case MeasureSpec.EXACTLY:
+			result = specSize;
+			break;
+		}
+		return result | (childMeasuredState & MEASURED_STATE_MASK);
+	}
+
 	private static int supportCombineMeasuredStates(int curState, int newState) {
 		return curState | newState;
 	}

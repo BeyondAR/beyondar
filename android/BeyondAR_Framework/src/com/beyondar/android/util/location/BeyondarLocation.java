@@ -26,7 +26,7 @@ import android.os.Bundle;
 import com.beyondar.android.world.GeoObject;
 import com.beyondar.android.world.World;
 
-public class BeyondarLocationListener implements LocationListener {
+class BeyondarLocation implements LocationListener {
 
 	private List<GeoObject> mArrayListGeoObject;
 	private List<World> mArrayListWorld;
@@ -37,7 +37,7 @@ public class BeyondarLocationListener implements LocationListener {
 	private volatile Location mLastBestLocation;
 	private volatile Location mLastGPSLocation;
 
-	BeyondarLocationListener() {
+	BeyondarLocation() {
 		mLockGeoObject = new Object();
 		mLockWorld = new Object();
 		mLockLocationListener = new Object();

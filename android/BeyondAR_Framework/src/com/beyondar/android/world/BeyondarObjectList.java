@@ -23,7 +23,6 @@ import com.beyondar.android.opengl.texture.Texture;
 /**
  * This class allow the user to store according to type, so it is useful when a
  * search is required
- * 
  */
 public class BeyondarObjectList implements Iterable<BeyondarObject> {
 
@@ -36,7 +35,7 @@ public class BeyondarObjectList implements Iterable<BeyondarObject> {
 	private ArrayList<BeyondarObject> mContainer;
 	private ArrayList<BeyondarObject> mToRemoveQueue;
 
-	private String mDefaultBitmapURI;
+	private String mDefaultImageUri;
 
 	private World mWorld;
 
@@ -52,12 +51,18 @@ public class BeyondarObjectList implements Iterable<BeyondarObject> {
 		mLock = new Object();
 	}
 
+	/**
+	 * Check the visibility of the list.
+	 * 
+	 * @return true is visible, false otherwise.
+	 */
 	public boolean isVisible() {
 		return mVisibility;
 	}
 
 	/**
-	 * Set the visibility of all this GeoObjects
+	 * Set the visibility of the {@link BeyondarObjectList}. If invisible all
+	 * the {@link BeyondarObject}s will not be rendered.
 	 * 
 	 * @param visibility
 	 */
@@ -66,7 +71,8 @@ public class BeyondarObjectList implements Iterable<BeyondarObject> {
 	}
 
 	/**
-	 * Add a geoObject to the list if it does not exist. To add an object use the {@link World} instance
+	 * Add a geoObject to the list if it does not exist. To add an object use
+	 * the {@link World} instance
 	 * 
 	 * @param object
 	 *            the object to add
@@ -135,28 +141,44 @@ public class BeyondarObjectList implements Iterable<BeyondarObject> {
 		return mType;
 	}
 
-	public void setDefaultBitmapURI(String uri) {
-		mDefaultBitmapURI = uri;
+	/**
+	 * Set the default image of the list. This default image is used when the
+	 * {@link BeyondarObject} image is not available.
+	 * 
+	 * @param uri
+	 *            Default image.
+	 */
+	public void setDefaultImageUri(String uri) {
+		mDefaultImageUri = uri;
 		mTexture = new Texture();
 	}
 
 	/**
 	 * Get the default bitmap. <br>
-	 * DO not use this method directly form the {@link BeyondarObjectList} instance, the best way to get the default image is using the {@link World} instance:<br>
-	 * {@link World#getDefaultBitmap(int)}
+	 * __Importatn__ Do not use this method directly form the
+	 * {@link BeyondarObjectList} instance, the best way to get the default
+	 * image is using the getDefaultBitmap(int) method in the {@link World}
+	 * instance.
 	 * 
 	 * @return
 	 */
-	public String getDefaultBitmapURI() {
-		if (mDefaultBitmapURI != null) {
+	public String getDefaultImageUri() {
+		if (mDefaultImageUri != null) {
 
-			return mDefaultBitmapURI;
+			return mDefaultImageUri;
 		} else {
-			return mWorld.getDefaultBitmap();
+			return mWorld.getDefaultImage();
 		}
 	}
 
-	public void setTexture(Texture texture) {
+	/**
+	 * Set the default {@link Texture} of the list. This {@link Texture} is used
+	 * when the {@link BeyondarObject} texture is not loaded.
+	 * 
+	 * @param texture
+	 *            Default {@link Texture}.
+	 */
+	public void setDefaultTexture(Texture texture) {
 		if (texture == null) {
 			texture = new Texture();
 		}
@@ -164,17 +186,18 @@ public class BeyondarObjectList implements Iterable<BeyondarObject> {
 	}
 
 	/**
-	 * Get the texture object for this list
+	 * Get the default {@link Texture} of the list. This {@link Texture} is used
+	 * when the {@link BeyondarObject} texture is not loaded.
 	 * 
-	 * @return
+	 * @return texture Default {@link Texture}.
 	 */
-	public Texture getTexture() {
+	public Texture getDefaultTexture() {
 		return mTexture;
 	}
 
 	/**
 	 * This method force to remove all the elements that are queued to be
-	 * removed
+	 * removed.
 	 */
 	public synchronized void forceRemoveObjectsInQueue() {
 		synchronized (mLock) {

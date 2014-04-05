@@ -32,26 +32,32 @@ import com.beyondar.android.util.math.geom.Point3;
 import com.beyondar.android.util.math.geom.Ray;
 import com.beyondar.android.util.math.geom.Vector3;
 
+/**
+ * Container that holds all the {@link BeyondarObject} to be rendered in the
+ * augmented reality world.
+ */
 public class World implements Plugable<WorldPlugin> {
-
-	protected static final String TAG = "world";
 
 	/**
 	 * The maximum distance that the object will be displayed (meters) in the AR
-	 * view
+	 * view.
 	 */
 	public static final int MAX_AR_VIEW_DISTANCE = 1000;
 
+	/**
+	 * Default list type.
+	 */
 	public static final int LIST_TYPE_DEFAULT = 0;
 
-	public static final String URI_PREFIX_DEFAULT_BITMAP = "beyondar_default_Bitmap_BeyondarList_type_";
+	/** Image uri prefix for the default images */
+	public static final String URI_PREFIX_DEFAULT_IMAGE = "com.beyondar_default_type";
 
 	private float ZERO = 1e-8f;
 	private Object mLock = new Object();
-	
-	protected List<BeyondarObjectList> beyondarObjectLists;
-	protected double longitude, latitude, altitude;
-	
+
+	private List<BeyondarObjectList> mBeyondarObjectLists;
+	private double mLongitude, mLatitude, mAltitude;
+
 	private Context mContext;
 	private double mArViewDistance;
 	private BitmapCache mBitmapHolder;
@@ -60,6 +66,11 @@ public class World implements Plugable<WorldPlugin> {
 	protected List<WorldPlugin> plugins;
 	protected Object lockplugins = new Object();
 
+	/**
+	 * Create an instance of the augmented reality world.
+	 * 
+	 * @param context
+	 */
 	public World(Context context) {
 		mContext = context;
 		mBitmapHolder = BitmapCache.initialize(mContext.getResources(), getClass().getName(), true);
@@ -67,7 +78,10 @@ public class World implements Plugable<WorldPlugin> {
 		mArViewDistance = MAX_AR_VIEW_DISTANCE;
 		plugins = new ArrayList<WorldPlugin>(DEFAULT_PLUGINS_CAPACITY);
 	}
-	
+
+	/**
+	 * Notify the world that the application has been resumed.
+	 */
 	public void onResume() {
 		synchronized (lockplugins) {
 			for (WorldPlugin plugin : plugins) {
@@ -75,8 +89,11 @@ public class World implements Plugable<WorldPlugin> {
 			}
 		}
 	}
-	
-	public void onPause(){
+
+	/**
+	 * Notify the world that the application has been paused.
+	 */
+	public void onPause() {
 		synchronized (lockplugins) {
 			for (WorldPlugin plugin : plugins) {
 				plugin.onPause();
@@ -88,13 +105,18 @@ public class World implements Plugable<WorldPlugin> {
 		return mContext;
 	}
 
+	/**
+	 * Get the bitmap cache used to load all the images.
+	 * 
+	 * @return
+	 */
 	public BitmapCache getBitmapCache() {
 		return mBitmapHolder;
 	}
 
 	private void createBeyondarObjectListArray() {
-		beyondarObjectLists = new ArrayList<BeyondarObjectList>();
-		beyondarObjectLists.add(new BeyondarObjectList(LIST_TYPE_DEFAULT, this));
+		mBeyondarObjectLists = new ArrayList<BeyondarObjectList>();
+		mBeyondarObjectLists.add(new BeyondarObjectList(LIST_TYPE_DEFAULT, this));
 
 	}
 
@@ -170,8 +192,7 @@ public class World implements Plugable<WorldPlugin> {
 	}
 
 	@Override
-	public List<WorldPlugin> getAllPlugins(Class<? extends WorldPlugin> pluginClass,
-			List<WorldPlugin> result) {
+	public List<WorldPlugin> getAllPlugins(Class<? extends WorldPlugin> pluginClass, List<WorldPlugin> result) {
 		synchronized (lockplugins) {
 			for (WorldPlugin plugin : plugins) {
 				if (pluginClass.isInstance(plugin)) {
@@ -211,7 +232,7 @@ public class World implements Plugable<WorldPlugin> {
 			BeyondarObjectList listTmp = getBeyondarObjectList(worldListType);
 			if (listTmp == null) {
 				listTmp = new BeyondarObjectList(worldListType, this);
-				beyondarObjectLists.add(listTmp);
+				mBeyondarObjectLists.add(listTmp);
 				synchronized (lockplugins) {
 					for (WorldPlugin plugin : plugins) {
 						plugin.onBeyondarObjectListCreated(listTmp);
@@ -252,11 +273,14 @@ public class World implements Plugable<WorldPlugin> {
 		}
 	}
 
+	/**
+	 * Force the world to remove all the removed {@link BeyondarObject}.
+	 */
 	public synchronized void forceProcessRemoveQueue() {
-		if (beyondarObjectLists.size() > 0) {
+		if (mBeyondarObjectLists.size() > 0) {
 			synchronized (mLock) {
-				for (int i = 0; i < beyondarObjectLists.size(); i++) {
-					beyondarObjectLists.get(i).forceRemoveObjectsInQueue();
+				for (int i = 0; i < mBeyondarObjectLists.size(); i++) {
+					mBeyondarObjectLists.get(i).forceRemoveObjectsInQueue();
 				}
 			}
 		}
@@ -267,7 +291,7 @@ public class World implements Plugable<WorldPlugin> {
 	 */
 	public synchronized void clearWorld() {
 		synchronized (mLock) {
-			beyondarObjectLists.clear();
+			mBeyondarObjectLists.clear();
 			mBitmapHolder.clean();
 		}
 	}
@@ -278,7 +302,7 @@ public class World implements Plugable<WorldPlugin> {
 	 * @return
 	 */
 	public double getLongitude() {
-		return longitude;
+		return mLongitude;
 	}
 
 	/**
@@ -287,7 +311,7 @@ public class World implements Plugable<WorldPlugin> {
 	 * @return
 	 */
 	public double getAltitude() {
-		return altitude;
+		return mAltitude;
 	}
 
 	/**
@@ -296,13 +320,20 @@ public class World implements Plugable<WorldPlugin> {
 	 * @return
 	 */
 	public double getLatitude() {
-		return latitude;
+		return mLatitude;
 	}
 
+	/**
+	 * Set user geo position.
+	 * 
+	 * @param latitude
+	 * @param longitude
+	 * @param altitude
+	 */
 	public void setGeoPosition(double latitude, double longitude, double altitude) {
-		this.latitude = latitude;
-		this.longitude = longitude;
-		this.altitude = altitude;
+		this.mLatitude = latitude;
+		this.mLongitude = longitude;
+		this.mAltitude = altitude;
 		synchronized (lockplugins) {
 			for (WorldPlugin plugin : plugins) {
 				plugin.onGeoPositionChanged(latitude, longitude, altitude);
@@ -310,10 +341,22 @@ public class World implements Plugable<WorldPlugin> {
 		}
 	}
 
+	/**
+	 * Set user geo position.
+	 * 
+	 * @param latitude
+	 * @param longitude
+	 */
 	public final void setGeoPosition(double latitude, double longitude) {
-		setGeoPosition(latitude, longitude, altitude);
+		setGeoPosition(latitude, longitude, mAltitude);
 	}
 
+	/**
+	 * Set user geo position using the {@link Location} object. The altitude is
+	 * not used because it is a big source of issues, the accuracy is too bad.
+	 * 
+	 * @param location
+	 */
 	public void setLocation(Location location) {
 
 		if (location == null) {
@@ -325,11 +368,25 @@ public class World implements Plugable<WorldPlugin> {
 
 	}
 
-	public synchronized void setDefaultBitmap(int defaultBitmap) {
-		setDefaultBitmap(BitmapCache.normalizeURI(defaultBitmap));
+	/**
+	 * Set the default image of the world. This default image is used when the
+	 * {@link BeyondarObject} image is not available.
+	 * 
+	 * @param imageResId
+	 *            Default image.
+	 */
+	public synchronized void setDefaultImage(int imageResId) {
+		setDefaultImage(BitmapCache.normalizeURI(imageResId));
 	}
 
-	public synchronized void setDefaultBitmap(String uri) {
+	/**
+	 * Set the default image of the world. This default image is used when the
+	 * {@link BeyondarObject} image is not available.
+	 * 
+	 * @param uri
+	 *            Default image.
+	 */
+	public synchronized void setDefaultImage(String uri) {
 		mDefaultBitmap = uri;
 		synchronized (lockplugins) {
 			for (WorldPlugin plugin : plugins) {
@@ -339,60 +396,60 @@ public class World implements Plugable<WorldPlugin> {
 	}
 
 	/**
-	 * Set the default bitmap for the specified list type. This bitmap is used
-	 * when the there are not any bitmap loaded for a {@link BeyondarObject}
+	 * Set the default image for the specified list type. This image is used
+	 * when there are not any image loaded for a {@link BeyondarObject}.
 	 * 
 	 * @param uri
-	 *            The default Bitmap
+	 *            The default image
 	 * @param type
 	 *            The type of the list to set the bitmap
-	 * @return The URI of the bitmap loaded or null if the bitmap has not been
+	 * @return The URI of the image loaded or null if the image has not been
 	 *         loaded
 	 */
-	public synchronized boolean setDefaultBitmap(String uri, int type) {
+	public synchronized boolean setDefaultImage(String uri, int type) {
 		BeyondarObjectList list = getBeyondarObjectList(type);
 		if (list != null) {
-			list.setDefaultBitmapURI(uri);
+			list.setDefaultImageUri(uri);
 			return true;
 		}
 		return false;
 	}
 
 	/**
-	 * Set the default bitmap for the specified list type. This bitmap is used
-	 * when the there are not any bitmap loaded for a {@link BeyondarObject}
+	 * Set the default image for the specified list type. This image is used
+	 * when there are no images loaded for a {@link BeyondarObject}.
 	 * 
-	 * @param defaultBitmap
-	 *            The default Bitmap reference
+	 * @param imageResource
+	 *            The default image reference.
 	 * @param type
-	 *            The type of the list to set the bitmap
-	 * @return true if the bitmap has been loaded properly, false otherwise
+	 *            The type of the list to set the image.
+	 * @return true if the image has been loaded properly, false otherwise.
 	 */
-	public synchronized boolean setDefaultBitmap(int defaultBitmap, int type) {
-		return setDefaultBitmap(BitmapCache.normalizeURI(defaultBitmap), type);
+	public synchronized boolean setDefaultBitmap(int imageResource, int type) {
+		return setDefaultImage(BitmapCache.normalizeURI(imageResource), type);
 	}
 
 	/**
-	 * Get the default bitmap URI of the specified list
+	 * Get the default image URI of the specified list.
 	 * 
 	 * @param type
 	 *            the type of the list
 	 * @return
 	 */
-	public synchronized String getDefaultBitmap(int type) {
+	public synchronized String getDefaultImage(int type) {
 		BeyondarObjectList list = getBeyondarObjectList(type);
-		if (list != null && list.getDefaultBitmapURI() != null) {
-			return list.getDefaultBitmapURI();
+		if (list != null && list.getDefaultImageUri() != null) {
+			return list.getDefaultImageUri();
 		}
 		return mDefaultBitmap;
 	}
 
 	/**
-	 * Get the default bitmap URI of the world
+	 * Get the default image URI of the world
 	 * 
 	 * @return
 	 */
-	public synchronized String getDefaultBitmap() {
+	public synchronized String getDefaultImage() {
 		return mDefaultBitmap;
 	}
 
@@ -425,8 +482,8 @@ public class World implements Plugable<WorldPlugin> {
 	 */
 	public BeyondarObjectList getBeyondarObjectList(int type) {
 		BeyondarObjectList list = null;
-		for (int i = 0; i < beyondarObjectLists.size(); i++) {
-			list = beyondarObjectLists.get(i);
+		for (int i = 0; i < mBeyondarObjectLists.size(); i++) {
+			list = mBeyondarObjectLists.get(i);
 			if (list.getType() == type) {
 				return list;
 			}
@@ -442,7 +499,7 @@ public class World implements Plugable<WorldPlugin> {
 	 * @return The list of the lists
 	 */
 	public List<BeyondarObjectList> getBeyondarObjectLists() {
-		return beyondarObjectLists;
+		return mBeyondarObjectLists;
 	}
 
 	/**
@@ -465,8 +522,8 @@ public class World implements Plugable<WorldPlugin> {
 		BeyondarObjectList beyondarList = null;
 
 		try {
-			for (int i = 0; i < beyondarObjectLists.size(); i++) {
-				beyondarList = beyondarObjectLists.get(i);
+			for (int i = 0; i < mBeyondarObjectLists.size(); i++) {
+				beyondarList = mBeyondarObjectLists.get(i);
 				if (beyondarList != null) {
 					for (int j = 0; j < beyondarList.size(); j++) {
 

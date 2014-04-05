@@ -4,9 +4,13 @@ import java.util.ArrayList;
 
 import com.beyondar.android.world.BeyondarObject;
 
+/**
+ * On click listener to detect when a
+ * {@link com.beyondar.android.world.BeyondarObject BeyondarObject} has been
+ * clicked on the {@link com.beyondar.android.view.BeyondarGLSurfaceView
+ * BeyondarGLSurfaceView}.
+ */
 public interface OnClickBeyondarObjectListener {
-
-	static final String __ON_CLICK_BEYONDAR_OBJECT_METHOD_NAME__ = "onClickBeyondarObject";
 
 	/**
 	 * This method is called when the user click on a {@link BeyondarObject}

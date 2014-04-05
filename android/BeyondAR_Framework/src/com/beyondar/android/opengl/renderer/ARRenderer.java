@@ -585,17 +585,17 @@ public class ARRenderer implements GLSurfaceView.Renderer, BeyondarSensorListene
 	 */
 	protected void renderList(GL10 gl, BeyondarObjectList list, long time) {
 
-		Texture listTexture = list.getTexture();
+		Texture listTexture = list.getDefaultTexture();
 
 		if (!listTexture.isLoaded()) {
-			Texture defaultTexture = sTextureHolder.get(list.getDefaultBitmapURI());
+			Texture defaultTexture = sTextureHolder.get(list.getDefaultImageUri());
 			if (defaultTexture == null || !defaultTexture.isLoaded()) {
 				Logger.w("Warning!! The default texture for the list \"" + list.getType()
 						+ "\" has not been loaded. Trying to load it now...");
-				Bitmap defaultBtm = mWorld.getBitmapCache().getBitmap(list.getDefaultBitmapURI());
+				Bitmap defaultBtm = mWorld.getBitmapCache().getBitmap(list.getDefaultImageUri());
 				defaultTexture = load2DTexture(gl, defaultBtm);
 			}
-			list.setTexture(defaultTexture == null ? null : defaultTexture.clone());
+			list.setDefaultTexture(defaultTexture == null ? null : defaultTexture.clone());
 		}
 
 		for (int j = 0; j < list.size(); j++) {
@@ -656,7 +656,7 @@ public class ARRenderer implements GLSurfaceView.Renderer, BeyondarSensorListene
 						beyondarObject.getAngle());
 			}
 
-			if (!beyondarObject.getTexture().isLoaded() && beyondarObject.getBitmapUri() != null) {
+			if (!beyondarObject.getTexture().isLoaded() && beyondarObject.getImageUri() != null) {
 				int counter = beyondarObject.getTexture().getLoadTryCounter();
 				double timeOut = TIMEOUT_LOAD_TEXTURE * (counter + 1);
 				if (beyondarObject.getTexture().getTimeStamp() == 0
@@ -836,9 +836,9 @@ public class ARRenderer implements GLSurfaceView.Renderer, BeyondarSensorListene
 				for (int i = 0; i < mWorld.getBeyondarObjectLists().size(); i++) {
 					list = mWorld.getBeyondarObjectLists().get(i);
 					if (null != list) {
-						Bitmap defaultBtm = mWorld.getBitmapCache().getBitmap(list.getDefaultBitmapURI());
+						Bitmap defaultBtm = mWorld.getBitmapCache().getBitmap(list.getDefaultImageUri());
 						Texture texture = load2DTexture(gl, defaultBtm);
-						list.setTexture(texture);
+						list.setDefaultTexture(texture);
 
 						for (int j = 0; j < list.size(); j++) {
 							// loading texture
@@ -863,19 +863,19 @@ public class ARRenderer implements GLSurfaceView.Renderer, BeyondarSensorListene
 	 */
 	public void loadBeyondarObjectTexture(GL10 gl, BeyondarObject geoObject) {
 
-		Texture texture = getTexture(geoObject.getBitmapUri());
+		Texture texture = getTexture(geoObject.getImageUri());
 
 		if (texture == null) {
-			Bitmap btm = mWorld.getBitmapCache().getBitmap(geoObject.getBitmapUri());
+			Bitmap btm = mWorld.getBitmapCache().getBitmap(geoObject.getImageUri());
 
-			texture = loadBitmapTexture(gl, btm, geoObject.getBitmapUri());
+			texture = loadBitmapTexture(gl, btm, geoObject.getImageUri());
 
 			if (texture == null || !texture.isLoaded()) {
-				sPendingTextureObjects.addObject(geoObject.getBitmapUri(), geoObject);
+				sPendingTextureObjects.addObject(geoObject.getImageUri(), geoObject);
 			}
 			if (btm == null) {
 				if (Logger.DEBUG_OPENGL) {
-					Logger.e(TAG, "ERROR: the resource " + geoObject.getBitmapUri()
+					Logger.e(TAG, "ERROR: the resource " + geoObject.getImageUri()
 							+ " has not been loaded. Object Name: " + geoObject.getName());
 				}
 			}

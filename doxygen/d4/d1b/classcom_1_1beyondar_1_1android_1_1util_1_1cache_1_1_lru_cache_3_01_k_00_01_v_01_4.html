@@ -45,7 +45,6 @@ var searchBox = new SearchBox("searchBox", "../../search",false,'Search');
     <ul class="tablist">
       <li><a href="../../index.html"><span>Main&#160;Page</span></a></li>
       <li class="current"><a href="../../annotated.html"><span>Classes</span></a></li>
-      <li><a href="../../files.html"><span>Files</span></a></li>
       <li>
         <div id="MSearchBox" class="MSearchBoxInactive">
         <span class="left">
@@ -214,8 +213,6 @@ int&#160;</td><td class="memItemRight" valign="bottom"><b>evictionCount</b></td>
 <div class="line">} </div>
 </div><!-- fragment --> 
 </pre><p>This class does not allow null to be used as a key or value. A return value of null from <a class="el" href="../../d4/d1b/classcom_1_1beyondar_1_1android_1_1util_1_1cache_1_1_lru_cache_3_01_k_00_01_v_01_4.html#ae724dfd76fec923ecda757b72d2b7544">get</a>, <a class="el" href="../../d4/d1b/classcom_1_1beyondar_1_1android_1_1util_1_1cache_1_1_lru_cache_3_01_k_00_01_v_01_4.html#a2802aa8bfc10340a7b9e21dd61584531">put</a> or <a class="el" href="../../d4/d1b/classcom_1_1beyondar_1_1android_1_1util_1_1cache_1_1_lru_cache_3_01_k_00_01_v_01_4.html#aa90860c4079684ad679fccabe3774d10">remove</a> is unambiguous: the key was not in the cache. </p>
-
-<p>Definition at line <a class="el" href="../../d9/df3/_lru_cache_8java_source.html#l00073">73</a> of file <a class="el" href="../../d9/df3/_lru_cache_8java_source.html">LruCache.java</a>.</p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a class="anchor" id="a6d740ca72a9d521c1ad87443aee307d0"></a>
 <div class="memitem">
@@ -236,8 +233,6 @@ int&#160;</td><td class="memItemRight" valign="bottom"><b>evictionCount</b></td>
   </table>
   </dd>
 </dl>
-
-<p>Definition at line <a class="el" href="../../d9/df3/_lru_cache_8java_source.html#l00093">93</a> of file <a class="el" href="../../d9/df3/_lru_cache_8java_source.html">LruCache.java</a>.</p>
 
 </div>
 </div>
@@ -266,8 +261,6 @@ int&#160;</td><td class="memItemRight" valign="bottom"><b>evictionCount</b></td>
 
 <p>Called after a cache miss to compute a value for the corresponding key. </p>
 <p>Returns the computed value or null if no value can be computed. The default implementation returns null. </p>
-
-<p>Definition at line <a class="el" href="../../d9/df3/_lru_cache_8java_source.html#l00217">217</a> of file <a class="el" href="../../d9/df3/_lru_cache_8java_source.html">LruCache.java</a>.</p>
 
 </div>
 </div>
@@ -306,8 +299,6 @@ int&#160;</td><td class="memItemRight" valign="bottom"><b>evictionCount</b></td>
 <p>Called for entries that have reached the tail of the least recently used queue and are be removed. </p>
 <p>The default implementation does nothing. </p>
 
-<p>Definition at line <a class="el" href="../../d9/df3/_lru_cache_8java_source.html#l00202">202</a> of file <a class="el" href="../../d9/df3/_lru_cache_8java_source.html">LruCache.java</a>.</p>
-
 </div>
 </div>
 <a class="anchor" id="aa12170329d83755b84b4edd2bf5c9174"></a>
@@ -345,8 +336,6 @@ int&#160;</td><td class="memItemRight" valign="bottom"><b>evictionCount</b></td>
 <p>Called for entries that have been removed using the method <a class="el" href="../../d4/d1b/classcom_1_1beyondar_1_1android_1_1util_1_1cache_1_1_lru_cache_3_01_k_00_01_v_01_4.html#aa90860c4079684ad679fccabe3774d10">remove</a>. </p>
 <p>The default implementation does nothing. </p>
 
-<p>Definition at line <a class="el" href="../../d9/df3/_lru_cache_8java_source.html#l00208">208</a> of file <a class="el" href="../../d9/df3/_lru_cache_8java_source.html">LruCache.java</a>.</p>
-
 </div>
 </div>
 <a class="anchor" id="ae724dfd76fec923ecda757b72d2b7544"></a>
@@ -369,8 +358,6 @@ int&#160;</td><td class="memItemRight" valign="bottom"><b>evictionCount</b></td>
 <div class="fragment"><div class="line"><span class="preprocessor">#create </span></div>
 </div><!-- fragment --><p> . If a value was returned, it is moved to the head of the queue. This returns null if a value is not cached and cannot be created. </p>
 
-<p>Definition at line <a class="el" href="../../d9/df3/_lru_cache_8java_source.html#l00107">107</a> of file <a class="el" href="../../d9/df3/_lru_cache_8java_source.html">LruCache.java</a>.</p>
-
 </div>
 </div>
 <a class="anchor" id="a81986fa6cdb3c0704ccdeacc17191703"></a>
@@ -388,8 +375,6 @@ int&#160;</td><td class="memItemRight" valign="bottom"><b>evictionCount</b></td>
 
 <p>For caches that do not override <a class="el" href="../../d4/d1b/classcom_1_1beyondar_1_1android_1_1util_1_1cache_1_1_lru_cache_3_01_k_00_01_v_01_4.html#a1dc5f7b4a639957d10ebccefe4cff771">sizeOf</a>, this returns the maximum number of entries in the cache. </p>
 <p>For all other caches, this returns the maximum sum of the sizes of the entries in this cache. </p>
-
-<p>Definition at line <a class="el" href="../../d9/df3/_lru_cache_8java_source.html#l00263">263</a> of file <a class="el" href="../../d9/df3/_lru_cache_8java_source.html">LruCache.java</a>.</p>
 
 </div>
 </div>
@@ -425,8 +410,6 @@ int&#160;</td><td class="memItemRight" valign="bottom"><b>evictionCount</b></td>
 <dl class="section return"><dt>Returns</dt><dd>the previous value mapped by<div class="fragment"><div class="line">key </div>
 </div><!-- fragment --> . Although that entry is no longer cached, it has not been passed to <a class="el" href="../../d4/d1b/classcom_1_1beyondar_1_1android_1_1util_1_1cache_1_1_lru_cache_3_01_k_00_01_v_01_4.html#a0f5b8d9e062491829e1106f26ddde888">entryEvicted</a></dd></dl>
 
-<p>Definition at line <a class="el" href="../../d9/df3/_lru_cache_8java_source.html#l00139">139</a> of file <a class="el" href="../../d9/df3/_lru_cache_8java_source.html">LruCache.java</a>.</p>
-
 </div>
 </div>
 <a class="anchor" id="aa90860c4079684ad679fccabe3774d10"></a>
@@ -449,8 +432,6 @@ int&#160;</td><td class="memItemRight" valign="bottom"><b>evictionCount</b></td>
 <dl class="section return"><dt>Returns</dt><dd>the previous value mapped by<div class="fragment"><div class="line">key </div>
 </div><!-- fragment --> . Although that entry is no longer cached, it has not been passed to <a class="el" href="../../d4/d1b/classcom_1_1beyondar_1_1android_1_1util_1_1cache_1_1_lru_cache_3_01_k_00_01_v_01_4.html#a0f5b8d9e062491829e1106f26ddde888">entryEvicted</a></dd></dl>
 
-<p>Definition at line <a class="el" href="../../d9/df3/_lru_cache_8java_source.html#l00184">184</a> of file <a class="el" href="../../d9/df3/_lru_cache_8java_source.html">LruCache.java</a>.</p>
-
 </div>
 </div>
 <a class="anchor" id="a780ce3da2f9614fe3b763672fbe43e68"></a>
@@ -468,8 +449,6 @@ int&#160;</td><td class="memItemRight" valign="bottom"><b>evictionCount</b></td>
 
 <p>For caches that do not override <a class="el" href="../../d4/d1b/classcom_1_1beyondar_1_1android_1_1util_1_1cache_1_1_lru_cache_3_01_k_00_01_v_01_4.html#a1dc5f7b4a639957d10ebccefe4cff771">sizeOf</a>, this returns the number of entries in the cache. </p>
 <p>For all other caches, this returns the sum of the sizes of the entries in this cache. </p>
-
-<p>Definition at line <a class="el" href="../../d9/df3/_lru_cache_8java_source.html#l00254">254</a> of file <a class="el" href="../../d9/df3/_lru_cache_8java_source.html">LruCache.java</a>.</p>
 
 </div>
 </div>
@@ -512,8 +491,6 @@ int&#160;</td><td class="memItemRight" valign="bottom"><b>evictionCount</b></td>
 </div><!-- fragment --><p> in user-defined units. The default implementation returns 1 so that size is the number of entries and max size is the maximum number of entries.</p>
 <p>An entry's size must not change while it is in the cache. </p>
 
-<p>Definition at line <a class="el" href="../../d9/df3/_lru_cache_8java_source.html#l00238">238</a> of file <a class="el" href="../../d9/df3/_lru_cache_8java_source.html">LruCache.java</a>.</p>
-
 </div>
 </div>
 <h2 class="groupheader">Member Data Documentation</h2>
@@ -538,17 +515,15 @@ int&#160;</td><td class="memItemRight" valign="bottom"><b>evictionCount</b></td>
 <p>Size of this cache in units. </p>
 <p>Not necessarily the number of elements. </p>
 
-<p>Definition at line <a class="el" href="../../d9/df3/_lru_cache_8java_source.html#l00077">77</a> of file <a class="el" href="../../d9/df3/_lru_cache_8java_source.html">LruCache.java</a>.</p>
-
 </div>
 </div>
 <hr/>The documentation for this class was generated from the following file:<ul>
-<li>src/com/beyondar/android/util/cache/<a class="el" href="../../d9/df3/_lru_cache_8java_source.html">LruCache.java</a></li>
+<li>src/com/beyondar/android/util/cache/LruCache.java</li>
 </ul>
 </div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Sun Apr 6 2014 14:57:14 for BeyondAR by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Sun Apr 6 2014 15:38:30 for BeyondAR by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="../../doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>

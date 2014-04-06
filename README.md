@@ -5,19 +5,20 @@ This framework has been designed to offer some resources to those developers wit
 
 [BeyondAR Game](https://play.google.com/store/apps/details?id=com.beyondar#?t=W251bGwsMSwxLDIxMiwiY29tLmJleW9uZGFyIl0.) is using this platform to show the creatures around the user. Here some images:
 
-![Screenshot](http://beyondar.com/pictures/screenshots/screen_4.jpg)
-![Screenshot](http://beyondar.com/pictures/screenshots/screen_1.jpg)
+![Screenshot](http://beyondar.github.io/beyondar/images/screen_4.jpg)
+
+![Screenshot](http://beyondar.github.io/beyondar/images/screen_1.jpg)
 
 BeyondAR platform also supports Google Glass
 
-![glass](http://beyondar.com/pictures/glass.jpg)
+![glass](http://beyondar.github.io/beyondar/images/glass.jpg)
 
 ## Adding BeyondAR in to your project
 
 Just download the latest version of the framework [here](android/libs) and add the needed jar files in to you libs folder.
 
 * beyondar-v#.jar: The basic lib to be able to run the framework
-* beyondar-googlemap-module-v#.jar: Module to use GoogleMaps with your `World `
+* beyondar-googlemap-plugin-v#.jar: Plugin to use GoogleMaps with your `World `
 
 ##How to build your first app
 
@@ -169,15 +170,15 @@ public void onTouchBeyondarView(MotionEvent event, BeyondarGLSurfaceView beyonda
 // ...
 ~~~
 
-## Adding GoogleMaps module
-BeyondAR Framework uses modules to be able to add multiple features to the world engine. Google Maps Module is one example ([jar](https://github.com/BeyondAR/beyondar/tree/master/android/libs/modules) & [src](android/BeyondAR_Framework/src-googlemaps)).
+## Adding GoogleMaps plugin
+BeyondAR Framework uses plugins to be able to add multiple features to the world engine. Google Maps Plugin is one example ([jar](https://github.com/BeyondAR/beyondar/tree/master/android/libs/plugins) & [src](android/BeyondAR_Framework/src-googlemaps)).
 
 To draw the all the `World ` elements in the Google Map framework we just need a few lines of code:
 
 ~~~java
 // ...
 private GoogleMap mMap;
-private GoogleMapWorldModule mGoogleMapModule;
+private GoogleMapWorldPlugin mGoogleMapPlugin;
 // ...
 
 @Override
@@ -187,19 +188,19 @@ protected void onCreate(Bundle savedInstanceState) {
 
      // We create the world...
      mWorld = new World(this);
-     // As we want to use GoogleMaps, we are going to create the module and
+     // As we want to use GoogleMaps, we are going to create the plugin and
      // attach it to the World
-     mGoogleMapModule = new GoogleMapWorldModule(context);
-     // Then we need to set the map in to the GoogleMapModule
-     mGoogleMapModule.setGoogleMap(mMap);
-     // Now that we have the module created let's add it in to our world
-     mWorld.addModule(mGoogleMapModule);
+     mGoogleMapPlugin = new GoogleMapWorldPlugin(context);
+     // Then we need to set the map in to the GoogleMapPlugin
+     mGoogleMapPlugin.setGoogleMap(mMap);
+     // Now that we have the plugin created let's add it in to our world
+     mWorld.addPlugin(mGoogleMapPlugin);
      
      // Now we fill the world
      // ...
 }
 ~~~
-The `GoogleMapWorldModule ` will take care of drawing all the `GeoObjects ` in the `GoogleMap ` object. So we also can add the a listener to the map to get notify when a `Marker ` is click and then we can check which `GeoObject ` is the owner of that `Marker `:
+The `GoogleMapWorldPlugin ` will take care of drawing all the `GeoObjects ` in the `GoogleMap ` object. So we also can add the a listener to the map to get notify when a `Marker ` is click and then we can check which `GeoObject ` is the owner of that `Marker `:
 
 ~~~java
 @Override
@@ -213,16 +214,16 @@ protected void onCreate(Bundle savedInstanceState) {
 public boolean onMarkerClick(Marker marker) {
      // To get the GeoObject that owns the marker we use the following
      // method:
-     GeoObject geoObject = mGoogleMapModule.getGeoObjectOwner(marker);
+     GeoObject geoObject = mGoogleMapPlugin.getGeoObjectOwner(marker);
      if (geoObject != null) {
           Toast.makeText(this, "Click on a marker owned by a GeoOject with the name: " + geoObject.getName(), Toast.LENGTH_SHORT).show();
      }
      return false;
 }
 ~~~	
-## Add radar view module
+## Add radar view plugin
 
-If you want to add a radar view you could use the Radar module ([jar](android/libs/modules) & [src](android/BeyondAR_Framework/src-radar)).
+If you want to add a radar view you could use the Radar plugin ([jar](android/libs/plugins) & [src](android/BeyondAR_Framework/src-radar)).
 
 ![radar](http://beyondar.com/pictures/radar.jpg)
 
@@ -235,7 +236,7 @@ To do that let's add the view in our layout file:
     android:layout_gravity="right|top"
     android:background="@drawable/radar_bg_small" >
 
-    <com.beyondar.android.module.radar.RadarView
+    <com.beyondar.android.plugin.radar.RadarView
         android:id="@+id/radarView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -249,51 +250,51 @@ Now it is time to get the view in our `Activity ` and play with it
 public void onCreate(Bundle savedInstanceState) {
     // ...
     radarView = (RadarView) findViewById(R.id.radarView);
-    // Create the Radar module
-    mRadarModule = new RadarWorldModule();
-    // set the radar view in to our radar module
-    mRadarModule.setRadarView(mRadarView);
+    // Create the Radar plugin
+    mRadarPlugin = new RadarWorldPlugin();
+    // set the radar view in to our radar plugin
+    mRadarPlugin.setRadarView(mRadarView);
     // Set how far (in meters) we want to display in the view
-    mRadarModule.setMaxDistance(100);
-    // and finally let's add the module
-    mWorld.addModule(mRadarModule);
+    mRadarPlugin.setMaxDistance(100);
+    // and finally let's add the plugin
+    mWorld.addPlugin(mRadarPlugin);
     // ...
 }
 
 ~~~
 
-## Creating your own module
+## Creating your own plugin
 
-BeyondAR architecture allows you to create your own modules that can be attached to the framework. For instance to have a better access to the `World ` object in order to perform other extra task like using Google Maps, or a radar view.
+BeyondAR architecture allows you to create your own plugins that can be attached to the framework. For instance to have a better access to the `World ` object in order to perform other extra task like using Google Maps, or a radar view.
 
-The first thing that we need to do is understand what do we need to implement in order to create our module. The interfaces are located in `com.beyondar.android.module `:
+The first thing that we need to do is understand what do we need to implement in order to create our plugin. The interfaces are located in `com.beyondar.android.plugin `:
 
-* `WorldModule `: This interface will allow your module to be notified when some events occur, like when the position has changed, a new object has been added/removed, all the `World ` is cleaned, etc. ([here](android/BeyondAR_Framework/src/com/beyondar/android/module/WorldModule.java) you will find the code).
-* `BeyondarObjectModule `: This interface allows your module to get notified when there are changes in a specific `BeyondarObject ` ([here](android/BeyondAR_Framework/src/com/beyondar/android/module/BeyondarObjectModule.java) you will find the code).
-* `GeoObjectModule `: This interface extends `BeyondarObjectModule ` and it have some extra code to make easier the control of the geo position of this kind of objects ([here](android/BeyondAR_Framework/src/com/beyondar/android/module/BeyondarObjectModule.java) you will find the code).
+* `WorldPlugin `: This interface will allow your plugin to be notified when some events occur, like when the position has changed, a new object has been added/removed, all the `World ` is cleaned, etc. ([here](android/BeyondAR_Framework/src/com/beyondar/android/plugin/WorldPlugin.java) you will find the code).
+* `BeyondarObjectPlugin `: This interface allows your plugin to get notified when there are changes in a specific `BeyondarObject ` ([here](android/BeyondAR_Framework/src/com/beyondar/android/plugin/BeyondarObjectPlugin.java) you will find the code).
+* `GeoObjectPlugin `: This interface extends `BeyondarObjectPlugin ` and it have some extra code to make easier the control of the geo position of this kind of objects ([here](android/BeyondAR_Framework/src/com/beyondar/android/plugin/BeyondarObjectPlugin.java) you will find the code).
 
-One of the main goals of `WorldModule ` is to add `BeyondarObjectModule `/`GeoObjectModule ` to all the `BeyondarObject `/`GeoObject ` in the `World ` object. To do that make sure to add you own module in when `setup(World world) ` is called and when a new `BeyondarObject ` is added:
+One of the main goals of `WorldPlugin ` is to add `BeyondarObjectPlugin `/`GeoObjectPlugin ` to all the `BeyondarObject `/`GeoObject ` in the `World ` object. To do that make sure to add you own plugin in when `setup(World world) ` is called and when a new `BeyondarObject ` is added:
 
 ~~~java
 @Override
 public void onBeyondarObjectAdded(BeyondarObject beyondarObject, BeyondarObjectList beyondarObjectList) {
      if (beyondarObject instanceof GeoObject) { // Check if it is a GeoObject
-        // We need to check if there is any of our own module already attached
-        if (!beyondarObject.containsAnyModule(RadarPointModule.class)) { 
+        // We need to check if there is any of our own plugin already attached
+        if (!beyondarObject.containsAnyPlugin(RadarPointPlugin.class)) { 
             // Then we just create it and add it
-            RadarPointModule module = new RadarPointModule(this, beyondarObject);
-            beyondarObject.addModule(module);
+            RadarPointPlugin plugin = new RadarPointPlugin(this, beyondarObject);
+            beyondarObject.addPlugin(plugin);
         }
     }
 }
 ~~~
 
-Once we have created the module we need to add it to the `World ` class, for that we just use the method `myWorld.addModule(myModule) `.
+Once we have created the plugin we need to add it to the `World ` class, for that we just use the method `myWorld.addPlugin(myPlugin) `.
 
 ~~~java
 World myWorld = new World(context);
-// add the module
-myWorld.addModule(myModule);
+// add the plugin
+myWorld.addPlugin(myPlugin);
 ~~~
 
 

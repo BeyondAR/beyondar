@@ -1,31 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.beyondar.example"
-    android:versionCode="000501"
-    android:versionName="0.5.1" >
+    android:versionCode="000900"
+    android:versionName="0.9.0" >
 
     <uses-sdk
         android:minSdkVersion="8"
-        android:targetSdkVersion="17" />
+        android:targetSdkVersion="19" />
 
     <!-- Google maps stuff -->
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="com.google.android.providers.gsf.permission.READ_GSERVICES" />
-    <!--
-     The following two permissions are not required to use
-     Google Maps Android API v2, but are recommended.
-    -->
-    <!--
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-    -->
-
 
     <!-- Minimum permissions for BeyondAR -->
     <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 
-    <!-- For BeyondAR this is not mandatory unless you want to load something from internet -->
+    <!-- For BeyondAR this is not mandatory unless you want to load something from the network -->
     <uses-permission android:name="android.permission.INTERNET" />
 
     <!--  BeyondAR needs the following features-->

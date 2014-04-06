@@ -1,0 +1,5 @@
+<map id="com.beyondar.android.view.BeyondarGLSurfaceView.setFpsUpdatable" name="com.beyondar.android.view.BeyondarGLSurfaceView.setFpsUpdatable">
+<area shape="rect" id="node2" href="$de/d1b/classcom_1_1beyondar_1_1android_1_1fragment_1_1_beyondar_fragment.html#adcfd7199b7b7675a0b551131f80b0fe8" title="Use this method to check the frames per second. " alt="" coords="352,5,592,49"/>
+<area shape="rect" id="node3" href="$de/d6e/classcom_1_1beyondar_1_1android_1_1fragment_1_1_beyondar_fragment_support.html#a99a2ac3265a3ba667bf8d85e138db05d" title="Use this method to check the frames per second. " alt="" coords="329,73,615,117"/>
+<area shape="rect" id="node4" href="$de/d6e/classcom_1_1beyondar_1_1android_1_1fragment_1_1_beyondar_fragment_support.html#a70202a856b9a8ccf82e6ac920a3f412f" title="Show the number of frames per second in the left upper corner. " alt="" coords="664,73,907,117"/>
+</map>

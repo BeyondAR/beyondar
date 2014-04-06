@@ -1,0 +1,7 @@
+<map id="com.beyondar.android.util.math.geom.Plane.intersects" name="com.beyondar.android.util.math.geom.Plane.intersects">
+<area shape="rect" id="node2" href="$dc/d2d/classcom_1_1beyondar_1_1android_1_1util_1_1math_1_1geom_1_1_ray.html#a8314d858f60c6fce9aa256c8d3efa40f" title="Returns the vector defining the ray. " alt="" coords="301,5,549,49"/>
+<area shape="rect" id="node3" href="$dd/d18/classcom_1_1beyondar_1_1android_1_1util_1_1math_1_1geom_1_1_vector3.html#a5801e4549d009a4b481e8d1692d64bd6" title="Returns the dot product with the given vector. " alt="" coords="301,73,549,117"/>
+<area shape="rect" id="node4" href="$dc/d2d/classcom_1_1beyondar_1_1android_1_1util_1_1math_1_1geom_1_1_ray.html#a74b13776823feb774989e643890541bb" title="Returns the point in the ray that corresponds to the given t parameter. " alt="" coords="301,141,549,185"/>
+<area shape="rect" id="node5" href="$d9/dc5/classcom_1_1beyondar_1_1android_1_1util_1_1math_1_1geom_1_1_point3.html#a44984f244a3dce08fd9be350ae6fa516" title="Adds given coordinates to 3D point coordinates. " alt="" coords="597,141,845,185"/>
+<area shape="rect" id="node6" href="$d9/dc5/classcom_1_1beyondar_1_1android_1_1util_1_1math_1_1geom_1_1_point3.html#ad35444abe939ee648f08fc14fef24678" title="Sets point coordinates. " alt="" coords="893,141,1141,185"/>
+</map>

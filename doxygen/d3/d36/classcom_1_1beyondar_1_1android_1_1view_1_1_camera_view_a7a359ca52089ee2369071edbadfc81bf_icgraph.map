@@ -1,0 +1,5 @@
+<map id="com.beyondar.android.view.CameraView.stopPreviewCamera" name="com.beyondar.android.view.CameraView.stopPreviewCamera">
+<area shape="rect" id="node2" href="$d3/d36/classcom_1_1beyondar_1_1android_1_1view_1_1_camera_view.html#a345e483a5e3c9274aa57ef4d375f9989" title="com.beyondar.android.view.\lCameraView.surfaceChanged" alt="" coords="276,5,474,49"/>
+<area shape="rect" id="node3" href="$d3/d36/classcom_1_1beyondar_1_1android_1_1view_1_1_camera_view.html#ab1a98af8bc6b11aba356cb3269a1e23f" title="Release camera. " alt="" coords="279,73,470,117"/>
+<area shape="rect" id="node4" href="$d3/d36/classcom_1_1beyondar_1_1android_1_1view_1_1_camera_view.html#a02aa6e973aa0c6206189affa09a5c46a" title="com.beyondar.android.view.\lCameraView.surfaceDestroyed" alt="" coords="523,73,728,117"/>
+</map>

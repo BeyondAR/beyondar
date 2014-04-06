@@ -1,0 +1,7 @@
+<map id="com.beyondar.android.util.math.geom.Ray.getVector" name="com.beyondar.android.util.math.geom.Ray.getVector">
+<area shape="rect" id="node2" href="$d3/d12/classcom_1_1beyondar_1_1android_1_1opengl_1_1colision_1_1_spherical_mesh_collider.html#a8b0dd5b6e7add4c8ecf6279da88617a9" title="Test whether a ray intersects with the mesh collider. " alt="" coords="302,5,578,49"/>
+<area shape="rect" id="node4" href="$df/dd7/classcom_1_1beyondar_1_1android_1_1util_1_1math_1_1geom_1_1_plane.html#ac425897e0ce18e0c5b6caa9452b1c975" title="Returns the t parameter for the intersection with the given ray. " alt="" coords="316,73,564,117"/>
+<area shape="rect" id="node3" href="$d3/d12/classcom_1_1beyondar_1_1android_1_1opengl_1_1colision_1_1_spherical_mesh_collider.html#afbc323f8633552b9d22f94dc3698908a" title="Return if the given ray intersects with the mesh collider. " alt="" coords="634,5,883,49"/>
+<area shape="rect" id="node5" href="$dd/dd6/classcom_1_1beyondar_1_1android_1_1opengl_1_1colision_1_1_square_mesh_collider.html#ada8c903183e64820e44c6452fe8bf96f" title="Test whether a ray intersects with the mesh collider. " alt="" coords="627,73,890,117"/>
+<area shape="rect" id="node6" href="$dd/dd6/classcom_1_1beyondar_1_1android_1_1opengl_1_1colision_1_1_square_mesh_collider.html#a9cdfa6270d2956057e25fa16bdfe82d3" title="Return if the given ray intersects with the mesh collider. " alt="" coords="940,73,1188,117"/>
+</map>

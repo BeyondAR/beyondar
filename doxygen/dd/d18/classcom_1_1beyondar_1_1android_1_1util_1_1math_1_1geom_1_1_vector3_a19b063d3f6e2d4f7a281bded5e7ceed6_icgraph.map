@@ -1,0 +1,5 @@
+<map id="com.beyondar.android.util.math.geom.Vector3.crossProduct" name="com.beyondar.android.util.math.geom.Vector3.crossProduct">
+<area shape="rect" id="node2" href="$dd/d18/classcom_1_1beyondar_1_1android_1_1util_1_1math_1_1geom_1_1_vector3.html#ae3440e65109e51deac3991eaac9de04d" title="Returns the normal vector to the plane formed by the 3 given points. " alt="" coords="301,39,549,83"/>
+<area shape="rect" id="node3" href="$df/dd7/classcom_1_1beyondar_1_1android_1_1util_1_1math_1_1geom_1_1_plane.html#ab0daeda96ab00f672c762babebc9db07" title="Constructs a plane from three points. " alt="" coords="597,5,845,49"/>
+<area shape="rect" id="node4" href="$db/d52/classcom_1_1beyondar_1_1android_1_1util_1_1math_1_1geom_1_1_triangle.html#af567783d7670a733903fbbf3b005187e" title="Constructs a triangle from 3 points. " alt="" coords="597,73,845,117"/>
+</map>

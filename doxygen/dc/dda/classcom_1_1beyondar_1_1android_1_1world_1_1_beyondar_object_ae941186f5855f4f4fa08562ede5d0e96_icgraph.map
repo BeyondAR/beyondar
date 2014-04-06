@@ -1,0 +1,4 @@
+<map id="com.beyondar.android.world.BeyondarObject.setTexture" name="com.beyondar.android.world.BeyondarObject.setTexture">
+<area shape="rect" id="node2" href="$dc/dda/classcom_1_1beyondar_1_1android_1_1world_1_1_beyondar_object.html#af1533d1207a3ac4c16180e91f0b108d9" title="Set the image uri. " alt="" coords="245,5,438,49"/>
+<area shape="rect" id="node3" href="$dc/dda/classcom_1_1beyondar_1_1android_1_1world_1_1_beyondar_object.html#aa542f22c59bf558dfdb327fb0e8279fb" title="Set an image resource for the BeyondarObject. " alt="" coords="485,5,718,49"/>
+</map>

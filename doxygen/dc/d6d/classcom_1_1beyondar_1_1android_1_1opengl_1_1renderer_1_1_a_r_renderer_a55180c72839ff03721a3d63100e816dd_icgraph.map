@@ -1,0 +1,5 @@
+<map id="com.beyondar.android.opengl.renderer.ARRenderer.setWorld" name="com.beyondar.android.opengl.renderer.ARRenderer.setWorld">
+<area shape="rect" id="node2" href="$d3/d68/classcom_1_1beyondar_1_1android_1_1view_1_1_beyondar_g_l_surface_view.html#a3bc03906041f129f70b642488701b33e" title="Define the world where the objects are stored. " alt="" coords="310,39,536,83"/>
+<area shape="rect" id="node3" href="$de/d1b/classcom_1_1beyondar_1_1android_1_1fragment_1_1_beyondar_fragment.html#aaae0975695193e7b27541ce59f3c7f87" title="Set the World that contains all the BeyondarObject that will be displayed. " alt="" coords="597,5,811,49"/>
+<area shape="rect" id="node4" href="$de/d6e/classcom_1_1beyondar_1_1android_1_1fragment_1_1_beyondar_fragment_support.html#ae0a6cf80a372219f6f421cfe23b7fc4c" title="Set the World that contains all the BeyondarObject that will be displayed. " alt="" coords="585,73,823,117"/>
+</map>

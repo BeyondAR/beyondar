@@ -1,0 +1,4 @@
+<map id="com.beyondar.android.opengl.renderer.ARRenderer.setWorld" name="com.beyondar.android.opengl.renderer.ARRenderer.setWorld">
+<area shape="rect" id="node2" href="$d8/d04/classcom_1_1beyondar_1_1android_1_1world_1_1_world.html#a1bc9fc0044d62d43ab5f9b997040e7f1" title="Get the bitmap cache used to load all the images. " alt="" coords="353,5,546,49"/>
+<area shape="rect" id="node3" href="$df/d5f/classcom_1_1beyondar_1_1android_1_1util_1_1cache_1_1_bitmap_cache.html#aee4c52b44abc0ab31af041dbf93082d0" title="Add a listener for when a bitmap that is not stored locally needs to be loaded. " alt="" coords="309,73,589,133"/>
+</map>

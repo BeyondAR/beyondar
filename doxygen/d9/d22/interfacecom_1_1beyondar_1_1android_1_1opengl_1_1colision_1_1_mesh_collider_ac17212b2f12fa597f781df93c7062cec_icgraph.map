@@ -1,0 +1,4 @@
+<map id="com.beyondar.android.opengl.colision.MeshCollider.getIntersectionPoint" name="com.beyondar.android.opengl.colision.MeshCollider.getIntersectionPoint">
+<area shape="rect" id="node2" href="$d8/d04/classcom_1_1beyondar_1_1android_1_1world_1_1_world.html#ae93e863ad76e8905f55a6e038158c1b2" title="Get all the BeyondarObject that collide with the Ray. " alt="" coords="304,13,549,57"/>
+<area shape="rect" id="node3" href="$d3/d68/classcom_1_1beyondar_1_1android_1_1view_1_1_beyondar_g_l_surface_view.html#a05a0c359c285cc320a8a8dc574063fc4" title="Get the GeoObject that intersect with the coordinates x, y on the screen. " alt="" coords="598,5,847,65"/>
+</map>

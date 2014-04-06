@@ -1,0 +1,5 @@
+<map id="com.beyondar.android.world.BeyondarObjectList.getDefaultImageUri" name="com.beyondar.android.world.BeyondarObjectList.getDefaultImageUri">
+<area shape="rect" id="node2" href="$d8/d04/classcom_1_1beyondar_1_1android_1_1world_1_1_world.html#a223c174cd8ba573cc7ef1bc1440e81f0" title="Get the default image URI of the specified list. " alt="" coords="309,5,502,49"/>
+<area shape="rect" id="node3" href="$d8/d04/classcom_1_1beyondar_1_1android_1_1world_1_1_world.html#ac5fb0384aec00679b67ccb269125ce1d" title="Get the BeyondarObjectList for the specified type. " alt="" coords="549,5,744,49"/>
+<area shape="rect" id="node4" href="$d2/d91/classcom_1_1beyondar_1_1android_1_1world_1_1_beyondar_object_list.html#a8126027c52c67588e8c4276c0ef8ca56" title="Get the type of this list. " alt="" coords="792,5,984,49"/>
+</map>

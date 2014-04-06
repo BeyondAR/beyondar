@@ -1,0 +1,11 @@
+<map id="com.beyondar.android.opengl.texture.Texture.clone" name="com.beyondar.android.opengl.texture.Texture.clone">
+<area shape="rect" id="node2" href="$dc/d61/classcom_1_1beyondar_1_1android_1_1opengl_1_1texture_1_1_texture.html#a4f226d8ed53218f9ebeee946b6fbb6e6" title="Constructor of a texture with a no texture reference. " alt="" coords="299,5,544,49"/>
+<area shape="rect" id="node3" href="$dc/d61/classcom_1_1beyondar_1_1android_1_1opengl_1_1texture_1_1_texture.html#a34188e0e981cea15ea2e4776c7f54b40" title="com.beyondar.android.opengl.texture.\lTexture.isLoaded" alt="" coords="299,73,544,117"/>
+<area shape="rect" id="node4" href="$dc/d61/classcom_1_1beyondar_1_1android_1_1opengl_1_1texture_1_1_texture.html#ad3f92926e07933b098b3b983ed570578" title="com.beyondar.android.opengl.texture.\lTexture.setTexturePointer" alt="" coords="299,141,544,185"/>
+<area shape="rect" id="node5" href="$dc/d61/classcom_1_1beyondar_1_1android_1_1opengl_1_1texture_1_1_texture.html#a743b2e3a698ae81004f9552c0b7d2133" title="com.beyondar.android.opengl.texture.\lTexture.getTexturePointer" alt="" coords="299,209,544,253"/>
+<area shape="rect" id="node6" href="$dc/d61/classcom_1_1beyondar_1_1android_1_1opengl_1_1texture_1_1_texture.html#a1b3d377f93bbeff4985eb047449e61fe" title="com.beyondar.android.opengl.texture.\lTexture.setTimeStamp" alt="" coords="299,277,544,321"/>
+<area shape="rect" id="node7" href="$dc/d61/classcom_1_1beyondar_1_1android_1_1opengl_1_1texture_1_1_texture.html#a02601e4273f9d50a0281033da806a581" title="com.beyondar.android.opengl.texture.\lTexture.getTimeStamp" alt="" coords="299,345,544,389"/>
+<area shape="rect" id="node8" href="$dc/d61/classcom_1_1beyondar_1_1android_1_1opengl_1_1texture_1_1_texture.html#a3ac2718f2a9673152ed28d9256893664" title="com.beyondar.android.opengl.texture.\lTexture.setLoadTryCounter" alt="" coords="299,413,544,457"/>
+<area shape="rect" id="node9" href="$dc/d61/classcom_1_1beyondar_1_1android_1_1opengl_1_1texture_1_1_texture.html#ae965c54c7bbaaf6f9eba81ecc72124c8" title="com.beyondar.android.opengl.texture.\lTexture.getLoadTryCounter" alt="" coords="299,481,544,525"/>
+<area shape="rect" id="node10" href="$dc/d61/classcom_1_1beyondar_1_1android_1_1opengl_1_1texture_1_1_texture.html#a082cf3a6413c731139d192c7093eba23" title="Set the image size in pixels. " alt="" coords="299,549,544,593"/>
+</map>

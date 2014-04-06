@@ -1,0 +1,7 @@
+<map id="com.beyondar.android.opengl.renderable.SquareRenderable.getInstance" name="com.beyondar.android.opengl.renderable.SquareRenderable.getInstance">
+<area shape="rect" id="node2" href="$dc/dda/classcom_1_1beyondar_1_1android_1_1world_1_1_beyondar_object.html#ada66150ba28fe57d0ae7117f3bb7adf3" title="Override this method to change the default Renderable. " alt="" coords="323,5,549,49"/>
+<area shape="rect" id="node3" href="$dc/dda/classcom_1_1beyondar_1_1android_1_1world_1_1_beyondar_object.html#a8e25cc3d24708addafa7a8cf23938dae" title="Get Renderable that renders the BeyondarObject. " alt="" coords="598,5,826,49"/>
+<area shape="rect" id="node4" href="$dc/d6d/classcom_1_1beyondar_1_1android_1_1opengl_1_1renderer_1_1_a_r_renderer.html#a65cddbf728f9d39496b13b7d4e455611" title="Render a specific BeyondarObject. " alt="" coords="876,5,1130,49"/>
+<area shape="rect" id="node5" href="$dc/d6d/classcom_1_1beyondar_1_1android_1_1opengl_1_1renderer_1_1_a_r_renderer.html#a1746dbc2077795b8fbb95fa2a74ef35d" title="Render a specific list. " alt="" coords="1180,5,1434,49"/>
+<area shape="rect" id="node6" href="$dc/d6d/classcom_1_1beyondar_1_1android_1_1opengl_1_1renderer_1_1_a_r_renderer.html#acbf32370f0f51b0b443c3c1a51d6aca3" title="Render the World. " alt="" coords="1484,5,1738,49"/>
+</map>

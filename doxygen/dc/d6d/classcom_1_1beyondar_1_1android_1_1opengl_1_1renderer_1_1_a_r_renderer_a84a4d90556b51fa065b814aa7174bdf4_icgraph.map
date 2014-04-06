@@ -1,0 +1,7 @@
+<map id="com.beyondar.android.opengl.renderer.ARRenderer.tackePicture" name="com.beyondar.android.opengl.renderer.ARRenderer.tackePicture">
+<area shape="rect" id="node2" href="$d3/d68/classcom_1_1beyondar_1_1android_1_1view_1_1_beyondar_g_l_surface_view.html#a1bdb9bc1fc4de3986e52f965a47f7d27" title="Take an snapshot of the view. " alt="" coords="310,39,557,83"/>
+<area shape="rect" id="node3" href="$df/d4e/classcom_1_1beyondar_1_1android_1_1screenshot_1_1_screenshot_helper.html#ad9e1b15709aa19794ce09aa19185a6ea" title="Take a snapshot of the BeyondarGLSurface with the camera image as background. " alt="" coords="606,39,832,83"/>
+<area shape="rect" id="node4" href="$de/d1b/classcom_1_1beyondar_1_1android_1_1fragment_1_1_beyondar_fragment.html#a2ef3532845a1d18348688ece3c5062cf" title="Take a screenshot of the beyondar fragment. " alt="" coords="904,5,1136,49"/>
+<area shape="rect" id="node5" href="$de/d6e/classcom_1_1beyondar_1_1android_1_1fragment_1_1_beyondar_fragment_support.html#ad36b25b3f19c477f8bdfd476be85a458" title="Take a screenshot of the beyondar fragment. " alt="" coords="881,73,1159,117"/>
+<area shape="rect" id="node6" href="$de/d6e/classcom_1_1beyondar_1_1android_1_1fragment_1_1_beyondar_fragment_support.html#a0fe273b2a1749ed3d4fd582b6c82409b" title="Take a screenshot of the beyondar fragment. " alt="" coords="1209,73,1487,117"/>
+</map>

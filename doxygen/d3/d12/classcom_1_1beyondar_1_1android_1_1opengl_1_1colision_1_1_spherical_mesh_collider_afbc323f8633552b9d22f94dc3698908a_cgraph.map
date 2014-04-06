@@ -1,0 +1,10 @@
+<map id="com.beyondar.android.opengl.colision.SphericalMeshCollider.intersects" name="com.beyondar.android.opengl.colision.SphericalMeshCollider.intersects">
+<area shape="rect" id="node2" href="$d3/d12/classcom_1_1beyondar_1_1android_1_1opengl_1_1colision_1_1_spherical_mesh_collider.html#a8b0dd5b6e7add4c8ecf6279da88617a9" title="Test whether a ray intersects with the mesh collider. " alt="" coords="305,141,580,185"/>
+<area shape="rect" id="node8" href="$d3/d12/classcom_1_1beyondar_1_1android_1_1opengl_1_1colision_1_1_spherical_mesh_collider.html#a596e5dcac66b2cc99325509746747ca7" title="Returns true if the given point is contained by the mesh collider. " alt="" coords="630,209,879,253"/>
+<area shape="rect" id="node3" href="$df/dd7/classcom_1_1beyondar_1_1android_1_1util_1_1math_1_1geom_1_1_plane.html#a3c2e00dcee581de11daf781572d939a6" title="Returns a volatile plane from a point and its normal. " alt="" coords="631,5,879,49"/>
+<area shape="rect" id="node4" href="$dc/d2d/classcom_1_1beyondar_1_1android_1_1util_1_1math_1_1geom_1_1_ray.html#a8314d858f60c6fce9aa256c8d3efa40f" title="Returns the vector defining the ray. " alt="" coords="631,73,879,117"/>
+<area shape="rect" id="node5" href="$dc/d2d/classcom_1_1beyondar_1_1android_1_1util_1_1math_1_1geom_1_1_ray.html#a74b13776823feb774989e643890541bb" title="Returns the point in the ray that corresponds to the given t parameter. " alt="" coords="631,141,879,185"/>
+<area shape="rect" id="node6" href="$d9/dc5/classcom_1_1beyondar_1_1android_1_1util_1_1math_1_1geom_1_1_point3.html#a44984f244a3dce08fd9be350ae6fa516" title="Adds given coordinates to 3D point coordinates. " alt="" coords="928,141,1176,185"/>
+<area shape="rect" id="node7" href="$d9/dc5/classcom_1_1beyondar_1_1android_1_1util_1_1math_1_1geom_1_1_point3.html#ad35444abe939ee648f08fc14fef24678" title="Sets point coordinates. " alt="" coords="1224,141,1472,185"/>
+<area shape="rect" id="node9" href="$dd/d18/classcom_1_1beyondar_1_1android_1_1util_1_1math_1_1geom_1_1_vector3.html#a8ef85de3dc2895e19ffa13442574d832" title="Returns a volatile vector pointing from p1 to p2. " alt="" coords="928,209,1176,253"/>
+</map>

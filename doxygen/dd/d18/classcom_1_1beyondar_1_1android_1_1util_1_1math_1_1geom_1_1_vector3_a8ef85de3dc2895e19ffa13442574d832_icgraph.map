@@ -1,0 +1,5 @@
+<map id="com.beyondar.android.util.math.geom.Vector3.getVolatileVector" name="com.beyondar.android.util.math.geom.Vector3.getVolatileVector">
+<area shape="rect" id="node2" href="$d3/d12/classcom_1_1beyondar_1_1android_1_1opengl_1_1colision_1_1_spherical_mesh_collider.html#a596e5dcac66b2cc99325509746747ca7" title="Returns true if the given point is contained by the mesh collider. " alt="" coords="302,35,551,79"/>
+<area shape="rect" id="node3" href="$d3/d12/classcom_1_1beyondar_1_1android_1_1opengl_1_1colision_1_1_spherical_mesh_collider.html#a8b0dd5b6e7add4c8ecf6279da88617a9" title="Test whether a ray intersects with the mesh collider. " alt="" coords="601,5,876,49"/>
+<area shape="rect" id="node4" href="$d3/d12/classcom_1_1beyondar_1_1android_1_1opengl_1_1colision_1_1_spherical_mesh_collider.html#afbc323f8633552b9d22f94dc3698908a" title="Return if the given ray intersects with the mesh collider. " alt="" coords="926,5,1175,49"/>
+</map>

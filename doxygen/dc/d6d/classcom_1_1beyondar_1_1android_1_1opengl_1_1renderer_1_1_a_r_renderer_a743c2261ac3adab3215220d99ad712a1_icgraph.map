@@ -1,0 +1,6 @@
+<map id="com.beyondar.android.opengl.renderer.ARRenderer.setFpsUpdatable" name="com.beyondar.android.opengl.renderer.ARRenderer.setFpsUpdatable">
+<area shape="rect" id="node2" href="$d3/d68/classcom_1_1beyondar_1_1android_1_1view_1_1_beyondar_g_l_surface_view.html#a97ba137e816671f5abda36918fde1852" title="Set the FpsUpdatable to get notified about the frames per seconds. " alt="" coords="309,39,584,83"/>
+<area shape="rect" id="node3" href="$de/d1b/classcom_1_1beyondar_1_1android_1_1fragment_1_1_beyondar_fragment.html#adcfd7199b7b7675a0b551131f80b0fe8" title="Use this method to check the frames per second. " alt="" coords="656,5,896,49"/>
+<area shape="rect" id="node4" href="$de/d6e/classcom_1_1beyondar_1_1android_1_1fragment_1_1_beyondar_fragment_support.html#a99a2ac3265a3ba667bf8d85e138db05d" title="Use this method to check the frames per second. " alt="" coords="633,73,919,117"/>
+<area shape="rect" id="node5" href="$de/d6e/classcom_1_1beyondar_1_1android_1_1fragment_1_1_beyondar_fragment_support.html#a70202a856b9a8ccf82e6ac920a3f412f" title="Show the number of frames per second in the left upper corner. " alt="" coords="968,73,1211,117"/>
+</map>

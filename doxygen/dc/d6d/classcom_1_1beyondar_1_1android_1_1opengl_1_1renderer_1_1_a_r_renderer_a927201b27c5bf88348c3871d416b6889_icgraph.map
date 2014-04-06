@@ -1,0 +1,5 @@
+<map id="com.beyondar.android.opengl.renderer.ARRenderer.setMinDistanceSize" name="com.beyondar.android.opengl.renderer.ARRenderer.setMinDistanceSize">
+<area shape="rect" id="node2" href="$d3/d68/classcom_1_1beyondar_1_1android_1_1view_1_1_beyondar_g_l_surface_view.html#a5271821f10bab7d38af6204ec0ffd2ba" title="When a GeoObject is rendered according to its position it could look very big if it is too close..." alt="" coords="309,43,600,87"/>
+<area shape="rect" id="node3" href="$de/d1b/classcom_1_1beyondar_1_1android_1_1fragment_1_1_beyondar_fragment.html#acbb84d3f727448dbdc371c1b73a1e7df" title="When a GeoObject is rendered according to its position it could look very big if it is too close..." alt="" coords="649,5,925,49"/>
+<area shape="rect" id="node4" href="$de/d6e/classcom_1_1beyondar_1_1android_1_1fragment_1_1_beyondar_fragment_support.html#a11db1b0e3f37d07ee9d10701748b913d" title="When a GeoObject is rendered according to its position it could look very big if it is too close..." alt="" coords="664,73,909,133"/>
+</map>

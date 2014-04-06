@@ -1,0 +1,6 @@
+<map id="com.beyondar.android.world.BeyondarObjectList.get" name="com.beyondar.android.world.BeyondarObjectList.get">
+<area shape="rect" id="node2" href="$dc/d6d/classcom_1_1beyondar_1_1android_1_1opengl_1_1renderer_1_1_a_r_renderer.html#a1746dbc2077795b8fbb95fa2a74ef35d" title="Render a specific list. " alt="" coords="246,7,500,51"/>
+<area shape="rect" id="node4" href="$d8/d04/classcom_1_1beyondar_1_1android_1_1world_1_1_world.html#ae93e863ad76e8905f55a6e038158c1b2" title="Get all the BeyondarObject that collide with the Ray. " alt="" coords="251,77,496,121"/>
+<area shape="rect" id="node3" href="$dc/d6d/classcom_1_1beyondar_1_1android_1_1opengl_1_1renderer_1_1_a_r_renderer.html#acbf32370f0f51b0b443c3c1a51d6aca3" title="Render the World. " alt="" coords="550,5,804,49"/>
+<area shape="rect" id="node5" href="$d3/d68/classcom_1_1beyondar_1_1android_1_1view_1_1_beyondar_g_l_surface_view.html#a05a0c359c285cc320a8a8dc574063fc4" title="Get the GeoObject that intersect with the coordinates x, y on the screen. " alt="" coords="553,73,802,133"/>
+</map>

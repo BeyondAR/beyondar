@@ -1,0 +1,5 @@
+<map id="com.beyondar.android.opengl.renderer.ARRenderer.getMinDistanceSize" name="com.beyondar.android.opengl.renderer.ARRenderer.getMinDistanceSize">
+<area shape="rect" id="node2" href="$d3/d68/classcom_1_1beyondar_1_1android_1_1view_1_1_beyondar_g_l_surface_view.html#ac9a99a5a28561c34cadfeb4fa0b04a54" title="Get the minimum distance which a GeoObject will be rendered. " alt="" coords="310,39,602,83"/>
+<area shape="rect" id="node3" href="$de/d1b/classcom_1_1beyondar_1_1android_1_1fragment_1_1_beyondar_fragment.html#a23bca0c3debf18dcb45b57a8627a59ae" title="Get the minimum distance which a GeoObject will be rendered. " alt="" coords="674,5,931,49"/>
+<area shape="rect" id="node4" href="$de/d6e/classcom_1_1beyondar_1_1android_1_1fragment_1_1_beyondar_fragment_support.html#a02fbc42b9f76eb1cff320f517c5c7542" title="Get the minimum distance which a GeoObject will be rendered. " alt="" coords="651,73,955,117"/>
+</map>

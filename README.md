@@ -8,7 +8,7 @@ Don't forget to check the [wiki](https://github.com/BeyondAR/beyondar/wiki) and 
 BeyondAR platform only supports Android (Google Glass included). We are currently working to support other platforms.
 
 
-<table  style="border:0" align="center">
+<table  border="0" cellspacing="0" cellpadding="0"malign="center">
 <tr>
   <td><img src="http://beyondar.github.io/beyondar/images/android.png"></td>
   <td><img src="http://beyondar.github.io/beyondar/images/glass.jpg"></td> 

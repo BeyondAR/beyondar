@@ -27,6 +27,8 @@ BeyondAR platform only supports Android (Google Glass included). We are currentl
 </table>
 
 ----
+
+# License
 ~~~
 Copyright (C) 2014 BeyondAR
  

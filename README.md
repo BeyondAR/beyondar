@@ -8,13 +8,7 @@ Don't forget to check the [wiki](https://github.com/BeyondAR/beyondar/wiki) and 
 BeyondAR platform only supports Android (Google Glass included). We are currently working to support other platforms.
 
 
-<table  border="0" align="center">
-<tr>
-  <td><img src="http://beyondar.github.io/beyondar/images/android.png"></td>
-  <td><img src="http://beyondar.github.io/beyondar/images/glass.jpg"></td> 
-</tr>
-</table>
-
+<img src="http://beyondar.github.io/beyondar/images/android.png" style=" float: left; margin-bottom: 15px; margin-right: 3px;"><img src="http://beyondar.github.io/beyondar/images/glass.jpg" style="float: left; margin-bottom: 15px; margin-right:3px;">
 
 [BeyondAR Game](https://play.google.com/store/apps/details?id=com.beyondar#?t=W251bGwsMSwxLDIxMiwiY29tLmJleW9uZGFyIl0.) is using this platform to show the creatures around the user. Here some images:
 

@@ -85,252 +85,48 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 </div><!--header-->
 <div class="contents">
 <div class="textblock"><p>This framework has been designed to offer some resources to those developers with an interest in working with Augmented Reality based on geolocalization on SmartPhones and tablets.</p>
+<p>Don't forget to check the <a href="https://github.com/BeyondAR/beyondar/wiki">wiki</a> and the <a href="http://beyondar.github.io/beyondar/doxygen/index.html">documentation</a> to get more information about how to use this framework.</p>
+<p>BeyondAR platform only supports Android (Google Glass included). We are currently working to support other platforms.</p>
+<table  border="0" align="center">
+<tr>
+<td><div class="image">
+<img src="http://beyondar.github.io/beyondar/images/android.png" />
+</div>
+ </td><td><div class="image">
+<img src="http://beyondar.github.io/beyondar/images/glass.jpg" />
+</div>
+  </td></tr>
+</table>
 <p><a href="https://play.google.com/store/apps/details?id=com.beyondar#?t=W251bGwsMSwxLDIxMiwiY29tLmJleW9uZGFyIl0.">BeyondAR Game</a> is using this platform to show the creatures around the user. Here some images:</p>
-<div class="image">
-<img src="http://beyondar.com/pictures/screenshots/screen_4.jpg"  alt="Screenshot"/>
+<table  border="0" align="center">
+<tr>
+<td><div class="image">
+<img src="http://beyondar.github.io/beyondar/images/screen_4.jpg" />
 </div>
- <div class="image">
-<img src="http://beyondar.com/pictures/screenshots/screen_1.jpg"  alt="Screenshot"/>
+ </td><td><div class="image">
+<img src="http://beyondar.github.io/beyondar/images/screen_1.jpg" />
 </div>
-<p>BeyondAR platform also supports Google Glass</p>
-<div class="image">
-<img src="http://beyondar.com/pictures/glass.jpg"  alt="glass"/>
-</div>
-<h2>Adding BeyondAR in to your project</h2>
-<p>Just download the latest version of the framework <a href="android/libs">here</a> and add the needed jar files in to you libs folder.</p>
-<ul>
-<li>beyondar-v#.jar: The basic lib to be able to run the framework</li>
-<li>beyondar-googlemap-module-v#.jar: Module to use GoogleMaps with your <code>World</code></li>
-</ul>
-<h2>How to build your first app</h2>
-<p>To be able to run BeyondAR we need to add the following lines on the AndroidManifest.xml</p>
-<div class="fragment"><div class="line">&lt;uses-permission android:name=<span class="stringliteral">&quot;android.permission.CAMERA&quot;</span> /&gt;</div>
+  </td></tr>
+</table>
+<hr/>
+<h1>License</h1>
+<div class="fragment"><div class="line">Copyright (C) 2014 BeyondAR</div>
 <div class="line"></div>
+<div class="line">Licensed under the Apache License, Version 2.0 (the <span class="stringliteral">&quot;License&quot;</span>);</div>
+<div class="line">you may not use <span class="keyword">this</span> file except in compliance with the License.</div>
+<div class="line">You may obtain a copy of the License at</div>
 <div class="line"></div>
-<div class="line">&lt;uses-permission android:name=<span class="stringliteral">&quot;android.permission.INTERNET&quot;</span> /&gt;</div>
+<div class="line">     http:<span class="comment">//www.apache.org/licenses/LICENSE-2.0</span></div>
 <div class="line"></div>
-<div class="line"></div>
-<div class="line">&lt;uses-feature android:name=<span class="stringliteral">&quot;android.hardware.camera&quot;</span> /&gt;</div>
-<div class="line">&lt;uses-feature android:name=<span class="stringliteral">&quot;android.hardware.camera.autofocus&quot;</span> /&gt;</div>
-<div class="line">&lt;uses-feature android:name=<span class="stringliteral">&quot;android.hardware.sensor.accelerometer&quot;</span> /&gt;</div>
-<div class="line">&lt;uses-feature android:name=<span class="stringliteral">&quot;android.hardware.sensor.compass&quot;</span> /&gt;</div>
-</div><!-- fragment --><p>To create the UI it we can choose using an Android Layout XML or using Java code. For both of them we can use the <code>BeyondarFragmentSupport</code> or the <code>BeyondarFragment</code> fragments.</p>
-<div class="fragment"><div class="line">&lt;?xml version=<span class="stringliteral">&quot;1.0&quot;</span> encoding=<span class="stringliteral">&quot;utf-8&quot;</span>?&gt;</div>
-<div class="line">&lt;FrameLayout xmlns:android=<span class="stringliteral">&quot;http://schemas.android.com/apk/res/android&quot;</span></div>
-<div class="line">    android:layout_width=<span class="stringliteral">&quot;match_parent&quot;</span></div>
-<div class="line">    android:layout_height=<span class="stringliteral">&quot;match_parent&quot;</span> &gt;</div>
-<div class="line"></div>
-<div class="line">    &lt;fragment</div>
-<div class="line">        android:<span class="keywordtype">id</span>=<span class="stringliteral">&quot;@+id/beyondarFragment&quot;</span></div>
-<div class="line">        android:name=<span class="stringliteral">&quot;com.beyondar.android.fragment.BeyondarFragmentSupport&quot;</span></div>
-<div class="line">        android:layout_width=<span class="stringliteral">&quot;match_parent&quot;</span></div>
-<div class="line">        android:layout_height=<span class="stringliteral">&quot;match_parent&quot;</span> /&gt;</div>
-<div class="line"></div>
-<div class="line">&lt;/FrameLayout&gt;</div>
-</div><!-- fragment --><p> Once we have the layout ready it is time to load it.</p>
-<div class="fragment"><div class="line"><span class="keyword">private</span> BeyondarFragmentSupport mBeyondarFragment;</div>
-<div class="line"><span class="comment">// ...</span></div>
-<div class="line">@Override</div>
-<div class="line"><span class="keyword">public</span> <span class="keywordtype">void</span> onCreate(Bundle savedInstanceState) {</div>
-<div class="line">     super.onCreate(savedInstanceState);</div>
-<div class="line">     setContentView(R.layout.main);</div>
-<div class="line">     setContentView(R.layout.simple_camera);</div>
-<div class="line">     mBeyondarFragment = (BeyondarFragmentSupport)</div>
-<div class="line">     getSupportFragmentManager().findFragmentById(R.id.beyondarFragment);</div>
-<div class="line">     <span class="comment">// ...</span></div>
-<div class="line">}</div>
-</div><!-- fragment --><p>The next step is to create the <code>World</code> that holds the information related to the objects that need to be displayed in the app using augmented reality.</p>
-<div class="fragment"><div class="line">World world = <span class="keyword">new</span> World(context);</div>
-<div class="line"></div>
-<div class="line"><span class="comment">// The user can set the default bitmap. This is useful if you are</span></div>
-<div class="line"><span class="comment">// loading images form Internet and the connection get lost</span></div>
-<div class="line">world.setDefaultBitmap(R.drawable.beyondar_default_unknow_icon);</div>
-<div class="line"></div>
-<div class="line"><span class="comment">// User position (you can change it using the GPS listeners form Android</span></div>
-<div class="line"><span class="comment">// API)</span></div>
-<div class="line">world.setGeoPosition(41.26533734214473d, 1.925848038959814d);</div>
-<div class="line"></div>
-<div class="line"><span class="comment">// Create an object with an image in the app resources.</span></div>
-<div class="line">GeoObject go1 = <span class="keyword">new</span> GeoObject(1l);</div>
-<div class="line">go1.setGeoPosition(41.26523339794433d, 1.926036406654116d);</div>
-<div class="line">go1.setImageResource(R.drawable.creature_1);</div>
-<div class="line">go1.setName(<span class="stringliteral">&quot;Creature 1&quot;</span>);</div>
-<div class="line"></div>
-<div class="line"><span class="comment">// Is it also possible to load the image asynchronously form internet</span></div>
-<div class="line">GeoObject go2 = <span class="keyword">new</span> GeoObject(2l);</div>
-<div class="line">go2.setGeoPosition(41.26518966360719d, 1.92582424468222d);</div>
-<div class="line">go2.setImageUri(<span class="stringliteral">&quot;http://beyondar.com/sites/default/files/logo_reduced.png&quot;</span>);</div>
-<div class="line">go2.setName(<span class="stringliteral">&quot;Online image&quot;</span>);</div>
-<div class="line"></div>
-<div class="line"><span class="comment">// Also possible to get images from the SDcard</span></div>
-<div class="line">GeoObject go3 = <span class="keyword">new</span> GeoObject(3l);</div>
-<div class="line">go3.setGeoPosition(41.26550959641445d, 1.925873388087619d);</div>
-<div class="line">go3.setImageUri(<span class="stringliteral">&quot;/sdcard/TheAvengers_IronMan.jpeg&quot;</span>);</div>
-<div class="line">go3.setName(<span class="stringliteral">&quot;IronMan from sdcard&quot;</span>);</div>
-<div class="line"></div>
-<div class="line"><span class="comment">// And the same goes for the app assets</span></div>
-<div class="line">GeoObject go4 = <span class="keyword">new</span> GeoObject(4l);</div>
-<div class="line">go4.setGeoPosition(41.26518862002349d, 1.925662767707665d);</div>
-<div class="line">go4.setImageUri(<span class="stringliteral">&quot;assets://creature_7.png&quot;</span>);</div>
-<div class="line">go4.setName(<span class="stringliteral">&quot;Image from assets&quot;</span>);</div>
-<div class="line"></div>
-<div class="line"><span class="comment">//We add this GeoObjects to the world</span></div>
-<div class="line">world.addBeyondarObject(go1);</div>
-<div class="line">world.addBeyondarObject(go2);</div>
-<div class="line">world.addBeyondarObject(go3);</div>
-<div class="line">world.addBeyondarObject(go4);</div>
-<div class="line"></div>
-<div class="line"><span class="comment">//Finally we add the Wold data in to the fragment</span></div>
-<div class="line">mBeyondarFragment.setWorld(mWorld);</div>
-</div><!-- fragment --><p> Now we have the app ready to show the GeoObjects. But we also want to capture events, for instance, when the user clicks on a GeoObject. For that we need to implement <code>OnClikBeyondarObjectListener</code> </p>
-<div class="fragment"><div class="line"><span class="comment">// ...</span></div>
-<div class="line">mBeyondarFragment.setOnClickBeyondarObjectListener(<span class="keyword">this</span>);</div>
-<div class="line"><span class="comment">// ...</span></div>
-<div class="line">@Override</div>
-<div class="line"><span class="keyword">public</span> <span class="keywordtype">void</span> onClickBeyondarObject(ArrayList&lt;BeyondarObject&gt; beyondarObjects) {</div>
-<div class="line">        <span class="comment">// The first element in the array belongs to the closest BeyondarObject</span></div>
-<div class="line">        Toast.makeText(<span class="keyword">this</span>, <span class="stringliteral">&quot;Clicked on: &quot;</span> + beyondarObjects.get(0).getName(), Toast.LENGTH_LONG).show();</div>
-<div class="line">    }</div>
-</div><!-- fragment --><p>We also can capture the touch events using the <code>OnTouchBeyondarViewListener</code>:</p>
-<div class="fragment"><div class="line"><span class="comment">// ...</span></div>
-<div class="line">@Override</div>
-<div class="line"><span class="keyword">public</span> <span class="keywordtype">void</span> onTouchBeyondarView(MotionEvent event, BeyondarGLSurfaceView beyondarView) {</div>
-<div class="line"></div>
-<div class="line">    <span class="keywordtype">float</span> x = event.getX();</div>
-<div class="line">    <span class="keywordtype">float</span> y = event.getY();</div>
-<div class="line"></div>
-<div class="line">    ArrayList&lt;BeyondarObject&gt; geoObjects = <span class="keyword">new</span> ArrayList&lt;BeyondarObject&gt;();</div>
-<div class="line"></div>
-<div class="line">    <span class="comment">//This method call is better to don&#39;t do it in the UI thread!</span></div>
-<div class="line">    <span class="comment">// This method is also available in the BeyondarFragment</span></div>
-<div class="line">    getBeyondarObjectsOnScreenCoordinates(x, y, geoObjects);</div>
-<div class="line"></div>
-<div class="line">    String textEvent = <span class="stringliteral">&quot;&quot;</span>;</div>
-<div class="line">    <span class="keywordflow">switch</span> (event.getAction()) {</div>
-<div class="line">    <span class="keywordflow">case</span> MotionEvent.ACTION_DOWN:</div>
-<div class="line">        textEvent = <span class="stringliteral">&quot;Event type ACTION_DOWN: &quot;</span>;</div>
-<div class="line">        <span class="keywordflow">break</span>;</div>
-<div class="line">    <span class="keywordflow">case</span> MotionEvent.ACTION_UP:</div>
-<div class="line">        textEvent = <span class="stringliteral">&quot;Event type ACTION_UP: &quot;</span>;</div>
-<div class="line">        <span class="keywordflow">break</span>;</div>
-<div class="line">    <span class="keywordflow">case</span> MotionEvent.ACTION_MOVE:</div>
-<div class="line">        textEvent = <span class="stringliteral">&quot;Event type ACTION_MOVE: &quot;</span>;</div>
-<div class="line">        <span class="keywordflow">break</span>;</div>
-<div class="line">    <span class="keywordflow">default</span>:</div>
-<div class="line">        <span class="keywordflow">break</span>;</div>
-<div class="line">    }</div>
-<div class="line"></div>
-<div class="line">    Iterator&lt;BeyondarObject&gt; iterator = geoObjects.iterator();</div>
-<div class="line">    <span class="keywordflow">while</span> (iterator.hasNext()) {</div>
-<div class="line">        BeyondarObject geoObject = iterator.next();</div>
-<div class="line">        <span class="comment">// Do something</span></div>
-<div class="line">    }</div>
-<div class="line">}</div>
-<div class="line"><span class="comment">// ...</span></div>
-</div><!-- fragment --><h2>Adding GoogleMaps module</h2>
-<p>BeyondAR Framework uses modules to be able to add multiple features to the world engine. Google Maps Module is one example (<a href="https://github.com/BeyondAR/beyondar/tree/master/android/libs/modules">jar</a> &amp; <a href="android/BeyondAR_Framework/src-googlemaps">src</a>).</p>
-<p>To draw the all the <code>World</code> elements in the Google Map framework we just need a few lines of code:</p>
-<div class="fragment"><div class="line"><span class="comment">// ...</span></div>
-<div class="line"><span class="keyword">private</span> GoogleMap mMap;</div>
-<div class="line"><span class="keyword">private</span> GoogleMapWorldModule mGoogleMapModule;</div>
-<div class="line"><span class="comment">// ...</span></div>
-<div class="line"></div>
-<div class="line">@Override</div>
-<div class="line"><span class="keyword">protected</span> <span class="keywordtype">void</span> onCreate(Bundle savedInstanceState) {</div>
-<div class="line">     <span class="comment">// ...</span></div>
-<div class="line">     mMap = ((SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map)).getMap();</div>
-<div class="line"></div>
-<div class="line">     <span class="comment">// We create the world...</span></div>
-<div class="line">     mWorld = <span class="keyword">new</span> World(<span class="keyword">this</span>);</div>
-<div class="line">     <span class="comment">// As we want to use GoogleMaps, we are going to create the module and</span></div>
-<div class="line">     <span class="comment">// attach it to the World</span></div>
-<div class="line">     mGoogleMapModule = <span class="keyword">new</span> GoogleMapWorldModule(context);</div>
-<div class="line">     <span class="comment">// Then we need to set the map in to the GoogleMapModule</span></div>
-<div class="line">     mGoogleMapModule.setGoogleMap(mMap);</div>
-<div class="line">     <span class="comment">// Now that we have the module created let&#39;s add it in to our world</span></div>
-<div class="line">     mWorld.addModule(mGoogleMapModule);</div>
-<div class="line"></div>
-<div class="line">     <span class="comment">// Now we fill the world</span></div>
-<div class="line">     <span class="comment">// ...</span></div>
-<div class="line">}</div>
-</div><!-- fragment --><p> The <code>GoogleMapWorldModule</code> will take care of drawing all the <code>GeoObjects</code> in the <code>GoogleMap</code> object. So we also can add the a listener to the map to get notify when a <code>Marker</code> is click and then we can check which <code>GeoObject</code> is the owner of that <code>Marker</code>:</p>
-<div class="fragment"><div class="line">@Override</div>
-<div class="line"><span class="keyword">protected</span> <span class="keywordtype">void</span> onCreate(Bundle savedInstanceState) {</div>
-<div class="line">     <span class="comment">// ...</span></div>
-<div class="line">     mMap.setOnMarkerClickListener(<span class="keyword">this</span>);</div>
-<div class="line">     <span class="comment">// ...</span></div>
-<div class="line">}</div>
-<div class="line"></div>
-<div class="line">@Override</div>
-<div class="line"><span class="keyword">public</span> <span class="keywordtype">boolean</span> onMarkerClick(Marker marker) {</div>
-<div class="line">     <span class="comment">// To get the GeoObject that owns the marker we use the following</span></div>
-<div class="line">     <span class="comment">// method:</span></div>
-<div class="line">     GeoObject geoObject = mGoogleMapModule.getGeoObjectOwner(marker);</div>
-<div class="line">     <span class="keywordflow">if</span> (geoObject != null) {</div>
-<div class="line">          Toast.makeText(<span class="keyword">this</span>, <span class="stringliteral">&quot;Click on a marker owned by a GeoOject with the name: &quot;</span> + geoObject.getName(), Toast.LENGTH_SHORT).show();</div>
-<div class="line">     }</div>
-<div class="line">     <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
-<div class="line">}</div>
-</div><!-- fragment --> <h2>Add radar view module</h2>
-<p>If you want to add a radar view you could use the Radar module (<a href="android/libs/modules">jar</a> &amp; <a href="android/BeyondAR_Framework/src-radar">src</a>).</p>
-<div class="image">
-<img src="http://beyondar.com/pictures/radar.jpg"  alt="radar"/>
-</div>
-<p>To do that let's add the view in our layout file:</p>
-<div class="fragment"><div class="line">&lt;FrameLayout</div>
-<div class="line">    android:layout_width=<span class="stringliteral">&quot;wrap_content&quot;</span></div>
-<div class="line">    android:layout_height=<span class="stringliteral">&quot;wrap_content&quot;</span></div>
-<div class="line">    android:layout_gravity=<span class="stringliteral">&quot;right|top&quot;</span></div>
-<div class="line">    android:background=<span class="stringliteral">&quot;@drawable/radar_bg_small&quot;</span> &gt;</div>
-<div class="line"></div>
-<div class="line">    &lt;com.beyondar.android.module.radar.RadarView</div>
-<div class="line">        android:<span class="keywordtype">id</span>=<span class="stringliteral">&quot;@+id/radarView&quot;</span></div>
-<div class="line">        android:layout_width=<span class="stringliteral">&quot;wrap_content&quot;</span></div>
-<div class="line">        android:layout_height=<span class="stringliteral">&quot;wrap_content&quot;</span></div>
-<div class="line">        android:src=<span class="stringliteral">&quot;@drawable/radar_north_small&quot;</span> /&gt;</div>
-<div class="line">&lt;/FrameLayout&gt;</div>
-</div><!-- fragment --><p>Now it is time to get the view in our <code>Activity</code> and play with it</p>
-<div class="fragment"><div class="line"><span class="keyword">public</span> <span class="keywordtype">void</span> onCreate(Bundle savedInstanceState) {</div>
-<div class="line">    <span class="comment">// ...</span></div>
-<div class="line">    radarView = (RadarView) findViewById(R.id.radarView);</div>
-<div class="line">    <span class="comment">// Create the Radar module</span></div>
-<div class="line">    mRadarModule = <span class="keyword">new</span> RadarWorldModule();</div>
-<div class="line">    <span class="comment">// set the radar view in to our radar module</span></div>
-<div class="line">    mRadarModule.setRadarView(mRadarView);</div>
-<div class="line">    <span class="comment">// Set how far (in meters) we want to display in the view</span></div>
-<div class="line">    mRadarModule.setMaxDistance(100);</div>
-<div class="line">    <span class="comment">// and finally let&#39;s add the module</span></div>
-<div class="line">    mWorld.addModule(mRadarModule);</div>
-<div class="line">    <span class="comment">// ...</span></div>
-<div class="line">}</div>
-</div><!-- fragment --><h2>Creating your own module</h2>
-<p>BeyondAR architecture allows you to create your own modules that can be attached to the framework. For instance to have a better access to the <code>World</code> object in order to perform other extra task like using Google Maps, or a radar view.</p>
-<p>The first thing that we need to do is understand what do we need to implement in order to create our module. The interfaces are located in <code>com.beyondar.android.module</code>:</p>
-<ul>
-<li><code>WorldModule</code>: This interface will allow your module to be notified when some events occur, like when the position has changed, a new object has been added/removed, all the <code>World</code> is cleaned, etc. (<a href="android/BeyondAR_Framework/src/com/beyondar/android/module/WorldModule.java">here</a> you will find the code).</li>
-<li><code>BeyondarObjectModule</code>: This interface allows your module to get notified when there are changes in a specific <code>BeyondarObject</code> (<a href="android/BeyondAR_Framework/src/com/beyondar/android/module/BeyondarObjectModule.java">here</a> you will find the code).</li>
-<li><code>GeoObjectModule</code>: This interface extends <code>BeyondarObjectModule</code> and it have some extra code to make easier the control of the geo position of this kind of objects (<a href="android/BeyondAR_Framework/src/com/beyondar/android/module/BeyondarObjectModule.java">here</a> you will find the code).</li>
-</ul>
-<p>One of the main goals of <code>WorldModule</code> is to add <code>BeyondarObjectModule</code>/<code>GeoObjectModule</code> to all the <code>BeyondarObject</code>/<code>GeoObject</code> in the <code>World</code> object. To do that make sure to add you own module in when <code>setup(World world)</code> is called and when a new <code>BeyondarObject</code> is added:</p>
-<div class="fragment"><div class="line">@Override</div>
-<div class="line"><span class="keyword">public</span> <span class="keywordtype">void</span> onBeyondarObjectAdded(BeyondarObject beyondarObject, BeyondarObjectList beyondarObjectList) {</div>
-<div class="line">     <span class="keywordflow">if</span> (beyondarObject instanceof GeoObject) { <span class="comment">// Check if it is a GeoObject</span></div>
-<div class="line">        <span class="comment">// We need to check if there is any of our own module already attached</span></div>
-<div class="line">        <span class="keywordflow">if</span> (!beyondarObject.containsAnyModule(RadarPointModule.class)) { </div>
-<div class="line">            <span class="comment">// Then we just create it and add it</span></div>
-<div class="line">            RadarPointModule module = <span class="keyword">new</span> RadarPointModule(<span class="keyword">this</span>, beyondarObject);</div>
-<div class="line">            beyondarObject.addModule(module);</div>
-<div class="line">        }</div>
-<div class="line">    }</div>
-<div class="line">}</div>
-</div><!-- fragment --><p>Once we have created the module we need to add it to the <code>World</code> class, for that we just use the method <code>myWorld.addModule(myModule)</code>.</p>
-<div class="fragment"><div class="line">World myWorld = <span class="keyword">new</span> World(context);</div>
-<div class="line"><span class="comment">// add the module</span></div>
-<div class="line">myWorld.addModule(myModule);</div>
+<div class="line">Unless required by applicable law or agreed to in writing, software</div>
+<div class="line">distributed under the License is distributed on an <span class="stringliteral">&quot;AS IS&quot;</span> BASIS,</div>
+<div class="line">WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.</div>
+<div class="line">See the License <span class="keywordflow">for</span> the specific language governing permissions and</div>
+<div class="line">limitations under the License.</div>
 </div><!-- fragment --> </div></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
-Generated on Sun Apr 6 2014 12:48:39 for BeyondAR by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Sun Apr 6 2014 14:57:15 for BeyondAR by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.8.6
 </small></address>

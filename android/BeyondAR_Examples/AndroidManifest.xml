@@ -51,7 +51,8 @@
         <activity android:name="com.beyondar.example.StaticViewGeoObjectActivity" />
         <activity android:name="com.beyondar.example.SimpleCameraWithCustomFilterActivity" />
         <activity android:name="com.beyondar.example.SimpleCameraWithRadarActivity" />
-
+        <activity android:name="com.beyondar.example.BeyondarLocationManagerMapActivity" />
+        
         <meta-data
             android:name="com.google.android.maps.v2.API_KEY"
             android:value="AIzaSyBN2fi7bdokXVQXmMTGfqWG2oNHjopus-A" />

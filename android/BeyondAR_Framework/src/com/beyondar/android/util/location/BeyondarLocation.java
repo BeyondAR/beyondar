@@ -51,7 +51,8 @@ class BeyondarLocation implements LocationListener {
 			if (mLastBestLocation != null) {
 				geoObject.setLocation(mLastBestLocation);
 			}
-			mArrayListGeoObject.add(geoObject);
+			if (!mArrayListGeoObject.contains(geoObject))
+				mArrayListGeoObject.add(geoObject);
 		}
 	}
 
@@ -66,7 +67,8 @@ class BeyondarLocation implements LocationListener {
 			if (mLastBestLocation != null) {
 				world.setLocation(mLastBestLocation);
 			}
-			mArrayListWorld.add(world);
+			if (!mArrayListWorld.contains(world))
+				mArrayListWorld.add(world);
 		}
 	}
 
@@ -84,7 +86,8 @@ class BeyondarLocation implements LocationListener {
 
 	void addLocationListener(LocationListener locationListener) {
 		synchronized (mLockLocationListener) {
-			mArrayLocationListener.add(locationListener);
+			if (!mArrayLocationListener.contains(locationListener))
+				mArrayLocationListener.add(locationListener);
 		}
 	}
 

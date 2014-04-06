@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2013 BeyondAR
+ * Copyright (C) 2014 BeyondAR
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,11 +23,11 @@ public class Version {
 	/**
 	 * Version number of BeyondAR framework.
 	 */
-	public static final int VERSION_NUMBER = 000502;
+	public static final int VERSION_NUMBER = 0x000900;
 
 	/**
 	 * Version name of BeyondAR framework.
 	 */
-	public static final String VERSION_NAME = "0.5.2";
+	public static final String VERSION_NAME = "0.9.0";
 
 }

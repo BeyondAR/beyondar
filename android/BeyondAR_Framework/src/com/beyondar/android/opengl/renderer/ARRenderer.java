@@ -850,8 +850,9 @@ public class ARRenderer implements GLSurfaceView.Renderer, BeyondarSensorListene
 			} catch (ConcurrentModificationException e) {
 				loadWorldTextures(gl);
 			}
+			mWorld.getBitmapCache().cleanRecylcedBitmaps();
 		}
-		mWorld.getBitmapCache().cleanRecylcedBitmaps();
+		
 	}
 
 	/**

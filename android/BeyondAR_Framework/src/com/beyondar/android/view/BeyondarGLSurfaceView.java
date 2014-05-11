@@ -261,7 +261,7 @@ public class BeyondarGLSurfaceView extends GLSurfaceView implements OnBeyondarOb
 	public synchronized void getBeyondarObjectsOnScreenCoordinates(float x, float y,
 			ArrayList<BeyondarObject> beyondarObjects, Ray ray) {
 		mRenderer.getViewRay(x, y, ray);
-		mWorld.getBeyondarObjectsCollideRay(ray, beyondarObjects);
+		mWorld.getBeyondarObjectsCollideRay(ray, beyondarObjects, getArViewDistance());
 	}
 
 	/**
@@ -318,6 +318,24 @@ public class BeyondarGLSurfaceView extends GLSurfaceView implements OnBeyondarOb
 	 */
 	public float getMinDistanceSize() {
 		return mRenderer.getMinDistanceSize();
+	}
+	
+	/**
+	 * Set the distance (in meters) which the app will draw the objects.
+	 * 
+	 * @param meters
+	 */
+	public void setArViewDistance(float meters) {
+		mRenderer.setArViewDistance(meters);
+	}
+
+	/**
+	 * Get the distance (in meters) which the AR view will draw the objects.
+	 * 
+	 * @return meters
+	 */
+	public float getArViewDistance() {
+		return mRenderer.getArViewDistance();
 	}
 
 	public void setBeyondarViewAdapter(BeyondarViewAdapter beyondarViewAdapter, ViewGroup parent) {

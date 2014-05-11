@@ -453,6 +453,24 @@ public class BeyondarFragmentSupport extends Fragment implements FpsUpdatable, O
 	public float getMinDistanceSize() {
 		return mBeyondarGLSurface.getMinDistanceSize();
 	}
+	
+	/**
+	 * Set the distance (in meters) which the app will draw the objects.
+	 * 
+	 * @param meters
+	 */
+	public void setArViewDistance(float meters) {
+		mBeyondarGLSurface.setArViewDistance(meters);
+	}
+
+	/**
+	 * Get the distance (in meters) which the AR view will draw the objects.
+	 * 
+	 * @return meters
+	 */
+	public float getArViewDistance() {
+		return mBeyondarGLSurface.getArViewDistance();
+	}
 
 	/**
 	 * Take a screenshot of the beyondar fragment. The screenshot will contain

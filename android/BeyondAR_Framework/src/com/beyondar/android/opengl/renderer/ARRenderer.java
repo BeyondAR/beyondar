@@ -88,6 +88,12 @@ public class ARRenderer implements GLSurfaceView.Renderer, BeyondarSensorListene
 		String uri;
 		Bitmap btm;
 	}
+	
+	/**
+	 * The default maximum distance that the object will be displayed (meters)
+	 * in the AR view.
+	 */
+	public static final float DEFAULT_MAX_AR_VIEW_DISTANCE = 100;
 
 	/**
 	 * Specifies the distance from the viewer to the far clipping plane. Used
@@ -111,6 +117,8 @@ public class ARRenderer implements GLSurfaceView.Renderer, BeyondarSensorListene
 	private static PendingBitmapsToBeLoaded<BeyondarObject> sPendingTextureObjects = new PendingBitmapsToBeLoaded<BeyondarObject>();
 	private static ArrayList<UriAndBitmap> sNewBitmapsLoaded = new ArrayList<UriAndBitmap>();
 	private static final float[] sInclination = new float[16];
+
+	private float mArViewDistance;
 
 	private World mWorld;
 
@@ -157,6 +165,7 @@ public class ARRenderer implements GLSurfaceView.Renderer, BeyondarSensorListene
 	 * {@link ARRenderer} constructor.
 	 */
 	public ARRenderer() {
+		mArViewDistance = DEFAULT_MAX_AR_VIEW_DISTANCE;
 		mReloadWorldTextures = false;
 		setRendering(true);
 		mCameraPosition = new Point3(0, 0, 0);
@@ -428,6 +437,11 @@ public class ARRenderer implements GLSurfaceView.Renderer, BeyondarSensorListene
 				- mWorld.getLongitude()) / 2);
 		z = (float) (Distance.fastConversionGeopointsToMeters(geoObject.getAltitude() - mWorld.getAltitude()) / 2);
 		y = (float) (Distance.fastConversionGeopointsToMeters(geoObject.getLatitude() - mWorld.getLatitude()) / 2);
+		
+		
+		x = (float) (x / Z_FAR * Distance.fastConversionMetersToGeoPoints(getArViewDistance()));
+		y = (float) (y / Z_FAR * Distance.fastConversionMetersToGeoPoints(getArViewDistance()));
+		z = (float) (z / Z_FAR * Distance.fastConversionMetersToGeoPoints(getArViewDistance()));
 
 		if (mMaxDistanceSizePoints > 0 || mMinDistanceSizePoints > 0) {
 			double totalDst = Distance.calculateDistance(x, y, 0, 0);
@@ -644,7 +658,7 @@ public class ARRenderer implements GLSurfaceView.Renderer, BeyondarSensorListene
 
 		beyondarObject.setDistanceFromUser(dst);
 
-		if (dst < mWorld.getArViewDistance()) {
+		if (dst < getArViewDistance()) {
 			renderObject = true;
 		}
 
@@ -1321,5 +1335,23 @@ public class ARRenderer implements GLSurfaceView.Renderer, BeyondarSensorListene
 				plugin.onResume();
 			}
 		}
+	}
+	
+	/**
+	 * Set the distance (in meters) which the app will draw the objects.
+	 * 
+	 * @param meters
+	 */
+	public void setArViewDistance(float meters) {
+		mArViewDistance = meters;
+	}
+
+	/**
+	 * Get the distance (in meters) which the AR view will draw the objects.
+	 * 
+	 * @return meters
+	 */
+	public float getArViewDistance() {
+		return mArViewDistance;
 	}
 }

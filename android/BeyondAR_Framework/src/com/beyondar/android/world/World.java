@@ -40,12 +40,6 @@ import com.beyondar.android.util.math.geom.Vector3;
 public class World implements Plugable<WorldPlugin> {
 
 	/**
-	 * The default maximum distance that the object will be displayed (meters)
-	 * in the AR view.
-	 */
-	public static final int DEFAULT_MAX_AR_VIEW_DISTANCE = 1000;
-
-	/**
 	 * Default list type.
 	 */
 	public static final int LIST_TYPE_DEFAULT = 0;
@@ -60,7 +54,6 @@ public class World implements Plugable<WorldPlugin> {
 	private double mLongitude, mLatitude, mAltitude;
 
 	private Context mContext;
-	private double mArViewDistance;
 	private BitmapCache mBitmapHolder;
 	private String mDefaultBitmap;
 
@@ -76,7 +69,6 @@ public class World implements Plugable<WorldPlugin> {
 		mContext = context;
 		mBitmapHolder = BitmapCache.initialize(mContext.getResources(), getClass().getName(), true);
 		createBeyondarObjectListArray();
-		mArViewDistance = DEFAULT_MAX_AR_VIEW_DISTANCE;
 		plugins = new ArrayList<WorldPlugin>(DEFAULT_PLUGINS_CAPACITY);
 	}
 
@@ -515,7 +507,7 @@ public class World implements Plugable<WorldPlugin> {
 
 	/**
 	 * Get all the {@link com.beyondar.android.world.BeyondarObject
-	 * BeyondarObject} that collide with the {@link Ray}.
+	 * BeyondarObject} that collide with the {@link com.beyondar.android.util.math.geom.Ray}.
 	 * 
 	 * @param ray
 	 *            The ray to use for the collision calculus
@@ -523,14 +515,14 @@ public class World implements Plugable<WorldPlugin> {
 	 * @param beyondarObjectsOutput
 	 *            The {@link ArrayList} that will store the objects sorted by
 	 *            proximity. This list will be cleaned before.
+	 * @param maxDistance
+	 *            Max distance to consider if a {@link com.beyondar.android.world.BeyondarObject} can
+	 *            collide (in meters).
 	 */
-	public void getBeyondarObjectsCollideRay(Ray ray, ArrayList<BeyondarObject> beyondarObjectsOutput) {
+	public void getBeyondarObjectsCollideRay(Ray ray, ArrayList<BeyondarObject> beyondarObjectsOutput,
+			float maxDistance) {
 
 		beyondarObjectsOutput.clear();
-
-		// int counter = 0;
-		// ArrayList<BeyondarObject> beyondarObjects = new
-		// ArrayList<BeyondarObject>();
 		BeyondarObjectList beyondarList = null;
 
 		try {
@@ -548,7 +540,7 @@ public class World implements Plugable<WorldPlugin> {
 							GeoObject go = (GeoObject) beyondarObject;
 							double dst = Distance.calculateDistanceMeters(go.getLongitude(),
 									go.getLatitude(), getLongitude(), getLatitude());
-							if (dst > getArViewDistance()) {
+							if (dst > maxDistance) {
 								continue;
 							}
 						}
@@ -568,26 +560,8 @@ public class World implements Plugable<WorldPlugin> {
 				sortGeoObjectByDistanceFromCenter(beyondarObjectsOutput);
 			}
 		} catch (ConcurrentModificationException e) {
-			getBeyondarObjectsCollideRay(ray, beyondarObjectsOutput);
+			getBeyondarObjectsCollideRay(ray, beyondarObjectsOutput, maxDistance);
 		}
-	}
-
-	/**
-	 * Set the distance (in meters) which the app will draw the objects.
-	 * 
-	 * @param meters
-	 */
-	public void setArViewDistance(double meters) {
-		mArViewDistance = meters;
-	}
-
-	/**
-	 * Get the distance (in meters) which the AR view will draw the objects.
-	 * 
-	 * @return meters
-	 */
-	public double getArViewDistance() {
-		return mArViewDistance;
 	}
 
 	public static List<BeyondarObject> sortGeoObjectByDistanceFromCenter(List<BeyondarObject> vec) {

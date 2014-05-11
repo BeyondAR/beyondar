@@ -381,8 +381,8 @@ public class CameraView extends SurfaceView implements SurfaceHolder.Callback, C
 			return;
 		}
 		mCameraCallback = cameraCallback;
-		mCamera.takePicture(null, this, this);
 		mOptions = options;
+		mCamera.takePicture(null, this, this);
 	}
 
 	private boolean openCamera() {

@@ -471,6 +471,15 @@ public class BeyondarFragmentSupport extends Fragment implements FpsUpdatable, O
 	public float getArViewDistance() {
 		return mBeyondarGLSurface.getArViewDistance();
 	}
+	
+	public void setZFar(float meters)
+	{
+		mBeyondarGLSurface.setZFar(meters);
+	}
+	
+	public float getZFar(){
+		return mBeyondarGLSurface.getZFar();
+	}
 
 	/**
 	 * Take a screenshot of the beyondar fragment. The screenshot will contain

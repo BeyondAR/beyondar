@@ -40,7 +40,7 @@ public class ScreenshotHelper {
 	 */
 	public static void takeScreenshot(CameraView cameraView, BeyondarGLSurfaceView bgls,
 			OnScreenshotListener callback, BitmapFactory.Options options) {
-		ScreenShootCallback callbackProcessing = new ScreenShootCallback(callback);
+		ScreenShootCallback callbackProcessing = new ScreenShootCallback(callback, cameraView);
 
 		if (cameraView != null && cameraView.isPreviewing()) {
 			// CacheManager.getInventoryCache().purge();
@@ -57,9 +57,11 @@ public class ScreenshotHelper {
 		Bitmap btmGl;
 		volatile int status = 0;
 		OnScreenshotListener callback;
+		CameraView cameraView;
 
-		ScreenShootCallback(OnScreenshotListener cb) {
+		ScreenShootCallback(OnScreenshotListener cb, CameraView cv) {
 			callback = cb;
+			cameraView = cv;
 		}
 
 		@Override
@@ -108,6 +110,9 @@ public class ScreenshotHelper {
 
 				System.gc();
 				callback.onScreenshot(result);
+				
+				cameraView.releaseCamera();
+				cameraView.startPreviewCamera();
 			}
 		}
 	}

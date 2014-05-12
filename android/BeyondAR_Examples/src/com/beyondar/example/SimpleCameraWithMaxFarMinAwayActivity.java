@@ -30,8 +30,9 @@ public class SimpleCameraWithMaxFarMinAwayActivity extends FragmentActivity impl
 	private BeyondarFragmentSupport mBeyondarFragment;
 	private World mWorld;
 
-	private SeekBar mSeekBarMax, mSeekBarMin, mSeekBarArViewDst;
-	private TextView mMaxFarText, mMinFarText, mArViewDistanceText;
+	private SeekBar mSeekBarMax, mSeekBarMin, mSeekBarArViewDst, mSeekBarZfar;
+	private TextView mMaxFarText, mMinFarText, mArViewDistanceText, mZfarText;
+	private TextView mTextValues;
 
 	/** Called when the activity is first created. */
 	@Override
@@ -42,47 +43,75 @@ public class SimpleCameraWithMaxFarMinAwayActivity extends FragmentActivity impl
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 
 		setContentView(R.layout.simple_camera_with_distance_seekbars);
+		mBeyondarFragment = (BeyondarFragmentSupport) getSupportFragmentManager().findFragmentById(
+				R.id.beyondarFragment);
+		mTextValues = (TextView) findViewById(R.id.textValues);
+		
 		mMaxFarText = (TextView) findViewById(R.id.textBarMax);
 		mMinFarText = (TextView) findViewById(R.id.textBarMin);
 		mArViewDistanceText = (TextView) findViewById(R.id.textBarArViewDistance);
-		mMaxFarText.        setText("Max far:    ");
-		mMinFarText.        setText("Min far:    ");
+		mZfarText= (TextView) findViewById(R.id.textBarZFar);
+		mMaxFarText.setText("Max far:");
+		mMinFarText.setText("Min far:");
 		mArViewDistanceText.setText("Ar view dst:");
+		mZfarText.setText("Z far:");
 		
 		mSeekBarMax = (SeekBar) findViewById(R.id.seekBarMax);
 		mSeekBarMin = (SeekBar) findViewById(R.id.seekBarMin);
 		mSeekBarArViewDst = (SeekBar) findViewById(R.id.seekBarArViewDistance);
+		mSeekBarZfar = (SeekBar) findViewById(R.id.seekBarZFar);
+		mSeekBarMax.setMax(1000);
+		mSeekBarMin.setMax(1000);
+		mSeekBarArViewDst.setMax(20000); // 20 km
+		mSeekBarZfar.setMax(50000);
+		
 		mSeekBarMax.setOnSeekBarChangeListener(this);
 		mSeekBarMin.setOnSeekBarChangeListener(this);
 		mSeekBarArViewDst.setOnSeekBarChangeListener(this);
-		mSeekBarMax.setMax(100);
-		mSeekBarMin.setMax(100);
-		mSeekBarArViewDst.setMax(1000);
+		mSeekBarZfar.setOnSeekBarChangeListener(this);
+		
+		updateTextValues();
+		
+		mSeekBarMin.setProgress(115);
+		mSeekBarArViewDst.setProgress(20000);
+		mSeekBarZfar.setProgress(50000);
 
-		mBeyondarFragment = (BeyondarFragmentSupport) getSupportFragmentManager().findFragmentById(
-				R.id.beyondarFragment);
 
 		// We create the world and fill it ...
 		mWorld = CustomWorldHelper.generateObjects(this);
 		// .. and send it to the fragment
 		mBeyondarFragment.setWorld(mWorld);
-
-		// We also can see the Frames per seconds
-		mBeyondarFragment.showFPS(true);
-		
 	}
 
 	@Override
 	public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-		if (mBeyondarFragment == null) return;
-		
 		if (seekBar == mSeekBarMax) {
 			mBeyondarFragment.setMaxFarDistance(progress);
 		} else if (seekBar == mSeekBarMin) {
 			mBeyondarFragment.setMinFarDistanceSize(progress);
 		} else if (seekBar == mSeekBarArViewDst) {
 			mBeyondarFragment.setArViewDistance(progress);
+		} else if (seekBar == mSeekBarZfar) {
+			mBeyondarFragment.setZFar(progress);
 		}
+		updateTextValues();
+	}
+	
+	private void updateTextValues() {
+		mTextValues.setText("Zfar=" + mBeyondarFragment.getZFar() + " ArViewDst="
+				+ mBeyondarFragment.getArViewDistance() + "\nMax far="
+				+ mBeyondarFragment.getMaxDistanceSize() + " Min far="
+				+ mBeyondarFragment.getMinDistanceSize());
+	}
+	
+	@Override
+	protected void onResume() {
+//		mSeekBarMax.setOnSeekBarChangeListener(this);
+//		mSeekBarMin.setOnSeekBarChangeListener(this);
+//		mSeekBarArViewDst.setOnSeekBarChangeListener(this);
+//		mSeekBarZfar.setOnSeekBarChangeListener(this);
+		
+		super.onResume();
 	}
 
 	@Override

@@ -12,9 +12,16 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="bottom"
-        android:orientation="vertical" >
-
+        android:layout_gravity="bottom">
+        
+        <TextView
+            android:background="#FF000000"
+            android:textColor="#FFFFFFFF"
+            android:id="@+id/textValues"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"/>
+        
         <TextView
             android:id="@+id/textBarMin"
             android:layout_width="wrap_content"
@@ -56,6 +63,20 @@
             android:layout_above="@id/seekBarMax"
             android:layout_margin="2dip"
             android:layout_toRightOf="@id/textBarArViewDistance" />
+        
+        <TextView
+            android:id="@+id/textBarZFar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_above="@id/seekBarArViewDistance"/>
+
+        <SeekBar
+            android:id="@+id/seekBarZFar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_above="@id/seekBarArViewDistance"
+            android:layout_margin="2dip"
+            android:layout_toRightOf="@id/textBarZFar" />
     </RelativeLayout>
 
 </FrameLayout>

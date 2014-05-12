@@ -99,7 +99,7 @@ public class ARRenderer implements GLSurfaceView.Renderer, BeyondarSensorListene
 	 * Specifies the distance from the viewer to the far clipping plane. Used
 	 * for the GLU.gluPerspective
 	 */
-	public static float Z_FAR = 100.0f;
+	public static float Z_FAR = 400.0f;
 	public static final double TIMEOUT_LOAD_TEXTURE = 1500;
 
 	private static final String TAG = "ARRenderer";
@@ -119,6 +119,8 @@ public class ARRenderer implements GLSurfaceView.Renderer, BeyondarSensorListene
 	private static final float[] sInclination = new float[16];
 
 	private float mArViewDistance;
+	private float mZfar;
+	private float mScreenRatio;
 
 	private World mWorld;
 
@@ -166,6 +168,7 @@ public class ARRenderer implements GLSurfaceView.Renderer, BeyondarSensorListene
 	 */
 	public ARRenderer() {
 		mArViewDistance = DEFAULT_MAX_AR_VIEW_DISTANCE;
+		mZfar = Z_FAR;
 		mReloadWorldTextures = false;
 		setRendering(true);
 		mCameraPosition = new Point3(0, 0, 0);
@@ -274,6 +277,11 @@ public class ARRenderer implements GLSurfaceView.Renderer, BeyondarSensorListene
 			rotation = 180;
 			break;
 		}
+		
+//		if (mUpdateGLPerspective)
+//		{
+//			GLU.gluPerspective(gl, 45.0f, mScreenRatio, 0.1f, mZfar);
+//		}
 
 		gl.glRotatef(rotation, 0, 0, 1);
 
@@ -438,10 +446,9 @@ public class ARRenderer implements GLSurfaceView.Renderer, BeyondarSensorListene
 		z = (float) (Distance.fastConversionGeopointsToMeters(geoObject.getAltitude() - mWorld.getAltitude()) / 2);
 		y = (float) (Distance.fastConversionGeopointsToMeters(geoObject.getLatitude() - mWorld.getLatitude()) / 2);
 		
-		
-		x = (float) (x / Z_FAR * Distance.fastConversionMetersToGeoPoints(getArViewDistance()));
-		y = (float) (y / Z_FAR * Distance.fastConversionMetersToGeoPoints(getArViewDistance()));
-		z = (float) (z / Z_FAR * Distance.fastConversionMetersToGeoPoints(getArViewDistance()));
+		x = (float) (x / mZfar * Z_FAR);
+		y = (float) (y / mZfar * Z_FAR);
+		z = (float) (z / mZfar * Z_FAR);
 
 		if (mMaxDistanceSizePoints > 0 || mMinDistanceSizePoints > 0) {
 			double totalDst = Distance.calculateDistance(x, y, 0, 0);
@@ -658,10 +665,10 @@ public class ARRenderer implements GLSurfaceView.Renderer, BeyondarSensorListene
 
 		beyondarObject.setDistanceFromUser(dst);
 
-		if (dst < getArViewDistance()) {
+		if (dst < mArViewDistance) {
 			renderObject = true;
 		}
-
+		
 		boolean forceDraw = renderable.update(time, (float) dst, beyondarObject);
 
 		if (forceDraw || renderObject) {
@@ -749,12 +756,12 @@ public class ARRenderer implements GLSurfaceView.Renderer, BeyondarSensorListene
 		 * draw, but usually a new projection needs to be set when the viewport
 		 * is resized.
 		 */
-		float ratio = (float) width / height;
+		mScreenRatio = (float) width / height;
 		gl.glMatrixMode(GL10.GL_PROJECTION);
 		gl.glLoadIdentity();
 		// gl.glFrustumf(-ratio, ratio, -1, 1, 1f, 100);
 
-		GLU.gluPerspective(gl, 45.0f, ratio, 0.1f, Z_FAR);
+		GLU.gluPerspective(gl, 45.0f, mScreenRatio, 0.1f, Z_FAR);
 		mWidth = width;
 		mHeight = height;
 		setupViewPort();
@@ -1353,5 +1360,15 @@ public class ARRenderer implements GLSurfaceView.Renderer, BeyondarSensorListene
 	 */
 	public float getArViewDistance() {
 		return mArViewDistance;
+	}
+
+	public void setZFar(float meters) {
+		if (meters <= 0)
+			return;
+		mZfar = meters;
+	}
+
+	public float getZFar() {
+		return mZfar;
 	}
 }

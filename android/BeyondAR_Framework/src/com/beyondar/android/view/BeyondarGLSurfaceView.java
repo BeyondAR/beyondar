@@ -337,6 +337,15 @@ public class BeyondarGLSurfaceView extends GLSurfaceView implements OnBeyondarOb
 	public float getArViewDistance() {
 		return mRenderer.getArViewDistance();
 	}
+	
+	public void setZFar(float meters)
+	{
+		mRenderer.setZFar(meters);
+	}
+	
+	public float getZFar(){
+		return mRenderer.getZFar();
+	}
 
 	public void setBeyondarViewAdapter(BeyondarViewAdapter beyondarViewAdapter, ViewGroup parent) {
 		mViewAdapter = beyondarViewAdapter;

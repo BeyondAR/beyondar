@@ -89,6 +89,12 @@ public class CustomWorldHelper {
 		go9.setImageResource(R.drawable.creature_4);
 		go9.setName("Creature 4");
 		
+		
+		GeoObject go10 = new GeoObject(10l);
+		go10.setGeoPosition(42.006667d, 2.705d);
+		go10.setImageResource(R.drawable.object_stuff);
+		go10.setName("Far away");
+		
 		// Add the GeoObjects to the world
 		sharedWorld.addBeyondarObject(go1);
 		sharedWorld.addBeyondarObject(go2, LIST_TYPE_EXAMPLE_1);
@@ -99,6 +105,7 @@ public class CustomWorldHelper {
 		sharedWorld.addBeyondarObject(go7);
 		sharedWorld.addBeyondarObject(go8);
 		sharedWorld.addBeyondarObject(go9);
+		sharedWorld.addBeyondarObject(go10);
 
 		return sharedWorld;
 	}

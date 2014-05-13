@@ -17,6 +17,7 @@ package com.beyondar.android.view;
 
 import java.io.IOException;
 import java.util.List;
+
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.res.Configuration;
@@ -30,7 +31,9 @@ import android.view.Surface;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.WindowManager;
+
 import com.beyondar.android.util.DebugBitmap;
+import com.beyondar.android.util.GoogleGlassUtils;
 import com.beyondar.android.util.Logger;
 
 /**
@@ -138,7 +141,7 @@ public class CameraView extends SurfaceView implements SurfaceHolder.Callback, C
 	 * Check if the camera is previewing, if so the user should see what the
 	 * Camera is pointing at.
 	 * 
-	 * @return true if is previeweing, false otherwise.
+	 * @return true if is previewing, false otherwise.
 	 */
 	public boolean isPreviewing() {
 		return mCamera != null && mIsPreviewing;
@@ -259,9 +262,12 @@ public class CameraView extends SurfaceView implements SurfaceHolder.Callback, C
 
 		parameters.setPreviewSize(mPreviewSize.width, mPreviewSize.height);
 
-		// parameters.set("jpeg-quality", 70);
-		// parameters.setPictureSize(100, 100);
-
+		// Fix for the first versions of google glass
+		if (GoogleGlassUtils.isGoogleGlass())
+		{
+			parameters.setPreviewFpsRange(30000, 30000);
+		}
+		
 		mCamera.setParameters(parameters);
 		startPreviewCamera();
 

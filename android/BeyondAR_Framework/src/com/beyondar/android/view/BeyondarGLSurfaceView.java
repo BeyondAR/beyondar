@@ -261,16 +261,16 @@ public class BeyondarGLSurfaceView extends GLSurfaceView implements OnBeyondarOb
 	public synchronized void getBeyondarObjectsOnScreenCoordinates(float x, float y,
 			ArrayList<BeyondarObject> beyondarObjects, Ray ray) {
 		mRenderer.getViewRay(x, y, ray);
-		mWorld.getBeyondarObjectsCollideRay(ray, beyondarObjects, getArViewDistance());
+		mWorld.getBeyondarObjectsCollideRay(ray, beyondarObjects, getMaxDistanceToRender());
 	}
 
 	/**
 	 * When a {@link com.beyondar.android.world.GeoObject GeoObject} is rendered
 	 * according to its position it could look very small if it is far away. Use
 	 * this method to render far objects as if there were closer.<br>
-	 * For instance if there is an object at 100 meters and we want to have
-	 * everything at least at 25 meters, we could use this method for that
-	 * purpose. <br>
+	 * For instance if there are objects farther than 50 meters and we want them
+	 * to be displayed as they where at 50 meters, we could use this method for
+	 * that purpose. <br>
 	 * To set it to the default behavior just set it to 0
 	 * 
 	 * @param maxDistanceSize
@@ -278,18 +278,18 @@ public class BeyondarGLSurfaceView extends GLSurfaceView implements OnBeyondarOb
 	 *            {@link com.beyondar.android.world.GeoObject GeoObject} , 0 to
 	 *            set again the default behavior
 	 */
-	public void setMaxDistanceSize(float maxDistanceSize) {
-		mRenderer.setMaxDistanceSize(maxDistanceSize);
+	public void setPullCloserDistance(float maxDistanceSize) {
+		mRenderer.setPullCloserDistance(maxDistanceSize);
 	}
 
 	/**
-	 * Get the max distance which a {@link com.beyondar.android.world.GeoObject
-	 * GeoObject} will be rendered.
+	 * Get the distance which all the {@link com.beyondar.android.world.GeoObject
+	 * GeoObject} will be rendered if the are farther that the returned distance.
 	 * 
-	 * @return The current max distance. 0 is the default behavior
+	 * @return The current max distance. 0 is the default behavior.
 	 */
-	public float getMaxDistanceSize() {
-		return mRenderer.getMaxDistanceSize();
+	public float getPullCloserDistance() {
+		return mRenderer.getPullCloserDistance();
 	}
 
 	/**
@@ -297,54 +297,68 @@ public class BeyondarGLSurfaceView extends GLSurfaceView implements OnBeyondarOb
 	 * according to its position it could look very big if it is too close. Use
 	 * this method to render near objects as if there were farther.<br>
 	 * For instance if there is an object at 1 meters and we want to have
-	 * everything at least at 10 meters, we could use this method for that
-	 * purpose. <br>
-	 * To set it to the default behavior just set it to 0
+	 * everything at to look like if they where at least at 10 meters, we could
+	 * use this method for that purpose. <br>
+	 * To set it to the default behavior just set it to 0.
 	 * 
 	 * @param minDistanceSize
 	 *            The top near distance (in meters) which we want to draw a
 	 *            {@link com.beyondar.android.world.GeoObject GeoObject} , 0 to
-	 *            set again the default behavior
+	 *            set again the default behavior.
+	 * 
 	 */
-	public void setMinDistanceSize(float minDistanceSize) {
-		mRenderer.setMinDistanceSize(minDistanceSize);
+	public void setPushAwayDistance(float minDistanceSize) {
+		mRenderer.setPushAwayDistance(minDistanceSize);
 	}
 
 	/**
-	 * Get the minimum distance which a
-	 * {@link com.beyondar.android.world.GeoObject GeoObject} will be rendered.
+	 * Get the closest distance which all the
+	 * {@link com.beyondar.android.world.GeoObject GeoObject} can be displayed.
 	 * 
-	 * @return The current minimum distance. 0 is the default behavior
+	 * @return The current minimum distance. 0 is the default behavior.
 	 */
-	public float getMinDistanceSize() {
-		return mRenderer.getMinDistanceSize();
+	public float getPushAwayDistance() {
+		return mRenderer.getPushAwayDistance();
 	}
 	
 	/**
-	 * Set the distance (in meters) which the app will draw the objects.
+	 * Set the distance (in meters) which the objects will be considered to render.
 	 * 
-	 * @param meters
+	 * @param meters to be rendered from the user.
 	 */
-	public void setArViewDistance(float meters) {
-		mRenderer.setArViewDistance(meters);
+	public void setMaxDistanceToRender(float meters) {
+		mRenderer.setMaxDistanceToRender(meters);
 	}
 
 	/**
-	 * Get the distance (in meters) which the AR view will draw the objects.
+	 * Get the distance (in meters) which the objects are being considered when
+	 * rendering.
 	 * 
 	 * @return meters
 	 */
-	public float getArViewDistance() {
-		return mRenderer.getArViewDistance();
+	public float getMaxDistanceToRender() {
+		return mRenderer.getMaxDistanceToRender();
 	}
 	
-	public void setZFar(float meters)
+	/**
+	 * Set the distance factor for rendering all the objects. As bigger the
+	 * factor the closer the objects.
+	 * 
+	 * @param factor
+	 *            number bigger than 0.
+	 */
+	public void setDistanceFactor(float meters)
 	{
-		mRenderer.setZFar(meters);
+		mRenderer.setDistanceFactor(meters);
 	}
 	
-	public float getZFar(){
-		return mRenderer.getZFar();
+	/**
+	 * Get the distance factor.
+	 * 
+	 * @return Distance factor
+	 */
+	public float getDistanceFactor(){
+		return mRenderer.getDistanceFactor();
 	}
 
 	public void setBeyondarViewAdapter(BeyondarViewAdapter beyondarViewAdapter, ViewGroup parent) {

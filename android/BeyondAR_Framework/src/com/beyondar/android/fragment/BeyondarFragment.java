@@ -402,9 +402,9 @@ public class BeyondarFragment extends Fragment implements FpsUpdatable, OnClickL
 	 * When a {@link com.beyondar.android.world.GeoObject GeoObject} is rendered
 	 * according to its position it could look very small if it is far away. Use
 	 * this method to render far objects as if there were closer.<br>
-	 * For instance if there is an object at 100 meters and we want to have
-	 * everything at least at 25 meters, we could use this method for that
-	 * purpose. <br>
+	 * For instance if there are objects farther than 50 meters and we want them
+	 * to be displayed as they where at 50 meters, we could use this method for
+	 * that purpose. <br>
 	 * To set it to the default behavior just set it to 0
 	 * 
 	 * @param maxDistanceSize
@@ -412,18 +412,19 @@ public class BeyondarFragment extends Fragment implements FpsUpdatable, OnClickL
 	 *            {@link com.beyondar.android.world.GeoObject GeoObject} , 0 to
 	 *            set again the default behavior
 	 */
-	public void setMaxFarDistance(float maxDistanceSize) {
-		mBeyondarGLSurface.setMaxDistanceSize(maxDistanceSize);
+	public void setPullCloserDistance(float maxDistanceSize) {
+		mBeyondarGLSurface.setPullCloserDistance(maxDistanceSize);
 	}
 
 	/**
-	 * Get the max distance which a {@link com.beyondar.android.world.GeoObject
-	 * GeoObject} will be rendered.
+	 * Get the distance which all the
+	 * {@link com.beyondar.android.world.GeoObject GeoObject} will be rendered
+	 * if the are farther that the returned distance.
 	 * 
 	 * @return The current max distance. 0 is the default behavior.
 	 */
-	public float getMaxDistanceSize() {
-		return mBeyondarGLSurface.getMaxDistanceSize();
+	public float getPullCloserDistance() {
+		return mBeyondarGLSurface.getPullCloserDistance();
 	}
 
 	/**
@@ -431,8 +432,8 @@ public class BeyondarFragment extends Fragment implements FpsUpdatable, OnClickL
 	 * according to its position it could look very big if it is too close. Use
 	 * this method to render near objects as if there were farther.<br>
 	 * For instance if there is an object at 1 meters and we want to have
-	 * everything at least at 10 meters, we could use this method for that
-	 * purpose. <br>
+	 * everything at to look like if they where at least at 10 meters, we could
+	 * use this method for that purpose. <br>
 	 * To set it to the default behavior just set it to 0.
 	 * 
 	 * @param minDistanceSize
@@ -441,18 +442,59 @@ public class BeyondarFragment extends Fragment implements FpsUpdatable, OnClickL
 	 *            set again the default behavior.
 	 * 
 	 */
-	public void setMinFarDistanceSize(float minDistanceSize) {
-		mBeyondarGLSurface.setMinDistanceSize(minDistanceSize);
+	public void setPushAwayDistance(float minDistanceSize) {
+		mBeyondarGLSurface.setPushAwayDistance(minDistanceSize);
 	}
 
 	/**
-	 * Get the minimum distance which a
-	 * {@link com.beyondar.android.world.GeoObject GeoObject} will be rendered.
+	 * Get the closest distance which all the
+	 * {@link com.beyondar.android.world.GeoObject GeoObject} can be displayed.
 	 * 
 	 * @return The current minimum distance. 0 is the default behavior.
 	 */
-	public float getMinDistanceSize() {
-		return mBeyondarGLSurface.getMinDistanceSize();
+	public float getPushAwayDistance() {
+		return mBeyondarGLSurface.getPushAwayDistance();
+	}
+
+	/**
+	 * Set the distance (in meters) which the objects will be considered to
+	 * render.
+	 * 
+	 * @param meters
+	 *            to be rendered from the user.
+	 */
+	public void setMaxDistanceToRender(float meters) {
+		mBeyondarGLSurface.setMaxDistanceToRender(meters);
+	}
+
+	/**
+	 * Get the distance (in meters) which the objects are being considered when
+	 * rendering.
+	 * 
+	 * @return meters
+	 */
+	public float getMaxDistanceToRender() {
+		return mBeyondarGLSurface.getMaxDistanceToRender();
+	}
+
+	/**
+	 * Set the distance factor for rendering all the objects. As bigger the
+	 * factor the closer the objects.
+	 * 
+	 * @param factor
+	 *            number bigger than 0.
+	 */
+	public void setDistanceFactor(float meters) {
+		mBeyondarGLSurface.setDistanceFactor(meters);
+	}
+
+	/**
+	 * Get the distance factor.
+	 * 
+	 * @return Distance factor
+	 */
+	public float getDistanceFactor() {
+		return mBeyondarGLSurface.getDistanceFactor();
 	}
 
 	/**
@@ -578,5 +620,37 @@ public class BeyondarFragment extends Fragment implements FpsUpdatable, OnClickL
 	 */
 	public void fillBeyondarObjectPositions(BeyondarObject beyondarObject) {
 		mBeyondarGLSurface.fillBeyondarObjectPositions(beyondarObject);
+	}
+
+	/**
+	 * Use setPullCloserDistance instead.
+	 */
+	@Deprecated
+	public void setMaxFarDistance(float maxDistanceSize) {
+		setPullCloserDistance(maxDistanceSize);
+	}
+
+	/**
+	 * Use getPushFrontDistance instead.
+	 */
+	@Deprecated
+	public float getMaxDistanceSize() {
+		return getPullCloserDistance();
+	}
+
+	/**
+	 * Use setPushAwayDistance instead.
+	 */
+	@Deprecated
+	public void setMinFarDistanceSize(float minDistanceSize) {
+		setPushAwayDistance(minDistanceSize);
+	}
+
+	/**
+	 * Use getPushAwayDistance instead.
+	 */
+	@Deprecated
+	public float getMinDistanceSize() {
+		return getPushAwayDistance();
 	}
 }

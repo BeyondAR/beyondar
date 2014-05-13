@@ -76,7 +76,6 @@ public class SimpleCameraWithMaxFarMinAwayActivity extends FragmentActivity impl
 		mSeekBarArViewDst.setProgress(20000);
 		mSeekBarZfar.setProgress(50000);
 
-
 		// We create the world and fill it ...
 		mWorld = CustomWorldHelper.generateObjects(this);
 		// .. and send it to the fragment
@@ -86,34 +85,24 @@ public class SimpleCameraWithMaxFarMinAwayActivity extends FragmentActivity impl
 	@Override
 	public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
 		if (seekBar == mSeekBarMax) {
-			mBeyondarFragment.setMaxFarDistance(progress);
+			mBeyondarFragment.setPullCloserDistance(progress);
 		} else if (seekBar == mSeekBarMin) {
-			mBeyondarFragment.setMinFarDistanceSize(progress);
+			mBeyondarFragment.setPushAwayDistance(progress);
 		} else if (seekBar == mSeekBarArViewDst) {
-			mBeyondarFragment.setArViewDistance(progress);
+			mBeyondarFragment.setMaxDistanceToRender(progress);
 		} else if (seekBar == mSeekBarZfar) {
-			mBeyondarFragment.setZFar(progress);
+			mBeyondarFragment.setDistanceFactor(progress);
 		}
 		updateTextValues();
 	}
 	
 	private void updateTextValues() {
-		mTextValues.setText("Zfar=" + mBeyondarFragment.getZFar() + " ArViewDst="
-				+ mBeyondarFragment.getArViewDistance() + "\nMax far="
-				+ mBeyondarFragment.getMaxDistanceSize() + " Min far="
-				+ mBeyondarFragment.getMinDistanceSize());
+		mTextValues.setText("dst factor=" + mBeyondarFragment.getDistanceFactor() + " max dst render="
+				+ mBeyondarFragment.getMaxDistanceToRender() + "\npull closer="
+				+ mBeyondarFragment.getPullCloserDistance() + " push away="
+				+ mBeyondarFragment.getPushAwayDistance());
 	}
 	
-	@Override
-	protected void onResume() {
-//		mSeekBarMax.setOnSeekBarChangeListener(this);
-//		mSeekBarMin.setOnSeekBarChangeListener(this);
-//		mSeekBarArViewDst.setOnSeekBarChangeListener(this);
-//		mSeekBarZfar.setOnSeekBarChangeListener(this);
-		
-		super.onResume();
-	}
-
 	@Override
 	public void onStartTrackingTouch(SeekBar seekBar) {
 	}

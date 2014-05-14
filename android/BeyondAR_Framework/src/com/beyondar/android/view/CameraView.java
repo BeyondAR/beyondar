@@ -17,7 +17,7 @@ package com.beyondar.android.view;
 
 import java.io.IOException;
 import java.util.List;
-
+import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.res.Configuration;
@@ -31,7 +31,6 @@ import android.view.Surface;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.WindowManager;
-
 import com.beyondar.android.util.DebugBitmap;
 import com.beyondar.android.util.GoogleGlassUtils;
 import com.beyondar.android.util.Logger;
@@ -232,6 +231,7 @@ public class CameraView extends SurfaceView implements SurfaceHolder.Callback, C
 		return optimalSize;
 	}
 
+	@SuppressLint("NewApi")
 	public void surfaceChanged(SurfaceHolder holder, int format, int w, int h) {
 		if (mCamera == null) {
 			init(getContext());
@@ -270,7 +270,6 @@ public class CameraView extends SurfaceView implements SurfaceHolder.Callback, C
 		
 		mCamera.setParameters(parameters);
 		startPreviewCamera();
-
 	}
 
 	@TargetApi(Build.VERSION_CODES.GINGERBREAD)

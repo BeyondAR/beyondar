@@ -81,7 +81,7 @@ public class BeyondarFragment extends Fragment implements FpsUpdatable, OnClickL
 	@Override
 	public void onAttach(Activity activity) {
 		super.onAttach(activity);
-		mSensorManager = (SensorManager) (SensorManager) activity.getSystemService(Context.SENSOR_SERVICE);
+		mSensorManager = (SensorManager) activity.getSystemService(Context.SENSOR_SERVICE);
 	}
 
 	private void init() {

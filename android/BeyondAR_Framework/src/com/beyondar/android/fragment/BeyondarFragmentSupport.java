@@ -80,7 +80,7 @@ public class BeyondarFragmentSupport extends Fragment implements FpsUpdatable, O
 	@Override
 	public void onAttach(Activity activity) {
 		super.onAttach(activity);
-		mSensorManager = (SensorManager) (SensorManager) activity.getSystemService(Context.SENSOR_SERVICE);
+		mSensorManager = (SensorManager) activity.getSystemService(Context.SENSOR_SERVICE);
 	}
 
 	private void init() {

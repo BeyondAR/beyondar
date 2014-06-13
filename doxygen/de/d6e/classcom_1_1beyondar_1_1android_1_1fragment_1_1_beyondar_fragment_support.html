@@ -9,6 +9,13 @@
 <link href="../../tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="../../jquery.js"></script>
 <script type="text/javascript" src="../../dynsections.js"></script>
+<link href="../../navtree.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="../../resize.js"></script>
+<script type="text/javascript" src="../../navtree.js"></script>
+<script type="text/javascript">
+  $(document).ready(initResizable);
+  $(window).load(resizeHeight);
+</script>
 <link href="../../search/search.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="../../search/search.js"></script>
 <script type="text/javascript">
@@ -71,6 +78,21 @@ var searchBox = new SearchBox("searchBox", "../../search",false,'Search');
       <li><a href="../../functions.html"><span>Class&#160;Members</span></a></li>
     </ul>
   </div>
+</div><!-- top -->
+<div id="side-nav" class="ui-resizable side-nav-resizable">
+  <div id="nav-tree">
+    <div id="nav-tree-contents">
+      <div id="nav-sync" class="sync"></div>
+    </div>
+  </div>
+  <div id="splitbar" style="-moz-user-select:none;" 
+       class="ui-resizable-handle">
+  </div>
+</div>
+<script type="text/javascript">
+$(document).ready(function(){initNavTree('de/d6e/classcom_1_1beyondar_1_1android_1_1fragment_1_1_beyondar_fragment_support.html','../../');});
+</script>
+<div id="doc-content">
 <!-- window showing the filter options -->
 <div id="MSearchSelectWindow"
      onmouseover="return searchBox.OnSearchSelectShow()"
@@ -85,11 +107,6 @@ var searchBox = new SearchBox("searchBox", "../../search",false,'Search');
 </iframe>
 </div>
 
-<div id="nav-path" class="navpath">
-  <ul>
-<li class="navelem"><b>com</b></li><li class="navelem"><b>beyondar</b></li><li class="navelem"><b>android</b></li><li class="navelem"><b>fragment</b></li><li class="navelem"><a class="el" href="../../de/d6e/classcom_1_1beyondar_1_1android_1_1fragment_1_1_beyondar_fragment_support.html">BeyondarFragmentSupport</a></li>  </ul>
-</div>
-</div><!-- top -->
 <div class="header">
   <div class="summary">
 <a href="#pub-methods">Public Member Functions</a> &#124;
@@ -106,12 +123,16 @@ var searchBox = new SearchBox("searchBox", "../../search",false,'Search');
 Inheritance diagram for com.beyondar.android.fragment.BeyondarFragmentSupport:</div>
 <div class="dyncontent">
 <div class="center"><img src="../../d0/d60/classcom_1_1beyondar_1_1android_1_1fragment_1_1_beyondar_fragment_support__inherit__graph.png" border="0" usemap="#com_8beyondar_8android_8fragment_8_beyondar_fragment_support_inherit__map" alt="Inheritance graph"/></div>
-<center><span class="legend">[<a href="../../graph_legend.html">legend</a>]</span></center></div>
+<map name="com_8beyondar_8android_8fragment_8_beyondar_fragment_support_inherit__map" id="com_8beyondar_8android_8fragment_8_beyondar_fragment_support_inherit__map">
+<area shape="rect" id="node3" href="../../dd/d86/interfacecom_1_1beyondar_1_1android_1_1opengl_1_1renderer_1_1_a_r_renderer_1_1_fps_updatable.html" title="com.beyondar.android.opengl.renderer.\lARRenderer.FpsUpdatable" alt="" coords="6,57,260,101"/></map>
+<center><span class="legend">[<a target="top" href="../../graph_legend.html">legend</a>]</span></center></div>
 <div class="dynheader">
 Collaboration diagram for com.beyondar.android.fragment.BeyondarFragmentSupport:</div>
 <div class="dyncontent">
 <div class="center"><img src="../../d8/d78/classcom_1_1beyondar_1_1android_1_1fragment_1_1_beyondar_fragment_support__coll__graph.png" border="0" usemap="#com_8beyondar_8android_8fragment_8_beyondar_fragment_support_coll__map" alt="Collaboration graph"/></div>
-<center><span class="legend">[<a href="../../graph_legend.html">legend</a>]</span></center></div>
+<map name="com_8beyondar_8android_8fragment_8_beyondar_fragment_support_coll__map" id="com_8beyondar_8android_8fragment_8_beyondar_fragment_support_coll__map">
+<area shape="rect" id="node3" href="../../dd/d86/interfacecom_1_1beyondar_1_1android_1_1opengl_1_1renderer_1_1_a_r_renderer_1_1_fps_updatable.html" title="com.beyondar.android.opengl.renderer.\lARRenderer.FpsUpdatable" alt="" coords="6,57,260,101"/></map>
+<center><span class="legend">[<a target="top" href="../../graph_legend.html">legend</a>]</span></center></div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
@@ -160,7 +181,7 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>onClick</b> (View v)<
 <tr class="memitem:a2325f261fac640b8dc9d107325bf36f3"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../de/d6e/classcom_1_1beyondar_1_1android_1_1fragment_1_1_beyondar_fragment_support.html#a2325f261fac640b8dc9d107325bf36f3">getSensorDelay</a> ()</td></tr>
 <tr class="memdesc:a2325f261fac640b8dc9d107325bf36f3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the current sensor delay.  <a href="#a2325f261fac640b8dc9d107325bf36f3">More...</a><br/></td></tr>
 <tr class="separator:a2325f261fac640b8dc9d107325bf36f3"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a99a2ac3265a3ba667bf8d85e138db05d"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../de/d6e/classcom_1_1beyondar_1_1android_1_1fragment_1_1_beyondar_fragment_support.html#a99a2ac3265a3ba667bf8d85e138db05d">setFpsUpdatable</a> (FpsUpdatable fpsUpdatable)</td></tr>
+<tr class="memitem:a99a2ac3265a3ba667bf8d85e138db05d"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../de/d6e/classcom_1_1beyondar_1_1android_1_1fragment_1_1_beyondar_fragment_support.html#a99a2ac3265a3ba667bf8d85e138db05d">setFpsUpdatable</a> (<a class="el" href="../../dd/d86/interfacecom_1_1beyondar_1_1android_1_1opengl_1_1renderer_1_1_a_r_renderer_1_1_fps_updatable.html">FpsUpdatable</a> fpsUpdatable)</td></tr>
 <tr class="memdesc:a99a2ac3265a3ba667bf8d85e138db05d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Use this method to check the frames per second.  <a href="#a99a2ac3265a3ba667bf8d85e138db05d">More...</a><br/></td></tr>
 <tr class="separator:a99a2ac3265a3ba667bf8d85e138db05d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aebbea1a1568e70d0c1d6d0f0138e74fb"><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="aebbea1a1568e70d0c1d6d0f0138e74fb"></a>
@@ -241,7 +262,7 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../.
 float&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../de/d6e/classcom_1_1beyondar_1_1android_1_1fragment_1_1_beyondar_fragment_support.html#a02fbc42b9f76eb1cff320f517c5c7542">getMinDistanceSize</a> ()</td></tr>
 <tr class="memdesc:a02fbc42b9f76eb1cff320f517c5c7542"><td class="mdescLeft">&#160;</td><td class="mdescRight">Use getPushAwayDistance instead. <br/></td></tr>
 <tr class="separator:a02fbc42b9f76eb1cff320f517c5c7542"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a415dfd1ffa4d6048cb8fc577cda488de"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><b>onFpsUpdate</b> (float fps)</td></tr>
+<tr class="memitem:a415dfd1ffa4d6048cb8fc577cda488de"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../dd/d86/interfacecom_1_1beyondar_1_1android_1_1opengl_1_1renderer_1_1_a_r_renderer_1_1_fps_updatable.html#a415dfd1ffa4d6048cb8fc577cda488de">onFpsUpdate</a> (float fps)</td></tr>
 <tr class="memdesc:a415dfd1ffa4d6048cb8fc577cda488de"><td class="mdescLeft">&#160;</td><td class="mdescRight">This method will get the frames per second rendered by the <a class="el" href="../../dc/d6d/classcom_1_1beyondar_1_1android_1_1opengl_1_1renderer_1_1_a_r_renderer.html">ARRenderer</a>.  <a href="#a415dfd1ffa4d6048cb8fc577cda488de">More...</a><br/></td></tr>
 <tr class="separator:a415dfd1ffa4d6048cb8fc577cda488de"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
@@ -769,7 +790,7 @@ Here is the caller graph for this function:</div>
         <tr>
           <td class="memname">void com.beyondar.android.fragment.BeyondarFragmentSupport.setFpsUpdatable </td>
           <td>(</td>
-          <td class="paramtype">FpsUpdatable&#160;</td>
+          <td class="paramtype"><a class="el" href="../../dd/d86/interfacecom_1_1beyondar_1_1android_1_1opengl_1_1renderer_1_1_a_r_renderer_1_1_fps_updatable.html">FpsUpdatable</a>&#160;</td>
           <td class="paramname"><em>fpsUpdatable</em></td><td>)</td>
           <td></td>
         </tr>
@@ -1130,11 +1151,15 @@ Here is the call graph for this function:</div>
 <li>src/com/beyondar/android/fragment/BeyondarFragmentSupport.java</li>
 </ul>
 </div><!-- contents -->
+</div><!-- doc-content -->
 <!-- start footer part -->
-<hr class="footer"/><address class="footer"><small>
-Generated on Wed May 14 2014 10:24:24 for BeyondAR by &#160;<a href="http://www.doxygen.org/index.html">
-<img class="footer" src="../../doxygen.png" alt="doxygen"/>
-</a> 1.8.6
-</small></address>
+<div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
+  <ul>
+    <li class="navelem"><b>com</b></li><li class="navelem"><b>beyondar</b></li><li class="navelem"><b>android</b></li><li class="navelem"><b>fragment</b></li><li class="navelem"><a class="el" href="../../de/d6e/classcom_1_1beyondar_1_1android_1_1fragment_1_1_beyondar_fragment_support.html">BeyondarFragmentSupport</a></li>
+    <li class="footer">Generated on Fri Jun 13 2014 17:52:51 for BeyondAR by
+    <a href="http://www.doxygen.org/index.html">
+    <img class="footer" src="../../doxygen.png" alt="doxygen"/></a> 1.8.6 </li>
+  </ul>
+</div>
 </body>
 </html>

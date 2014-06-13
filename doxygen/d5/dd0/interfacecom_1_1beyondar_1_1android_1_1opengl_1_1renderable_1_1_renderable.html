@@ -9,6 +9,13 @@
 <link href="../../tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="../../jquery.js"></script>
 <script type="text/javascript" src="../../dynsections.js"></script>
+<link href="../../navtree.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="../../resize.js"></script>
+<script type="text/javascript" src="../../navtree.js"></script>
+<script type="text/javascript">
+  $(document).ready(initResizable);
+  $(window).load(resizeHeight);
+</script>
 <link href="../../search/search.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="../../search/search.js"></script>
 <script type="text/javascript">
@@ -71,6 +78,21 @@ var searchBox = new SearchBox("searchBox", "../../search",false,'Search');
       <li><a href="../../functions.html"><span>Class&#160;Members</span></a></li>
     </ul>
   </div>
+</div><!-- top -->
+<div id="side-nav" class="ui-resizable side-nav-resizable">
+  <div id="nav-tree">
+    <div id="nav-tree-contents">
+      <div id="nav-sync" class="sync"></div>
+    </div>
+  </div>
+  <div id="splitbar" style="-moz-user-select:none;" 
+       class="ui-resizable-handle">
+  </div>
+</div>
+<script type="text/javascript">
+$(document).ready(function(){initNavTree('d5/dd0/interfacecom_1_1beyondar_1_1android_1_1opengl_1_1renderable_1_1_renderable.html','../../');});
+</script>
+<div id="doc-content">
 <!-- window showing the filter options -->
 <div id="MSearchSelectWindow"
      onmouseover="return searchBox.OnSearchSelectShow()"
@@ -85,11 +107,6 @@ var searchBox = new SearchBox("searchBox", "../../search",false,'Search');
 </iframe>
 </div>
 
-<div id="nav-path" class="navpath">
-  <ul>
-<li class="navelem"><b>com</b></li><li class="navelem"><b>beyondar</b></li><li class="navelem"><b>android</b></li><li class="navelem"><b>opengl</b></li><li class="navelem"><b>renderable</b></li><li class="navelem"><a class="el" href="../../d5/dd0/interfacecom_1_1beyondar_1_1android_1_1opengl_1_1renderable_1_1_renderable.html">Renderable</a></li>  </ul>
-</div>
-</div><!-- top -->
 <div class="header">
   <div class="summary">
 <a href="#pub-methods">Public Member Functions</a> &#124;
@@ -107,7 +124,7 @@ Inheritance diagram for com.beyondar.android.opengl.renderable.Renderable:</div>
 <div class="center"><img src="../../d1/dd5/interfacecom_1_1beyondar_1_1android_1_1opengl_1_1renderable_1_1_renderable__inherit__graph.png" border="0" usemap="#com_8beyondar_8android_8opengl_8renderable_8_renderable_inherit__map" alt="Inheritance graph"/></div>
 <map name="com_8beyondar_8android_8opengl_8renderable_8_renderable_inherit__map" id="com_8beyondar_8android_8opengl_8renderable_8_renderable_inherit__map">
 <area shape="rect" id="node2" href="../../df/d71/classcom_1_1beyondar_1_1android_1_1opengl_1_1renderable_1_1_square_renderable.html" title="Basic Renderable for rendering simple 2D images. " alt="" coords="5,99,272,143"/></map>
-<center><span class="legend">[<a href="../../graph_legend.html">legend</a>]</span></center></div>
+<center><span class="legend">[<a target="top" href="../../graph_legend.html">legend</a>]</span></center></div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
@@ -385,11 +402,15 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../.
 <li>src/com/beyondar/android/opengl/renderable/Renderable.java</li>
 </ul>
 </div><!-- contents -->
+</div><!-- doc-content -->
 <!-- start footer part -->
-<hr class="footer"/><address class="footer"><small>
-Generated on Wed May 14 2014 10:24:24 for BeyondAR by &#160;<a href="http://www.doxygen.org/index.html">
-<img class="footer" src="../../doxygen.png" alt="doxygen"/>
-</a> 1.8.6
-</small></address>
+<div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
+  <ul>
+    <li class="navelem"><b>com</b></li><li class="navelem"><b>beyondar</b></li><li class="navelem"><b>android</b></li><li class="navelem"><b>opengl</b></li><li class="navelem"><b>renderable</b></li><li class="navelem"><a class="el" href="../../d5/dd0/interfacecom_1_1beyondar_1_1android_1_1opengl_1_1renderable_1_1_renderable.html">Renderable</a></li>
+    <li class="footer">Generated on Fri Jun 13 2014 17:52:51 for BeyondAR by
+    <a href="http://www.doxygen.org/index.html">
+    <img class="footer" src="../../doxygen.png" alt="doxygen"/></a> 1.8.6 </li>
+  </ul>
+</div>
 </body>
 </html>

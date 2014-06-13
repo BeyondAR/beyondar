@@ -1,3 +1,3 @@
 <map id="com.beyondar.android.world.World.sortGeoObjectByDistanceFromCenter" name="com.beyondar.android.world.World.sortGeoObjectByDistanceFromCenter">
-<area shape="rect" id="node2" href="$d8/d04/classcom_1_1beyondar_1_1android_1_1world_1_1_world.html#ae93e863ad76e8905f55a6e038158c1b2" title="Get all the BeyondarObject that collide with the Ray. " alt="" coords="299,13,544,57"/>
+<area shape="rect" id="node2" href="$d8/d04/classcom_1_1beyondar_1_1android_1_1world_1_1_world.html#abb75a1e1001e2a010ae778788435eec5" title="Get all the BeyondarObject that collide with the com.beyondar.android.util.math.geom.Ray. " alt="" coords="299,13,544,57"/>
 </map>

@@ -1,0 +1,4 @@
+var interfacecom_1_1beyondar_1_1android_1_1opengl_1_1renderer_1_1_a_r_renderer_1_1_g_l_snapshot_callback =
+[
+    [ "onSnapshotTaken", "d1/d10/interfacecom_1_1beyondar_1_1android_1_1opengl_1_1renderer_1_1_a_r_renderer_1_1_g_l_snapshot_callback.html#ad29f380849ed4b50bdc62096615b39d2", null ]
+];

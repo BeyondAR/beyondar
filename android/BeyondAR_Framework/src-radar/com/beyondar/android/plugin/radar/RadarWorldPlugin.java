@@ -88,17 +88,12 @@ public class RadarWorldPlugin implements WorldPlugin, BeyondarSensorListener{
 		mAttached = true;
 		
 		mWorld = world;
-		if (mMaxDistance == -1) {
-			mMaxDistance = mWorld.getArViewDistance();
-		}
 
 		addPluginToAllObjects();
 
 		BeyondarSensorManager.registerSensorListener(this);
 		
 		mRotation = mDisplay.getRotation();
-		
-		
 	}
 
 	/**

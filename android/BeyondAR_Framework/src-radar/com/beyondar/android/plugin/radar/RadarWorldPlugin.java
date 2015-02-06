@@ -40,7 +40,8 @@ import com.beyondar.android.world.BeyondarObjectList;
 import com.beyondar.android.world.GeoObject;
 import com.beyondar.android.world.World;
 
-public class RadarWorldPlugin implements WorldPlugin, BeyondarSensorListener{
+public class RadarWorldPlugin implements WorldPlugin, BeyondarSensorListener {
+	public static final String VERSION = "0.9.1";
 
 	private boolean mAttached = false;
 	private Context mContex;
@@ -88,17 +89,12 @@ public class RadarWorldPlugin implements WorldPlugin, BeyondarSensorListener{
 		mAttached = true;
 		
 		mWorld = world;
-		if (mMaxDistance == -1) {
-			mMaxDistance = mWorld.getArViewDistance();
-		}
 
 		addPluginToAllObjects();
 
 		BeyondarSensorManager.registerSensorListener(this);
 		
 		mRotation = mDisplay.getRotation();
-		
-		
 	}
 
 	/**

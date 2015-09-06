@@ -76,6 +76,8 @@ public class BeyondarSensorManager {
 			if (listSensors.size() > 0) {
 				mSensorManager.registerListener(INSTANCE, listSensors.get(0), SENSOR_DELAY);
 			}
+			
+			isListenerRegistered = true;
 		}
 
 		void unregisterSensor() {
@@ -90,6 +92,9 @@ public class BeyondarSensorManager {
 			if (listSensors.size() > 0) {
 				mSensorManager.unregisterListener(INSTANCE, listSensors.get(0));
 			}
+			
+			isListenerRegistered = false;
+			mSensorManager = null;
 		}
 
 		void registerSensorListener(BeyondarSensorListener sensorEventListener) {

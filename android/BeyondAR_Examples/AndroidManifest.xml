@@ -1,12 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.beyondar.example"
-    android:versionCode="000902"
-    android:versionName="0.9.2" >
-
-    <uses-sdk
-        android:minSdkVersion="8"
-        android:targetSdkVersion="19" />
+    package="com.beyondar.example">
 
     <!-- Google maps stuff -->
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
@@ -52,10 +46,10 @@
         <activity android:name="com.beyondar.example.SimpleCameraWithCustomFilterActivity" />
         <activity android:name="com.beyondar.example.SimpleCameraWithRadarActivity" />
         <activity android:name="com.beyondar.example.BeyondarLocationManagerMapActivity" />
-        
+
         <!-- <meta-data
             android:name="com.google.android.maps.v2.API_KEY"
-            android:value="AIzaSyBN2fi7bdokXVQXmMTGfqWG2oNHjopus-A" /> --> 
+            android:value="AIzaSyBN2fi7bdokXVQXmMTGfqWG2oNHjopus-A" /> -->
         <meta-data
             android:name="com.google.android.maps.v2.API_KEY"
             android:value="AIzaSyBTfCgWGUfdcobamviCU3eI452nvFa7Br0" />

@@ -39,3 +39,8 @@ proguard/
 android/BeyondAR_Examples/src-framework/
 android/BeyondAR_Examples/src-googlemaps/
 android/BeyondAR_Examples/src-radar/
+
+# Gradle
+.gradle/
+gradle/
+build/

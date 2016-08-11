@@ -241,7 +241,13 @@ public class CameraView extends SurfaceView implements SurfaceHolder.Callback, C
 			return;
 		}
 		stopPreviewCamera();
-
+		
+		configureCameraOrientation();
+		
+		startPreviewCamera();
+	}
+	
+	private void configureCameraOrientation(){
 		Camera.Parameters parameters = mCamera.getParameters();
 
 		int orientation = 0;
@@ -267,9 +273,8 @@ public class CameraView extends SurfaceView implements SurfaceHolder.Callback, C
 		{
 			parameters.setPreviewFpsRange(30000, 30000);
 		}
-		
+
 		mCamera.setParameters(parameters);
-		startPreviewCamera();
 	}
 
 	@TargetApi(Build.VERSION_CODES.GINGERBREAD)
@@ -399,6 +404,8 @@ public class CameraView extends SurfaceView implements SurfaceHolder.Callback, C
 		while (!acquiredCam && timePassed < MAX_TIME_WAIT_FOR_CAMERA) {
 			try {
 				mCamera = Camera.open();
+				//TODO: TEST
+				configureCameraOrientation();
 				Logger.v(TAG, "acquired the camera");
 				acquiredCam = true;
 				return true;

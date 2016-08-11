@@ -23,11 +23,11 @@ public class Version {
 	/**
 	 * Version number of BeyondAR framework.
 	 */
-	public static final int VERSION_NUMBER = 0x000902;
+	public static final int VERSION_NUMBER = 0x000903;
 
 	/**
 	 * Version name of BeyondAR framework.
 	 */
-	public static final String VERSION_NAME = "0.9.2";
+	public static final String VERSION_NAME = "0.9.3";
 
 }
